@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from difflib import get_close_matches
+from django.template.defaultfilters import slugify
 import pytz
 import xlwt
 import StringIO
@@ -50,8 +51,6 @@ def create_standing_list(competition=None, competition_id=None):
     wbk.save(output)
     return output
 
-
-
 def create_start_list(competition=None, competition_id=None):
     if not competition and not competition_id:
         raise Exception('Expected at least one variable')
@@ -63,7 +62,7 @@ def create_start_list(competition=None, competition_id=None):
     wbk = xlwt.Workbook()
 
     for distance in distances:
-        sheet = wbk.add_sheet(distance.__unicode__())
+        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
         slugs = []
         items = distance.participant_set.filter(competition_id__in=competition.get_ids(),
                                                 is_participating=True).select_related('competition', 'distance',

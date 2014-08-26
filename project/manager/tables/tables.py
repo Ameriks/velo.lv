@@ -148,10 +148,10 @@ class ManageParticipantTable(GetRequestTableKwargs, tables.Table):
     class Meta:
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("created", 'distance', 'is_participating', 'first_name', 'last_name', 'birthday', 'group', 'team_name', 'price')
-        sequence = ("selection", 'distance', "first_name", 'last_name', 'birthday', 'is_participating', 'price', 'group', 'team_name', 'created', 'pdf')
+        fields = ("registration_dt", 'distance', 'is_participating', 'first_name', 'last_name', 'birthday', 'group', 'team_name', 'price')
+        sequence = ("selection", 'distance', "first_name", 'last_name', 'birthday', 'is_participating', 'price', 'group', 'team_name', 'registration_dt', 'pdf')
         empty_text = _("You haven't added any participant")
-        order_by = ("-created")
+        order_by = ("-registration_dt")
         per_page = 100
         template = "bootstrap/table.html"
 
