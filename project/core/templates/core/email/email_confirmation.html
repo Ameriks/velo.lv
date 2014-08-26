@@ -1,0 +1,13 @@
+{% extends "base/email.html" %}
+{% block content %}
+    <p class="lead">Lūdzu, apstipriniet savu e-pasta adresi.</p>
+    <p>
+        <a href="{{ domain }}{% url 'accounts:email_confirmation_view' object.email_validation_code %}" class="btn">Apstiprinu</a>
+    </p>
+    <p>Ja nesanāk apstiprināt e-pasta adresi, noklikšķinot uz pogas augstāk, tad nospiediet uz saites, kura ir norādīta zemāk, vai nokopējiet un ielīmējiet to adreses joslā savā interneta pārlūkā.<br />
+    {{ domain }}{% url 'accounts:email_confirmation_view' object.email_validation_code %}</p>
+    <p>
+    Jūsu,<br />
+    velo.lv
+    </p>
+{% endblock content %}

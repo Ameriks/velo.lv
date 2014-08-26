@@ -1,0 +1,15 @@
+{% extends 'public/base.html' %}
+{% load i18n thumbnail counter cache %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block main %}
+    {% cache 60 flatpages_flatpage_detail LANGUAGE_CODE object.id %}
+    {% spaceless %}
+        {{ object.content|safe }}
+    {{ block.super }}
+    {% endspaceless %}
+    {% endcache %}
+{% endblock %}

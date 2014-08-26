@@ -1,0 +1,19 @@
+Apsveicam ar sekmīgu reģistrēšanos 31.Rīgas Velomaratonam, kas notiks šo svētdien, 1.jūnijā 11.novembra Krastmalā!
+
+Vārds, uzvārds: {{object.first_name}} {{object.last_name}}
+Dzimšanas gads: {{object.birthday.year}}
+Distance: {{object.distance}}
+{% if number %}Starta numurs: {{number.number}}{% endif %}
+
+Šo vēstuli lūdzam saglabāt, izprintēt un ņemt līdzi uz Rīgas Velomaratona starta vietu 11.novembra Krastmalā.
+
+Uzrādot šo vēstuli reģistrācijas teltī, Jūs varēsiet saņemt aploksni ar savu starta numuru.
+
+Lūdzam paņemt no reģistrācijas darbiniekiem instrukciju par pareizu numura piestiprināšanu.
+
+Papildus informāciju meklējiet www.velo.lv
+
+Neskaidrību gadījumā sazinieties ar mums: pieteikumi@velo.lv
+Vēlreiz apsveicam ar reģistrēšanos Rīgas Velomaratonam un novēlam veiksmīgu startu!
+Rīga ir mūsu!
+Rīgas Velomaratona organizatori

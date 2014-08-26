@@ -1,54 +1,47 @@
-# Byte-compiled / optimized / DLL files
+# Created by http://gitignore.io
+
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+### Django ###
+*.log
+*.pot
+*.pyc
 __pycache__/
-*.py[cod]
 
 # C extensions
 *.so
 
-# Distribution / packaging
-.Python
-env/
-bin/
-build/
-develop-eggs/
-dist/
-eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-*.egg
+# Thumbnails
+._*
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.cache
-nosetests.xml
-coverage.xml
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
 
-# Translations
-*.mo
+### Linux ###
+*~
 
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
+# KDE directory preferences
+.directory
 
-# Rope
-.ropeproject
+project/static
+project/celery.db
+install
+.idea
+*.py[cod]
 
-# Django stuff:
-*.log
-*.pot
-
-# Sphinx documentation
-docs/_build/
+/.vagrant/
+project/medias
+project/media
 

@@ -1,0 +1,75 @@
+{% extends 'public/base.html' %}
+{% load i18n cache counter %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block main %}
+    {% cache 60 team_applied LANGUAGE_CODE distance_active competition request.GET %}
+    {% spaceless %}
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="nav nav-tabs pull-right">
+                {% for distance in distances %}
+                    <li class="{% if distance.id == distance_active.id %}active{% endif %}"><a href="{% url 'competition:applied_teams_list' competition.id %}?distance={{ distance.id }}">{{ distance }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+          <div class="tag-box tag-box-v3">
+        <p>Ja komandas dalībnieks ir sarkanā krāsā, tas nozīmē, ka nav saņemta samaksa par dalībnieku vai arī nav atrodams starp apmaksātajiem dalībniekiem. Lūdzam šim pievērst pastiprinātu uzmanību, jo sarkanā krāsā esošo komandas dalībnieku rezultāti netiks ņemti vērā.</p>
+    </div>
+    {% for object in object_list %}
+        {% ifchanged object.0 %}
+            {% counter start=2 silent=True assign="team_counter" %}
+
+            {% if forloop.counter0  %}
+                </tbody></table></div></div></div>
+            {% endif %}
+
+            {% if team_counter|divisibleby:2 %}
+                {% if forloop.counter0  %}
+                    </div>
+                {% endif %}
+                <div class="row">
+            {% endif %}
+
+            <div class="col-xs-6">
+                <div class="panel {% if object.2 %}panel-green{% else %}panel-grey{% endif %} margin-bottom-40">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-user"></i> <a href="#">{{ object.1 }}</a></h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>{% trans 'First Name' %}</th>
+                                    <th>{% trans 'Last Name' %}</th>
+                                    <th>{% trans 'Year' %}</th>
+                                    <th>{% trans 'Tips' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+        {% endifchanged %}
+
+         <tr class="{% if not object.7 %}danger{% endif %}">
+            <td>{% firstof object.7 '-' %}</td>
+            <td>{{ object.3 }}</td>
+            <td>{{ object.4 }}</td>
+            <td>{{ object.5.year }}</td>
+            <td>{% if object.6 == 10 %}
+                    <span class="label label-dark">{% trans 'Participant' %}</span>
+                {% else %}
+                    <span class="label label-warning">{% trans 'Reserve' %}</span>
+                {% endif %}
+            </td>
+
+        </tr>
+    {% endfor %}
+    </tbody></table></div></div></div>
+    </div>
+    {% endspaceless %}
+    {% endcache %}
+
+{% endblock %}

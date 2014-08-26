@@ -1,0 +1,27 @@
+{% extends 'base/base_manage.html' %}
+{% load sitetree %}
+    {% block footer %}
+    {% endblock %}
+
+
+{% block content %}
+       <div class="container content">
+        <div class="row">
+            <!-- Begin Sidebar Menu -->
+            <div class="col-md-3">
+                {% sitetree_menu from "mainmenu" include "manager" template "bootstrap/sidemenu_bootstrap3.html"  %}
+
+                {% sitetree_menu from "competition_admin" include "trunk" template "bootstrap/sidemenu_bootstrap3.html"  %}
+            </div>
+            <!-- End Sidebar Menu -->
+
+            <!-- Begin Content -->
+            <div class="col-md-9">
+                {% block main %}
+
+                {% endblock %}
+            </div>
+            <!-- End Content -->
+        </div>
+    </div>
+{% endblock %}

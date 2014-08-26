@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+<!--[if IE 8]> <html lang="{{ LANGUAGE_CODE }}" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="{{ LANGUAGE_CODE }}" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="{{ LANGUAGE_CODE }}"> <!--<![endif]-->
+<head>
+    <title>Igo Japiņa sporta aģentūra</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Aģentūra ir ar vislielāko pieredzi dažādu velo pasākumu rīkošanā." />
+    <meta name="author" content="Igo Japiņa sporta aģentūra" />
+    <meta name="keywords" content="bicycle,competition,energy,sport,sports nutrition,Rīgas velomaratons,seb maratons,Vienības brauciens,velosipēdi,sports,sporta uzturs,sacensības,velo sacensības" />
+
+    <!-- Favicon -->
+{#    <link rel="shortcut icon" href="favicon.ico">#}
+
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+
+    <!-- CSS Implementing Plugins -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}plugins/line-icons/line-icons.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}plugins/flexslider/flexslider.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}plugins/parallax-slider/css/parallax-slider.css">
+
+
+    {% block css %}
+    {% endblock %}
+
+    <!-- CSS Theme -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/theme/blue.css">
+
+    <!-- CSS Customization -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/theme/custom.css">
+
+    {% if competition.skin %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}skins/{{ competition.skin }}/skin.css">
+    {% endif %}
+
+
+    <script type="text/javascript" src="{{ STATIC_URL }}plugins/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}plugins/jquery-migrate-1.2.1.min.js"></script>
+
+    <script type="text/javascript">
+        {% for key, value in js_vars.items %}
+            var {{ key }} = "{{ value }}";
+        {% endfor %}
+    </script>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+    <!--=== Header ===-->
+   {% block header %}
+    <div class="header">
+{#        {% include 'base/base_topbar.html' %}#}
+        {% include 'base/base_mainmenu.html' %}
+    </div>
+{% endblock %}
+    <!--=== End Header ===-->
+    {% block breadcrumbs %}{% endblock %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <div class="alert alert-success {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</ul>
+{% endif %}
+    {% block content %}
+    {% endblock %}
+
+    <!--=== Footer ===-->
+    {% block footer %}
+{#    {% include 'base/base_footer.html' %}#}
+    {% endblock %}
+    <!--=== End Footer ===-->
+    {% block copyright %}
+    <!--=== Copyright ===-->
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>
+                        2014 &copy; Igo Japiņa sporta aģentūra. ALL Rights Reserved.
+{#                        <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>#}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <a href="index.html">
+                        <img class="pull-right" id="logo-footer" src="{{ STATIC_URL }}img/ijsa-footer-small.png" width="50" height="30" alt="">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div><!--/copyright-->
+{% endblock %}
+    <!--=== End Copyright ===-->
+</div><!--/wrapper-->
+
+<!-- JS Global Compulsory -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+<!-- JS Implementing Plugins -->
+<script type="text/javascript" src="{{ STATIC_URL }}plugins/back-to-top.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}plugins/flexslider/jquery.flexslider-min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}plugins/parallax-slider/js/modernizr.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}plugins/parallax-slider/js/jquery.cslider.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}plugins/tabdrop/js/bootstrap-tabdrop.js"></script>
+<!-- JS Page Level -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/app.js"></script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        App.init();
+    });
+</script>
+
+
+{% block js %}
+{% endblock %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/main.js"></script>
+
+<!--[if lt IE 9]>
+    <script src="{{ STATIC_URL }}plugins/respond.js"></script>
+<![endif]-->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-51354246-1', 'velo.lv');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

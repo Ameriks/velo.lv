@@ -1,0 +1,29 @@
+{% extends 'public/base.html' %}
+{% load thumbnail %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="{{ STATIC_URL }}plugins/jquery.lazyload.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+          $("img.lazy").lazyload();
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+    {% spaceless %}
+    <div class="row" id="links">
+        {% for object in object_list %}
+            <div class="col-xs-6 col-sm-4 col-lg-3">
+                <a href="{% url 'gallery:album' object.id %}" title="{{ object.title }}" class="gallery_album">
+                    <img data-original="{{ object.primary_image.image|thumbnail_url:'thumb' }}" class="margin-bottom-10 lazy" />
+                    <span class="gallery_album_title">{{ object.title }}</span>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    {{ block.super }}
+    {% endspaceless %}
+{% endblock %}

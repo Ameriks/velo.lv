@@ -1,0 +1,61 @@
+{% extends 'public/base.html' %}
+{% load thumbnail cache i18n %}
+
+
+{% block main %}
+    <h3>{{ object }}</h3>
+    <form method="post">
+    {% csrf_token %}
+    {% for competition, members in competitions %}
+        <h4>{{ competition.get_full_name }}</h4>
+        {% if members %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans 'First Name' %}</th>
+                        <th>{% trans 'Last Name' %}</th>
+                        <th>{% trans 'Year' %}</th>
+                        <th>{% trans 'Type' %}</th>
+                        <th>{% trans 'Status' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                        <tr>
+                            <td>{{ member.member.first_name }}</td>
+                            <td>{{ member.member.last_name }}</td>
+                            <td>{{ member.member.birthday.year }}</td>
+                            <td>{{ member.get_kind_display }}</td>
+                            <td>
+                                {% if member.participant %}
+                                    {% if member.participant.is_participating %}
+                                        OK
+                                    {% else %}
+                                        NOT OK
+                                    {% endif %}
+                                {% else %}
+                                    <input type="checkbox" name="pay_member" value="{{ competition.id }}__{{ member.member.id }}" />
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if not competition.is_past_due %}
+                <div class="row">
+                    <div class="col-sm-3"><a href="{% url 'accounts:team_apply_list' object.id competition.id %}" class="btn btn-sm btn-primary">{% trans 'Update Registration' %}</a></div>
+                    <div class="col-sm-3 pull-right"><button type="submit" class="btn btn-primary">{% trans 'Pay' %}</button></div>
+                </div>
+            {% endif %}
+        {% else %}
+            <p>{% trans 'Team not applied for this competition' %}</p>
+            {% if not competition.is_past_due %}
+                <p><a href="{% url 'accounts:team_apply_list' object.id competition.id %}" class="btn btn-sm btn-primary">{% trans 'Register' %}</a></p>
+            {% else %}
+                <p>{% trans 'Registration have finished.' %}</p>
+            {% endif %}
+        {% endif %}
+
+    {% endfor %}
+    </form>
+{% endblock %}

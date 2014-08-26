@@ -1,0 +1,61 @@
+{% extends 'public/base.html' %}
+{% load thumbnail cache i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block main %}
+    {% cache 600 calendar LANGUAGE_CODE %}
+    {% spaceless %}
+        <div class="row">
+           <div class="col-xs-12">
+               <h3>{% trans 'This Year' %}</h3>
+               <table class="table table-bordered table-hover">
+                   <thead>
+                    <tr>
+                        <th>{% trans 'Date' %}</th>
+                        <th>{% trans 'Competition' %}</th>
+                        <th>{% trans 'Place' %}</th>
+                    </tr>
+                   </thead>
+                   <tbody>
+                    {% for object in this_year %}
+                        <tr {% if object.is_past_due %}class="active"{% endif %}>
+                            <td>{{ object.competition_date }}{% if object.competition_date_till %} -<br />{{ object.competition_date_till }}{% endif %}</td>
+                            <td>{{ object.get_full_name }}</td>
+                            <td>{{ object.place_name }}</td>
+                        </tr>
+                   {% endfor %}
+                   </tbody>
+               </table>
+           </div>
+        </div>
+
+        {% if next_year %}
+            <div class="row">
+               <div class="col-xs-12">
+                   <h3>{% trans 'Next Year' %}</h3>
+                   <table class="table table-bordered table-hover">
+                       <thead>
+                        <tr>
+                            <th>{% trans 'Date' %}</th>
+                            <th>{% trans 'Competition' %}</th>
+                            <th>{% trans 'Place' %}</th>
+                        </tr>
+                       </thead>
+                       <tbody>
+                        {% for object in next_year %}
+                            <tr {% if object.competition_date < now %}class="active"{% endif %}>
+                                <td>{{ object.competition_date }}{% if object.competition_date_till %} - {{ object.competition_date_till }}{% endif %}</td>
+                                <td>{{ object.get_full_name }}</td>
+                                <td>{{ object.place_name }}</td>
+                            </tr>
+                       {% endfor %}
+                       </tbody>
+                   </table>
+               </div>
+            </div>
+        {% endif %}
+        {{ block.super }}
+    {% endspaceless %}
+    {% endcache %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}
+{% load sitetree %}
+{% block breadcrumbs %}{% endblock %}
+{% block header %}{% endblock %}
+{% block copyright %}{% endblock %}
+{% block content %}
+    <div class="container">
+        {% include 'manager/application_inner.html' %}
+    </div>
+{% endblock %}

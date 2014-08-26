@@ -1,0 +1,136 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-13 17:16+0000\n"
+"PO-Revision-Date: 2014-08-13 20:08+0136\n"
+"Last-Translator: Agris Ameriks <agris@pd.lv>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"X-Translated-Using: django-rosetta 0.7.4\n"
+
+#: forms.py:46
+msgid "There is not created invoice link for this competition."
+msgstr ""
+
+#: forms.py:48
+msgid "Error in connection with bank. Try again later."
+msgstr ""
+
+#: forms.py:68
+msgid "Company Name required."
+msgstr ""
+
+#: forms.py:70
+msgid "Company registration number required."
+msgstr ""
+
+#: forms.py:72
+msgid "Company Address required."
+msgstr ""
+
+#: forms.py:74
+msgid "Company Juridical Address required."
+msgstr ""
+
+#: forms.py:704 forms.py:709 forms.py:711
+msgid "Invalid Social Security Number."
+msgstr "Kļūdains personas kods."
+
+#: tables/analytics.py:23 tables/analytics.py:54
+msgid "There are no records"
+msgstr "Nav neviena ieraksta"
+
+#: tables/tables.py:36 tables/tables.py:53
+msgid "You haven't added any team"
+msgstr "Jūs neesat pievienojis nevienu komandu"
+
+#: tables/tables.py:69
+msgid "You haven't added any distance"
+msgstr "Jūs neesat pievienojis nevienu distanci"
+
+#: tables/tables.py:96
+msgid "No numbers"
+msgstr "Nav numura"
+
+#: tables/tables.py:126 tables/tables.py:153
+msgid "You haven't added any participant"
+msgstr "Jūs neesat pievienojis nevienu dalībnieku"
+
+#: tables/tables.py:185
+msgid "You haven't added any number"
+msgstr "Jūs neesat pievienojis nevienu numuru"
+
+#: tables/tables.py:204
+msgid "You haven't added any competition"
+msgstr "Jūs neesat pievienojis nevienu sacensību"
+
+#: tables/tables.py:217
+msgid "You haven't added any applied member"
+msgstr "Jūs neesat pievienojis nevienu pieteikto komandas biedru"
+
+#: tables/tables.py:224
+msgid "ID"
+msgstr "ID"
+
+#: tables/tables.py:225
+msgid "Distance"
+msgstr "Distance"
+
+#: tables/tables.py:226 templates/manager/team_apply_list.html:15
+msgid "First Name"
+msgstr "Vārds"
+
+#: tables/tables.py:227 templates/manager/team_apply_list.html:16
+msgid "Last Name"
+msgstr "Uzvārds"
+
+#: tables/tables.py:228
+msgid "Group"
+msgstr "Grupa"
+
+#: tables/tables.py:229
+msgid "Time"
+msgstr "Laiks"
+
+#: tables/tables.py:240
+msgid "There are no results"
+msgstr "Nav neviena ieraksta"
+
+#: tables/tables.py:261
+msgid "There are no applications"
+msgstr "Nav neviena pieteikuma"
+
+#: templates/manager/team_apply_list.html:17
+msgid "Year"
+msgstr ""
+
+#: templates/manager/team_apply_list.html:18
+msgid "Type"
+msgstr ""
+
+#: templates/manager/team_apply_list.html:19
+msgid "Status"
+msgstr ""
+
+#: templates/manager/team_apply_list.html:43
+msgid "Update Registration"
+msgstr ""
+
+#: templates/manager/team_apply_list.html:46
+msgid "Team not applied for this competition"
+msgstr ""
+
+#: templates/manager/team_apply_list.html:47
+msgid "Register"
+msgstr ""

@@ -1,0 +1,17 @@
+{% load sitetree %}
+
+
+    <ul class="list-group sidebar-nav-v1" id="sidebar-nav">
+        {% for item in sitetree_items %}
+            <li class="list-group-item {% if item.has_children %}list-toggle{% endif %} {% if item.is_current or item.in_current_branch %}active{% endif %}">
+                <a data-parent="#sidebar-nav" href="{% if item.has_children %}#item-{{ item.id }}{% else %}{% sitetree_url for item %}{% endif %}" {% if item.has_children %} data-toggle="collapse" class="accordion-toggle"{% endif %}>
+                    {{ item.title_resolved }}
+                </a>
+                {% if item.has_children %}
+                    {% sitetree_children of item for menu template "bootstrap/sidemenu_bootstrap3_sub.html" %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+
