@@ -1,3 +1,14 @@
+# This is required for docker dev environment to setup variables in SSH connection.
+
+import re, os
+from velo.utils import listdir
+
+for envfile in listdir("/etc/container_environment"):
+    name = os.path.basename(envfile)
+    with open("/etc/container_environment/" + envfile, "r") as f:
+        value = re.sub('\n\Z', '', f.read())
+    os.environ[name] = value
+
 from .base import *
 
 DEBUG = True
@@ -62,7 +73,7 @@ DATABASES = {
         'NAME': 'velolv',
         'USER': 'velolv',
         'PASSWORD': os.environ['PGSQL_PASS'],
-        'HOST': '192.168.156.101',
+        'HOST': '192.168.56.100',
     },
     # 'legacy': {
     #     'NAME': 'velo',

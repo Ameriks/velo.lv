@@ -1,7 +1,19 @@
 import importlib
+import os
 import requests
 import datetime
+import stat
 
+
+def listdir(path):
+	try:
+		result = os.stat(path)
+	except OSError:
+		return []
+	if stat.S_ISDIR(result.st_mode):
+		return sorted(os.listdir(path))
+	else:
+		return []
 
 def load_class(full_class_string):
     """
