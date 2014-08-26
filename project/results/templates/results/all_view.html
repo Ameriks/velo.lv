@@ -1,0 +1,32 @@
+{% extends 'public/base.html' %}
+{% load i18n cache counter %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block main %}
+    {% for year, year_competitions in competitions %}
+        <h3>{{ year }}</h3>
+        {% for competition in year_competitions %}
+            {% if competition.have_results %}
+                {% if competition.get_descendant_count %}
+                    <h4>{{ competition }}</h4>
+                    <ul class="nav nav-pills">
+                        <li><a href="{% url 'competition:standings_list' competition.id %}">{% trans 'Standing' %}</a></li>
+                    {% for child in competition.get_children %}
+                        <li><a href="{% url 'competition:result_distance_list' child.id %}">{{ child }}</a></li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <h4>{{ competition }}</h4>
+                    <ul class="nav nav-pills">
+                        <li><a href="{% url 'competition:result_distance_list' competition.id %}">{% trans 'Results' %}</a></li>
+                    </ul>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+
+    <p style="margin-top:40px;"><button class="btn btn-default" onclick="$('#legacy_results').attr('src', '/static/results/legacy/index.html').show();">{% trans 'Show result archive' %}</button></p>
+    <iframe id="legacy_results" src="" style="width:100%;height:500px;display:none;"></iframe>
+
+{% endblock %}

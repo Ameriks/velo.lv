@@ -1,0 +1,184 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-13 17:16+0000\n"
+"PO-Revision-Date: 2014-08-13 20:17+0136\n"
+"Last-Translator: Agris Ameriks <agris@pd.lv>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"X-Translated-Using: django-rosetta 0.7.4\n"
+
+#: forms.py:21
+msgid ""
+"I confirm that my health condition allows me to take part in competition in "
+"my chosen distance. I promise to keep regulations, traffic rules and use "
+"safety helmet."
+msgstr ""
+"Apliecinu, ka mans veselības stāvoklis atļauj startēt izvēlētajā distancē. "
+"Apņemos ievērot ceļu satiksmes noteikumus un sacensību nolikumu, kā arī "
+"obligāti lietot aizsprādzētu aizsargķiveri visos sacensību posmos."
+
+#: forms.py:22
+msgid "I will inform all registered participants about rules."
+msgstr "Apliecinu, ka informēšu pieteiktos dalībniekus par noteikumiem."
+
+#: forms.py:25
+msgid "Payment Type"
+msgstr "Maksāšanas veids"
+
+#: forms.py:45
+#, python-format
+msgid "Invoice successfully created and sent to %(email)s"
+msgstr "Rēķins veiksmīgi izveidots un nosūtīts uz %(email)s"
+
+#: forms.py:50
+msgid "Error in connection with bank. Try again later."
+msgstr "Kļūda savienojumā ar banku. Mēģiniet vēlreiz nedaudz vēlāk."
+
+#: forms.py:73
+msgid "Company Name required."
+msgstr "Uzņēmuma nosaukums ir obligāts."
+
+#: forms.py:75
+msgid "Company registration number required."
+msgstr "Uzņēmuma reģistrācijas numurs ir obligāts"
+
+#: forms.py:77
+msgid "Company Address required."
+msgstr "Uzņēmuma adrese ir obligāta"
+
+#: forms.py:79
+msgid "Company Juridical Address required."
+msgstr "Uzņēmuma juridiskā adrese ir obligāta"
+
+#: forms.py:105
+msgid "Receive Bill"
+msgstr "Saņemt rēķinu"
+
+#: forms.py:121
+msgid "Final Price"
+msgstr "Pavisam kopā"
+
+#: forms.py:127
+msgid "Invoice Fields"
+msgstr "Rēķina informācija"
+
+#: models.py:75
+msgid "ID not found"
+msgstr "ID numurs nav atrodams"
+
+#: models.py:76
+msgid "Error"
+msgstr "Kļūda"
+
+#: models.py:77
+msgid "Failed"
+msgstr "Maksājums neizdevās"
+
+#: models.py:78
+msgid "Declined"
+msgstr "Maksājums noraidīts"
+
+#: models.py:79
+msgid "Timeout"
+msgstr "Maksājuma noilgums"
+
+#: models.py:80
+msgid "Cancelled"
+msgstr "Maksājums atcelts"
+
+#: models.py:81
+msgid "Reversed"
+msgstr "Maksājums atgriezts"
+
+#: models.py:82
+msgid "New"
+msgstr "Jauns maksājms"
+
+#: models.py:83
+msgid "Pending"
+msgstr "Gaida maksājumu"
+
+#: models.py:84
+msgid "OK"
+msgstr "Veiksmīgs maksājums"
+
+#: urls.py:9
+msgid "^checkprice/(?P<pk>\\d+)/$"
+msgstr "^cenasparbaude/(?P<pk>\\d+)/$"
+
+#: urls.py:10
+msgid "^back/(?P<slug>.+)/$"
+msgstr "^atpakal/(?P<slug>.+)/$"
+
+#: utils.py:83
+#, python-format
+msgid "<div class='entry'>Entry fee: <span>%(entry_fee)s€</span></div>"
+msgstr "<div class='entry'>Dalības maksa: <span>%(entry_fee)s€</span></div>"
+
+#: utils.py:85
+#, python-format
+msgid ""
+"<div class='insurance'>Insurance fee: <span>%(insurance_fee)s€</span></div>"
+msgstr ""
+"<div class='insurance'>Apdrošināšana: <span>%(insurance_fee)s€</span></div>"
+
+#: utils.py:86
+#, python-format
+msgid "<div class='total'>Total: <span>%(total)s€</span></div>"
+msgstr "<div class='total'>Kopā: <span>%(total)s€</span></div>"
+
+#: utils.py:88
+#, python-format
+msgid "This distance isn't available for birth year %(year)s."
+msgstr "Šī distance nav pieejama jūsu dzimšanas gadam - %(year)s."
+
+#: utils.py:290
+msgid "Transaction unsuccessful. Try again."
+msgstr "Maksājums neizdevās. Mēģiniet vēlreiz."
+
+#: utils.py:301
+msgid ""
+"Transaction status unknown. If you paid, then wait a while until status is "
+"updated - you will receive email."
+msgstr ""
+"Maksājuma statuss nav zināms. Ja Jūs esat samaksājuši, tad pagaidiet kādu "
+"brīdi līdz statuss atjaunojās - Jūs saņemsiet e-pastu, ja maksājums būs "
+"bijis veiksmīgs."
+
+#: views.py:30
+msgid "Please enter all details"
+msgstr "Lūdzu aizpildiet visu informāciju"
+
+#: views.py:79
+msgid "Please add at least one participant"
+msgstr "Lūdzu ievadiet vismaz vienu dalībnieku"
+
+#: views.py:84
+msgid "Please specify first name and last name for all participants"
+msgstr "Lūdzu norādiet visiem dalībniekiem vārdu un uzvārdu"
+
+#: views.py:87
+msgid "Please specify birthday for all participants"
+msgstr "Lūdzu norādiet visiem dalībniekiem dzimšanas datus / personas kodu"
+
+#: views.py:90
+msgid "Not all participants have price added. Did you press save & pay?"
+msgstr ""
+"Visiem dalībniekiem nav norādīta cena. Vai nospiedāt \"Saglabāt un "
+"Apmaksāt\"?"
+
+#: views.py:98
+msgid "Price expired. Start registering participants from step 1."
+msgstr "Cena vairs nav aktuāla. Sāciet reģistrēt dalībniekus no soļa nr.1."

@@ -1,0 +1,309 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-13 17:16+0000\n"
+"PO-Revision-Date: 2014-08-13 20:09+0136\n"
+"Last-Translator: Agris Ameriks <agris@pd.lv>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"X-Translated-Using: django-rosetta 0.7.4\n"
+
+#: forms.py:51
+msgid "E-mail confirmation"
+msgstr "E-pasta apstiprinājums"
+
+#: forms.py:51
+msgid "Enter the same e-mail as above, for verification."
+msgstr "Ievadiet vēlreiz e-pasta adresi, lai to apstiprinātu."
+
+#: forms.py:68
+msgid "The two email fields didn't match."
+msgstr "Abi e-pasta lauki nesakrīt"
+
+#: forms.py:101 templates/registration/application_pay.html:32
+msgid "Participants"
+msgstr "Dalībnieki"
+
+#: forms.py:108
+msgid "Save"
+msgstr "Saglabāt"
+
+#: forms.py:109
+msgid "Save & Pay"
+msgstr "Saglabāt un maksāt"
+
+#: forms.py:115 templates/registration/application_pay.html:41
+msgid "Insurance"
+msgstr "Apdrošināšana"
+
+#: forms.py:157 forms.py:162 forms.py:164
+msgid "Invalid Social Security Number."
+msgstr "Kļūdains personas kods."
+
+#: forms.py:168
+msgid "Birthday is required."
+msgstr "Dzimšanas diena ir obligāta."
+
+#: forms.py:173
+msgid "This distance not available for this participant."
+msgstr "Distance dalībniekam nav pieejama."
+
+#: forms.py:223 templates/registration/application_pay.html:39
+msgid "Team Name"
+msgstr "Komandas nosaukums"
+
+#: models.py:24
+msgid "Cancelled"
+msgstr "Atcelts"
+
+#: models.py:25
+msgid "Haven't Payed"
+msgstr "Nav apmaksāts"
+
+#: models.py:26
+msgid "Approved for Payment"
+msgstr "Apstiprināts māksājumam"
+
+#: models.py:27
+msgid "Waiting for Payment"
+msgstr "Gaida maksājumu"
+
+#: models.py:28
+msgid "Payed"
+msgstr "Apmaksāts"
+
+#: models.py:30
+msgid "Competition"
+msgstr "Sacensības"
+
+#: models.py:31
+msgid "Payment Status"
+msgstr "Maksājuma statuss"
+
+#: models.py:34
+msgid "You will receive payment confirmation and information about start numbers."
+msgstr "Uz šo e-pasta adresi tiks sūtīts apmaksas apstiprinājums, kā arī paziņojums par piešķirtajiem starta numuriem."
+
+#: models.py:40
+msgid "Company name / Full Name"
+msgstr "Uzņēmuma nosaukums / Vārds Uzvārds"
+
+#: models.py:41
+msgid "VAT Number"
+msgstr "PVN numurs"
+
+#: models.py:42
+msgid "Company number / SSN"
+msgstr "Uzņēmuma Reģ.nr / Personas kods"
+
+#: models.py:43
+msgid "Address"
+msgstr "Adrese"
+
+#: models.py:44
+msgid "Juridical Address"
+msgstr "Juridiskā adrese"
+
+#: models.py:46
+msgid "Invoice code"
+msgstr "Rēķina kods"
+
+#: models.py:47
+msgid "Invoice Number"
+msgstr "Rēķina numurs"
+
+#: models.py:68
+msgid "Male"
+msgstr "Vīrietis"
+
+#: models.py:69
+msgid "Female"
+msgstr "Sieviete"
+
+#: models.py:81 tables.py:37 tables.py:75
+msgid "Team"
+msgstr "Komanda"
+
+#: models.py:84
+msgid "Is Participating"
+msgstr "Piedalās"
+
+#: models.py:85
+msgid "Is Competing"
+msgstr "Piedalās cīņā"
+
+#: models.py:87
+msgid "First Name"
+msgstr "Vārds"
+
+#: models.py:88
+msgid "Last Name"
+msgstr "Uzvārds"
+
+#: models.py:89 templates/registration/application_pay.html:38
+msgid "Birthday"
+msgstr "Dzimšanas diena"
+
+#: models.py:89
+msgid "YYYY-MM-DD"
+msgstr "YYYY-MM-DD"
+
+#: models.py:93
+msgid "Gender"
+msgstr "Dzimums"
+
+#: models.py:95
+msgid "Social Security Number"
+msgstr "Personas kods"
+
+#: models.py:97
+msgid "Phone Number"
+msgstr "Telefona numurs"
+
+#: models.py:98
+msgid "Email"
+msgstr "E-pasts"
+
+#: models.py:100
+msgid "Send Email"
+msgstr "Sūtīt e-pastu"
+
+#: models.py:101
+msgid "Send SMS"
+msgstr "Sūtīt SMS"
+
+#: models.py:103
+msgid "Country"
+msgstr "Valsts"
+
+#: models.py:104
+msgid "City"
+msgstr "Pilsēta"
+
+#: models.py:106
+msgid "Bike Brand"
+msgstr "Velo"
+
+#: models.py:108
+msgid "Occupation"
+msgstr "Nodarbošanās"
+
+#: models.py:109
+msgid "Where Heard"
+msgstr "Kur dzirdējāt?"
+
+#: models.py:111 models.py:225
+msgid "Group"
+msgstr "Grupa"
+
+#: models.py:111
+msgid "Assigned automatically"
+msgstr "Piešķirts automātiski"
+
+#: models.py:113
+msgid "Registrant"
+msgstr "Reģistrējis"
+
+#: models.py:116 templates/registration/application_pay.html:37
+msgid "Full Name"
+msgstr "Pilns vārds"
+
+#: models.py:124
+msgid "Registration Date"
+msgstr "Reģistrācijas datums"
+
+#: models.py:130
+msgid "participant"
+msgstr "dalībnieks"
+
+#: models.py:131
+msgid "participants"
+msgstr "dalībnieki"
+
+#: tables.py:19
+msgid "Download Invoice"
+msgstr "Lejupielādēt rēķinu"
+
+#: tables.py:26
+msgid "You haven't created any application."
+msgstr "Jūs neesat izveidojis nevienu pieteikumu."
+
+#: tables.py:36 tables.py:74
+msgid "Year"
+msgstr "Gads"
+
+#: tables.py:64 tables.py:109
+msgid "There are no participants"
+msgstr "Nav dalībnieku"
+
+#: tables.py:76
+msgid "Last Year's Result"
+msgstr "Iepriekšējā gada rezultāts"
+
+#: views.py:135
+msgid "Saved"
+msgstr "Saglabāts"
+
+#: views.py:137
+msgid "Draft saved"
+msgstr "Melnraksts saglabāts"
+
+#: views.py:145
+msgid "Currently logged in user doesn't have access to this application. Please, login with user that you used to create application."
+msgstr "Jums nav pieejas šim pieteikumam. Lūdzu pieslēdzaties ar lietotāju, ar kuru pieteikums tika izveidots."
+
+#: templates/registration/application_header.html:6
+msgid "1. Add Participants"
+msgstr "1.solis - Dalībnieku pievienošana"
+
+#: templates/registration/application_header.html:8
+msgid "2. Payment"
+msgstr "2.solis - Apmaksa"
+
+#: templates/registration/application_header.html:9
+msgid "3. Confirmation"
+msgstr "3.solis - Apstiprinājums"
+
+#: templates/registration/application_my.html:5
+msgid "Apply to Competitions"
+msgstr "Pieteikties sacensībām"
+
+#: templates/registration/application_pay.html:40
+msgid "Price"
+msgstr "Cena"
+
+#: templates/registration/application_pay.html:42
+#: templates/registration/application_pay.html:61
+msgid "Total"
+msgstr "Kopā"
+
+#: templates/registration/application_pay.html:60
+msgid "Add or Update Participants"
+msgstr "Pievienot / atjaunot dalībniekus"
+
+#: templates/registration/application_pay.html:75
+msgid "Pay"
+msgstr "Maksāt"
+
+#: templates/registration/participant_list.html:22
+msgid "Filter"
+msgstr "Filtrs"
+
+#: templates/registration/participant_list.html:26
+#: templates/registration/participant_list.html:30
+msgid "Search"
+msgstr "Meklēt"
+
+#~ msgid "SSN"
+#~ msgstr "Pers.kods"

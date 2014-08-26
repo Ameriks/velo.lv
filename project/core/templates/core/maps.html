@@ -1,0 +1,39 @@
+{% extends 'public/base.html' %}
+{% load thumbnail cache i18n %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block main %}
+    {% cache 60 core_maps LANGUAGE_CODE competition %}
+    {% spaceless %}
+    <div class="row">
+        {% for object in object_list %}
+
+
+                {% thumbnail object.image 480x360 as img %}
+
+                <div class="col-sm-6">
+                    <div class="thumbnails thumbnail-style">
+                        <h4>{{ object.title }}</h4>
+                        <div class="thumbnail-img">
+                            <div class="overflow-hidden">
+                                <a class="hover-effect" target="_blank" href="{{ object.image.url }}" data-gallery="">
+                                    <img class="img-responsive" src="{{ img.url }}" alt="{{ object.title }}" />
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+        {% empty %}
+            <div class="col-xs-12">
+                <p>{% trans 'Maps are not yet available.' %}</p>
+            </div>
+        {% endfor %}
+    </div>
+    {{ block.super }}
+
+
+
+    {% endspaceless %}
+    {% endcache %}
+{% endblock %}

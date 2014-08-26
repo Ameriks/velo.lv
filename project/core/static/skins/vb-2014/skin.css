@@ -1,0 +1,8 @@
+body > div.wrapper {
+    background-image: url('bg2.jpg');
+    background-size: cover;
+}
+
+body > div.wrapper > div.container.content {
+    background: #FFF;
+}

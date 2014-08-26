@@ -1,0 +1,82 @@
+{% extends 'public/base.html' %}
+{% load crispy_forms_tags i18n %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/{{ form.get_app_label }}_form.js"></script>
+    {{ form.media.js }}
+    {% for inline in inlines %}
+        {{ inline.media.js }}
+    {% endfor %}
+{% endblock js %}
+
+{% block css %}
+    {{ block.super }}
+    {{ form.media.css }}
+    {% for inline in inlines %}
+        {{ inline.media.css }}
+    {% endfor %}
+{% endblock css %}
+
+{% block main %}
+
+    {% include 'registration/application_header.html' with active=2 %}
+
+    {% if object.payment_status == object.PAY_STATUS_PAYED %}
+        <p class="lead">Paldies, maksājums ir saņemts.</p>
+    {% else %}
+
+<form method="post">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>{% trans 'Participants' %}</h3>
+            <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Full Name' %}</th>
+                    <th>{% trans 'Birthday' %}</th>
+                    <th>{% trans 'Team Name' %}</th>
+                    <th>{% trans 'Price' %}</th>
+                    <th>{% trans 'Insurance' %}</th>
+                    <th>{% trans 'Total' %}</th>
+                </tr>
+            </thead>
+            {% for participant in participants %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ participant.full_name }}</td>
+                    <td>{{ participant.birthday|date:"Y-m-d" }}</td>
+                    <td>{{ participant.team_name }}</td>
+                    <td>{{ participant.price.price|floatformat:2 }} €</td>
+                    <td>{% if participant.insurance %}{{ participant.insurance.price|floatformat:2 }} €{% else %}-{% endif %}</td>
+                    <td>{% if participant.insurance %}{{ participant.price.price|add:participant.insurance.price|floatformat:2 }}{% else %}{{ participant.price.price|floatformat:2 }}{% endif %} €</td>
+                </tr>
+            {% endfor %}
+
+            {% if object.payment_status == object.PAY_STATUS_NOT_PAYED %}
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><a href="{% url 'application' object.code %}" class="btn btn-default btn-block">{% trans 'Add or Update Participants' %}</a></td>
+                        <td class="text-right"><b>{% trans 'Total' %}</b></td>
+                        <td><b>{{ total_entry_fee|floatformat:2 }} €</b></td>
+                        <td><b>{{ total_insurance_fee|floatformat:2 }} €</b></td>
+                        <td><b>{{ total_entry_fee|add:total_insurance_fee|floatformat:2 }} €</b></td>
+                    </tr>
+                </tfoot>
+            {% endif %}
+            </table>
+        </div>
+    </div>
+
+    {% crispy form %}
+
+
+    <input type="submit" name="pay" value="{% trans 'Pay' %}" class="btn btn-primary" />
+
+
+</form>
+
+    {% endif %}
+
+{% endblock %}

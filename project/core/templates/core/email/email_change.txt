@@ -1,0 +1,6 @@
+E-pasta adrese lietotājam veiksmīgi nomainīta.
+
+www.velo.lv konta jaunā e-pasta adrese ir {{ object.email }}.
+
+Jūsu,
+velo.lv

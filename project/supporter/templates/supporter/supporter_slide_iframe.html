@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load thumbnail counter cache %}
+	<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+	<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"><![endif]-->
+	<!--[if IE 8]><html class="no-js lt-ie9"><![endif]-->
+	<!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]-->
+    <head>
+        <title>{{ competition }}</title>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}plugins/Elastislide/css/elastislide.css" />
+        <style type="text/css">
+
+            .helper {
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+            }
+            li {
+{#                padding-right:15px;#}
+            }
+            img {
+                vertical-align: middle;
+                max-height: 80px;
+                display: inline !important;
+            }
+            a {
+                text-decoration: none;
+                text-align: center;
+            }
+
+        </style>
+		<script src="{{ STATIC_URL }}plugins/Elastislide/js/modernizr.custom.17475.js"></script>
+    </head>
+    <body>
+		<div class="container demo-1">
+
+            <div class="main">
+				<ul id="carousel" class="elastislide-list">
+                    {% for object in object_list %}
+                        {% thumbnail object.logo.image 480x360 as logo %}
+
+                        <li>
+                        {% if object.supporter.url %}<a class="hover-effect" target="_blank" href="{{ object.supporter.url }}">{% endif %}
+                        <span class="helper"></span>
+                        <img src="{{ logo.url }}" alt="{{ object.supporter }}" />
+                        {% if object.supporter.url %}</a>{% endif %}
+                        </li>
+
+                    {% endfor %}
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript" src="{{ STATIC_URL }}plugins/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}plugins/Elastislide/js/jquerypp.custom.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}plugins/Elastislide/js/jquery.elastislide.js"></script>
+		<script type="text/javascript">
+
+			$( '#carousel' ).elastislide({'autoSlide': true, 'speed': 500, 'minItems': 5});
+
+		</script>
+    </body>
+</html>

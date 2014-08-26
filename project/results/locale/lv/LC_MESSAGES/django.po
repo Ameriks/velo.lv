@@ -1,0 +1,148 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-13 17:16+0000\n"
+"PO-Revision-Date: 2014-06-30 17:34+0136\n"
+"Last-Translator: Agris Ameriks <agris@pd.lv>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"X-Translated-Using: django-rosetta 0.7.4\n"
+
+#: models.py:142 models.py:155 models.py:157 models.py:158 tables.py:149
+#: tables.py:193 tables.py:235 tables.py:340
+#: templates/results/team_by_teamname_header.html:20
+msgid "Time"
+msgstr "Laiks"
+
+#: models.py:164
+msgid "Average Speed"
+msgstr "Vidējais ātrums"
+
+#: models.py:166
+msgid "Result Group"
+msgstr "Rezultāts grupā"
+
+#: models.py:167
+msgid "Result Distance"
+msgstr "Rezultāts distancē"
+
+#: models.py:169 tables.py:47 tables.py:129 tables.py:151
+msgid "Points Group"
+msgstr "Punkti grupā"
+
+#: models.py:170 tables.py:194
+msgid "Points Distance"
+msgstr "Punkti distancē"
+
+#: models.py:172
+msgid "Status"
+msgstr "Statuss"
+
+#: models.py:322
+msgid "Points Total"
+msgstr "Punkti KOPĀ"
+
+#: tables.py:19
+msgid "Team Name"
+msgstr "Komandas nosaukums"
+
+#: tables.py:33 tables.py:59 tables.py:88 tables.py:115 tables.py:136
+#: tables.py:179 tables.py:221 tables.py:277 tables.py:295 tables.py:325
+#: tables.py:369
+msgid "There are no results"
+msgstr "Nav rezultātu"
+
+#: tables.py:42 tables.py:68 tables.py:96 tables.py:124 tables.py:144
+#: tables.py:188 tables.py:230 tables.py:335
+#: templates/results/team_by_teamname_header.html:17
+#: templates/results/team_header.html:15
+msgid "First Name"
+msgstr "Vārds"
+
+#: tables.py:43 tables.py:69 tables.py:97 tables.py:125 tables.py:145
+#: tables.py:189 tables.py:231 tables.py:336
+#: templates/results/team_by_teamname_header.html:18
+#: templates/results/team_header.html:16
+msgid "Last Name"
+msgstr "Uzvārds"
+
+#: tables.py:44 tables.py:70 tables.py:98 tables.py:126 tables.py:146
+#: tables.py:190 tables.py:232 tables.py:337
+#: templates/results/team_by_teamname_header.html:19
+#: templates/results/team_header.html:17
+msgid "Year"
+msgstr "Gads"
+
+#: tables.py:45 tables.py:72 tables.py:100 tables.py:127 tables.py:147
+#: tables.py:191 tables.py:233 tables.py:338
+msgid "Team"
+msgstr "Komanda"
+
+#: tables.py:46 tables.py:73 tables.py:128 tables.py:150 tables.py:341
+msgid "Group"
+msgstr "Grupa"
+
+#: tables.py:48 tables.py:71 tables.py:99
+msgid "Number"
+msgstr "Numurs"
+
+#: tables.py:148 tables.py:192 tables.py:234 tables.py:339
+msgid "Bike Brand"
+msgstr "Velo"
+
+#: tables.py:285 tables.py:303
+msgid "L1"
+msgstr "L1"
+
+#: tables.py:304
+msgid "L2"
+msgstr "L2"
+
+#: tables.py:305
+msgid "L3"
+msgstr "L3"
+
+#: tables.py:306
+msgid "L4"
+msgstr "L4"
+
+#: templates/results/all_view.html:13
+msgid "Standing"
+msgstr "Kopvērtējums"
+
+#: templates/results/all_view.html:21
+msgid "Results"
+msgstr "Rezultāti"
+
+#: templates/results/all_view.html:29
+msgid "Show result archive"
+msgstr "Aplūkot vēsturiskos rezultātus"
+
+#: templates/results/participant.html:22
+#: templates/results/participant_standing.html:22
+msgid "Filter"
+msgstr "Filtrs"
+
+#: templates/results/participant.html:26 templates/results/participant.html:30
+#: templates/results/participant_standing.html:26
+#: templates/results/participant_standing.html:30
+msgid "Search"
+msgstr "Meklēt"
+
+#: templates/results/team_header.html:18
+msgid "Points"
+msgstr "Punkti"
+
+#~ msgid "Loses Distance"
+#~ msgstr "Δ distance"

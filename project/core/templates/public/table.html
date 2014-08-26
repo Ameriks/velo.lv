@@ -1,0 +1,12 @@
+{% extends 'public/base.html' %}
+{% load django_tables2 %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block main %}
+    <div class="table-responsive">
+    {% render_table table %}
+    </div>
+{% endblock %}

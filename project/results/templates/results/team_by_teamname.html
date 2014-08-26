@@ -1,0 +1,53 @@
+{% extends 'public/base.html' %}
+{% load i18n thumbnail counter cache %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block main %}
+    {% cache 60 results_team_by_teamname LANGUAGE_CODE competition distance_active %}
+    {% spaceless %}
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="nav nav-tabs pull-right">
+                {% for distance in distances %}
+                    <li class="{% if distance.id == distance_active.id %}active{% endif %}"><a href="{% url 'competition:result_team_by_name' competition.id %}?distance={{ distance.id }}">{{ distance }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="row margin-bottom-40">
+    {% for object in object_list %}
+        {% ifchanged object.0 %}
+            {% counter start=2 silent=True assign="team_counter" %}
+
+            {% if forloop.counter0 %}
+                </tbody></table></div></div></div></div>
+            {% endif %}
+
+            {% if team_counter|divisibleby:2 %}
+                </div>
+                <div class="row margin-bottom-40">
+            {% endif %}
+
+            {% include 'results/team_by_teamname_header.html' %}
+
+        {% endifchanged %}
+
+         <tr>
+            <td>{{ object.10 }}</td>
+            <td>{{ object.6 }}</td>
+            <td>{{ object.7 }}</td>
+            <td>{{ object.8.year }}</td>
+            <td>{{ object.5 }}</td>
+        </tr>
+
+    {% endfor %}
+    </tbody></table></div></div></div></div>
+    </div>
+    {{ block.super }}
+    {% endspaceless %}
+    {% endcache %}
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'manager/base.html' %}
+
+
+{% block title %}{% if object.level == 2 %}{{ object.parent.name }}&nbsp;-&nbsp;{% endif %}{{ object.name }}{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}plugins/counter/waypoints.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}plugins/counter/jquery.counterup.min.js"></script>
+    <script type="text/javascript">
+    jQuery(document).ready(function() {
+        App.init();
+        App.initCounter();
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<div class="main-counters margin-bottom-40">
+    <div class="headline"><h2>Skaitītāji</h2></div>
+
+    <div class="row margin-bottom-40">
+        <div class="counters col-sm-3">
+            <span class="counter">{{ participant_count }}</span>
+            <h4>Dalībnieki</h4>
+        </div>
+        <div class="counters col-sm-1">
+            <i data-icon="&#xe059;" style="font-size:2.5em;"></i>
+        </div>
+        {% for distance, counter in distances_w_counter %}
+        <div class="counters col-sm-2">
+            <span class="counter">{{ counter }}</span>
+            <h4>{{ distance }}</h4>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row margin-bottom-40">
+        <div class="counters col-sm-3">
+            <span class="counter">{{ team_count }}</span>
+            <h4>Komandas</h4>
+        </div>
+        <div class="counters col-sm-1">
+            <i data-icon="&#xe059;" style="font-size:2.5em;"></i>
+        </div>
+        {% for distance, counter in distances_teams_w_counter %}
+        <div class="counters col-sm-2">
+            <span class="counter">{{ counter }}</span>
+            <h4>{{ distance }}</h4>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="margin-bottom-50"><hr></div>
+
+
+    {% if perms.payment.can_see_totals %}
+        <div class="row margin-bottom-40">
+            {% for income in incomes %}
+            <div class="counters col-sm-3">
+                {% if income.parent_income %}
+                    <span class="">{{ income.parent_income|floatformat }} €</span> ({{ income.parent_count }})<br />
+                    +<br />
+                    <span class="">{{ income.income|floatformat }} €</span> ({{ income.count }})<br />
+                    =<br />
+                {% endif %}
+                <span class="">{{ income.total|floatformat }} €</span> ({{ income.total_count }})
+                <h4>{{ income.distance }}</h4>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="margin-bottom-50"><hr></div>
+    {% endif %}
+
+    <div>
+        <h4>Actions</h4>
+        <form method="post" action="">
+            {% csrf_token %}
+{#            <button class="btn btn-default" type="submit" name="action" value="legacy_sync">Legacy Sync</button>#}
+{#            <button class="btn btn-default" type="submit" name="action" value="auto_assign_numbers">Auto Assign Numbers</button>#}
+            <button class="btn btn-default" type="submit" name="action" value="assign_numbers_continuously">Assign Numbers Continuously</button>
+            <button class="btn btn-default" type="submit" name="action" value="start_list">Start List</button>
+            <button class="btn btn-default" type="submit" name="action" value="create_standing_list">Standing List</button>
+            <button class="btn btn-default" type="submit" name="action" value="team_member_list">Team Member List</button>
+            <button class="btn btn-default" type="submit" name="action" value="create_team_list">Applied Team Members</button>
+            <br />
+            <button class="btn btn-default" type="submit" name="action" value="match_applied_to_participants">Savienot komandas dalībniekus ar dalībniekiem</button>
+
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}

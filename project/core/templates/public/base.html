@@ -1,0 +1,55 @@
+{% extends 'base/base_public.html' %}
+{% load sitetree i18n %}
+    {% block footer %}
+    {% endblock %}
+
+
+{% block content %}
+
+
+
+
+    <div class="container content">
+        <div class="row">
+            <!-- Begin Sidebar Menu -->
+            <div class="col-md-3 hidden-print hidden-xs hidden-sm">
+                <a href="{% url 'application' %}" class="btn btn-primary btn-block">{% trans "Apply to Competition" %}</a>
+                {% sitetree_menu from "mainmenu" include "this-ancestor-children" template "bootstrap/sidemenu_bootstrap3.html"  %}
+                <div class="flash_banner_holder hidden-sm hidden-xs">
+                    {% for banner in banners %}
+
+                        <div>
+                            {% if banner.url %}
+                            <a href="{% url 'advert:flash_redirect' banner.id %}" style="width:{{ banner.width }}px;" target="_blank"></a>
+                            {% endif %}
+                            <iframe src="{% url 'advert:flash' banner.id %}" width="{{ banner.width }}" height="{{ banner.height }}" frameBorder="0"></iframe></div>
+                    {% empty %}
+{#                        <div style="width:160px;margin:0 auto;">#}
+{#                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>#}
+{#                        <!-- mans.velo.lv right side -->#}
+{#                        <ins class="adsbygoogle"#}
+{#                             style="display:inline-block;width:160px;height:600px"#}
+{#                             data-ad-client="ca-pub-6343308474035212"#}
+{#                             data-ad-slot="1687482088"></ins>#}
+{#                        <script>#}
+{#                        (adsbygoogle = window.adsbygoogle || []).push({});#}
+{#                        </script>#}
+{#                        </div>#}
+                    {% endfor %}
+
+                </div>
+            </div>
+            <!-- End Sidebar Menu -->
+
+            <!-- Begin Content -->
+            <div class="col-md-9">
+
+                {% block main %}
+
+                {% endblock %}
+            </div>
+            <!-- End Content -->
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base/base.html' %}
+{% load sitetree %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <div class="container">
+           <h1 class="pull-left">{% sitetree_page_title from "mainmenu" %}</h1>
+        {% sitetree_breadcrumbs from "mainmenu" template "bootstrap/breadcrumbs_bootstrap3.html" %}
+        </div><!--/container-->
+    </div>
+{% endblock %}

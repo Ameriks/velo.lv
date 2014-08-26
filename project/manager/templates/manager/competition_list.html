@@ -1,0 +1,23 @@
+{% extends 'manager/base.html' %}
+{% load django_tables2 %}
+
+
+{% block title %}Participants{% endblock %}
+
+
+{% block main %}
+         <table class="table">
+            <tbody>
+                {% for object in object_list %}
+                <tr>
+                    <td class="level-{{ object.level }}">
+                        <i data-icon="&#xe07b;"></i>
+                        <a href="#">{{ object.name }}</a>
+                    </td>
+                    <td>{{ object.place_name }}</td>
+                    <td>{{ object.place_name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+         </table>
+{% endblock %}
