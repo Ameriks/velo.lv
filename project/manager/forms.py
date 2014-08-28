@@ -807,6 +807,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.fields['gender'].required = True
         self.fields['country'].required = True
+        self.fields['birthday'].required = True
 
         self.helper = FormHelper()
         self.helper.form_tag = True
