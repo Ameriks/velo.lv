@@ -127,6 +127,11 @@ class ManageParticipantList(ManagerPermissionMixin, SingleTableViewWithRequest):
         context.update({'search_form': self.get_search_form()})
         return context
 
+    def table_order_by(self):
+        if self.request.GET.get('sort', None):
+            self.request.session['manager__participant_list__order_by'] = self.request.GET.get('sort', None)
+        return self.request.session.get('manager__participant_list__order_by', None)
+
     def get_queryset(self):
         queryset = super(ManageParticipantList, self).get_queryset()
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
@@ -151,7 +156,7 @@ class ManageParticipantList(ManagerPermissionMixin, SingleTableViewWithRequest):
                 Q(team_name__icontains=query_attrs.get('search').initial.upper())
             )
 
-        queryset = queryset.select_related('distance', 'competition')
+        queryset = queryset.select_related('distance', 'competition', 'price')
         return queryset
 
 
