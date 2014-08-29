@@ -136,6 +136,10 @@ class ManageParticipantTable(GetRequestTableKwargs, tables.Table):
     # last_name = LinkColumn('manager:participant', args=[A('competition_id'), A('pk')])
     pdf = tables.Column(empty_values=(), verbose_name='PDF', orderable=False)
 
+    def render_distance(self, record, **kwargs):
+        # Too long distance names for admin.
+        return record.distance.__unicode__().split(' ', 1)[0]
+
     def render_last_name(self, record, **kwargs):
         url = reverse('manager:participant', kwargs={'pk': self.request_kwargs.get('pk'), 'pk_participant': record.id})
         return mark_safe('<a href="%s">%s</a>' % (url, record.last_name))
