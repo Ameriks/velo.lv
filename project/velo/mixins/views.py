@@ -147,9 +147,12 @@ class SetCompetitionContextMixin(object):
 
 
 class SingleTableViewWithRequest(SetCompetitionContextMixin, SingleTableView):
+    def table_order_by(self):
+        return None
+
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        table = self.get_table(request=self.request, request_kwargs=self.kwargs)
+        table = self.get_table(request=self.request, request_kwargs=self.kwargs, order_by=self.table_order_by())
         context[self.get_context_table_name(table)] = table
         context.update({'competition': self.competition})
         return context

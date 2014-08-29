@@ -786,7 +786,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
             prices_obj = comps[0].price_set.all()
             prices = [(price.id, "%s€- %s" % (str(price.price * comps.count() * (100 - competition.complex_discount) / 100), price.distance)) for price in prices_obj]
         else:
-            prices = [(str(price.id), "%s€ - %s" % (str(price.price), price.distance)) for price in competition.price_set.all()]
+            prices = [(str(price.id), "%s€ - %s" % (str(price.price), price.distance)) for price in competition.price_set.all().select_related('distance')]
 
         self.fields['price'].choices = [(u'', u'------'), ] + prices
 
