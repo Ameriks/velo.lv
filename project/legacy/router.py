@@ -1,8 +1,3 @@
-# Specific router to point all read-operations on legacy models to the
-# 'legacy' DB.
-# Forbid write-operations and syncdb.
-
-
 class LegacyRouter(object):
 
     def db_for_read(self, model, **hints):
