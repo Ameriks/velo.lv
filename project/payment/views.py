@@ -22,10 +22,13 @@ from velo.utils import SessionWHeaders
 class CheckPriceView(JsonRequestResponseMixin, DetailView):
     model = Competition
     def post(self, request, *args, **kwargs):
-        year = request.POST.get('birthday')[0:4]
-        distance_id = request.POST.get('distance', None)
-        insurance_id = request.POST.get('insurance', None)
-        if len(year) < 4 or not distance_id:
+        try:
+            year = int(request.POST.get('birthday')[0:4])
+            distance_id = request.POST.get('distance', None)
+            insurance_id = request.POST.get('insurance', None)
+            if not distance_id:
+                raise ValueError
+        except ValueError:
             return self.render_json_response({
                 'message': _('Please enter all details'),
             })
