@@ -99,18 +99,10 @@ class MyTeamList(LoginRequiredMixin, SingleTableView):
         return queryset
 
 
-class TeamMemberBaseInlineFormSet(CustomBaseInlineFormSet):
-    def get_queryset(self):
-        queryset = super(TeamMemberBaseInlineFormSet, self).get_queryset()
-        queryset = queryset.filter(status=Member.STATUS_ACTIVE)
-        return queryset
-
-
-
 class MemberInline(GetClassNameMixin, InlineFormSet):
     can_order = False
     model = Member
-    formset_class = TeamMemberBaseInlineFormSet
+    formset_class = CustomBaseInlineFormSet
     form_class = MemberInlineForm
     competition = None
 
@@ -144,12 +136,12 @@ class MemberInline(GetClassNameMixin, InlineFormSet):
             return 1
 
     def get_formset_kwargs(self):
-
         kwargs = super(MemberInline, self).get_formset_kwargs()
         kwargs.update({'empty_form_class': self.form_class})
         kwargs.update({'required': 1})
         kwargs.update({'can_add_new': True})
         kwargs.update({'max_num': self.competition.params.get('team_member_count', 1000) if self.competition else 1000})
+        kwargs.update({'queryset': Member.objects.filter(status=Member.STATUS_ACTIVE) })
         return kwargs
 
     def get_extra_form_kwargs(self):
@@ -187,7 +179,7 @@ class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
         return queryset
 
     def post(self, request, *args, **kwargs):
-        ret = super(UpdateWithInlinesView, self).post(request, *args, **kwargs)
+        ret = super(TeamUpdateView, self).post(request, *args, **kwargs)
         if request.POST.get('submit_pay', None):
 
             next_competition = None

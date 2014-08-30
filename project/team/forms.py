@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from crispy_forms.layout import Layout, Row, Column, Field, Fieldset, HTML, Submit
+from crispy_forms.layout import Layout, Row, Column, Field, Fieldset, HTML, Submit, Div
 
 from django import forms
 import math
@@ -149,6 +149,10 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                         Column('birthday', css_class='col-xs-6 col-sm-3'),
                     ),
                     'id',
+                    Div(
+                        Field('DELETE',),
+                        css_class='hidden',
+                    ),
                     css_class='col-sm-12'
                 ),
             ),
