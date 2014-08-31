@@ -220,7 +220,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['country'].required = True
         self.fields['gender'].required = True
 
-        self.fields['team_name'].widget.attrs.update({'class': 'team-typeahead', 'placeholder': _('Team Name')})
+        self.fields['team_name'].widget.attrs.update({'class': 'team-typeahead'})
         self.fields['distance'].widget.attrs.update({'data-url': str(reverse('payment:check_price', kwargs={'pk': self.application.competition_id}))})
 
         if self.data.get('submit_draft'):
