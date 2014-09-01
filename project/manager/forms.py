@@ -677,7 +677,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
     class Meta:
         model = Participant
         fields = (
-            'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'slug', 'is_participating', 'insurance',
+            'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'slug', 'is_participating', 'is_paying', 'insurance',
             'team', 'team_name', 'ssn', 'phone_number', 'email', 'send_email', 'send_sms', 'country', 'city',
             'bike_brand', 'occupation', 'where_heard', 'group', 'registrant', 'price', 'comment', 'registration_dt')
 
@@ -830,7 +830,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
                     Column('country', css_class='col-sm-3'),
                     Column('city', css_class='col-sm-3'),
                     Column('ssn', css_class='col-sm-3'),
-                    Column('is_participating', css_class='col-sm-3'),
+                    Column('is_participating', 'is_paying', css_class='col-sm-3'),
                 ),
 
             ),
