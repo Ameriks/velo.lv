@@ -81,6 +81,7 @@ class Participant(TimestampMixin, models.Model):
     team_name_slug = models.SlugField(blank=True)
 
     is_participating = models.BooleanField(_('Is Participating'), default=False)
+    is_paying = models.BooleanField(_('Is Paying'), default=True)
     is_competing = models.BooleanField(_('Is Competing'), default=True)  # in case this cyclist is participating for fun, then is_competing should be set to false.
 
     first_name = models.CharField(_('First Name'), max_length=60, blank=True)
