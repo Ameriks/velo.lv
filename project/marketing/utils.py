@@ -82,8 +82,8 @@ def send_number_email(participant):
         'domain': settings.MY_DEFAULT_DOMAIN,
     }
 
-    template = transform(render_to_string('marketing/email/number_email.html', context))
-    template_txt = render_to_string('marketing/email/number_email.txt', context)
+    template = transform(render_to_string('marketing/email/number_email_vb.html', context))
+    template_txt = render_to_string('marketing/email/number_email_vb.txt', context)
 
     email = participant.email
     if not email and participant.application:

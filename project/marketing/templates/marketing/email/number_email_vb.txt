@@ -1,0 +1,20 @@
+Apsveicam ar sekmīgu reģistrēšanos 24.Latvijas riteņbraucēju Vienības braucienam, kas notiks šo svētdien, 7.septembrī Siguldā!
+
+Vārds, uzvārds: {{object.first_name}} {{object.last_name}}
+Dzimšanas gads: {{object.birthday.year}}
+Distance: {{object.distance}}
+{% if number %}Starta numurs: {{number.number}}{% endif %}
+
+Šo vēstuli lūdzam saglabāt, izprintēt un uzrādīt saņemot starta numuru.
+Starta numurus iespējams saņemt 5. un 6.septembrī pie u/v Elkor Plaza (Brīvības gatve 201, Rīga) laikā no 10:00 līdz 20:00 vai arī 7.septembrī Siguldā, reģistrācijas teltī no 09:00.
+
+Lūdzam paņemt no reģistrācijas darbiniekiem instrukciju par pareizu numura piestiprināšanu.
+
+Papildus informāciju meklējiet www.velo.lv
+Neskaidrību gadījumā sazinieties ar mums: pieteikumi@velo.lv
+
+Vēlreiz apsveicam ar reģistrēšanos Vienības braucienam un novēlam veiksmīgu startu!
+
+Sajūti kopīgo spēku!
+
+Sacensību organizatori
