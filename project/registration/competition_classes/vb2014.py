@@ -198,7 +198,9 @@ class VB2014(CompetitionScriptBase):
 
         doc = SimpleDocTemplate(output, pagesize=A4, showBoundary=0)
         elements = []
-        elements.append(get_image(self.competition.logo.path, width=10*cm))
+
+        if self.competition.logo:
+            elements.append(get_image(self.competition.logo.path, width=10*cm))
         elements.append(Paragraph(u"Apsveicam ar sekmīgu reģistrēšanos 24.Latvijas riteņbraucēju Vienības braucienam, kas notiks šo svētdien, 7.septembrī Siguldā!", styles['h3']))
 
         data = [['Vārds, uzvārds:', participant.full_name],
@@ -211,9 +213,9 @@ class VB2014(CompetitionScriptBase):
         table_style.append(['FONTSIZE', (0, 0), (-1, -1), 16])
         table_style.append(['BOTTOMPADDING', (0, 0), (-1, -1), 10])
 
-
+        elements.append(Spacer(10, 10))
         elements.append(Table(data, style=table_style, hAlign='LEFT'))
-
+        elements.append(Spacer(10, 10))
         elements.append(Paragraph(u"Šo vēstuli lūdzam saglabāt, izprintēt un uzrādīt saņemot starta numuru.", styles['h3']))
         elements.append(Paragraph(u"Starta numurus iespējams saņemt 5. un 6.septembrī pie u/v Elkor Plaza (Brīvības gatve 201, Rīga) laikā no 10:00 līdz 20:00 vai arī 7.septembrī Siguldā, reģistrācijas teltī no 09:00.", styles['h3']))
 

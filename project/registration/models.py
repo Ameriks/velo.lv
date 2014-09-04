@@ -241,3 +241,4 @@ class PreNumberAssign(models.Model):
     number = models.IntegerField(blank=True, null=True)
     segment = models.IntegerField(blank=True, null=True)
     participant_slug = models.SlugField(blank=True)
+    group_together = models.SlugField(blank=True, null=True)
