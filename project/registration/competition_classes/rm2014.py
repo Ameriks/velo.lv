@@ -244,10 +244,7 @@ class RM2014(CompetitionScriptBase):
         if assign_special:
             # first assign special numbers
             special = {
-                2801: "edvards-dalderis-2001",
-                2244: "normunds-paunins-1969",
-                2014: 'nils-usakovs-1976',
-                2015: 'iveta-strautina-1978',
+                # moved to database # TODO: rebuild querying for this data from database
             }
             for nr in special:
                 slug = special.get(nr)

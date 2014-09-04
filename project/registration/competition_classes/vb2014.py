@@ -12,7 +12,7 @@ import StringIO
 from core.models import Competition, Choices, Log
 from marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from registration.competition_classes.base import CompetitionScriptBase
-from registration.models import Number, Participant
+from registration.models import Number, Participant, PreNumberAssign
 from registration.tables import ParticipantTableWithResult, ParticipantTable
 from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceAdmin, SebStandings, TeamResultStandings, \
     LapResult
@@ -141,16 +141,22 @@ class VB2014(CompetitionScriptBase):
         """
         Returns number ranges for each distance.
         """
-        raise NotImplementedError()
         return {
-            self.SPORTA_DISTANCE_ID: [{'start': 201, 'end': 900, 'group': ''}, ],
-            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 5000, 'group': ''}, ],
+            self.SOSEJAS_DISTANCE_ID: [{'start': 1, 'end': 250, 'group': ''}, ],
+            self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1200, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 6000, 'group': ''}, ],
         }
 
+
     def passages(self):
-        raise NotImplementedError()
         return {
-            self.SPORTA_DISTANCE_ID: [(1, 201, 400, 0), (2, 401, 600, 0), (3, 601, 800, 0)],
+            self.SOSEJAS_DISTANCE_ID: [(1, 1, 350, 0), ],
+            self.MTB_DISTANCE_ID: [
+                                    (1, 401, 600, 10),
+                                    (2, 601, 800, 10),
+                                    (3, 801, 1000, 5),
+                                    (4, 1001, 1200, 0),
+                                    ],
             self.TAUTAS_DISTANCE_ID: [
                                     (1, 2001, 2200, 5),
                                     (2, 2201, 2400, 30),
@@ -186,7 +192,6 @@ class VB2014(CompetitionScriptBase):
 
 
     def number_pdf(self, participant_id):
-        raise NotImplementedError()
         participant = Participant.objects.get(id=participant_id)
         styles = getSampleStyleSheet()
         output = StringIO.StringIO()
@@ -194,7 +199,7 @@ class VB2014(CompetitionScriptBase):
         doc = SimpleDocTemplate(output, pagesize=A4, showBoundary=0)
         elements = []
         elements.append(get_image(self.competition.logo.path, width=10*cm))
-        elements.append(Paragraph(u"Apsveicam ar sekmīgu reģistrēšanos 31.Rīgas Velomaratonam, kas notiks šo svētdien, 1.jūnijā 11.novembra Krastmalā!", styles['h3']))
+        elements.append(Paragraph(u"Apsveicam ar sekmīgu reģistrēšanos 24.Latvijas riteņbraucēju Vienības braucienam, kas notiks šo svētdien, 7.septembrī Siguldā!", styles['h3']))
 
         data = [['Vārds, uzvārds:', participant.full_name],
                 ['Dzimšanas gads:', participant.birthday.year],
@@ -209,14 +214,17 @@ class VB2014(CompetitionScriptBase):
 
         elements.append(Table(data, style=table_style, hAlign='LEFT'))
 
-        elements.append(Paragraph(u"Šo vēstuli, lūdzam saglabāt un izprintēt un ņemt līdzi uz Rīgas Velomaratona Expo centru, kas darbosies pie tirdzniecības centra „Spice” A ieejas 30. un 31.maijā no pkst.10:00-21:00.", styles['h3']))
-        elements.append(Paragraph(u"Uzrādot šo vēstuli, Jūs varēsiet saņemt aploksni ar savu starta numuru. Lūdzam paņemt no reģistrācijas darbiniekiem instrukciju par pareizu numura piestiprināšanu.", styles['h3']))
+        elements.append(Paragraph(u"Šo vēstuli lūdzam saglabāt, izprintēt un uzrādīt saņemot starta numuru.", styles['h3']))
+        elements.append(Paragraph(u"Starta numurus iespējams saņemt 5. un 6.septembrī pie u/v Elkor Plaza (Brīvības gatve 201, Rīga) laikā no 10:00 līdz 20:00 vai arī 7.septembrī Siguldā, reģistrācijas teltī no 09:00.", styles['h3']))
+
+        elements.append(Paragraph(u"Lūdzam paņemt no reģistrācijas darbiniekiem instrukciju par pareizu numura piestiprināšanu.", styles['h3']))
         elements.append(Paragraph(u"Papildus informāciju meklējiet www.velo.lv", styles['h3']))
-        elements.append(Paragraph(u"Vēlreiz apsveicam ar reģistrēšanos Rīgas Velomaratonam un novēlam veiksmīgu startu!", styles['h3']))
 
-        elements.append(Paragraph(u"Rīga ir mūsu!", styles['title']))
+        elements.append(Paragraph(u"Vēlreiz apsveicam ar reģistrēšanos Vienības braucienam un novēlam veiksmīgu startu!", styles['h3']))
 
-        elements.append(Paragraph(u"Rīgas Velomaratona organizatori", styles['h3']))
+        elements.append(Paragraph(u"Sajūti kopīgo spēku!", styles['title']))
+
+        elements.append(Paragraph(u"Sacensību organizatori", styles['h3']))
 
         elements.append(Paragraph(u"Jautājumi?", styles['h2']))
         elements.append(Paragraph(u"Neskaidrību gadījumā sazinieties ar mums: pieteikumi@velo.lv", styles['h3']))
@@ -258,106 +266,33 @@ class VB2014(CompetitionScriptBase):
 
 
     def assign_numbers(self, reassign=False, assign_special=False):
-        raise NotImplementedError()
         if reassign:
             Number.objects.filter(competition=self.competition).update(participant_slug='', number_text='')
             Participant.objects.filter(competition=self.competition, is_participating=True).update(primary_number=None)
 
         if assign_special:
             # first assign special numbers
-            special = {
-                2801: "edvards-dalderis-2001",
-                2244: "normunds-paunins-1969",
-                2014: 'nils-usakovs-1976',
-                2015: 'iveta-strautina-1978',
-            }
-            for nr in special:
-                slug = special.get(nr)
-                number = Number.objects.get(number=nr, competition=self.competition)
-                print "%s - %s" % (number, slug)
-                number.participant_slug = slug
+            pre_numbers = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None)
+            for nr in pre_numbers:
+                number = Number.objects.get(number=nr.number, competition=self.competition)
+                print "%s - %s" % (number, nr.participant_slug)
+                number.participant_slug = nr.participant_slug
                 number.save()
 
-                participant = Participant.objects.filter(slug=slug, competition=self.competition, distance=number.distance, is_participating=True)
+                participant = Participant.objects.filter(slug=nr.participant_slug, competition=self.competition, distance=number.distance, is_participating=True)
                 if participant:
                     participant = participant[0]
                     participant.primary_number = number
                     participant.save()
 
-        special_passages = {
-            self.SPORTA_DISTANCE_ID: {
-                "davis-veidemanis-1986": 1,
-                "didzis-priede-1983": 1,
-                "arturs-ronis-1985": 1,
-                "peteris-spredzis-1978": 1,
-                "romans-melderis-1974": 1,
-                "aigars-zvingulis-1961": 1,
-            },
-            self.TAUTAS_DISTANCE_ID: {
-                "iveta-kalinka-1973": 3,
-                "edgars-maksimovs-1980": 3,
-                "raimonds-ronis-1989": 3,
-                "aivars-vidzups-1981": 2,
-                "martins-vilkajs-1977": 3,
-                "madara-luize-erina-2003": 3,
-                "aldis-ledins-1970": 3,
-                "elvis-ledins-1994": 3,
-                "guntis-pastors-1973": 3,
-                "viesturs-bergmanis-1958": 3,
-                "ainars-berzins-1965": 3,
-                "raimonds-dalderis-1971": 2,
-                "uldis-bremanis-1964": 2,
-                "davis-bremanis-1991": 2,
-                "ansis-ailis-1983": 3,
-                "aigars-barenis-1954": 2,
-                "juris-visockis-1982": 2,
-                "aivars-aksenoks-1961": 2,
-                "airisa-berzina-1967": 3,
-                "edijs-bundzis-2000": 3,
-                "ginta-bundze-1973": 3,
-                "leonids-mocenovs-1973": 3,
-                "raitis-bemers-1980": 3,
-                "markuss-bemers-2002": 3,
-                "guntis-salmins-1995": 3,
-                "raimonds-dambis-1976": 3,
-                "linards-veide-1989": 3,
-                "antra-zemite-1972": 4,
-                "dzintars-samulis-1970": 4,
-                "mareks-racko-1977": 4,
-                "janis-voins-1982": 4,
-                "dzintars-balodis-1971": 3,
-                "varis-vilumovs-1982": 3,
-                "ausma-vilumsone-1954": 3,
-                "zane-pavare-1955": 3,
-                "liene-karsuma-1988": 3,
-                "uldis-braunbergs-1980": 3,
-                "rolands-udris-1975": 2,
-                "ilona-balode-1982": 2,
-                "janis-minins-1980": 2,
-                "raitis-krumins-1989": 3,
-                "lase-milgrave-1992": 3,
-                "jekabs-kruzins-1992": 3,
-                "janis-dravnieks-2000": 4,
-                "jekabs-baumanis-1998": 4,
-                "dainis-streics-1964": 3,
-                "rudolfs-streics-1997": 3,
-                "kaspars-tupins-1984": 2,
-                "martins-lorencis-1984": 2,
-                "vitautas-galinauskas-1949": 2,
-                "janis-liepins-1964": 1,
-            }
-        }
-
-        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
-
+        for distance_id in (self.MTB_DISTANCE_ID, ): #self.TAUTAS_DISTANCE_ID):
 
             for passage_nr, passage_start, passage_end, passage_extra in self.passages().get(distance_id):
-                special_in_passage = [val for val in special.keys() if val>=passage_start and val<=passage_end]
-                places = passage_end - passage_start - passage_extra + 1 - len(special_in_passage)
+                special_in_passage_count = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None).filter(number__gte=passage_start, number__lte=passage_end).count()
+                places = passage_end - passage_start - passage_extra + 1 - special_in_passage_count
 
-                passage = special_passages.get(distance_id)
-
-                slugs_in_passage = [key for key in passage if passage.get(key) == passage_nr]
+                pre_numbers = PreNumberAssign.objects.filter(competition=self.competition, number=None, distance_id=distance_id, segment=passage_nr)
+                slugs_in_passage = [obj.participant_slug for obj in pre_numbers]
 
                 # Filter those slugs that already have number:
                 final_slugs_in_passage = slugs_in_passage[:]
@@ -366,7 +301,7 @@ class VB2014(CompetitionScriptBase):
                         print 'removing slug %s' % slug
                         final_slugs_in_passage.remove(slug)
 
-                participants = Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, primary_number=None).order_by('legacyresult__result_distance', 'created')[:places]
+                participants = Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, primary_number=None).order_by('legacyresult__result_distance', 'registration_dt')[:places]
                 participant_slugs = [obj.slug for obj in participants]
 
                 extra_count = 0
