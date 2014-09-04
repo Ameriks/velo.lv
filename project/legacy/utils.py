@@ -532,13 +532,13 @@ def sync_legacy_results(competition):
             p = Ev68RVeloParticipations.objects.filter(competition_id=competition.legacy_id, alias=obj.alias, status=2)
 
             data = {
-                # 'competition': competition,
-                # 'distance': Distance.objects.get(id=obj.distance_id),
-                # 'first_name': obj.first_name,
-                # 'last_name': obj.last_name,
-                # 'year': obj.year,
-                # 'result_distance': obj.result_distance,
-                # 'points_distance': obj.points_distance,
+                'competition': competition,
+                'distance': Distance.objects.get(id=obj.distance_id),
+                'first_name': obj.first_name,
+                'last_name': obj.last_name,
+                'year': obj.year,
+                'result_distance': obj.result_distance,
+                'points_distance': obj.points_distance,
                 'phone_number': '',
                 'email': '',
             }
@@ -547,16 +547,16 @@ def sync_legacy_results(competition):
                 p = p[0]
                 data.update({'phone_number': p.participant_phone_number, 'email': p.participant_email})
 
-            # slugs = CustomSlug.objects.filter(slug=obj.alias)
-            # if slugs:
-            #     data.update({'slug': slugs.get().slug})
-            # else:
-            #     data.update({'slug': ''})
-            #
-            # if data.get('last_name') == '?':
-            #     data.update({'last_name': ''})
-            # if data.get('first_name') == '?':
-            #     data.update({'first_name': ''})
+            slugs = CustomSlug.objects.filter(slug=obj.alias)
+            if slugs:
+                data.update({'slug': slugs.get().slug})
+            else:
+                data.update({'slug': ''})
+
+            if data.get('last_name') == '?':
+                data.update({'last_name': ''})
+            if data.get('first_name') == '?':
+                data.update({'first_name': ''})
 
             standing, created = LegacyResult.objects.get_or_create(id=obj.id, defaults=data)
             if not created:
