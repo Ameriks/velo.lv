@@ -82,6 +82,7 @@ class ResultAssignedToInactiveParticipant(ManagerPermissionMixin, SingleTableVie
 
     def get_queryset(self):
         queryset = super(ResultAssignedToInactiveParticipant, self).get_queryset()
+        queryset = queryset.filter(competition_id__in=self.competition.get_ids())
         queryset = queryset.filter(participant__is_participating=False)
         queryset = queryset.select_related('distance', 'competition', 'participant')
         return queryset

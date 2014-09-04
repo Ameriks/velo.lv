@@ -233,3 +233,11 @@ class Number(StatusMixin, TimestampMixin, models.Model):
     class Meta:
         unique_together = ('competition', 'number', 'group')
         ordering = ('distance', 'group', 'number', )
+
+
+class PreNumberAssign(models.Model):
+    competition = models.ForeignKey('core.Competition')
+    distance = models.ForeignKey('core.Distance')
+    number = models.IntegerField(blank=True, null=True)
+    segment = models.IntegerField(blank=True, null=True)
+    participant_slug = models.SlugField(blank=True)
