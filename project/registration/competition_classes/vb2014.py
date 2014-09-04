@@ -158,21 +158,26 @@ class VB2014(CompetitionScriptBase):
                                     (4, 1001, 1200, 0),
                                     ],
             self.TAUTAS_DISTANCE_ID: [
-                                    (1, 2001, 2200, 5),
-                                    (2, 2201, 2400, 30),
+                                    (1, 2001, 2200, 10),
+                                    (2, 2201, 2400, 20),
                                     (3, 2401, 2600, 20),
                                     (4, 2601, 2800, 10),
                                     (5, 2801, 3000, 10),
                                     (6, 3001, 3200, 10),
-                                    (7, 3201, 3400, 10),
-                                    (8, 3401, 3600, 10),
-                                    (9, 3601, 3800, 10),
-                                    (10, 3801, 4000, 10),
-                                    (11, 4001, 4200, 10),
-                                    (12, 4201, 4400, 10),
-                                    (13, 4401, 4600, 10),
-                                    (14, 4601, 4800, 10),
-                                    (15, 4801, 5000, 10),
+                                    (7, 3201, 3400, 0),
+                                    (8, 3401, 3600, 0),
+                                    (9, 3601, 3800, 0),
+                                    (10, 3801, 4000, 0),
+                                    (11, 4001, 4200, 0),
+                                    (12, 4201, 4400, 0),
+                                    (13, 4401, 4600, 0),
+                                    (14, 4601, 4800, 0),
+                                    (15, 4801, 5000, 0),
+                                    (16, 5001, 5200, 0),
+                                    (17, 5201, 5400, 0),
+                                    (18, 5401, 5600, 0),
+                                    (19, 5601, 5800, 0),
+                                    (20, 5801, 6000, 0),
                                     ],
         }
 
@@ -235,35 +240,17 @@ class VB2014(CompetitionScriptBase):
         return output
 
     def assign_numbers_continuously(self):
-        raise NotImplementedError()
-        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+        for distance_id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             last_number = Participant.objects.filter(distance_id=distance_id, is_participating=True).exclude(primary_number=None).order_by('-primary_number__number')[0].primary_number.number
-            if distance_id == self.TAUTAS_DISTANCE_ID:
-                last_number = 3590
-            participants = Participant.objects.filter(distance_id=distance_id, is_participating=True, primary_number=None).order_by('created')
+
+            participants = Participant.objects.filter(distance_id=distance_id, is_participating=True, primary_number=None).order_by('registration_dt')
 
             for participant in participants:
-                next_number = Number.objects.filter(distance_id=distance_id, number__gt=last_number, participant_slug='')[0]
+                next_number = Number.objects.filter(distance_id=distance_id, number__gt=4186, participant_slug='')[0]
                 next_number.participant_slug = participant.slug
                 next_number.save()
                 participant.primary_number = next_number
                 participant.save()
-                send_sms_to_participant(participant)
-                mailgun = send_number_email(participant)
-                if mailgun:
-                    send_mailgun(mailgun.id)
-
-        participants = Participant.objects.filter(competition_id=34, is_participating=True, is_sent_number_sms=False, distance_id=30).order_by('created')
-        for participant in participants:
-            send_sms_to_family_participant(participant)
-
-        participants = Participant.objects.filter(competition_id=34, distance_id=30, is_participating=True, is_sent_number_email=False).order_by('created')
-        for participant in participants:
-            mailgun = send_number_email(participant)
-            if mailgun:
-                send_mailgun(mailgun.id)
-
-        send_smses()
 
 
 
@@ -287,7 +274,9 @@ class VB2014(CompetitionScriptBase):
                     participant.primary_number = number
                     participant.save()
 
-        for distance_id in (self.MTB_DISTANCE_ID, ): #self.TAUTAS_DISTANCE_ID):
+        for distance_id in (self.TAUTAS_DISTANCE_ID, ): #self.TAUTAS_DISTANCE_ID):
+
+            exclude_slugs = [obj.participant_slug for obj in PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).exclude(group_together=None)]
 
             for passage_nr, passage_start, passage_end, passage_extra in self.passages().get(distance_id):
                 special_in_passage_count = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None).filter(number__gte=passage_start, number__lte=passage_end).count()
@@ -299,11 +288,11 @@ class VB2014(CompetitionScriptBase):
                 # Filter those slugs that already have number:
                 final_slugs_in_passage = slugs_in_passage[:]
                 for slug in slugs_in_passage:
-                    if Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, slug=slug).exclude(primary_number=None):
+                    if Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, slug=slug).exclude(primary_number=None).exclude(slug__in=exclude_slugs):
                         print 'removing slug %s' % slug
                         final_slugs_in_passage.remove(slug)
 
-                participants = Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, primary_number=None).order_by('legacyresult__result_distance', 'registration_dt')[:places]
+                participants = Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, primary_number=None).exclude(legacyresult__id=None).exclude(slug__in=exclude_slugs).order_by('legacyresult__result_distance', 'registration_dt')[:places]
                 participant_slugs = [obj.slug for obj in participants]
 
                 extra_count = 0
