@@ -85,14 +85,7 @@ def send_number_email(participant):
     template = transform(render_to_string('marketing/email/number_email_vb.html', context))
     template_txt = render_to_string('marketing/email/number_email_vb.txt', context)
 
-    email = participant.email
-    if not email and participant.application:
-        participants = Participant.objects.filter(application=participant.application).exclude(email='')
-        if participants:
-            email = participants[0].email
-
-    if not email and participant.registrant:
-        email = participant.registrant.email
+    email = participant.application.email
 
     if not email:
         print 'PARTICIPANT %i doesnt have email' % participant.id
@@ -100,7 +93,7 @@ def send_number_email(participant):
 
     email_data = {
         'em_to': email,
-        'subject': u'Reģistrācijas apliecinājums - Rīgas velomaratons 2014',
+        'subject': u'Reģistrācijas apliecinājums - 24.Latvijas riteņbraucēju Vienības brauciens',
         'html': template,
         'text': template_txt,
         'content_object': participant,
