@@ -5,9 +5,14 @@ from results.models import LegacyResult
 
 def map_participants_with_legacy_results():
     LegacyResult.objects.filter(competition_id=16).update(participant_2014=None)
+    old_ids = {
+        32: 21,
+        33: 23,
+        34: 22
+    }
     for participant in Participant.objects.filter(is_participating=True, competition_id=35):
         competition_id = 16
-        distance_id = participant.distance_id
+        distance_id = old_ids.get(participant.distance_id)
         LegacyResult.objects.filter(slug=participant.slug, competition_id=competition_id, distance_id=distance_id).update(participant_2014=participant)
 
 
