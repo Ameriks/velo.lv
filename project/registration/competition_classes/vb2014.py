@@ -142,7 +142,7 @@ class VB2014(CompetitionScriptBase):
         Returns number ranges for each distance.
         """
         return {
-            self.SOSEJAS_DISTANCE_ID: [{'start': 1, 'end': 250, 'group': ''}, ],
+            self.SOSEJAS_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
             self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1200, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 6000, 'group': ''}, ],
         }
