@@ -275,16 +275,16 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a:focus {
     background-color:#FFF;
 }
 
-.banks_firstdata {
+.banks_firstdata, .btn.banks_firstdata {
     height: 75px;
     background: url('/static/img/banks/firstdata.png') #FFF center center no-repeat;
 
 }
-.banks_swedbank {
+.banks_swedbank, .btn.banks_swedbank {
     height: 75px;
     background: url('/static/img/banks/swedbank.png') #FFF  center center no-repeat;
 }
-.banks_ibanka {
+.banks_ibanka, .btn.banks_ibanka {
     height: 75px;
     background: url('/static/img/banks/ibanka.png') #FFF  center center no-repeat;
 }
@@ -294,16 +294,16 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a:focus {
  (-webkit-min-device-pixel-ratio: 1.3),
          (min-device-pixel-ratio: 1.3),
          (min-resolution: 1.3dppx) {
-    .banks_firstdata {
+    .banks_firstdata, .btn.banks_firstdata {
         background: url('/static/img/banks/firstdata@2x.png') #FFF center center no-repeat !important;
         background-size: 210px 75px !important;
     }
-    .banks_swedbank {
+    .banks_swedbank, .btn.banks_swedbank {
         background: url('/static/img/banks/swedbank@2x.png') #FFF center center no-repeat !important;
         background-size: 210px 75px !important;
 
     }
-    .banks_ibanka {
+    .banks_ibanka, .btn.banks_ibanka {
         background: url('/static/img/banks/ibanka@2x.png') #FFF center center no-repeat !important;
         background-size: 210px 75px !important;
     }
