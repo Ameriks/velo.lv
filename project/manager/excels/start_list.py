@@ -91,6 +91,13 @@ def create_start_list(competition=None, competition_id=None):
                     },
                     select_params=(competition.parent.id, competition.parent.id, competition.id),
                 )
+        elif competition.id == 35:
+            items = items.extra(
+                select={
+                    'last_result_distance': "SELECT r.result_distance FROM results_legacyresult r WHERE r.participant_2014_id=registration_participant.id and r.distance_id = registration_participant.distance_id order by r.result_distance LIMIT 1",
+                },
+            )
+
         row = 4
         header_row = (
             '#', 'UID', 'Numurs', 'Alias', 'Sacensības', 'Distance', 'Uzvārds', 'Vārds', 'Dzimšanas diena', 'Dzimums',
@@ -114,7 +121,11 @@ def create_start_list(competition=None, competition_id=None):
 
                 if hasattr(item, 'comp_count'):
                     row_values += (item.comp_count, )
-
+            elif competition.id == 35:
+                if hasattr(item, 'last_result_distance') and getattr(item, 'last_result_distance', None):
+                    row_values += (item.last_result_distance, )
+                else:
+                    row_values += ('', )
 
             for col, value in enumerate(row_values):
                 sheet.write(row, col, value)
