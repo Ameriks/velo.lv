@@ -85,7 +85,11 @@ def send_number_email(participant):
     template = transform(render_to_string('marketing/email/number_email_vb.html', context))
     template_txt = render_to_string('marketing/email/number_email_vb.txt', context)
 
-    email = participant.application.email
+    if participant.application:
+        email = participant.application.email
+    else:
+        email = participant.email
+
 
     if not email:
         print 'PARTICIPANT %i doesnt have email' % participant.id
