@@ -156,7 +156,7 @@ def team_member_list(competition=None, competition_id=None):
     wbk = xlwt.Workbook()
 
     for distance in distances:
-        sheet = wbk.add_sheet(distance.__unicode__())
+        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
 
         row=0
         sheet.write(row, 0, "Team ID")
@@ -222,7 +222,7 @@ def create_team_list(competition=None, competition_id=None):
     wbk = xlwt.Workbook()
 
     for distance in distances:
-        sheet = wbk.add_sheet(slugify(distance.__unicode__()))
+        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
 
         sheet.col(0).width = 256 * 4
         sheet.col(1).width = 256 * 4
