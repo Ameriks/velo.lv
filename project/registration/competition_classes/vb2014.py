@@ -18,7 +18,7 @@ from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceA
     LapResult
 from results.tables import *
 from results.tables import ResultDistanceStandingTable, ResultRMSportsDistanceTable, ResultRMTautaDistanceTable, \
-    ResultRMGroupTable
+    ResultRMGroupTable, ResultRMDistanceTable
 from results.tasks import send
 from results.helper import time_to_seconds
 from team.models import Team, MemberApplication
@@ -183,14 +183,10 @@ class VB2014(CompetitionScriptBase):
 
 
     def get_result_table_class(self, distance, group=None):
-        raise NotImplementedError()
         if group:
             return ResultRMGroupTable
         else:
-            if distance.id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID):
-                return ResultRMSportsDistanceTable
-            else:
-                return ResultRMTautaDistanceTable
+            return ResultRMDistanceTable
 
     def get_startlist_table_class(self):
         return ParticipantTable
@@ -240,6 +236,7 @@ class VB2014(CompetitionScriptBase):
         return output
 
     def assign_numbers_continuously(self):
+        raise NotImplementedError
         for distance_id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             last_number = Participant.objects.filter(distance_id=distance_id, is_participating=True).exclude(primary_number=None).order_by('-primary_number__number')[0].primary_number.number
 
@@ -398,10 +395,10 @@ class VB2014(CompetitionScriptBase):
             return sum(points[0:5])
 
     def process_chip_result(self, chip_id, sendsms=True):
+        raise NotImplementedError
         """
         Function processes chip result and recalculates all standings
         """
-        raise NotImplementedError()
         chip = ChipScan.objects.get(id=chip_id)
         distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
 
