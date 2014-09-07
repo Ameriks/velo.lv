@@ -395,7 +395,6 @@ class VB2014(CompetitionScriptBase):
             return sum(points[0:5])
 
     def process_chip_result(self, chip_id, sendsms=True):
-        raise NotImplementedError
         """
         Function processes chip result and recalculates all standings
         """
@@ -412,11 +411,6 @@ class VB2014(CompetitionScriptBase):
 
         delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(datetime.date.today(), datetime.time(0,0,0,0))
         result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
-
-        result_time_5back = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(minutes=5)).time()
-        if result_time_5back > result_time:
-            result_time_5back = datetime.time(0,0,0)
-        result_time_5forw = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta + datetime.timedelta(minutes=5)).time()
 
         if chip.is_blocked:  # If blocked, then remove result, recalculate standings, recalculate team results
             raise NotImplementedError
@@ -437,42 +431,25 @@ class VB2014(CompetitionScriptBase):
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
 
-        try:
-            participant = Participant.objects.get(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
-        except Participant.DoesNotExist:
-            Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
-            return False
+        results = Result.objects.filter(competition=chip.competition, number=chip.nr)
+        if results:
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip ignored. Already have result")
+        else:
+            participant = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
 
-        try:
-            result = Result.objects.get(competition=chip.competition, number=chip.nr)
+            if participant:
+                result = Result.objects.create(competition=chip.competition, participant=participant[0], number=chip.nr, time=result_time, )
+                result.set_avg_speed()
+                result.save()
 
-            zero_time_update = Result.objects.filter(competition=chip.competition, number=chip.nr, zero_time__gte=result_time_5back, zero_time__lte=result_time_5forw)
-            if zero_time_update:
-                zero_time_update.update(zero_time=result_time)
-                Log.objects.create(content_object=chip, action="Chip process", message="Lets update zero time")
+                if sendsms and participant[0].is_competing and self.competition.competition_date == datetime.date.today():
+                    send(result.id)
+
+                chip.is_processed = True
+                chip.save()
+
             else:
-                already_exists_result = LapResult.objects.filter(result=result, time__gte=result_time_5back, time__lte=result_time_5forw)
-                if already_exists_result:
-                    Log.objects.create(content_object=chip, action="Chip process", message="Chip double scanned.")
-                else:
-                    laps_done = LapResult.objects.filter(result=result).count()
-                    LapResult.objects.create(result=result, index=(laps_done+1), time=result_time)
-                    if (chip.nr.distance_id == self.SPORTA_DISTANCE_ID and laps_done == 4) or (chip.nr.distance_id == self.TAUTAS_DISTANCE_ID and laps_done == 1):
-                        Log.objects.create(content_object=chip, action="Chip process", message="DONE. Lets assign avg speed.")
-                        result.time = result_time
-                        result.set_avg_speed()
-                        result.save()
-                        if participant.is_competing and self.competition.competition_date == datetime.date.today():
-                            send(result.id)
-
-        except Result.DoesNotExist:
-            Log.objects.create(content_object=chip, action="Chip process", message="Lets set zero time")
-            Result.objects.create(competition=chip.competition, participant=participant, number=chip.nr, zero_time=result_time, )
-
-
-        chip.is_processed = True
-        chip.save()
-
+                Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
 
         print chip
 
