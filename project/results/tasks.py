@@ -59,7 +59,7 @@ def send(result_id):
     distance_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, time__lte=result.time).exclude(time=None).exclude(participant__is_competing=False).count()
     group_result = Result.objects.filter(competition=result.competition, participant__group=result.participant.group, time__lte=result.time).exclude(time=None).exclude(participant__is_competing=False).count()
 
-    sms_text = 'SEB MTB pagaidu rez nr. %i laiks %s, %i.vieta grupa %s, vieta kopa %i' % (result.number.number, str(result.time.replace(microsecond=0)), group_result, result.participant.group, distance_result)
+    sms_text = 'Vienibas Brauciena pagaidu rez nr. %i laiks %s, %i.vieta grupa %s, vieta kopa %i' % (result.number.number, str(result.time.replace(microsecond=0)), group_result, result.participant.group, distance_result)
     # first_name = unicodedata.normalize('NFKD', result.participant.first_name).encode('ascii', 'ignore').decode('ascii')
     # group = unicodedata.normalize('NFKD', result.participant.group).encode('ascii', 'ignore').decode('ascii')
 
