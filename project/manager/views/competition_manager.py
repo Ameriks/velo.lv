@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DetailView, TemplateView
 from core.models import Competition
+from manager.excels.insured import create_insured_list
 from manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
     create_team_list
 from manager.tables import ManageCompetitionTable
@@ -104,6 +105,13 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             file_obj = create_team_list(competition=self.competition)
             response = HttpResponse(mimetype='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=applied_teams.xls'
+            response.write(file_obj.getvalue())
+            file_obj.close()
+            return response
+        elif request.POST.get('action') == 'create_insured_list':
+            file_obj = create_insured_list(competition=self.competition)
+            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename=insured_list.xls'
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
