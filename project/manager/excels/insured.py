@@ -30,7 +30,7 @@ def create_insured_list(competition=None, competition_id=None):
         row = 5
         for index, item in enumerate(participants, start=1):
             row_values = (
-                index, unicode(item.competition), item.first_name, item.last_name, unicode(item.birthday), item.ssn, item.country, item.phone_number, item.email, item.insurance.price, unicode(item.insurance),)
+                index, unicode(item.competition), item.first_name, item.last_name, unicode(item.birthday), item.ssn, unicode(item.country), item.phone_number, item.email, item.insurance.price, unicode(item.insurance),)
 
             for col, value in enumerate(row_values):
                 sheet.write(row, col, value)
