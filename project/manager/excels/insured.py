@@ -23,14 +23,14 @@ def create_insured_list(competition=None, competition_id=None):
         participants = Participant.objects.filter(competition_id__in=competition.get_ids(), is_participating=True,distance=distance).exclude(insurance=None).select_related('competition', 'distance', 'insurance')
 
         row = 4
-        header_row = ('#', 'Vārds', 'Uzvārds', 'Personas kods', 'Telefons', 'E-pasts', 'Summa', 'Nosaukums')
+        header_row = ('#', 'Sacensības', 'Vārds', 'Uzvārds', 'Dzimšanas diena', 'Personas kods', 'Valsts', 'Telefons', 'E-pasts', 'Summa', 'Nosaukums')
         for col, value in enumerate(header_row):
             sheet.write(row, col, value)
 
         row = 5
         for index, item in enumerate(participants, start=1):
             row_values = (
-                index, item.first_name, item.last_name, item.ssn, item.phone_number, item.email, item.insurance.price, unicode(item.insurance),)
+                index, unicode(item.competition), item.first_name, item.last_name, unicode(item.birthday), item.ssn, item.country, item.phone_number, item.email, item.insurance.price, unicode(item.insurance),)
 
             for col, value in enumerate(row_values):
                 sheet.write(row, col, value)
