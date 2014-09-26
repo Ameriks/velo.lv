@@ -751,14 +751,13 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
             return instance.competition
         else:
             return self.cleaned_data['competition']
-# TODO: enable restriction to change distance for SEB competitions (that have multiple stages)
-# Currently disabled for Vienibas brauciens because some require to change distance. Restriction will be restored back after VB have finished.
-#    def clean_distance(self):
-#        instance = getattr(self, 'instance', None)
-#        if instance and instance.pk:
-#            return instance.distance
-#        else:
-#            return self.cleaned_data['distance']
+    # TODO: enable restriction to change distance for SEB competitions (that have multiple stages), but allow where are no stages
+    def clean_distance(self):
+       instance = getattr(self, 'instance', None)
+       if instance and instance.pk:
+           return instance.distance
+       else:
+           return self.cleaned_data['distance']
 
     def __init__(self, *args, **kwargs):
         super(ParticipantForm, self).__init__(*args, **kwargs)
@@ -803,7 +802,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         #self.fields['legacy_id'].widget.attrs['readonly'] = True
 
         self.fields['competition'].widget.attrs['readonly'] = True
-#        self.fields['distance'].widget.attrs['readonly'] = True
+        self.fields['distance'].widget.attrs['readonly'] = True
 
         self.fields['gender'].required = True
         self.fields['country'].required = True
