@@ -63,7 +63,7 @@ CACHES = {
 ALLOWED_HOSTS = ['tst.velo.lv:8000', ]
 
 
-#LOGGING.get('loggers', {}).get('django.db.backends', {}).update({'level': 'DEBUG'})
+LOGGING.get('loggers', {}).get('django.db.backends', {}).update({'level': 'DEBUG'})
 
 
 # Database
@@ -73,7 +73,7 @@ DATABASES = {
         'NAME': 'velolv',
         'USER': 'velolv',
         'PASSWORD': os.environ['PGSQL_PASS'],
-        'HOST': '192.168.56.100',
+        'HOST': '192.168.106.100',
     },
     # 'legacy': {
     #     'NAME': 'velo',

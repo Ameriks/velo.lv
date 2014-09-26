@@ -29,8 +29,12 @@ def create_insured_list(competition=None, competition_id=None):
 
         row = 5
         for index, item in enumerate(participants, start=1):
+            insurance_price  = item.insurance.price
+            if item.competition.tree_id == 2 and item.competition.level == 1: # SEB complex
+                insurance_price = (insurance_price * (100 - item.competition.complex_discount) / 100) * len(item.competition.get_children())
+
             row_values = (
-                index, unicode(item.competition), item.first_name, item.last_name, unicode(item.birthday), item.ssn, unicode(item.country), item.phone_number, item.email, item.insurance.price, unicode(item.insurance),)
+                index, unicode(item.competition), item.first_name, item.last_name, unicode(item.birthday), item.ssn, unicode(item.country), item.phone_number, item.email, insurance_price, unicode(item.insurance),)
 
             for col, value in enumerate(row_values):
                 sheet.write(row, col, value)
