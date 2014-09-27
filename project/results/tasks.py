@@ -106,7 +106,6 @@ def fetch_results(_id):
         resp = requests.get(url_data.url)
 
         if resp.status_code != 200:
-            send_mail("status code !=200", "yes, its running", "webmaster@mans.velo.lv", ('agris@pd.lv', ), fail_silently=True)
             return
 
         buf = StringIO.StringIO(resp.content)

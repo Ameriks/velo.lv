@@ -274,7 +274,7 @@ class UrlSyncTable(GetRequestTableKwargs, tables.Table):
     class Meta:
         model = UrlSync
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("id", "competition", "url", "current_line", "enabled", "expires")
+        fields = ("id", "competition", "url", "current_line", "enabled", "expires", "total_run_count")
         empty_text = _("There are no Sync tasks")
         per_page = 100
         template = "bootstrap/table.html"
