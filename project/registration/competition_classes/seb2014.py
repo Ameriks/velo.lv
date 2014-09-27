@@ -292,8 +292,8 @@ class Seb2014(CompetitionScriptBase):
         self.assign_distance_number()
         self.assign_group_number()
         self.recalculate_standings()
-        # from marketing.utils import send_smses
-        # send_smses()
+        from marketing.utils import send_smses
+        send_smses()
 
     def process_chip_result(self, chip_id, sendsms=True):
         """
