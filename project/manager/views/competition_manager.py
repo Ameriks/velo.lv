@@ -118,6 +118,9 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         elif request.POST.get('action') == 'match_applied_to_participants':
             match_applied_to_participants(competition_id=self.competition.id)
             messages.info(request, 'Veiksmīgi atjaunots')
+        elif request.POST.get('action') == 'recalculate_all_points':
+            self._competition_class.recalculate_all_points()
+            messages.info(request, 'Veiksmīgi atjaunots')
         return super(ManageCompetitionDetail, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
