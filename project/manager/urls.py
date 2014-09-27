@@ -4,7 +4,8 @@ from manager.views import ManageParticipantList, ManageCompetitionList, ManageCo
     ManageDistanceAdminUpdate, ManageTeamList, ManageTeamAppliedUpdate, MultipleSameSlugView, MultipleNumbersView, \
     ResultAssignedToInactiveParticipant, ManageParticipantPDF, ManageResultCreate, DifferNumberSlugView, \
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
-    ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList
+    ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
+    ManageUrlSyncList, ManageUrlSyncUpdate
 from manager.views.results_manage import ManageResultList, ManageResultUpdate
 from team.views import TeamApply
 
@@ -39,6 +40,12 @@ urlpatterns = patterns('',
                        url(r'^competition/(?P<pk>\d+)/result/reports/$', ManageResultReports.as_view(), name='result_reports'),
                        url(r'^competition/(?P<pk>\d+)/application/$', ManageApplicationList.as_view(), name='application_list'),
                        url(r'^competition/(?P<pk>\d+)/application/(?P<pk2>\d+)/$', ManageApplication.as_view(), name='application'),
+
+                       url(r'^competition/(?P<pk>\d+)/urlsync/$', ManageUrlSyncList.as_view(), name='urlsync'),
+                       url(r'^competition/(?P<pk>\d+)/urlsync/(?P<pk2>\d+)/$', ManageUrlSyncUpdate.as_view(), name='urlsync'),
+
+
+
 
                        # This is legacy. To be deleted in next version.
                        url(r'^competition/(?P<pk>\d+)/application/(?P<pk2>\d+)/pay/$', ManageApplicationExternalPay.as_view(), name='application_pay'),

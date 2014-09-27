@@ -287,6 +287,14 @@ class Seb2014(CompetitionScriptBase):
         else:
             pass  # TODO: Create team point recalculation for all stages at the same time
 
+
+    def process_chip_recalculation(self):
+        self.assign_distance_number()
+        self.assign_group_number()
+        self.recalculate_standings()
+        # from marketing.utils import send_smses
+        # send_smses()
+
     def process_chip_result(self, chip_id, sendsms=True):
         """
         Function processes chip result and recalculates all standings

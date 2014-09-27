@@ -21,7 +21,7 @@ from manager.tasks import update_results_for_participant, update_results_for_res
 from payment.models import ActivePaymentChannel
 from payment.utils import create_application_invoice
 from registration.models import Participant, Number, Application
-from results.models import DistanceAdmin, Result, LapResult
+from results.models import DistanceAdmin, Result, LapResult, UrlSync
 from team.models import Member, Team, MemberApplication
 from velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin, GetClassNameMixin
 from django.utils.translation import ugettext as _
@@ -997,3 +997,34 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         return obj
 
+
+class UrlSyncForm(RequestKwargModelFormMixin, forms.ModelForm):
+    class Meta:
+        model = UrlSync
+        fields = ('competition', 'url', 'expires', 'enabled', )
+
+
+    def __init__(self, *args, **kwargs):
+        super(UrlSyncForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+            Row(
+                Column('competition', css_class='col-sm-12'),
+
+            ),
+            Row(
+                Column('url', css_class='col-sm-12'),
+            ),
+            Row(
+                Column('expires', css_class='col-sm-12'),
+            ),
+            Row(
+                Column('enabled', css_class='col-sm-12'),
+            Row(
+                Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
+            ),
+            ),
+
+        )

@@ -6,15 +6,16 @@ from django.utils.text import slugify
 from django.views.generic import UpdateView, TemplateView
 from extra_views import NamedFormsetsMixin, UpdateWithInlinesView, InlineFormSet, CreateWithInlinesView
 from core.formsets import CustomBaseInlineFormSet
-from manager.forms import ResultListSearchForm, ResultForm, ManageLapResultForm
+from manager.forms import ResultListSearchForm, ResultForm, ManageLapResultForm, UrlSyncForm
 from manager.pdfreports import PDFReports
 from manager.tables import ManageResultTable
+from manager.tables.tables import UrlSyncTable
 from manager.views.participant_manage import ManagerPermissionMixin
-from results.models import Result, LapResult
+from results.models import Result, LapResult, UrlSync
 from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
 
 
-__all__ = ['ManageResultList', 'ManageResultUpdate', 'ManageResultCreate', 'ManageResultReports']
+__all__ = ['ManageResultList', 'ManageResultUpdate', 'ManageResultCreate', 'ManageResultReports', 'ManageUrlSyncList', 'ManageUrlSyncUpdate']
 
 
 class ManageResultList(ManagerPermissionMixin, SingleTableViewWithRequest):
@@ -145,3 +146,20 @@ class ManageResultReports(ManagerPermissionMixin, SetCompetitionContextMixin, Te
         response.write(file_obj.getvalue())
         file_obj.close()
         return response
+
+
+class ManageUrlSyncList(ManagerPermissionMixin, SingleTableViewWithRequest):
+    model = UrlSync
+    table_class = UrlSyncTable
+    template_name = 'manager/table.html'
+
+
+class ManageUrlSyncUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, UpdateView):
+    pk_url_kwarg = 'pk2'
+    model = UrlSync
+    template_name = 'manager/participant_form.html'
+    form_class = UrlSyncForm
+
+    def get_success_url(self):
+        return reverse('manager:urlsync', kwargs={'pk': self.kwargs.get('pk')})
+

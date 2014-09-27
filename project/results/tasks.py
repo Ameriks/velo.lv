@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from celery import task
 from django.conf import settings
+from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
 import requests
 import time
@@ -98,8 +99,16 @@ def fetch_results(_id):
 
     processed_line = url_data.current_line
 
+    class_ = load_class(url_data.competition.processing_class)
+    processing_class = class_(url_data.competition.id)
+
     try:
         resp = requests.get(url_data.url)
+
+        if resp.status_code != 200:
+            send_mail("status code !=200", "yes, its running", "webmaster@mans.velo.lv", ('agris@pd.lv', ), fail_silently=True)
+            return
+
         buf = StringIO.StringIO(resp.content)
         file_lines = tuple(buf.readlines())
         lines_to_process = file_lines[processed_line:]
@@ -124,12 +133,13 @@ def fetch_results(_id):
 
             if not scan.is_processed:
                 if url_data.competition.processing_class:
-                    class_ = load_class(url_data.competition.processing_class)
-                    processing_class = class_(url_data.competition.id)
                     result = processing_class.process_chip_result(scan.id)
 
         url_data.current_line = len(file_lines)
         url_data.save()
+
+        processing_class.process_chip_recalculation()
+
     except:
         error = traceback.format_exc()
         Log.objects.create(content_object=url_data, action="Error processing file", params={
