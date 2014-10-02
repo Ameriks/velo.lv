@@ -634,8 +634,8 @@ class Seb2014(CompetitionScriptBase):
                     participant.primary_number = number[0]
                     participant.save()
 
-                if row[24]:
-                    result, created = Result.objects.get_or_create(competition=self.competition, participant=participant, number=number.get(), result_group=row[24] if row[24] else None, points_group=row[25] if row[25] else 0, status=row[23])
+                if row[27]:
+                    result, created = Result.objects.get_or_create(competition=self.competition, participant=participant, number=number.get(), result_group=row[27] if row[27] else None, points_group=row[28] if row[28] else 0, status=row[26])
                     self.recalculate_standing_for_result(result)
                 else:
                     print 'didnt participate'
