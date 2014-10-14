@@ -6,7 +6,8 @@ import pytz
 import xlwt
 import StringIO
 from core.models import Competition
-from registration.models import Participant, Number
+from payment.models import Payment
+from registration.models import Participant, Number, Application
 from results.models import Result, SebStandings
 
 riga_tz = pytz.timezone("Europe/Riga")
@@ -51,6 +52,46 @@ def create_standing_list(competition=None, competition_id=None):
     wbk.save(output)
     return output
 
+
+def payment_list(competition=None, competition_id=None):
+    if not competition and not competition_id:
+        raise Exception('Expected at least one variable')
+    if not competition:
+        competition = Competition.objects.get(id=competition_id)
+    output = StringIO.StringIO()
+
+    wbk = xlwt.Workbook()
+
+    applications = Application.objects.filter(competition_id__in=competition.get_ids(),
+                                              payment_status=Application.PAY_STATUS_PAYED)
+
+    sheet = wbk.add_sheet('Applications')
+    row = 4
+    header_row = (
+        'ID', 'Izveidots', 'Labots', 'Sacensības', 'Statuss', 'www.velo.lv ID', 'Uzņēmums', 'Rēķina numurs', 'Fināla cena',
+        'Ebill kods', 'Ebill Statuss', 'Ebill summa', 'Ebill Kanāls')
+    for col, value in enumerate(header_row):
+        sheet.write(row, col, value)
+    row += 1
+    for application in applications:
+        payments = application.payment_set.filter(status=Payment.STATUS_OK)
+        row_values = (
+            application.id, application.created.date(), application.modified.date(), unicode(application.competition), application.get_payment_status_display(),
+            application.legacy_id, application.company_name, application.external_invoice_nr, application.final_price,
+        )
+        for payment in payments:
+            row_values += (
+                payment.erekins_code, payment.get_status_display(), payment.total, unicode(payment.channel),
+            )
+        for col, value in enumerate(row_values):
+            sheet.write(row, col, value)
+        row += 1
+
+    wbk.save(output)
+    return output
+
+
+
 def create_start_list(competition=None, competition_id=None):
     if not competition and not competition_id:
         raise Exception('Expected at least one variable')
@@ -67,7 +108,6 @@ def create_start_list(competition=None, competition_id=None):
         items = distance.participant_set.filter(competition_id__in=competition.get_ids(),
                                                 is_participating=True).select_related('competition', 'distance',
                                                                                       'price', 'bike_brand', 'primary_number').order_by('distance', 'primary_number__group', 'primary_number__number', 'registration_dt')
-
         if competition.tree_id == 1 or competition.tree_id == 2: # SEB
             prev = competition.get_previous_sibling()
             if prev:
@@ -107,9 +147,16 @@ def create_start_list(competition=None, competition_id=None):
 
         row = 5
         for index, item in enumerate(items, start=1):
+            price = 0.0
+            if item.price:
+                price = item.price.price
+
+                if item.competition.tree_id in (1, 2) and item.competition.level == 1:
+                    price = price  * (100 - item.competition.complex_discount) / 100
+
             row_values = (
                 index, item.id, unicode(item.primary_number), item.slug, unicode(item.competition), unicode(item.distance), item.last_name,
-                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, unicode(item.price),
+                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, price,
                 item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand) if item.bike_brand else '',
                 item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"))
 

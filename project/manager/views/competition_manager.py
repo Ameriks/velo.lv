@@ -9,7 +9,7 @@ from django.views.generic import DetailView, TemplateView
 from core.models import Competition
 from manager.excels.insured import create_insured_list
 from manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
-    create_team_list
+    create_team_list, payment_list
 from manager.tables import ManageCompetitionTable
 from manager.views import ManageApplication
 from manager.views.permission_view import ManagerPermissionMixin
@@ -87,6 +87,14 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
+        elif request.POST.get('action') == 'payment_list':
+            file_obj = payment_list(competition=self.competition)
+            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename=payment_list.xls'
+            response.write(file_obj.getvalue())
+            file_obj.close()
+            return response
+
         elif request.POST.get('action') == 'create_standing_list':
             file_obj = create_standing_list(competition=self.competition)
             response = HttpResponse(mimetype='application/vnd.ms-excel')

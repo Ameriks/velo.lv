@@ -60,7 +60,7 @@ class ActivePaymentChannel(models.Model):
     till_date = models.DateTimeField()
 
     def __unicode__(self):
-        return self.payment_channel
+        return unicode(self.payment_channel)
 
 
 class Payment(TimestampMixin, models.Model):
