@@ -134,7 +134,7 @@ def create_start_list(competition=None, competition_id=None):
         elif competition.id == 35:
             items = items.extra(
                 select={
-                    'last_result_distance': "SELECT r.result_distance FROM results_legacyresult r WHERE r.participant_2014_id=registration_participant.id and r.distance_id = registration_participant.distance_id order by r.result_distance LIMIT 1",
+                    'last_result_distance': "SELECT min(r.result_distance) FROM results_legacyresult r WHERE r.participant_2014_id=registration_participant.id and r.distance_id = registration_participant.distance_id order by r.result_distance LIMIT 1",
                 },
             )
 
