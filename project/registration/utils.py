@@ -3,7 +3,7 @@ from core.models import Competition
 
 def recalculate_participant(participant, children=None, commit=True):
     if not children:
-        participant.competition.get_children()
+        children = participant.competition.get_children()
 
     pre_final_price = participant.final_price
     if (not participant.price and not participant.insurance) or not participant.is_participating or not participant.is_paying:
