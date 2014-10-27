@@ -1,16 +1,41 @@
 from django.db.models import Count, F
 from django_tables2 import SingleTableView
-from manager.tables import ManageParticipantTable, ManageResultNonParticipantTable, ManageFindNumberViewTable
+from manager.tables import ManageParticipantTable, ManageResultNonParticipantTable, ManageFindNumberViewTable, \
+    ManageApplicationTable
 from manager.tables.tables import ManageParticipantDifferSlugTable, ManageParticipantToNumberTable
 from manager.views.permission_view import ManagerPermissionMixin
-from registration.models import Participant, Number
+from payment.models import Payment
+from registration.models import Participant, Number, Application
 from results.models import Result
 from velo.mixins.views import SingleTableViewWithRequest
 
 
 __all__ = [
-    'MultipleSameSlugView', 'MultipleNumbersView', 'ResultAssignedToInactiveParticipant', 'DifferNumberSlugView', 'MatchParticipantToNumberView', 'FindNumberView',
+    'MultipleSameSlugView', 'MultipleNumbersView', 'ResultAssignedToInactiveParticipant', 'DifferNumberSlugView', 'MatchParticipantToNumberView', 'FindNumberView', 'PayedAmountNotEqualView',
 ]
+
+class PayedAmountNotEqualView(ManagerPermissionMixin, SingleTableViewWithRequest):
+    model = Application
+    table_class = ManageApplicationTable
+    template_name = 'manager/table.html'
+    table_pagination = False
+
+    def get_queryset(self):
+        queryset = super(PayedAmountNotEqualView, self).get_queryset()
+        queryset = queryset.filter(competition_id__in=self.competition.get_ids())
+
+        queryset = queryset.extra(
+            # select={
+            #     'participant_payment_sum': "Select sum(pp.final_price) from registration_participant pp where pp.application_id = registration_application.id",
+            #     'payment_amount': 'Select ppp2.total from payment_payment ppp2 where ppp2.object_id=registration_application.id and ppp2.content_type_id=19 and ppp2.status=30 Limit 1'},
+            where=["(Select sum(pp.final_price) from registration_participant pp where pp.application_id = registration_application.id) != (Select max(ppp2.total) from payment_payment ppp2 where ppp2.object_id=registration_application.id and ppp2.content_type_id=19 and ppp2.status=30 Limit 1)"],
+        )
+
+        # queryset = queryset.values("competition", "payment_status", "discount_code", "email", "external_invoice_nr", "participant_payment_sum", "payment_amount")
+
+        return queryset
+
+
 
 class MultipleSameSlugView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Participant

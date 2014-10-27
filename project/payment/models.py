@@ -1,3 +1,5 @@
+# coding=utf-8
+from __future__ import unicode_literals
 from django.contrib.contenttypes import generic
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -28,7 +30,22 @@ class Price(TimestampMixin, models.Model):
 class DiscountCampaign(models.Model):
     title = models.CharField(max_length=50)
     competition = models.ForeignKey('core.Competition')
+    discount_entry_fee_percent = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    discount_entry_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    discount_insurance_percent = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    discount_insurance = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
+    def __unicode__(self):
+        name = ''
+        if self.discount_entry_fee:
+            name = '{0}€ '.format(self.discount_entry_fee)
+        elif self.discount_entry_fee_percent:
+            name = '{0}% '.format(self.discount_entry_fee_percent)
+        if self.discount_insurance:
+            name += 'Apdr.{0}€ '.format(self.discount_insurance)
+        elif self.discount_insurance_percent:
+            name += 'Apdr.{0}% '.format(self.discount_insurance_percent)
+        return name
 
 class DiscountCode(TimestampMixin, models.Model):
     campaign = models.ForeignKey('payment.DiscountCampaign')
@@ -36,6 +53,22 @@ class DiscountCode(TimestampMixin, models.Model):
     usage_times = models.IntegerField(default=1)
     usage_times_left = models.IntegerField(default=1)
     is_active = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return '%s - %s' % (self.code, unicode(self.campaign))
+
+    def calculate_entry_fee(self, fee):
+        if self.campaign.discount_entry_fee:
+            return fee - self.campaign.discount_entry_fee
+        else:
+            return fee * float(100 - self.campaign.discount_entry_fee_percent) / 100
+
+    def calculate_insurance(self, fee):
+        if self.campaign.discount_insurance:
+            return fee - self.campaign.discount_insurance
+        else:
+            return fee * float(100 - self.campaign.discount_insurance_percent) / 100
+
 
 
 class PaymentChannel(models.Model):
@@ -86,6 +119,8 @@ class Payment(TimestampMixin, models.Model):
         (STATUS_PENDING, _('Pending')),
         (STATUS_OK, _('OK')),
     )
+
+    legacy_id = models.IntegerField(blank=True, null=True)
 
     # This model can have relation to either Application or Team
     content_type = models.ForeignKey(ContentType, null=True, blank=True)

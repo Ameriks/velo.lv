@@ -9,6 +9,7 @@ from django.template.defaultfilters import slugify
 import uuid
 from core.models import Choices, CustomSlug
 from payment.models import Payment
+from registration.utils import recalculate_participant
 from velo.mixins.models import TimestampMixin, StatusMixin
 from django_countries.fields import CountryField
 from velo.utils import load_class
@@ -125,6 +126,10 @@ class Participant(TimestampMixin, models.Model):
 
     comment = models.TextField(blank=True)
 
+    total_entry_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    total_insurance_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    final_price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+
     class Meta:
         ordering = ('distance', 'created')
         verbose_name = _('participant')
@@ -197,6 +202,9 @@ class Participant(TimestampMixin, models.Model):
 
         if not self.registration_dt:
             self.registration_dt = timezone.now()
+
+        # Recalculate totals. # TODO: This should be done when creating payment, not on any save.
+        recalculate_participant(self, commit=False)
 
         obj = super(Participant, self).save(*args, **kwargs)
 

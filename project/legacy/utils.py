@@ -11,13 +11,14 @@ import pytz
 import requests
 from StringIO import StringIO
 from legacy.models import Ev68RUsers, Ev68RVeloCompetitions, Ev68RVeloDistance, Ev68RVeloPrice, Ev68RVeloInsurance, \
-    Ev68RVeloApplications, Ev68RVeloParticipations, Ev68RVeloResultsSebTotal, Ev68RVeloTeams, Ev68RVeloResults
+    Ev68RVeloApplications, Ev68RVeloParticipations, Ev68RVeloResultsSebTotal, Ev68RVeloTeams, Ev68RVeloResults, \
+    Ev68RVeloPayments, Ev68RVeloCouponCodes
 from core.models import User, Choices, Competition, Distance, Insurance, CustomSlug
 from Crypto.Cipher import AES
 from django.conf import settings
 from social.apps.django_app.default.models import UserSocialAuth
 
-from payment.models import Price
+from payment.models import Price, DiscountCode, Payment, DiscountCampaign
 from registration.models import Application, Participant
 from results.models import LegacySEBStandingsResult, LegacyResult
 from team.models import Team, Member, MemberApplication
@@ -389,6 +390,51 @@ def sync_applications():
             for d in data:
                 setattr(appl, d, data.get(d))
             appl.save()
+
+
+def sync_payments():
+    dcampaign, created = DiscountCampaign.objects.get_or_create(id=3, title='SEB 37.5%', competition_id=25)
+    payment_channel_mapping = {
+        'LKDFSwedbank': 2,
+        'LKDFSEB': 3,
+        'LKDFcard': 4,
+        'LKDFbill': 1,
+        'IJSASwedbank': 6,
+        'IJSASEB': 7,
+        'IJSAcard': 8,
+        'IJSAbill': 5,
+    }
+
+    applications = Application.objects.exclude(legacy_id=None).filter(final_price=0.00)
+    for application in applications:
+        legacy_payments = Ev68RVeloPayments.objects.filter(application_id=application.legacy_id).order_by('erekins_status')
+
+        for legacy_payment in legacy_payments:
+            application.final_price = legacy_payment.total_lvl
+            application.total_entry_fee = legacy_payment.total_person_lvl
+            application.total_insurance_fee = legacy_payment.total_insurance_lvl
+
+            if legacy_payment.coupon_id:
+                cc = Ev68RVeloCouponCodes.objects.get(id=legacy_payment.coupon_id)
+                dc, created = DiscountCode.objects.get_or_create(code=cc.coupon_code, defaults={'usage_times': 1, 'campaign': dcampaign})
+                dc.usage_times_left = cc.usage_times_left
+                dc.save()
+                application.discount_code = dc
+
+
+            print legacy_payment.id
+            payment_defaults = {
+                'content_object': application,
+                'channel_id': payment_channel_mapping.get('%s%s' % (legacy_payment.paymentchannelbig, legacy_payment.payment_channel)),
+                'erekins_code': legacy_payment.code or '',
+                'total': legacy_payment.total_lvl,
+                'status': legacy_payment.erekins_status or Payment.STATUS_NEW,
+            }
+           # application.payment_status = legacy_payment.erekins_status
+            print payment_defaults
+            application.save()
+            payment, created = Payment.objects.get_or_create(legacy_id=legacy_payment.id, defaults=payment_defaults)
+
 
 def sync_participants():
     participants = Ev68RVeloParticipations.objects.filter(competition_id__in=(37, 41, ), distance_id__gt=0)  # 40,  removed complex

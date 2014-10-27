@@ -5,7 +5,7 @@ from manager.views import ManageParticipantList, ManageCompetitionList, ManageCo
     ResultAssignedToInactiveParticipant, ManageParticipantPDF, ManageResultCreate, DifferNumberSlugView, \
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
-    ManageUrlSyncList, ManageUrlSyncUpdate
+    ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView
 from manager.views.results_manage import ManageResultList, ManageResultUpdate
 from team.views import TeamApply
 
@@ -69,8 +69,7 @@ urlpatterns = patterns('',
                        url(r'^competition/(?P<pk>\d+)/analytics/results/incorrectly/assigned/$', ResultAssignedToInactiveParticipant.as_view(), name='analytics_results_incorrect'),
 
                        url(r'^competition/(?P<pk>\d+)/analytics/unmatched/$', FindNumberView.as_view(), name='analytics_find_unmatched_participant'),
-
-
+                       url(r'^competition/(?P<pk>\d+)/analytics/payment_mismatch/$', PayedAmountNotEqualView.as_view(), name='analytics_find_payment_mismatch'),
 
 
 
