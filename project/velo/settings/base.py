@@ -35,7 +35,7 @@ ALLOWED_HOSTS = ['.velo.lv', ]
 
 
 RAVEN_CONFIG = {
-    'dsn': 'http://d705b5ab401a485fbf0fd2f275984224:{0}@{1}:8050/2'.format(os.environ['RAVEN_KEY'], os.environ['RAVEN_HOST']),
+    'dsn': 'https://d705b5ab401a485fbf0fd2f275984224:{0}@{1}/2'.format(os.environ['RAVEN_KEY'], os.environ['RAVEN_HOST']),
 }
 
 INSTALLED_APPS = (
@@ -74,6 +74,7 @@ INSTALLED_APPS = (
     'marketing',
     'flatpages',
     'gallery',
+   # 'legacy',
 )
 
 MIDDLEWARE_CLASSES = (
