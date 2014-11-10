@@ -111,7 +111,7 @@ fi
 if [ -z "$APP_COMPONENTS" ] || [ ! -z "`echo $APP_COMPONENTS | grep duplicity`" ] ; then
     cat << EOF >> /etc/cron.daily/duplicity
 #!/bin/sh
-duplicity --encrypt-key ${BACKUP_BUCKET_ENC_KEY} --exclude /mnt/velo_media/gallery --exclude /mnt/velo_media/easy_thumbnails --full-if-older-than 30D "/mnt/velo_media" ${BACKUP_BUCKET} > /var/log/duplicity.log
+duplicity --encrypt-key ${BACKUP_BUCKET_ENC_KEY} --exclude /mnt/velo_media/gallery --exclude /mnt/velo_media/easy_thumbnails --archive-dir /app/.duplicity/ --full-if-older-than 30D "/mnt/velo_media" ${BACKUP_BUCKET} > /var/log/duplicity.log
 EOF
 chmod +x /etc/cron.daily/duplicity
 
