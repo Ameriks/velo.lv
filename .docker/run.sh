@@ -114,6 +114,20 @@ if [ -z "$APP_COMPONENTS" ] || [ ! -z "`echo $APP_COMPONENTS | grep duplicity`" 
 duplicity --encrypt-key ${BACKUP_BUCKET_ENC_KEY} --exclude /mnt/velo_media/gallery --exclude /mnt/velo_media/easy_thumbnails --full-if-older-than 30D "/mnt/velo_media" ${BACKUP_BUCKET} > /var/log/duplicity.log
 EOF
 chmod +x /etc/cron.daily/duplicity
+
+    cat << EOF >> $SUPERVISOR_CONF
+[program:cron]
+priority=999
+directory=/root/
+command=cron -f
+user=root
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/cron.log
+stderr_logfile=/var/log/cron.log
+
+EOF
+
 fi
 
 
