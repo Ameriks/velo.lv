@@ -117,14 +117,12 @@ chmod +x /etc/cron.daily/duplicity
 
     cat << EOF >> $SUPERVISOR_CONF
 [program:cron]
-priority=999
-directory=/root/
-command=cron -f
-user=root
-autostart=true
-autorestart=true
+command = cron -f -L 15
+startsecs = 5
+stopwaitsecs = 3600
+stopasgroup = false
+killasgroup = true
 stdout_logfile=/var/log/cron.log
-stderr_logfile=/var/log/cron.log
 
 EOF
 

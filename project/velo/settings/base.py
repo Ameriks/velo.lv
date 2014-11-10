@@ -33,6 +33,11 @@ AUTH_USER_MODEL = 'core.User'
 
 ALLOWED_HOSTS = ['.velo.lv', ]
 
+
+RAVEN_CONFIG = {
+    'dsn': 'http://d705b5ab401a485fbf0fd2f275984224:{0}@{1}:8050/2'.format(os.environ['RAVEN_KEY'], os.environ['RAVEN_HOST']),
+}
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',  # For wiki
     'social.apps.django_app.default',
+    'raven.contrib.django.raven_compat',
     'south',
     'mptt',
     'django_tables2',

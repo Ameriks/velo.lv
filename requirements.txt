@@ -43,6 +43,7 @@ django-mailgun==0.2.2
 django-ssl-slapper==1.1
 pyinotify==0.9.4
 django-sekizai==0.7
+raven==5.1.0
 django-extensions
 django-debug-toolbar
 django-debug-panel
