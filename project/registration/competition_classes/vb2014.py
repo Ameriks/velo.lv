@@ -529,7 +529,6 @@ AND r.id = res2.id
             self.process_chip_result(chip.id, send_sms)
 
     def generate_diploma(self, result):
-        raise NotImplementedError
         output = StringIO.StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
