@@ -33,11 +33,6 @@ AUTH_USER_MODEL = 'core.User'
 
 ALLOWED_HOSTS = ['.velo.lv', ]
 
-
-RAVEN_CONFIG = {
-    'dsn': 'https://d705b5ab401a485fbf0fd2f275984224:{0}@{1}/2'.format(os.environ['RAVEN_KEY'], os.environ['RAVEN_HOST']),
-}
-
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',

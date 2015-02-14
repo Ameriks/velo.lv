@@ -48,4 +48,5 @@ raven==5.2.0
 ipython
 django-extensions
 django-debug-toolbar
+django-debug-toolbar-template-timings
 django-debug-panel

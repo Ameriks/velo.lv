@@ -1,14 +1,3 @@
-# This is required for docker dev environment to setup variables in SSH connection.
-
-import re, os
-from velo.utils import listdir
-
-for envfile in listdir("/etc/container_environment"):
-    name = os.path.basename(envfile)
-    with open("/etc/container_environment/" + envfile, "r") as f:
-        value = re.sub('\n\Z', '', f.read())
-    os.environ[name] = value
-
 from .base import *
 
 DEBUG = True
@@ -23,8 +12,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/var/log/emails'
 
 
-INSTALLED_APPS += ('debug_toolbar', 'django_extensions', )
-INTERNAL_IPS = ('127.0.0.1', '192.168.56.1', )
+INSTALLED_APPS += ('debug_toolbar', 'django_extensions', 'template_timings_panel', )
+INTERNAL_IPS = ('87.99.89.245', '87.99.89.245, 172.17.42.1', '192.168.59.3')
 
 MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware', )
 
@@ -42,14 +31,12 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.signals.SignalsPanel',
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
+    'template_timings_panel.panels.TemplateTimings.TemplateTimings',
 ]
 
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
-
-
-TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 
 
 CACHES = {
@@ -60,7 +47,7 @@ CACHES = {
     },
 }
 
-ALLOWED_HOSTS = ['tst.velo.lv:8000', ]
+ALLOWED_HOSTS = ['docker.local:58000', ]
 
 
 LOGGING.get('loggers', {}).get('django.db.backends', {}).update({'level': 'DEBUG'})
@@ -73,14 +60,14 @@ DATABASES = {
         'NAME': 'velolv',
         'USER': 'velolv',
         'PASSWORD': os.environ['PGSQL_PASS'],
-        'HOST': '192.168.106.100',
+        'HOST': '192.168.59.103',
     },
-    # 'legacy': {
-    #     'NAME': 'velo',
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'USER': 'root',
-    #     'PASSWORD': '1234567890',
-    #     'HOST': '192.168.56.1',
-    #     'PORT': '13306'
-    # }
+    'legacy': {
+        'NAME': 'velo',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'whazaa',
+        'PASSWORD': os.environ['LEGACY_MYSQL_PASS'],
+        'HOST': '91.135.19.3',
+        'PORT': '3306'
+    },
 }
