@@ -6,6 +6,7 @@ South==1.0.2
 Unipath==1.0
 Pillow==2.7.0
 django-crispy-forms==1.4.0
+cryptography==0.7.2
 pyOpenSSL==0.14 # for requests to support SNI
 ndg-httpsclient==0.3.3 # for requests to support SNI
 pyasn1==0.1.7 # for requests to support SNI
