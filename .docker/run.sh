@@ -116,9 +116,4 @@ if [ ! -z "$EXTRA_REQUIREMENTS" ]; then
     pip install $EXTRA_REQUIREMENTS
 fi
 
-if [ -z "$APP_COMPONENTS" ] || [ ! -z "`echo $APP_COMPONENTS | grep nginx`" ] ; then
-    echo "running nginx"
-    nginx
-fi
-
 supervisord -c /etc/supervisor/supervisord.conf -n
