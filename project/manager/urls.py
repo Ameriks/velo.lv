@@ -6,6 +6,7 @@ from manager.views import ManageParticipantList, ManageCompetitionList, ManageCo
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
     ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView
+from manager.views.payment_manage import ManagePaymentList
 from manager.views.results_manage import ManageResultList, ManageResultUpdate
 from team.views import TeamApply
 
@@ -44,7 +45,7 @@ urlpatterns = patterns('',
                        url(r'^competition/(?P<pk>\d+)/urlsync/$', ManageUrlSyncList.as_view(), name='urlsync'),
                        url(r'^competition/(?P<pk>\d+)/urlsync/(?P<pk2>\d+)/$', ManageUrlSyncUpdate.as_view(), name='urlsync'),
 
-
+                        url(r'^competition/(?P<pk>\d+)/payment/$', ManagePaymentList.as_view(), name='payment'),
 
 
                        # This is legacy. To be deleted in next version.

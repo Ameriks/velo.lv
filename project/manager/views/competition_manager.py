@@ -157,7 +157,10 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             if self.object.level == 2:
                 parent_dict = Participant.objects.filter(is_participating=True, competition=self.competition.parent, distance=distance).exclude(price=None).aggregate(Sum('price__price'), Count('id'))
                 parent_count = parent_dict.get('id__count')
-                parent_income = parent_dict.get('price__price__sum', 0) * (100 - self.competition.parent.complex_discount) / 100
+                try:
+                    parent_income = parent_dict.get('price__price__sum', 0) * (100 - self.competition.parent.complex_discount) / 100
+                except TypeError:
+                    parent_income = None
 
             income_dict = Participant.objects.filter(is_participating=True, competition=self.competition, distance=distance).exclude(price=None).aggregate(Sum('price__price'), Sum('discount_amount'), Count('id'))
             income = (income_dict.get('price__price__sum') or 0) - (income_dict.get('discount_amount__sum') or 0)

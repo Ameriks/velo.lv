@@ -7,3 +7,4 @@ from .number_manage import *
 from .competition_manager import *
 from .analytics_manage import *
 from .results_manage import *
+from .payment_manage import *

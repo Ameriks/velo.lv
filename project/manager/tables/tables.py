@@ -7,6 +7,7 @@ import django_tables2 as tables
 from django_tables2.columns import LinkColumn, Column
 from django.utils.translation import ugettext_lazy as _, ugettext
 from core.models import Competition
+from payment.models import Price
 from results.models import DistanceAdmin, Result, UrlSync
 from team.models import MemberApplication, Team
 from velo.mixins.table import GetRequestTableKwargs
@@ -276,5 +277,17 @@ class UrlSyncTable(GetRequestTableKwargs, tables.Table):
         attrs = {"class": "table table-striped table-hover"}
         fields = ("id", "competition", "url", "current_line", "enabled", "expires", "total_run_count")
         empty_text = _("There are no Sync tasks")
+        per_page = 100
+        template = "bootstrap/table.html"
+
+
+class ManagePaymentTable(GetRequestTableKwargs, tables.Table):
+    id = LinkColumn('manager:urlsync', args=[A('competition_id'), A('id')], accessor="id", verbose_name=_('ID'), )
+
+    class Meta:
+        model = Price
+        attrs = {"class": "table table-striped table-hover"}
+        fields = ("id", "distance", "from_year", "till_year", "price", "start_registering", "end_registering")
+        empty_text = _("There are no pricing records.")
         per_page = 100
         template = "bootstrap/table.html"

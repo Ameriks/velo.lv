@@ -254,7 +254,6 @@ class ApplicationListSearchForm(RequestKwargModelFormMixin, forms.Form):
         )
 
 
-
 class ParticipantListSearchForm(RequestKwargModelFormMixin, forms.Form):
     distance = forms.ChoiceField(choices=(), required=False)
     group = forms.ChoiceField(choices=(), required=False)
