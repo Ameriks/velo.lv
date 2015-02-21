@@ -18,7 +18,7 @@ from django.utils import timezone
 from core.models import Competition, Distance, Insurance
 from manager.select2_fields import NumberChoices, UserChoices, NumberChoice, ParticipantChoices, NumberAllChoices
 from manager.tasks import update_results_for_participant, update_results_for_result
-from payment.models import ActivePaymentChannel
+from payment.models import ActivePaymentChannel, Price
 from payment.utils import create_application_invoice
 from registration.models import Participant, Number, Application
 from results.models import DistanceAdmin, Result, LapResult, UrlSync
@@ -1021,6 +1021,56 @@ class UrlSyncForm(RequestKwargModelFormMixin, forms.ModelForm):
             ),
             Row(
                 Column('enabled', css_class='col-sm-12'),
+            Row(
+                Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
+            ),
+            ),
+
+        )
+
+class PriceForm(RequestKwargModelFormMixin, forms.ModelForm):
+    competition = None
+
+    class Meta:
+        model = Price
+        fields = ('distance', 'from_year', 'till_year', 'price', 'start_registering', 'end_registering')
+
+    class Media:
+        js = ('plugins/moment.min.js',
+              'plugins/datetimepicker/bootstrap-datetimepicker.min.js',
+              'coffee/manager/price_form.js')
+        css = {
+            'all': (
+              'plugins/datetimepicker/bootstrap-datetimepicker.min.css',
+            ),
+        }
+
+    def save(self, commit=True):
+        self.instance.competition = self.competition
+        return super(PriceForm, self).save(commit)
+
+
+    def __init__(self, *args, **kwargs):
+        super(PriceForm, self).__init__(*args, **kwargs)
+        self.competition = Competition.objects.get(id=self.request_kwargs.get('pk'))
+
+        self.fields['distance'].choices = [('', '------')] + [(obj.id, unicode(obj)) for obj in self.competition.get_distances()]
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+            Row(
+                Column('distance', css_class='col-sm-6'),
+                Column('price', css_class='col-sm-6'),
+
+            ),
+            Row(
+                Column('from_year', css_class='col-sm-6'),
+                Column('till_year', css_class='col-sm-6'),
+            ),
+            Row(
+                Column('start_registering', css_class='col-sm-6'),
+                Column('end_registering', css_class='col-sm-6'),
             Row(
                 Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
             ),

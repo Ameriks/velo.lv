@@ -281,8 +281,8 @@ class UrlSyncTable(GetRequestTableKwargs, tables.Table):
         template = "bootstrap/table.html"
 
 
-class ManagePaymentTable(GetRequestTableKwargs, tables.Table):
-    id = LinkColumn('manager:urlsync', args=[A('competition_id'), A('id')], accessor="id", verbose_name=_('ID'), )
+class ManagePriceTable(GetRequestTableKwargs, tables.Table):
+    id = LinkColumn('manager:price', args=[A('competition_id'), A('id')], accessor="id", verbose_name=_('ID'), )
 
     class Meta:
         model = Price

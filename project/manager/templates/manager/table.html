@@ -6,6 +6,9 @@
 
 
 {% block main %}
+    {% if add_link %}
+        <a href="{{ add_link }}">ADD</a>
+    {% endif %}
     {% if search_form %}
     {% crispy search_form %}
     {% endif %}

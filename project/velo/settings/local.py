@@ -8,8 +8,8 @@ INSTALLED_APPS += (
     'rosetta',
 )
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = '/var/log/emails'
+EMAIL_HOST = '192.168.59.3'
+EMAIL_PORT = 1025
 
 
 INSTALLED_APPS += ('debug_toolbar', 'django_extensions', 'template_timings_panel', )

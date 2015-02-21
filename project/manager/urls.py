@@ -5,8 +5,7 @@ from manager.views import ManageParticipantList, ManageCompetitionList, ManageCo
     ResultAssignedToInactiveParticipant, ManageParticipantPDF, ManageResultCreate, DifferNumberSlugView, \
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
-    ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView
-from manager.views.payment_manage import ManagePaymentList
+    ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView, ManagePriceList, ManagePriceCreate, ManagePriceUpdate
 from manager.views.results_manage import ManageResultList, ManageResultUpdate
 from team.views import TeamApply
 
@@ -45,8 +44,9 @@ urlpatterns = patterns('',
                        url(r'^competition/(?P<pk>\d+)/urlsync/$', ManageUrlSyncList.as_view(), name='urlsync'),
                        url(r'^competition/(?P<pk>\d+)/urlsync/(?P<pk2>\d+)/$', ManageUrlSyncUpdate.as_view(), name='urlsync'),
 
-                        url(r'^competition/(?P<pk>\d+)/payment/$', ManagePaymentList.as_view(), name='payment'),
-
+                        url(r'^competition/(?P<pk>\d+)/price/$', ManagePriceList.as_view(), name='price_list'),
+                        url(r'^competition/(?P<pk>\d+)/price/add/$', ManagePriceCreate.as_view(), name='price'),
+                        url(r'^competition/(?P<pk>\d+)/price/(?P<pk2>\d+)/$', ManagePriceUpdate.as_view(), name='price'),
 
                        # This is legacy. To be deleted in next version.
                        url(r'^competition/(?P<pk>\d+)/application/(?P<pk2>\d+)/pay/$', ManageApplicationExternalPay.as_view(), name='application_pay'),

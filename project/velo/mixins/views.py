@@ -147,6 +147,8 @@ class SetCompetitionContextMixin(object):
 
 
 class SingleTableViewWithRequest(SetCompetitionContextMixin, SingleTableView):
+    add_link = None
+
     def table_order_by(self):
         return None
 
@@ -155,6 +157,7 @@ class SingleTableViewWithRequest(SetCompetitionContextMixin, SingleTableView):
         table = self.get_table(request=self.request, request_kwargs=self.kwargs, order_by=self.table_order_by())
         context[self.get_context_table_name(table)] = table
         context.update({'competition': self.competition})
+        context.update({'add_link': self.add_link})
         return context
 
 
