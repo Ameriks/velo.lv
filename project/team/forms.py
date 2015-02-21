@@ -168,8 +168,7 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
 
     class Media:
         js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
-              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js', 'plugins/typeahead.js/bloodhound.min.js',
-              'plugins/typeahead.js/typeahead.jquery.min.js')
+              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js', 'plugins/typeahead.js/typeahead.bundle.min.js')
         css = {
             'all': ('plugins/datepicker/datepicker.css', )
         }

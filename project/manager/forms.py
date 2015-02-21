@@ -444,9 +444,8 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
     class Media:
         js = ('plugins/jquery.maskedinput.js',
               'plugins/mailgun_validator.js',
-              'plugins/typeahead.js/bloodhound.min.js',
-              'plugins/typeahead.js/typeahead.jquery.min.js',
-              'plugins/handlebars-v1.3.0.js',
+              'plugins/typeahead.js/typeahead.bundle.min.js',
+              'plugins/handlebars-v2.0.0.js',
               'plugins/moment.min.js',
               'plugins/datetimepicker/bootstrap-datetimepicker.min.js',
               'coffee/manager/participant_add.js')

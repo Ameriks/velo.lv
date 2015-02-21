@@ -179,12 +179,18 @@ class ParticipantSearchView(JsonRequestResponseMixin, ListView):
 
         queryset = queryset.filter(is_participating=True)
 
-        queryset = queryset.select_related('competition', 'distance')
+        queryset = queryset.select_related('competition', 'distance').order_by('-competition__competition_date', 'last_name')
 
         kind = self.kwargs.get('kind')
-        search = self.request.GET.get('search')
+        search = self.request.GET.get('search', '')
 
-        queryset = queryset.extra(where=["to_char(birthday, 'YYYY-MM-DD') LIKE %s OR ssn LIKE %s OR full_name LIKE %s"], params=["%{0}%".format(search), "%{0}%".format(search.replace('-', '')), "%{0}%".format(search), ])
+        search_slug = ''
+        if search:
+            search_slug = slugify(search)
+
+
+
+        queryset = queryset.extra(where=["to_char(birthday, 'YYYY-MM-DD') LIKE %s OR ssn LIKE %s OR slug LIKE %s"], params=["%{0}%".format(search), "%{0}%".format(search.replace('-', '')), "%{0}%".format(search_slug), ])
 
         if not self.request.user.is_authenticated():
             queryset = queryset.filter(created_by=-1)

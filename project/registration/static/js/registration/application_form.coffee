@@ -2,9 +2,44 @@
   update_every_line(row)
 
 @Participant_inline_class_removed = (row) ->
-  console.log 'removed'
+  if (typeof console == "object")
+    console.log 'removed'
+
+
+set_typeahead_action = (item) ->
+  $(item).on "click", ->
+      ev = $.Event("keydown")
+      ev.keyCode = ev.which = 40
+      $(this).trigger(ev)
+      return true
+
+  $(item).on 'typeahead:selected', (e, datum) ->
+    parent = $(item).parents('.item')
+    if datum.country
+      $("select[name$='country']", parent).val(datum.country).change()
+
+    if datum.gender
+      $("select[name$='gender']", parent).val(datum.gender).change()
+    else
+      last_char = datum.first_name.slice(-1).toLowerCase()
+      if last_char == 'a' or last_char == 'e'
+        $("select[name$='gender']", parent).val('F')
+      else
+        $("select[name$='gender']", parent).val('M')
+
+    $("input[name$='first_name']", parent).typeahead('val',datum.first_name)
+    $("input[name$='last_name']", parent).typeahead('val',datum.last_name)
+
+    $("input[name$='birthday']", parent).val(datum.birthday).change()
+    $("input[name$='ssn']", parent).val(datum.ssn).change()
+    $("input[name$='team_name']", parent).typeahead('val',datum.team_name)
+    $("input[name$='phone_number']", parent).val(datum.phone_number).change()
+    $("input[name$='email']", parent).val(datum.email).change()
+    $("select[name$='bike_brand']", parent).val(datum.bike_brand).change()
+
 
 teams = null
+participantSearch = null
 
 parseDate = (input) ->
   parts = input.split('-')
@@ -125,12 +160,45 @@ update_every_line = (row) ->
     source: teams.ttAdapter()
   })
 
+  $("input[name$='first_name']", row).typeahead
+    minLength: 0,
+
+     displayKey: 'first_name'
+     source: participantSearch.ttAdapter()
+     templates:
+       suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
+
+  set_typeahead_action $("input[name$='first_name']", row)
+
+  $("input[name$='last_name']", row).typeahead
+    minLength: 0,
+
+     displayKey: 'last_name'
+     source: participantSearch.ttAdapter()
+     templates:
+       suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
+
+  set_typeahead_action $("input[name$='last_name']", row)
+
+
+
+
   ""
 
 
 
 
 $ ->
+  participantSearch = new Bloodhound
+    datumTokenizer: (d) ->
+      Bloodhound.tokenizers.whitespace(d.val)
+    queryTokenizer: Bloodhound.tokenizers.whitespace
+    prefetch: '/lv/sacensibas/participant/search.json'
+    remote:
+      url: '/lv/sacensibas/participant/search.json?search=%QUERY'
+
+  participantSearch.initialize();
+
 
   teams = new Bloodhound
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('team_name')

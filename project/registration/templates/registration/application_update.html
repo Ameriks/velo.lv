@@ -3,11 +3,11 @@
 
 {% block js %}
     {{ block.super }}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/{{ form.get_app_label }}_form.js"></script>
     {{ form.media.js }}
     {% for inline in inlines %}
         {{ inline.media.js }}
     {% endfor %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/{{ form.get_app_label }}_form.js"></script>
 {% endblock js %}
 
 {% block css %}
