@@ -188,26 +188,28 @@
       displayKey: 'team_name',
       source: teams.ttAdapter()
     });
-    $("input[name$='first_name']", row).typeahead({
-      minLength: 0
-    }, {
-      displayKey: 'first_name',
-      source: participantSearch.ttAdapter(),
-      templates: {
-        suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
-      }
-    });
-    set_typeahead_action($("input[name$='first_name']", row));
-    $("input[name$='last_name']", row).typeahead({
-      minLength: 0
-    }, {
-      displayKey: 'last_name',
-      source: participantSearch.ttAdapter(),
-      templates: {
-        suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
-      }
-    });
-    set_typeahead_action($("input[name$='last_name']", row));
+    if (!row.hasClass('noadd')) {
+      $("input[name$='first_name']", row).typeahead({
+        minLength: 0
+      }, {
+        displayKey: 'first_name',
+        source: participantSearch.ttAdapter(),
+        templates: {
+          suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
+        }
+      });
+      set_typeahead_action($("input[name$='first_name']", row));
+      $("input[name$='last_name']", row).typeahead({
+        minLength: 0
+      }, {
+        displayKey: 'last_name',
+        source: participantSearch.ttAdapter(),
+        templates: {
+          suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
+        }
+      });
+      set_typeahead_action($("input[name$='last_name']", row));
+    }
     return "";
   };
 

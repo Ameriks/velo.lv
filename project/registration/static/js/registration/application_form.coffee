@@ -160,25 +160,26 @@ update_every_line = (row) ->
     source: teams.ttAdapter()
   })
 
-  $("input[name$='first_name']", row).typeahead
-    minLength: 0,
+  if !row.hasClass('noadd')
+    $("input[name$='first_name']", row).typeahead
+      minLength: 0,
 
-     displayKey: 'first_name'
-     source: participantSearch.ttAdapter()
-     templates:
-       suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
+       displayKey: 'first_name'
+       source: participantSearch.ttAdapter()
+       templates:
+         suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
 
-  set_typeahead_action $("input[name$='first_name']", row)
+    set_typeahead_action $("input[name$='first_name']", row)
 
-  $("input[name$='last_name']", row).typeahead
-    minLength: 0,
+    $("input[name$='last_name']", row).typeahead
+      minLength: 0,
 
-     displayKey: 'last_name'
-     source: participantSearch.ttAdapter()
-     templates:
-       suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
+       displayKey: 'last_name'
+       source: participantSearch.ttAdapter()
+       templates:
+         suggestion: Handlebars.compile('<p><strong>{{full_name}}</strong></p>')
 
-  set_typeahead_action $("input[name$='last_name']", row)
+    set_typeahead_action $("input[name$='last_name']", row)
 
 
 
