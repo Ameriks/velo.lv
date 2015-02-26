@@ -275,14 +275,14 @@ class SEBCompetitionBase(CompetitionScriptBase):
         Function iterates through all standings and assign place based on total points, total seconds and points in last stage
         """
         for distance in self.competition.get_distances().exclude(id=self.BERNU_DISTANCE_ID):
-            all_standings = SebStandings.objects.filter(competition=self.competition.parent, distance=distance).order_by('-distance_total', 'distance_total_seconds', '-distance_points7')
+            all_standings = SebStandings.objects.filter(competition=self.competition.parent, distance=distance).order_by('-distance_total', '-distance_points7', 'distance_total_seconds')
             for index, standing in enumerate(all_standings, start=1):
                 standing.distance_place = index
                 standing.save()
 
         for distance in self.competition.get_distances():
             for group in self.groups.get(distance.id, ()):
-                all_standings = SebStandings.objects.filter(competition=self.competition.parent, distance=distance, participant__group=group).order_by('-group_total', 'distance_total_seconds', '-distance_points7')
+                all_standings = SebStandings.objects.filter(competition=self.competition.parent, distance=distance, participant__group=group).order_by('-group_total', '-distance_points7', 'distance_total_seconds', )
                 for index, standing in enumerate(all_standings, start=1):
                     standing.group_place = index
                     standing.save()
