@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-13 17:16+0000\n"
+"POT-Creation-Date: 2015-02-26 11:28+0000\n"
 "PO-Revision-Date: 2014-05-17 20:30+0136\n"
 "Last-Translator:   <agris@pd.lv>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,22 +19,22 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 "X-Translated-Using: django-rosetta 0.7.4\n"
 
-#: models.py:43
+#: models.py:40
 msgid "Supporter"
 msgstr "Atbalstītāji"
 
-#: models.py:45
+#: models.py:42
 msgid "Partner"
 msgstr "Partneri"
 
-#: models.py:46
+#: models.py:43
 msgid "Technical Partner"
 msgstr "Tehniskie partneri"
 
-#: models.py:48
+#: models.py:45
 msgid "Sponsor"
 msgstr "Sponsori"
 
-#: models.py:49
+#: models.py:46
 msgid "General Sponsor"
 msgstr "Ģenerālsponsors"

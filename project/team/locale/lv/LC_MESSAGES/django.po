@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-13 17:16+0000\n"
+"POT-Creation-Date: 2015-02-26 11:29+0000\n"
 "PO-Revision-Date: 2014-06-30 18:05+0136\n"
 "Last-Translator: Agris Ameriks <agris@pd.lv>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,26 +23,26 @@ msgstr ""
 msgid "Invalid Social Security Number."
 msgstr "Kļūdains personas kods."
 
-#: forms.py:76
+#: forms.py:78
 #, python-brace-format
 msgid "Member with his SSN is already registered in other team - {0}."
 msgstr "Dalībnieks ar šādu Personas kodu jau ir reģistrējies citā komandā - {0}."
 
-#: forms.py:87
+#: forms.py:94
 #, python-brace-format
 msgid "Member with this First Name and Last Name is already registered in other team - {0}."
 msgstr "Dalībnieks ar šādu vārdu un uzvārdu jau ir reģistrējies citā komandā - {0}."
 
-#: forms.py:179
+#: forms.py:193
 msgid "Team with such title already exist."
 msgstr "Komanda ar šādu nosaukumu jau eksistē."
 
-#: forms.py:222
+#: forms.py:241
 #, python-format
 msgid "Pay for %s"
 msgstr "Maksāt par %s"
 
-#: forms.py:259
+#: forms.py:278
 msgid "Save"
 msgstr "Saglabāt"
 
@@ -118,33 +118,33 @@ msgstr "Rezervē"
 msgid "Kind"
 msgstr "Tips"
 
-#: tables.py:24
+#: tables.py:23
 msgid "There are no teams"
 msgstr "Nav komandu"
 
-#: tables.py:33
+#: tables.py:30
 msgid "Competition"
 msgstr "Sacensības"
 
-#: tables.py:38
+#: tables.py:35
 msgid "Apply"
 msgstr "Pieteikties"
 
-#: tables.py:47
+#: tables.py:44
 msgid "You haven't created any official team."
 msgstr "Jūs neesat izveidojis nevienu oficiālo komandu."
 
-#: views.py:360
+#: views.py:352
 #, python-format
 msgid "Too many team members marked as participants. MAX-%i"
 msgstr "Pārāk daudz dalībnieki atzīmēti, kā ieskaites braucēji. Maksimums - %i"
 
-#: views.py:362
+#: views.py:354
 #, python-format
 msgid "Too many team members marked as reserve. MAX-%i"
 msgstr "Pārāk daudz dalībnieki atzīmēti, kā rezerves braucēji. Maksimums - %i"
 
-#: views.py:382
+#: views.py:374
 msgid "Successfuly saved."
 msgstr "Veiksmīgi saglabāts."
 

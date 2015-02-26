@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-13 17:16+0000\n"
+"POT-Creation-Date: 2015-02-26 11:28+0000\n"
 "PO-Revision-Date: 2014-08-13 20:08+0136\n"
 "Last-Translator: Agris Ameriks <agris@pd.lv>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,67 +39,67 @@ msgstr "Jaunumu e-pasti"
 msgid "Important dates"
 msgstr "Svarīgi datumi"
 
-#: forms.py:25
+#: forms.py:26
 msgid "Please specify email address to associate account with."
 msgstr "Lūdzu norādiet e-pasta adresi, kuram piesaistīt lietotāju."
 
-#: forms.py:28 forms.py:174
+#: forms.py:29 forms.py:175
 msgid "A user with that email address already exists."
 msgstr "Lietotājs ar šādu e-pasta adresi jau eksistē."
 
-#: forms.py:51
+#: forms.py:52
 msgid "Create Account"
 msgstr "Izveidot lietotāju"
 
-#: forms.py:56 forms.py:178
+#: forms.py:57 forms.py:179
 msgid "Password"
 msgstr "Parole"
 
-#: forms.py:59
+#: forms.py:60
 msgid "Invalid password. Try again."
 msgstr "Kļūdaina parole. Mēģiniet vēlreiz."
 
-#: forms.py:75 forms.py:254
+#: forms.py:76 forms.py:255
 msgid "Change Email"
 msgstr "Nomainīt e-pasta adresi"
 
-#: forms.py:131
+#: forms.py:132
 msgid "Set Password"
 msgstr "Uzstādīt paroli"
 
-#: forms.py:143 templates/registration/password_reset_complete_velo.html:12
+#: forms.py:144 templates/registration/password_reset_complete_velo.html:12
 msgid "Log in"
 msgstr "Pieslēgties"
 
-#: forms.py:150
+#: forms.py:151
 msgid "Passwords must be at least 10 characters in length."
 msgstr "Parolei jāsastāv vismaz no 10 raksta zīmēm."
 
-#: forms.py:164 forms.py:257
+#: forms.py:165 forms.py:258
 msgid "Change Password"
 msgstr "Nomainīt paroli"
 
-#: forms.py:175
+#: forms.py:176
 msgid "The two password fields didn't match."
 msgstr "Abi paroles lauki nesakrīt."
 
-#: forms.py:180
+#: forms.py:181
 msgid "Password confirmation"
 msgstr "Paroles apstiprinājums"
 
-#: forms.py:182
+#: forms.py:183
 msgid "Enter the same password as above, for verification."
 msgstr "Ievadiet vēlreiz jauno paroli."
 
-#: forms.py:208 templates/registration/login.html:14
+#: forms.py:209 templates/registration/login.html:14
 msgid "Register"
 msgstr "Reģistrēties"
 
-#: forms.py:277
+#: forms.py:278
 msgid "Update Profile"
 msgstr "Atjaunot profilu"
 
-#: forms.py:282
+#: forms.py:283
 msgid "Email"
 msgstr "E-pasts"
 
@@ -274,11 +274,11 @@ msgstr "^manas_komandas/(?P<pk2>\\d+)/registreties/$"
 msgid "^my_team/(?P<pk2>\\d+)/apply/(?P<competition_pk>\\d+)/$"
 msgstr "^my_team/(?P<pk2>\\d+)/registreties/(?P<competition_pk>\\d+)/$"
 
-#: views.py:66
+#: views.py:65
 msgid "Email is validated. Thank you!"
 msgstr "E-pasta adrese ir apstiprināta. Paldies!"
 
-#: views.py:103
+#: views.py:102
 msgid "Email resent. Please check spam folder if email is not in Inbox."
 msgstr "E-pasts nosūtīts atkārtoti. Ja nevarat atrast e-pastu, lūdzu pārbaudiet SPAM folderi."
 

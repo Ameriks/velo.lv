@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-13 17:16+0000\n"
+"POT-Creation-Date: 2015-02-26 11:28+0000\n"
 "PO-Revision-Date: 2014-08-13 20:08+0136\n"
 "Last-Translator: Agris Ameriks <agris@pd.lv>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 msgid "Company Juridical Address required."
 msgstr ""
 
-#: forms.py:704 forms.py:709 forms.py:711
+#: forms.py:702 forms.py:707 forms.py:709
 msgid "Invalid Social Security Number."
 msgstr "Kļūdains personas kods."
 
@@ -51,65 +51,75 @@ msgstr "Kļūdains personas kods."
 msgid "There are no records"
 msgstr "Nav neviena ieraksta"
 
-#: tables/tables.py:36 tables/tables.py:53
+#: tables/tables.py:37 tables/tables.py:54
 msgid "You haven't added any team"
 msgstr "Jūs neesat pievienojis nevienu komandu"
 
-#: tables/tables.py:69
+#: tables/tables.py:70
 msgid "You haven't added any distance"
 msgstr "Jūs neesat pievienojis nevienu distanci"
 
-#: tables/tables.py:96
+#: tables/tables.py:97
 msgid "No numbers"
 msgstr "Nav numura"
 
-#: tables/tables.py:126 tables/tables.py:153
+#: tables/tables.py:127 tables/tables.py:158
 msgid "You haven't added any participant"
 msgstr "Jūs neesat pievienojis nevienu dalībnieku"
 
-#: tables/tables.py:185
+#: tables/tables.py:190
 msgid "You haven't added any number"
 msgstr "Jūs neesat pievienojis nevienu numuru"
 
-#: tables/tables.py:204
+#: tables/tables.py:209
 msgid "You haven't added any competition"
 msgstr "Jūs neesat pievienojis nevienu sacensību"
 
-#: tables/tables.py:217
+#: tables/tables.py:222
 msgid "You haven't added any applied member"
 msgstr "Jūs neesat pievienojis nevienu pieteikto komandas biedru"
 
-#: tables/tables.py:224
+#: tables/tables.py:229 tables/tables.py:273 tables/tables.py:285
 msgid "ID"
 msgstr "ID"
 
-#: tables/tables.py:225
+#: tables/tables.py:230
 msgid "Distance"
 msgstr "Distance"
 
-#: tables/tables.py:226 templates/manager/team_apply_list.html:15
+#: tables/tables.py:231 templates/manager/team_apply_list.html:15
 msgid "First Name"
 msgstr "Vārds"
 
-#: tables/tables.py:227 templates/manager/team_apply_list.html:16
+#: tables/tables.py:232 templates/manager/team_apply_list.html:16
 msgid "Last Name"
 msgstr "Uzvārds"
 
-#: tables/tables.py:228
+#: tables/tables.py:233
 msgid "Group"
 msgstr "Grupa"
 
-#: tables/tables.py:229
+#: tables/tables.py:234
 msgid "Time"
 msgstr "Laiks"
 
-#: tables/tables.py:240
+#: tables/tables.py:245
 msgid "There are no results"
 msgstr "Nav neviena ieraksta"
 
-#: tables/tables.py:261
+#: tables/tables.py:266
 msgid "There are no applications"
 msgstr "Nav neviena pieteikuma"
+
+#: tables/tables.py:279
+#, fuzzy
+msgid "There are no Sync tasks"
+msgstr "Nav neviena ieraksta"
+
+#: tables/tables.py:291
+#, fuzzy
+msgid "There are no pricing records."
+msgstr "Nav neviena ieraksta"
 
 #: templates/manager/team_apply_list.html:17
 msgid "Year"
