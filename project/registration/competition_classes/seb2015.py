@@ -1,6 +1,10 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from registration.competition_classes.base import SEBCompetitionBase
+from registration.models import Application
+from django import forms
+from django.utils.translation import ugettext, ugettext_lazy as _
+
 
 class Seb2015(SEBCompetitionBase):
     competition_index = None
@@ -106,3 +110,13 @@ class Seb2015(SEBCompetitionBase):
 
         print 'here I shouldnt be...'
         raise Exception('Invalid group assigning.')
+
+
+    def payment_additional_checkboxes(self, application_id=None, application=None):
+        if not application:
+            application = Application.objects.get(id=application_id)
+
+        if application.participant_set.filter(distance_id=self.SPORTA_DISTANCE_ID):
+            return (('sport_approval', forms.BooleanField(label=_("I am informed that participation in Skandi Motors distance requires LRF licence. More info - %s") % "http://lrf.lv/licences/licences-2015.html", required=True)), )
+
+        return ()

@@ -13,6 +13,7 @@ from payment.widgets import PaymentTypeWidget
 from registration.models import Application
 from velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
 from django.utils.translation import ugettext, ugettext_lazy as _
+from velo.utils import load_class
 
 
 class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm):
@@ -91,10 +92,23 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         else:
             self.fields['accept_insurance'].widget = forms.HiddenInput()
 
-
         now = timezone.now()
 
         competition = self.instance.competition
+        checkboxes = (
+                'accept_terms',
+                'accept_inform_participants',
+                'accept_insurance',
+                )
+
+        if competition.processing_class:
+            _class = load_class(competition.processing_class)
+            processing = _class(competition=competition)
+            if hasattr(processing, 'payment_additional_checkboxes'):
+                for key, field in processing.payment_additional_checkboxes(application=self.instance):
+                    self.fields[key] = field
+                    checkboxes += (key, )
+
 
         payments = competition.activepaymentchannel_set.filter(from_date__lte=now, till_date__gte=now).select_related('payment_channel')
         # If user have already requested bill, then we are not showing possibility to request one more.
@@ -108,10 +122,8 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         self.helper.layout = Layout(
             Row(
                 Column(
-                'accept_terms',
-                'accept_inform_participants',
-                'accept_insurance',
-                css_class='col-sm-8'
+                    *checkboxes,
+                    css_class='col-sm-8'
                 ),
                 Column(
                     Div(
