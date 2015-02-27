@@ -166,6 +166,15 @@ def create_application_invoice(application, active_payment_type, action="send"):
                 "amount": "1",
                 "price": float(participant.insurance.price)
             })
+    if application.donation > 0:
+        information = application.competition.params.get('donation', {}).get('bank_code', 'Ziedojums - %s') % application.donation
+        items.append({
+            "description": information,
+            "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
+            "units": "gab.",
+            "amount": "1",
+            "price": float(application.donation)
+        })
 
     competition_datetime = datetime.datetime.combine(application.competition.competition_date, datetime.time())
     now = datetime.datetime.now()
@@ -208,12 +217,14 @@ def create_application_bank_transaction(application, active_payment_type):
     # Create new requests session with Auth keys and prepended url
     session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key}, url="https://%s.e-rekins.lv" % prefix)
 
+    information = "Pieteikums nr.%i" % application.id if not application.external_invoice_code else "Rekins nr.%s" % application.external_invoice_nr
+    if application.donation > 0:
+        information += (" + %s" % application.competition.params.get('donation', {}).get('bank_code', 'Ziedojums - %s')) % application.donation
+
     bank_data = {
-        "information": "Pieteikums nr.%i" %
-                       application.id if not application.external_invoice_code
-                       else "Rekins nr.%s" % application.external_invoice_nr,
+        "information": information,
         "integration_id": application.id,
-        "amount": application.final_price,
+        "amount": float(application.final_price),
         "link": active_payment_type.payment_channel.erekins_link,
     }
 
@@ -225,7 +236,8 @@ def create_application_bank_transaction(application, active_payment_type):
                            channel=active_payment_type,
                            erekins_code=transaction.get('code'),
                            total=application.final_price,
-                           status=Payment.STATUS_PENDING)
+                           status=Payment.STATUS_PENDING,
+                           donation=application.donation)
 
     return "https://%s.e-rekins.lv/bank/%s/" % (prefix, transaction.get('code'))
 

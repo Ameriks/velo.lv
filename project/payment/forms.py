@@ -4,12 +4,13 @@ from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML
 from django import forms
 from crispy_forms.helper import FormHelper
 from django.contrib import messages
+from django.template.defaultfilters import floatformat
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from payment.models import ActivePaymentChannel
 from payment.utils import create_application_invoice, create_application_bank_transaction
-from payment.widgets import PaymentTypeWidget
+from payment.widgets import PaymentTypeWidget, DoNotRenderWidget
 from registration.models import Application
 from velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -29,13 +30,19 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
     class Meta:
         model = Application
-        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address', )
+        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address', 'donation')
+        widgets = {
+            'donation': DoNotRenderWidget, # We will add field manually
+        }
 
     def _post_clean(self):
         super(ApplicationPayUpdateForm, self)._post_clean()
         if not bool(self.errors):
             try:
                 instance = self.instance
+                instance.set_final_price() # if donation have changed, then we need to recalculate,
+                                           # because instance is not yet saved and it means,
+                                           # that this function on model is not yet run.
                 active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
 
                 if active_payment_type.payment_channel.is_bill:
@@ -46,6 +53,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                     self.success_url = create_application_bank_transaction(instance, active_payment_type)
 
             except:
+                # TODO We need to catch exception and log it to sentry
                 self._errors['payment_type'] = self.error_class([_("Error in connection with bank. Try again later.")])
 
 
@@ -61,7 +69,18 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
         return instance
 
+    def clean_donation(self):
+        donation = self.cleaned_data.get('donation')
+        # If person have already taken invoice, then we do not allow changing donation amount
+        if self.instance.external_invoice_code:
+            return self.instance.donation
+        else:
+            return donation
+
+
     def clean(self):
+        if not self.cleaned_data.get('donation', ''):
+            self.cleaned_data.update({'donation': 0.00})
         super(ApplicationPayUpdateForm, self).clean()
         try:
             active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
@@ -117,6 +136,8 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
         self.fields['payment_type'].choices = [(obj.id, obj) for obj in payments]
 
+        self.fields['donation'].required = False
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -128,7 +149,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                 Column(
                     Div(
                         HTML(
-                            "<h4>%s: %s €</h4>" % (_('Final Price'), self.instance.final_price),
+                            "<h4>%s: <span id='final_price' data-amount='%s'>%s</span> €</h4>" % (_('Final Price'), self.instance.total_entry_fee + self.instance.total_insurance_fee, floatformat(self.instance.final_price, -2)),
                         ),
                         css_class='margin-bottom-40'
                     ),

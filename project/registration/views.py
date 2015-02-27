@@ -139,8 +139,17 @@ class ApplicationUpdate(RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithIn
         else:
             return reverse('application_pay', kwargs={'slug': self.object.code})
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.competition.is_past_due:
+            return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
+        else:
+            return super(BaseUpdateWithInlinesView, self).post(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+
         if self.object.created_by and self.object.created_by != request.user:
             messages.error(request, _("Currently logged in user doesn't have access to this application. Please, login with user that you used to create application."))
             return HttpResponseRedirect("%s?next=%s" % (reverse('accounts:login'), request.path))

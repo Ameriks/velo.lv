@@ -15,3 +15,8 @@ $ ->
     element = if e.srcElement then e.srcElement else e.target
     element = $(element)
     show_hide_invoice_fields element
+
+  $('#id_donation').on('change', (evt) ->
+    total = Math.round((parseFloat($(this).val() or 0) + parseFloat($('#final_price').data('amount') or 0)) * 100) / 100
+    $('#final_price').html(total)
+  ).change()

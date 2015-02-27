@@ -30,6 +30,7 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>{% trans 'Participants' %}</h3>
+            <div class="table-responsive">
             <table class="table table-striped">
             <thead>
                 <tr>
@@ -66,6 +67,34 @@
                 </tfoot>
             {% endif %}
             </table>
+            </div>
+            {% if donation %}
+
+            <div class="row">
+                <div class="col-lg-10 col-sm-9 col-xs-6 text-right">
+                    <label class="tooltips" for="donation-amount" data-placement="top" title="{{ donation.description }}">Ziedot {{ donation.title }}:</label>
+                    </div>
+                <div class="col-lg-2 col-sm-3 col-xs-6">
+                    {% if not object.external_invoice_code %}
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">€</span>
+                          <input id='id_donation' type="number" step="5" class="form-control" aria-label="Donation amount" name="donation" placeholder="--" value="{{ form.donation.value|floatformat:-2|safe }}">
+                          <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> <span class="caret"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-right text-right" role="menu" style="min-width: inherit;">
+                                {% for amount in donation.amount %}
+                              <li><a href="#" onclick="$('#id_donation').val({{ amount }}).change();return false;">{{ amount }} €</a></li>
+                                {% endfor %}
+                              <li><a href="#" onclick="$('#id_donation').val('').change().focus();return false;">{% trans 'Other' %}</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        {% else %}
+                            <b>{{ object.donation }} €</b>
+                        {% endif %}
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 

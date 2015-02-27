@@ -107,10 +107,12 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
                     self.total_insurance_fee += float(participant.insurance.price)
 
         if valid:
-            self.object.total_entry_fee = self.total_entry_fee
-            self.object.total_insurance_fee = self.total_insurance_fee
-            self.object.final_price = self.total_entry_fee + self.total_insurance_fee
-            self.object.save()
+            if self.object.total_entry_fee != self.total_entry_fee or self.object.total_insurance_fee != self.total_insurance_fee:
+                self.object.total_entry_fee = self.total_entry_fee
+                self.object.total_insurance_fee = self.total_insurance_fee
+                # This is recalculated on model
+                # self.object.final_price = self.total_entry_fee + self.total_insurance_fee + float(self.object.donation)
+                self.object.save()
             return None
         else:
             return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
@@ -121,10 +123,20 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
         context.update({'participants': self.participants})
         context.update({'total_entry_fee': self.total_entry_fee})
         context.update({'total_insurance_fee': self.total_insurance_fee})
+
+        if self.object.competition.params:
+            donation = self.object.competition.params.get('donation', {})
+            if donation.get('enabled', False):
+                context.update({'donation': donation})
+
         return context
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+
+        # We are not letting to update anything if competition is in past
+        if self.object.competition.is_past_due:
+            return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
 
         redirect = self.validate()
         if redirect:
@@ -134,6 +146,10 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+
+        # We are not letting to update anything if competition is in past
+        if self.object.competition.is_past_due:
+            return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
 
         redirect = self.validate()
         if redirect:

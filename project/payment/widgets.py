@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from django.forms.util import flatatt
-from django.forms.widgets import Select
+from django.forms.widgets import Select, Widget
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -52,3 +52,7 @@ class PaymentTypeWidget(Select):
 
 
 
+class DoNotRenderWidget(Widget):
+    is_hidden = True
+    def render(self, name, value, attrs=None):
+        return ''

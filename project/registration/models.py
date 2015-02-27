@@ -46,6 +46,8 @@ class Application(TimestampMixin, models.Model):
     external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
     external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
 
+    donation = models.DecimalField(_('Donation'), max_digits=20, decimal_places=2, default=0.0)
+
     # Totals
     total_discount = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     total_entry_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
@@ -55,6 +57,9 @@ class Application(TimestampMixin, models.Model):
 
     payment_set = generic.GenericRelation(Payment) #, related_name="application")
 
+    def set_final_price(self):
+        self.final_price = float(self.total_entry_fee) + float(self.total_insurance_fee) + float(self.donation)
+
     @property
     def competition_name(self):
         if self.competition.level == 2:
@@ -62,6 +67,9 @@ class Application(TimestampMixin, models.Model):
         else:
             return unicode(self.competition)
 
+    def save(self, *args, **kwargs):
+        self.set_final_price()
+        return super(Application, self).save(*args, **kwargs)
 
 class Participant(TimestampMixin, models.Model):
     GENDER_CHOICES = (

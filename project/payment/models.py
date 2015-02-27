@@ -131,5 +131,6 @@ class Payment(TimestampMixin, models.Model):
     erekins_code = models.CharField(max_length=100, blank=True)  # Erekins code
 
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    donation = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
     status = models.SmallIntegerField(choices=STATUSES, default=STATUS_NEW)

@@ -1,5 +1,6 @@
 {% load i18n %}
 
+    {% if not object.competition.is_past_due %}
     <div class="row">
         <div class="col-xs-12">
             <ul class='nav nav-wizard margin-bottom-40'>
@@ -9,3 +10,4 @@
             </ul>
         </div>
     </div>
+    {% endif %}
