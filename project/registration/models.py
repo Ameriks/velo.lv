@@ -113,6 +113,8 @@ class Participant(TimestampMixin, models.Model):
     city = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KIND_CITY}, verbose_name=_('City'), blank=True, null=True)
 
     bike_brand = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KIND_BIKEBRAND}, verbose_name=_('Bike Brand'), blank=True, null=True)
+    bike_brand2 = models.CharField(_('Bike Brand'), max_length=20, blank=True)
+
 
     occupation = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KIND_OCCUPATION}, verbose_name=_('Occupation'), blank=True, null=True)
     where_heard = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KIND_HEARD}, verbose_name=_('Where Heard'), blank=True, null=True)

@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
+from crispy_forms.bootstrap import FieldWithButtons, StrictButton
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Fieldset, HTML, Column, Submit, Div, Field
 from django.core.exceptions import ValidationError
@@ -118,7 +119,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     application = None
     class Meta:
         model = Participant
-        fields = ('distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand', 'team_name', 'email')
+        fields = ('distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand2', 'team_name', 'email')
 
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
@@ -134,6 +135,9 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
     def clean_team_name(self):
         return self.cleaned_data.get('team_name').strip()
+
+    def clean_bike_brand2(self):
+        return self.cleaned_data.get('bike_brand2').strip()[:20]
 
     def clean_first_name(self):
         return self.cleaned_data.get('first_name').title()
@@ -263,10 +267,10 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                     Column('email', css_class='col-xs-6 col-sm-4'),
                 ),
                 Row(
-                    Column('bike_brand', css_class='col-xs-6 col-sm-4'),
+                    Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>', css_class='btn-default bike-brand-dropdown')), css_class='col-xs-6 col-sm-4'),
                     Column('insurance', css_class='col-xs-6 col-sm-4 pull-right'),
 
-                ) if insurances else Row(Column('bike_brand', css_class='col-xs-6 col-sm-4'),),
+                ) if insurances else Row(Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>', css_class='btn-default bike-brand-dropdown')), css_class='col-xs-6 col-sm-4'),),
                 'id',
                 Div(
                     Field('DELETE',),
@@ -319,7 +323,7 @@ class ParticipantInlineRestrictedForm(ParticipantInlineForm):
 class ParticipantInlineFullyRestrictedForm(ParticipantInlineRestrictedForm):
     def __init__(self, *args, **kwargs):
         super(ParticipantInlineFullyRestrictedForm, self).__init__(*args, **kwargs)
-        ro_fields = ('gender', 'team_name', 'phone_number', 'email', 'bike_brand')
+        ro_fields = ('gender', 'team_name', 'phone_number', 'email', 'bike_brand2')
 
         for field in ro_fields:
             if field in self.fields:
@@ -337,5 +341,5 @@ class ParticipantInlineFullyRestrictedForm(ParticipantInlineRestrictedForm):
     def clean_email(self):
             return self.instance.email
 
-    def clean_bike_brand(self):
-            return self.instance.bike_brand
+    def clean_bike_brand2(self):
+            return self.instance.bike_brand2

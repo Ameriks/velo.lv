@@ -29,17 +29,19 @@ set_typeahead_action = (item) ->
 
     $("input[name$='first_name']", parent).typeahead('val',datum.first_name)
     $("input[name$='last_name']", parent).typeahead('val',datum.last_name)
+    $("input[name$='bike_brand2']", parent).typeahead('val',datum.bike_brand2)
 
     $("input[name$='birthday']", parent).val(datum.birthday).change()
     $("input[name$='ssn']", parent).val(datum.ssn).change()
     $("input[name$='team_name']", parent).typeahead('val',datum.team_name)
     $("input[name$='phone_number']", parent).val(datum.phone_number).change()
     $("input[name$='email']", parent).val(datum.email).change()
-    $("select[name$='bike_brand']", parent).val(datum.bike_brand).change()
+
 
 
 teams = null
 participantSearch = null
+bikeBrandSearch = null
 
 parseDate = (input) ->
   parts = input.split('-')
@@ -182,7 +184,21 @@ update_every_line = (row) ->
     set_typeahead_action $("input[name$='last_name']", row)
 
 
+    $("input[name$='bike_brand2']", row).typeahead
+      minLength: 0,
 
+       displayKey: 'bike_brand2'
+       source: bikeBrandSearch.ttAdapter()
+       templates:
+         suggestion: Handlebars.compile('<p><strong>{{bike_brand2}}</strong></p>')
+
+    $("input[name$='bike_brand2']", row).on "click", ->
+        ev = $.Event("keydown")
+        ev.keyCode = ev.which = 40
+        $(this).trigger(ev)
+        return true
+    $('.bike-brand-dropdown', row).on 'click', ->
+        $(this).parents('.input-group').find("input[name$='bike_brand2']").click()
 
   ""
 
@@ -200,6 +216,16 @@ $ ->
 
   participantSearch.initialize();
 
+  bikeBrandSearch = new Bloodhound
+    datumTokenizer: (d) ->
+      Bloodhound.tokenizers.whitespace(d.val)
+    queryTokenizer: Bloodhound.tokenizers.whitespace
+    limit: 10
+    prefetch: '/lv/sacensibas/bike_brands.json'
+    remote:
+      url: '/lv/sacensibas/bike_brands.json?search=%QUERY'
+
+  bikeBrandSearch.initialize();
 
   teams = new Bloodhound
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('team_name')

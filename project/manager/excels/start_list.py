@@ -42,7 +42,7 @@ def create_standing_list(competition=None, competition_id=None):
             row_values = (
                 index, item.id, unicode(item.participant.primary_number), item.participant_slug, unicode(item.participant.competition), unicode(item.participant.distance), item.participant.last_name,
                 item.participant.first_name, item.participant.birthday.strftime("%Y-%m-%d"), item.participant.gender, item.participant.group,
-                item.participant.email, item.participant.phone_number, unicode(item.participant.country), item.participant.team_name, unicode(item.participant.bike_brand) if item.participant.bike_brand else '',
+                item.participant.email, item.participant.phone_number, unicode(item.participant.country), item.participant.team_name, unicode(item.participant.bike_brand2) if item.participant.bike_brand2 else '',
                 item.distance_place, item.distance_total, ','.join([str(obj.number) for obj in item.participant.numbers()]))
 
             for col, value in enumerate(row_values):
@@ -234,7 +234,7 @@ def team_member_list(competition=None, competition_id=None):
                 sheet.write(row, 4, unicode(member.member.birthday.year), payed_style if is_payed else not_payed_style)
                 sheet.write(row, 5, unicode(member.get_kind_display()), payed_style if is_payed else not_payed_style)
                 sheet.write(row, 6, unicode(member.participant.slug) if member.participant else '', payed_style if is_payed else not_payed_style)
-                sheet.write(row, 7, unicode(member.participant.bike_brand) if member.participant and member.participant.bike_brand else '', payed_style if is_payed else not_payed_style)
+                sheet.write(row, 7, unicode(member.participant.bike_brand2) if member.participant and member.participant.bike_brand2 else '', payed_style if is_payed else not_payed_style)
                 sheet.write(row, 8, unicode(member.participant_unpaid.slug) if member.participant_unpaid else '', payed_style if is_payed else not_payed_style)
                 sheet.write(row, 9, unicode(member.participant_potential.slug) if member.participant_potential else '', payed_style if is_payed else not_payed_style)
                 number = Number.objects.filter(participant_slug=member.member.slug, competition_id__in=competition.get_ids(), distance=team.distance).order_by('-number')

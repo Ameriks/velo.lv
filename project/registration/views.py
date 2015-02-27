@@ -180,6 +180,29 @@ class TeamJsonList(JsonRequestResponseMixin, SetCompetitionContextMixin, ListVie
         return self.render_json_response(list(self.object_list))
 
 
+class BikeBrandJsonList(JsonRequestResponseMixin, ListView):
+    model = Participant
+
+    def get_queryset(self):
+        queryset = super(BikeBrandJsonList, self).get_queryset()
+        queryset = queryset.filter(is_participating=True).exclude(bike_brand2='').exclude(bike_brand2='Cits').values('bike_brand2').annotate(num=Count('id'))
+        queryset = queryset.order_by('-num')
+
+        search_text = self.request.GET.get('search', '')
+        if search_text:
+            team_name = slugify(search_text.replace(' ', ''))
+            queryset = queryset.filter(bike_brand2__icontains=team_name)
+        else:
+            queryset = queryset.filter(num__gte=2)
+
+        return queryset
+
+    def get(self, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        return self.render_json_response(list(self.object_list))
+
+
+
 class ParticipantSearchView(JsonRequestResponseMixin, ListView):
     model = Participant
 
@@ -208,7 +231,7 @@ class ParticipantSearchView(JsonRequestResponseMixin, ListView):
 
         queryset = queryset[:20]
 
-        queryset = queryset.values('birthday', 'full_name', 'country', 'first_name', 'last_name', 'gender', 'ssn', 'team_name', 'phone_number', 'email', 'city', 'occupation', 'bike_brand', 'competition__name')
+        queryset = queryset.values('birthday', 'full_name', 'country', 'first_name', 'last_name', 'gender', 'ssn', 'team_name', 'phone_number', 'email', 'city', 'occupation', 'bike_brand2', 'competition__name')
 
         return queryset
 

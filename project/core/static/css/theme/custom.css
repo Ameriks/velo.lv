@@ -230,6 +230,7 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a:focus {
   padding: 3px 5px;
   background:#FFF;
   border-bottom:1px solid #CCC;
+  min-width:150px;
 }
 .tt-suggestion.tt-cursor {
     background-color: #428bca;
@@ -358,4 +359,11 @@ form.smaller input, form.smaller select {
 }
 .gallery_album:hover .gallery_album_title {
     opacity:1;
+}
+
+.bike-brand-dropdown {
+    margin-top: -5px;
+}
+.noadd .bike-brand-dropdown {
+    margin-top: 0;
 }
