@@ -6,7 +6,7 @@ def recalculate_participant(participant, children=None, commit=True):
         children = participant.competition.get_children()
 
     pre_final_price = participant.final_price
-    if (not participant.price and not participant.insurance) or not participant.is_participating or not participant.is_paying:
+    if (not participant.price and not participant.insurance_id) or not participant.is_participating or not participant.is_paying:
         participant.final_price = participant.total_entry_fee = participant.total_insurance_fee = 0.0
     else:
         insurance = float(participant.insurance.price) if participant.insurance else 0.0
