@@ -184,7 +184,9 @@ update_every_line = (row) ->
     set_typeahead_action $("input[name$='last_name']", row)
 
 
-    $("input[name$='bike_brand2']", row).typeahead
+  bike_brand2 = $("input[name$='bike_brand2']", row)
+  if not bike_brand2.prop('readonly')
+    bike_brand2.typeahead
       minLength: 0,
 
        displayKey: 'bike_brand2'
@@ -192,13 +194,16 @@ update_every_line = (row) ->
        templates:
          suggestion: Handlebars.compile('<p><strong>{{bike_brand2}}</strong></p>')
 
-    $("input[name$='bike_brand2']", row).on "click", ->
+    bike_brand2.on "click", ->
         ev = $.Event("keydown")
         ev.keyCode = ev.which = 40
         $(this).trigger(ev)
         return true
     $('.bike-brand-dropdown', row).on 'click', ->
         $(this).parents('.input-group').find("input[name$='bike_brand2']").click()
+  else
+    $('.bike-brand-dropdown', row).addClass('disabled')
+
 
   ""
 

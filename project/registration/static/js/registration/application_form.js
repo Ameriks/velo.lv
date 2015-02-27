@@ -127,6 +127,7 @@
   };
 
   update_every_line = function(row) {
+    var bike_brand2;
     $('.dateinput', row).datepicker({
       format: 'yyyy-mm-dd',
       autoclose: true,
@@ -211,7 +212,10 @@
         }
       });
       set_typeahead_action($("input[name$='last_name']", row));
-      $("input[name$='bike_brand2']", row).typeahead({
+    }
+    bike_brand2 = $("input[name$='bike_brand2']", row);
+    if (!bike_brand2.prop('readonly')) {
+      bike_brand2.typeahead({
         minLength: 0
       }, {
         displayKey: 'bike_brand2',
@@ -220,7 +224,7 @@
           suggestion: Handlebars.compile('<p><strong>{{bike_brand2}}</strong></p>')
         }
       });
-      $("input[name$='bike_brand2']", row).on("click", function() {
+      bike_brand2.on("click", function() {
         var ev;
         ev = $.Event("keydown");
         ev.keyCode = ev.which = 40;
@@ -230,6 +234,8 @@
       $('.bike-brand-dropdown', row).on('click', function() {
         return $(this).parents('.input-group').find("input[name$='bike_brand2']").click();
       });
+    } else {
+      $('.bike-brand-dropdown', row).addClass('disabled');
     }
     return "";
   };

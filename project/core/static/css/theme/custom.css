@@ -364,6 +364,6 @@ form.smaller input, form.smaller select {
 .bike-brand-dropdown {
     margin-top: -5px;
 }
-.noadd .bike-brand-dropdown {
+.bike-brand-dropdown.disabled {
     margin-top: 0;
 }
