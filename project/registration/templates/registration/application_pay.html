@@ -71,8 +71,11 @@
             {% if donation %}
 
             <div class="row">
-                <div class="col-lg-10 col-sm-9 col-xs-6 text-right">
-                    <label class="tooltips" for="donation-amount" data-placement="top" title="{{ donation.description }}">Ziedot {{ donation.title }}:</label>
+                <div class="col-lg-offset-3 col-lg-7 col-sm-9 col-xs-6 text-right">
+                    <label for="donation-amount">Ziedot {{ donation.title }}:</label>
+                    {% if donation.description %}
+                            <p class="hidden-xs">{{ donation.description }}</p>
+                    {% endif %}
                     </div>
                 <div class="col-lg-2 col-sm-3 col-xs-6">
                     {% if not object.external_invoice_code %}
@@ -93,6 +96,11 @@
                             <b>{{ object.donation }} €</b>
                         {% endif %}
                 </div>
+            </div>
+            <div class="row hidden-sm hidden-md hidden-lg">
+                {% if donation.description %}
+                        <div class="col-xs-12">{{ donation.description }}</div>
+                {% endif %}
             </div>
             {% endif %}
         </div>
