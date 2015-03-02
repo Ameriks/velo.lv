@@ -8,7 +8,7 @@
 {% block main %}
     {% cache 60 flatpages_flatpage_detail LANGUAGE_CODE object.id %}
     {% spaceless %}
-        {{ object.content|safe }}
+        {{ content|safe }}
     {{ block.super }}
     {% endspaceless %}
     {% endcache %}

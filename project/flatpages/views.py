@@ -33,3 +33,12 @@ class FlatpageView(SetCompetitionContextMixin, DetailView):
             raise Http404(_("No %(verbose_name)s found matching the query") %
                           {'verbose_name': queryset.model._meta.verbose_name})
         return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(FlatpageView, self).get_context_data(**kwargs)
+
+        content = self.object.content
+        content = content.replace('<table>', '<table class="table table-striped table-bordered table-hover table-condensed">')
+
+        context.update({'content': content})
+        return context
