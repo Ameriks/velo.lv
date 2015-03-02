@@ -38,7 +38,10 @@ class FlatpageView(SetCompetitionContextMixin, DetailView):
         context = super(FlatpageView, self).get_context_data(**kwargs)
 
         content = self.object.content
+        # TODO: Write regex for this
         content = content.replace('<table>', '<table class="table table-striped table-bordered table-hover table-condensed">')
+        content = content.replace('<table', '<div class="table-responsive"><table')
+        content = content.replace('</table>', '</table></div>')
 
         context.update({'content': content})
         return context
