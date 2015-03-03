@@ -7,7 +7,7 @@ import yaml
 def sync_album(album_id):
     album = Album.objects.get(id=album_id)
     for root, _, files in os.walk(album.folder):
-        for f in files:
+        for f in sorted(files):
             if f[-3:].lower() != 'jpg':
                 continue
             fullpath = os.path.join(root, f)
@@ -21,10 +21,16 @@ def sync_album(album_id):
 
 
 def import_legacy_albums():
-    for root, folders, _ in os.walk("media/gallery/"):
-        if len(folders) == 0:
-            print root
-            stream = open(os.path.join(root, "info.yaml"), 'r')
+    for year in [2011, 2012, 2013, 2014]:
+        root = os.path.join('media', 'gallery', str(year))
+        dirs = sorted(os.listdir(root))
+        for d in dirs:
+            if not os.path.isdir(os.path.join(root, d)):
+                continue
+
+            file_location = os.path.join(root, d, "info.yaml")
+            print file_location
+            stream = open(file_location, 'r')
             data = yaml.load(stream)
             if not data.get('photographer'):
                 data.update({'photographer': ''})
