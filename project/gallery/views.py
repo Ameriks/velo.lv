@@ -6,6 +6,11 @@ from gallery.models import Photo, Album
 class AlbumListView(ListView):
     model = Album
 
+    def get_queryset(self):
+        queryset = super(AlbumListView, self).get_queryset()
+        queryset = queryset.select_related('primary_image')
+        return queryset
+
 
 class PhotoListView(ListView):
     model = Photo

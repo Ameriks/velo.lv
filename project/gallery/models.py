@@ -55,8 +55,30 @@ class Photo(TimestampMixin, models.Model):
 
     numbers = models.ManyToManyField('registration.Number', through=PhotoNumber)
 
+    is_vertical = models.NullBooleanField(default=None)
+    width = models.IntegerField(null=True, blank=True)
+    height = models.IntegerField(null=True, blank=True)
+
     def filename(self):
         return os.path.basename(self.image.name)
+
+    def save(self, *args, **kwargs):
+        if not self.is_vertical:
+            self.is_vertical = True
+            if self.image.width > self.image.height:
+                self.is_vertical = False
+
+        if not self.width or not self.height:
+            variable = 1000
+            if self.is_vertical:
+                self.height = variable
+                self.width = (self.image.width * self.height) / self.image.height
+            else:
+                self.width = variable
+                self.height = (self.image.height * self.width) / self.image.width
+
+        return super(Photo, self).save(*args, **kwargs)
+
 
     class Meta:
         ordering = ('image', )
