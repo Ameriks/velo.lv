@@ -28,7 +28,7 @@ def create_standing_list(competition=None, competition_id=None):
         sheet = wbk.add_sheet(distance.__unicode__())
         slugs = []
 
-        items = SebStandings.objects.filter(competition_id__in=competition.get_ids(),distance=distance).select_related('participant', 'participant__competition', 'participant__distance', 'participant__price', 'participant__bike_brand', 'participant__primary_number').order_by('participant__distance', 'participant__primary_number__group', 'participant__primary_number__number', 'participant__registration_dt')
+        items = SebStandings.objects.filter(competition_id__in=competition.get_ids(),distance=distance).select_related('participant', 'participant__competition', 'participant__distance', 'participant__price', 'participant__primary_number').order_by('participant__distance', 'participant__primary_number__group', 'participant__primary_number__number', 'participant__registration_dt')
 
         row = 4
         header_row = (
@@ -107,7 +107,7 @@ def create_start_list(competition=None, competition_id=None):
         slugs = []
         items = distance.participant_set.filter(competition_id__in=competition.get_ids(),
                                                 is_participating=True).select_related('competition', 'distance',
-                                                                                      'price', 'bike_brand', 'primary_number').order_by('distance', 'primary_number__group', 'primary_number__number', 'registration_dt')
+                                                                                      'price', 'primary_number').order_by('distance', 'primary_number__group', 'primary_number__number', 'registration_dt')
         if competition.tree_id == 1 or competition.tree_id == 2: # SEB
             prev = competition.get_previous_sibling()
             if prev:
@@ -161,7 +161,7 @@ def create_start_list(competition=None, competition_id=None):
             row_values = (
                 index, item.id, unicode(item.primary_number), item.slug, unicode(item.competition), unicode(item.distance), item.last_name,
                 item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, total_entry_fee, total_insurance_fee, final_price,
-                unicode(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand) if item.bike_brand else '',
+                unicode(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand2) if item.bike_brand2 else '',
                 item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"))
 
             if competition.tree_id == 1 or competition.tree_id == 2:
@@ -225,7 +225,7 @@ def team_member_list(competition=None, competition_id=None):
 
         row += 1
         for team in distance.team_set.all():
-            for member in competition.memberapplication_set.filter(member__team=team).order_by('kind').select_related('member', 'participant', 'participant_unpaid', 'participant_potential', 'participant__primary_number', 'participant__bike_brand'):
+            for member in competition.memberapplication_set.filter(member__team=team).order_by('kind').select_related('member', 'participant', 'participant_unpaid', 'participant_potential', 'participant__primary_number',):
                 is_payed = True if member.participant_id else False
                 sheet.write(row, 0, unicode(team.id), payed_style if is_payed else not_payed_style)
                 sheet.write(row, 1, unicode(team), payed_style if is_payed else not_payed_style)

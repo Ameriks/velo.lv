@@ -549,7 +549,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
                     }
                     if row[7]:
                         try:
-                            data.update({'bike_brand': Choices.objects.get(kind=Choices.KIND_BIKEBRAND, title=row[6]), })
+                            data.update({'bike_brand2': row[6], })
                         except:
                             pass
                     participant = Participant.objects.create(**data)

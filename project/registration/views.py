@@ -54,7 +54,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
 
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
-        queryset = queryset.select_related('competition', 'distance', 'bike_brand', 'team', 'primary_number')
+        queryset = queryset.select_related('competition', 'distance', 'team', 'primary_number')
 
         # if self.competition.id == 34:
         #     queryset = queryset.extra(select={

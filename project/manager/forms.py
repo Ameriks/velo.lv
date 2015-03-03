@@ -438,7 +438,7 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
         fields = (
             'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'is_participating',
             'ssn', 'phone_number', 'email',  'country', 'team_name',
-            'city', 'bike_brand', 'occupation', 'price', 'insurance', 'registration_dt',
+            'city', 'bike_brand2', 'occupation', 'price', 'insurance', 'registration_dt',
         )
 
     class Media:
@@ -532,7 +532,7 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
 
                 Row(
                     Column('city', css_class='col-sm-3'),
-                    Column('bike_brand', css_class='col-sm-3'),
+                    Column('bike_brand2', css_class='col-sm-3'),
                     Column('occupation', css_class='col-sm-3'),
                 ),
                 Row(
@@ -677,7 +677,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         fields = (
             'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'slug', 'is_participating', 'is_paying', 'insurance',
             'team', 'team_name', 'ssn', 'phone_number', 'email', 'send_email', 'send_sms', 'country', 'city',
-            'bike_brand', 'occupation', 'where_heard', 'group', 'registrant', 'price', 'comment', 'registration_dt')
+            'bike_brand2', 'occupation', 'where_heard', 'group', 'registrant', 'price', 'comment', 'registration_dt')
 
     class Media:
         js = ('plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js')
@@ -864,7 +864,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
             ),
             Fieldset(
                 'Aptaujas jautājumi',
-                Column('bike_brand', css_class='col-sm-4'),
+                Column('bike_brand2', css_class='col-sm-4'),
                 Column('occupation', css_class='col-sm-4'),
                 Column('where_heard', css_class='col-sm-4'),
             ),

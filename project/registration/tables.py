@@ -59,8 +59,8 @@ class ParticipantTable(tables.Table):
     class Meta:
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("first_name", "last_name", "bike_brand", "group", 'primary_number') # all_numbers
-        sequence = ("primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand',)
+        fields = ("first_name", "last_name", "bike_brand2", "group", 'primary_number') # all_numbers
+        sequence = ("primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2',)
         empty_text = _("There are no participants")
         order_by = ("primary_number")
         # ordering = ('created')
@@ -104,8 +104,8 @@ class ParticipantTableWithResult(tables.Table):
     class Meta:
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("first_name", "last_name", "bike_brand", "group", 'primary_number') # all_numbers
-        sequence = ("primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand',)
+        fields = ("first_name", "last_name", "bike_brand2", "group", 'primary_number') # all_numbers
+        sequence = ("primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2',)
         empty_text = _("There are no participants")
         order_by = ("last_year_result")
         # ordering = ('created')

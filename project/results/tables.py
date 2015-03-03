@@ -145,7 +145,7 @@ class ResultGroupTable(tables.Table):
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
-    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand")
+    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
     points_group = tables.Column(empty_values=(), verbose_name=_('Points Group'), accessor="points_group")
@@ -189,7 +189,7 @@ class ResultDistanceTable(tables.Table):
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
-    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand")
+    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     points_distance = tables.Column(empty_values=(), verbose_name=_('Points Distance'), accessor="points_distance")
 
@@ -231,7 +231,7 @@ class ResultRMDistanceTable(tables.Table):
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
-    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand")
+    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     # points_distance = tables.Column(empty_values=(), verbose_name=_('Points Distance'), accessor="points_distance")
 
@@ -252,8 +252,8 @@ class ResultRMDistanceTable(tables.Table):
         return mark_safe(text)
 
     def render_bike_brand(self, record):
-        if record.participant.bike_brand:
-            return record.participant.bike_brand
+        if record.participant.bike_brand2:
+            return record.participant.bike_brand2
         else:
             return '-'
 
@@ -336,7 +336,7 @@ class ResultRMGroupTable(tables.Table):
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
-    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand")
+    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
 
@@ -348,8 +348,8 @@ class ResultRMGroupTable(tables.Table):
 
 
     def render_bike_brand(self, record):
-        if record.participant.bike_brand:
-            return record.participant.bike_brand
+        if record.participant.bike_brand2:
+            return record.participant.bike_brand2
         else:
             return '-'
 
