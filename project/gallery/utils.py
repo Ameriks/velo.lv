@@ -36,7 +36,7 @@ def import_legacy_albums():
                 data.update({'photographer': ''})
             print data
             stream.close()
-            album, created = Album.objects.get_or_create(folder=root, defaults=data)
+            album, created = Album.objects.get_or_create(folder=os.path.join(root, d), defaults=data)
             if not created:
                 for key in data:
                     setattr(album, key, data.get(key))
