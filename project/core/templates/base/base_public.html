@@ -1,11 +1,13 @@
 {% extends 'base/base.html' %}
-{% load sitetree %}
+{% load sitetree i18n %}
 
 {% block breadcrumbs %}
     <div class="breadcrumbs">
         <div class="container">
            <h1 class="pull-left">{% sitetree_page_title from "mainmenu" %}</h1>
         {% sitetree_breadcrumbs from "mainmenu" template "bootstrap/breadcrumbs_bootstrap3.html" %}
+            <a href="{% url 'application' %}" class="btn btn-primary visible-sm pull-right apply-competition">{% trans "Apply to Competition" %}</a>
         </div><!--/container-->
     </div>
+    <a href="{% url 'application' %}" class="btn btn-primary btn-block visible-xs">{% trans "Apply to Competition" %}</a>
 {% endblock %}

@@ -367,3 +367,8 @@ form.smaller input, form.smaller select {
 .bike-brand-dropdown.disabled {
     margin-top: 0;
 }
+
+
+.breadcrumbs .apply-competition {
+    margin-top: 7px;
+}
