@@ -43,6 +43,22 @@ def get_participant_fee(competition, distance_id, year):
         'entry_fee': entry_fee,
     }
 
+def get_participant_fee_from_price(competition, price_obj):
+    parent_competition = None
+    if competition.complex_payment_enddate and competition.complex_payment_enddate > timezone.now():
+        parent_competition = competition
+        child_count = competition.get_children().count()
+        competition = competition.get_children()[0]
+
+    if not price_obj:
+        return None
+    if parent_competition:  # Means that complex.
+        entry_fee = round(float(price_obj.price) * child_count * ((100.0-parent_competition.complex_discount)/100.0), 2)
+    else:
+        entry_fee = float(price_obj.price)
+
+    return entry_fee
+
 
 def get_insurance_fee(competition, insurance_id):
     if not insurance_id:
@@ -62,6 +78,19 @@ def get_insurance_fee(competition, insurance_id):
         'insurance_fee': insurance_fee,
     }
 
+def get_insurance_fee_from_insurance(competition, insurance):
+    if not insurance:
+        return 0.0
+    try:
+        if competition.complex_payment_enddate and competition.complex_payment_enddate > timezone.now():
+            child_count = competition.get_children().count()
+            insurance_fee = round(float(insurance.price) * child_count * ((100.0-insurance.complex_discount)/100.0), 2)
+        else:
+            insurance_fee = float(insurance.price)
+    except Insurance.DoesNotExist:
+        return 0.0
+
+    return insurance_fee
 
 def get_total(competition, distance_id, year, insurance_id=None):
     participant_fee = get_participant_fee(competition, distance_id, year)

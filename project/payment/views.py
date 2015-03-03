@@ -13,7 +13,8 @@ from core.models import Competition, Log
 from django.utils.translation import ugettext as _
 from payment.forms import ApplicationPayUpdateForm
 from payment.models import Payment
-from payment.utils import get_price, get_form_message, approve_payment, validate_payment
+from payment.utils import get_price, get_form_message, approve_payment, validate_payment, get_total, \
+    get_participant_fee_from_price, get_insurance_fee_from_insurance
 from registration.models import Application
 from velo.mixins.views import RequestFormKwargsMixin
 from velo.utils import SessionWHeaders
@@ -102,9 +103,9 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
                         valid = False
                 # check if prices are still valid
             if valid:
-                self.total_entry_fee += float(participant.price.price)
+                self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
                 if participant.insurance:
-                    self.total_insurance_fee += float(participant.insurance.price)
+                    self.total_insurance_fee += get_insurance_fee_from_insurance(self.object.competition, participant.insurance)
 
         if valid:
             if self.object.total_entry_fee != self.total_entry_fee or self.object.total_insurance_fee != self.total_insurance_fee:

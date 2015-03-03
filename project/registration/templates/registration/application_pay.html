@@ -1,5 +1,5 @@
 {% extends 'public/base.html' %}
-{% load crispy_forms_tags i18n %}
+{% load crispy_forms_tags i18n velomath %}
 
 {% block js %}
     {{ block.super }}
@@ -49,9 +49,11 @@
                     <td>{{ participant.full_name }}</td>
                     <td>{{ participant.birthday|date:"Y-m-d" }}</td>
                     <td>{{ participant.team_name }}</td>
-                    <td>{{ participant.price.price|floatformat:2 }} €</td>
-                    <td>{% if participant.insurance %}{{ participant.insurance.price|floatformat:2 }} €{% else %}-{% endif %}</td>
-                    <td>{% if participant.insurance %}{{ participant.price.price|add:participant.insurance.price|floatformat:2 }}{% else %}{{ participant.price.price|floatformat:2 }}{% endif %} €</td>
+                {% with price=participant.price|getParticipationFeePrice:participant.competition insurance=participant.insurance|getInsurancePrice:participant.competition %}
+                    <td>{{ price }} €</td>
+                    <td>{% if insurance %}{{ insurance }} €{% else %}-{% endif %}</td>
+                    <td>{% if insurance %}{{ price|addfloat:insurance }}{% else %}{{ price }}{% endif %} €</td>
+                {% endwith %}
                 </tr>
             {% endfor %}
 
@@ -62,7 +64,7 @@
                         <td class="text-right"><b>{% trans 'Total' %}</b></td>
                         <td><b>{{ total_entry_fee|floatformat:2 }} €</b></td>
                         <td><b>{{ total_insurance_fee|floatformat:2 }} €</b></td>
-                        <td><b>{{ total_entry_fee|add:total_insurance_fee|floatformat:2 }} €</b></td>
+                        <td><b>{{ total_entry_fee|addfloat:total_insurance_fee }} €</b></td>
                     </tr>
                 </tfoot>
             {% endif %}
