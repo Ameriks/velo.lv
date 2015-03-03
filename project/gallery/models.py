@@ -71,10 +71,10 @@ class Photo(TimestampMixin, models.Model):
         if not self.width or not self.height:
             variable = 1000
             if self.is_vertical:
-                self.height = variable
+                self.height = variable if self.image.height > variable else self.image.height
                 self.width = (self.image.width * self.height) / self.image.height
             else:
-                self.width = variable
+                self.width = variable if self.image.width > variable else self.image.width
                 self.height = (self.image.height * self.width) / self.image.width
 
         return super(Photo, self).save(*args, **kwargs)
