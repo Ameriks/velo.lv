@@ -204,8 +204,11 @@ def create_application_invoice(application, active_payment_type, action="send"):
             "amount": "1",
             "price": float(application.donation)
         })
-
-    competition_datetime = datetime.datetime.combine(application.competition.competition_date, datetime.time())
+    if not application.competition.complex_payment_enddate:
+        competition_date = application.competition.competition_date
+    else:
+        competition_date = application.competition.get_children()[0].competition_date
+    competition_datetime = datetime.datetime.combine(competition_date, datetime.time())
     now = datetime.datetime.now()
     if now + datetime.timedelta(days=7) > competition_datetime:
         due_date = now
