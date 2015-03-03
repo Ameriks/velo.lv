@@ -34,17 +34,22 @@ class GetClassNameMixin(object):
 
 class CleanEmailMixin(object):
     def email_validate(self, value):
+        resp = None
         if len(value) > 0:
             try:
                 resp = requests.get('https://api.mailgun.net/v2/address/validate',
-                                    params={'api_key': 'pubkey-7049tobos-x721ipc8b3dp68qzxo3ri5', 'address': value}).json()
-                if not resp.get('is_valid', False):
+                                    params={'api_key': 'pubkey-7049tobos-x721ipc8b3dp68qzxo3ri5', 'address': value})
+                resp_json = resp.json()
+                if not resp_json.get('is_valid', False):
                     msg = 'Invalid email address.'
-                    if resp.get('did_you_mean'):
-                        msg = msg + ' ' + 'Did you mean:' + resp.get('did_you_mean')
+                    if resp_json.get('did_you_mean'):
+                        msg = msg + ' ' + 'Did you mean:' + resp_json.get('did_you_mean')
                     raise forms.ValidationError(msg, code='invalid_email')
             except ConnectionError:
                 Log.objects.create(action='VALIDATE_EMAIL', message='Error connecting to mailgun.net.')
+            except ValueError:  # in case json cannot be decoded
+                Log.objects.create(action='VALIDATE_EMAIL', message=resp.text if resp else 'No response')
+
         return value
 
     def clean_email(self):
