@@ -4,12 +4,15 @@
 
 {% block js %}
     {{ block.super }}
-    <script src="{{ STATIC_URL }}plugins/jquery.lazyload.min.js"></script>
-    <script type="text/javascript">
-        $(function() {
-          $("img.lazy").lazyload();
-        });
-    </script>
+<script src="{{ STATIC_URL }}plugins/jquery.unveil.js"></script>
+ <script>
+
+    $(function() {
+
+        $("img").unveil();
+
+    });
+</script>
 {% endblock %}
 
 {% block main %}
@@ -18,8 +21,8 @@
         {% for object in object_list %}
             <div class="col-xs-6 col-sm-4 col-lg-3">
                 <a href="{% url 'gallery:album' object.id %}" title="{{ object.title }}" class="gallery_album">
-                    <img data-original="{{ object.primary_image.image|thumbnail_url:'thumb' }}" class="margin-bottom-10 lazy" style="height:210px;" />
-                    <span class="gallery_album_title">{{ object.title }}</span>
+                    <img src="{% if forloop.counter < 20 %}{{ object.primary_image.image.thumb.url }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" height="200" width="200" data-src="{{ object.primary_image.image.thumb.url }}"  class="margin-bottom-10" alt="{{ object.title }}" />
+        <span class="gallery_album_title">{{ object.title }}</span>
                 </a>
             </div>
         {% endfor %}
