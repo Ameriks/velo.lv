@@ -14,6 +14,7 @@ class AlbumListView(ListView):
 
 class PhotoListView(ListView):
     model = Photo
+    allow_empty = False
 
     def get_queryset(self):
         queryset = super(PhotoListView, self).get_queryset()

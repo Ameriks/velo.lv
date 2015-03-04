@@ -35,6 +35,9 @@ class Album(TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition', blank=True, null=True)
     description = models.TextField(blank=True)
 
+    is_processed = models.BooleanField(default=False)  # Are thumbnails created?
+    is_internal = models.BooleanField(default=False)  # For images to be used in news/front pages. etc.
+
     primary_image = models.OneToOneField('gallery.Photo', related_name='primary_album', blank=True, null=True)
 
     def __unicode__(self):
@@ -52,6 +55,8 @@ class Photo(TimestampMixin, models.Model):
     md5 = models.CharField(max_length=32, blank=True)
 
     is_featured = models.BooleanField(default=False)
+
+    is_numbered = models.BooleanField(default=False)  # Are numbers added to this picture?
 
     numbers = models.ManyToManyField('registration.Number', through=PhotoNumber)
 
