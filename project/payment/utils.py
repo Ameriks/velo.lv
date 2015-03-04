@@ -183,7 +183,7 @@ def create_application_invoice(application, active_payment_type, action="send"):
             "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
             "units": "gab.",
             "amount": "1",
-            "price": float(participant.price.price)
+            "price": get_participant_fee_from_price(participant.competition, participant.price)
         })
         if participant.insurance:
             items.append({
@@ -193,7 +193,7 @@ def create_application_invoice(application, active_payment_type, action="send"):
                 "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
                 "units": "gab.",
                 "amount": "1",
-                "price": float(participant.insurance.price)
+                "price": get_insurance_fee_from_insurance(participant.competition, participant.insurance)
             })
     if application.donation > 0:
         information = application.competition.params.get('donation', {}).get('bank_code', 'Ziedojums - %s') % application.donation
