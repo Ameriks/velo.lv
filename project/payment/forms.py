@@ -30,7 +30,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
     class Meta:
         model = Application
-        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address', 'donation')
+        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address', 'invoice_show_names', 'donation')
         widgets = {
             'donation': DoNotRenderWidget, # We will add field manually
         }
@@ -161,6 +161,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                         'company_regnr',
                         'company_address',
                         'company_juridical_address',
+                        'invoice_show_names',
                         css_class='invoice_fields',
                     ),
                     css_class='col-sm-4',

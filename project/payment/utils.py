@@ -173,13 +173,20 @@ def create_application_invoice(application, active_payment_type, action="send"):
 
     items = []
     for participant in application.participant_set.all():
-        items.append({
-            "description": "Dalības maksa %(competition)s - %(distance)s - %(full_name)s (%(year)i)" % {
+        if application.invoice_show_names:
+            description = "Dalības maksa %(competition)s - %(distance)s - %(full_name)s (%(year)i)" % {
                 "competition": application.competition.get_full_name,
                 "distance": unicode(participant.distance),
                 "full_name": participant.full_name,
                 "year": participant.birthday.year
-            },
+            }
+        else:
+            description = "Dalības maksa %(competition)s " % {
+                "competition": application.competition.get_full_name,
+            }
+
+        items.append({
+            "description": description,
             "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
             "units": "gab.",
             "amount": "1",
