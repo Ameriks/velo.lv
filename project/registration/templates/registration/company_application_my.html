@@ -2,7 +2,15 @@
 {% load django_tables2 i18n cache %}
 {% block main %}
         {% spaceless %}
-            <a href="{% url 'companyapplication' %}" class="btn btn-success pull-right margin-bottom-40">{% trans 'Create New' %}</a>
+            <div class="row">
+                <div class="col-sm-12">
+                    <a href="{% url 'companyapplication' %}" class="btn btn-success pull-right margin-bottom-40">{% trans 'Create New' %}</a>
+                    <p>Uzņēmuma pieteikums ir paredzēts lielākiem uzņēmumiem vai grupām, kurām ir nepieciešams ievadīt daudzu dalībnieku datus.</p>
+                    <p>Izveidojot uzņēmuma pieteikumu, Jūs iegūsiet publiski pieejamu interneta adresi, kuru būs iespējams izsūtīt darbiniekiem, kur viņiem pašiem būs iespēja pievienot informāciju par sevi.</p>
+                    <p>Pēc tam Jums būs iespējams pieteikt un apmaksāt izvēlētos dalībniekus.</p>
+                </div>
+            </div>
+
             {{ block.super }}
         {% endspaceless %}
 {% endblock %}
