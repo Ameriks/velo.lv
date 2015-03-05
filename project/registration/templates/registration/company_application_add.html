@@ -1,0 +1,43 @@
+{% extends 'public/base.html' %}
+{% load crispy_forms_tags i18n %}
+
+{% block js %}
+    {{ block.super }}
+    {{ form.media.js }}
+    {% for inline in inlines %}
+        {{ inline.media.js }}
+    {% endfor %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/{{ form.get_app_label }}_form.js"></script>
+{% endblock js %}
+
+{% block css %}
+    {{ block.super }}
+    {{ form.media.css }}
+    {% for inline in inlines %}
+        {{ inline.media.css }}
+    {% endfor %}
+{% endblock css %}
+
+{% block main %}
+
+        <div class="row">
+            <div class="col-xs-12">
+                <dl class="dl-horizontal">
+                  <dt>{% trans 'Competition' %}:</dt>
+                  <dd>{{ companyapplication.competition.get_full_name }}</dd>
+                  <dt>{% trans 'Team Name' %}:</dt>
+                  <dd>{{ companyapplication.team_name }}</dd>
+                  <dt>{% trans 'Email' %}:</dt>
+                  <dd>{{ companyapplication.email }}</dd>
+                  <dt>{% trans 'Description' %}:</dt>
+                  <dd>{% firstof companyapplication.description '-' %}</dd>
+                  <dt>{% trans 'Public URL' %}:</dt>
+                  <dd><a href="https://{{ request.get_host }}{% url 'companyapplication_add' companyapplication.code %}">https://{{ request.get_host }}{% url 'companyapplication_add' companyapplication.code %}</a></dd>
+                </dl>
+            </div>
+        </div>
+
+
+
+    {% crispy form %}
+{% endblock %}

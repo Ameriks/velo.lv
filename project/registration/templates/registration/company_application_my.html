@@ -1,0 +1,8 @@
+{% extends 'public/table.html' %}
+{% load django_tables2 i18n cache %}
+{% block main %}
+        {% spaceless %}
+            <a href="{% url 'companyapplication' %}" class="btn btn-success pull-right margin-bottom-40">{% trans 'Create New' %}</a>
+            {{ block.super }}
+        {% endspaceless %}
+{% endblock %}

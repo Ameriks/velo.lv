@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
+import uuid
 from crispy_forms.bootstrap import FieldWithButtons, StrictButton
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Fieldset, HTML, Column, Submit, Div, Field
@@ -12,13 +13,80 @@ import requests
 import math
 from core.models import Competition, Distance, Insurance
 from payment.utils import get_form_message, get_total
-from registration.models import Application, Participant
+from registration.models import Application, Participant, CompanyApplication, CompanyParticipant
 from registration.widgets import CompetitionWidget
 from velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin, CleanEmailMixin
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from velo.utils import bday_from_LV_SSN
+
+
+
+class CompanyApplicationCreateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
+    change_public_url = forms.BooleanField(label=_("Reset public URL?"), help_text=_('If you reset URL, then nobody will be able to access using previous URL.'), required=False)
+
+    class Meta:
+        model = CompanyApplication
+        fields = ('competition', 'team_name', 'email', 'description',)
+
+    def save(self, *args, **kwargs):
+        if not self.instance.id:
+            self.instance.created_by = self.request.user
+            self.instance.status = 1  # Active
+        self.instance.modified_by = self.request.user
+
+        if self.cleaned_data.get('change_public_url', False):
+            self.instance.code = str(uuid.uuid4())
+
+        return super(CompanyApplicationCreateForm, self).save(*args, **kwargs)
+
+    def clean_competition(self):
+        competition = self.cleaned_data.get('competition')
+        if self.instance.id:
+            return self.instance.competition
+        else:
+            return competition
+
+    def __init__(self, *args, **kwargs):
+        super(CompanyApplicationCreateForm, self).__init__(*args, **kwargs)
+
+        self.fields['email'].initial = self.request.user.email
+
+        now = timezone.now()
+        competitions = Competition.objects.filter(Q(complex_payment_enddate__gt=now) | Q(price__end_registering__gt=now, price__start_registering__lte=now)).distinct().order_by('complex_payment_enddate', 'competition_date')
+        self.fields['competition'].choices = [(c.id, c.get_full_name) for c in competitions]
+
+        if self.instance.id:
+            competitions = competitions.filter(id=self.instance.competition_id)
+            if not competitions:
+                c = self.instance.competition
+                self.fields['competition'].choices += [(c.id, c.get_full_name), ]
+            self.fields['competition'].widget.attrs['readonly'] = True
+        else:
+            self.fields['change_public_url'].widget = forms.HiddenInput()
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                'competition',
+                'email',
+                'team_name',
+                'description',
+                css_class='col-sm-6'
+                ),
+                Column(
+                'change_public_url',
+                css_class='col-sm-6'
+                ),
+            ),
+            Row(
+                Column(Submit('submit', _('Save')), css_class='col-sm-2'),
+            ),
+        )
+
 
 
 class ApplicationCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
@@ -343,3 +411,157 @@ class ParticipantInlineFullyRestrictedForm(ParticipantInlineRestrictedForm):
 
     def clean_bike_brand2(self):
             return self.instance.bike_brand2
+
+
+
+class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
+    application = None
+    class Meta:
+        model = CompanyParticipant
+        fields = ('distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand2', 'email')
+
+    def clean_ssn(self):
+        if self.cleaned_data.get('country') == 'LV':
+            return self.cleaned_data.get('ssn', '').replace('-', '').replace(' ', '')
+        else:
+            return ''
+
+    def clean_birthday(self):
+        if self.cleaned_data.get('country') == 'LV':
+            return bday_from_LV_SSN(self.cleaned_data.get('ssn'))
+        else:
+            return self.cleaned_data.get('birthday')
+
+    def clean_bike_brand2(self):
+        return self.cleaned_data.get('bike_brand2').strip()[:20]
+
+    def clean_first_name(self):
+        return self.cleaned_data.get('first_name').title()
+
+    def clean_last_name(self):
+        return self.cleaned_data.get('last_name').title()
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+
+        ssn = cleaned_data.get('ssn', '')
+        country = cleaned_data.get('country')
+        birthday = cleaned_data.get('birthday', '')
+        distance = cleaned_data.get('distance', '')
+
+        if country == 'LV':
+            try:
+                if not ssn or not len(ssn) == 11:
+                    self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
+                checksum = 1
+                for i in xrange(10):
+                    checksum -= int(ssn[i]) * int("01060307091005080402"[i * 2:i * 2 + 2])
+                if not int(checksum - math.floor(checksum / 11) * 11) == int(ssn[10]):
+                    self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
+            except:
+                self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
+
+        else:
+            if not birthday:
+                self._errors.update({'birthday': [_("Birthday is required."), ]})
+
+        if birthday and distance:
+            total = get_total(self.instance.application.competition, distance.id, birthday.year)
+            if not total:
+                self._errors.update({'distance': [_("This distance not available for this participant."), ]})
+
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        self.application = kwargs.pop('application', None)
+        super(CompanyParticipantInlineForm, self).__init__(*args, **kwargs)
+
+        competition = self.application.competition
+
+        distances = competition.get_distances()
+
+        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
+
+        if self.request and self.request.LANGUAGE_CODE == 'lv':
+            self.fields['country'].initial = 'LV'
+
+        self.fields['country'].required = True
+        self.fields['gender'].required = True
+
+        self.fields['distance'].required = True
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['gender'].required = True
+        self.fields['country'].required = True
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.template = "bootstrap/velo_whole_uni_formset.html"
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                Row(
+                    Column('distance', css_class='col-xs-6 col-sm-4'),
+                    Column('country', css_class='col-xs-6 col-sm-4'),
+                    Column('gender', css_class='col-xs-6 col-sm-4'),
+                ),
+                Row(
+                    Column('first_name', css_class='col-xs-6 col-sm-4'),
+                    Column('last_name', css_class='col-xs-6 col-sm-4'),
+                    Column('ssn', css_class='col-xs-6 col-sm-4'),
+                    Column(Field('birthday', css_class='dateinput'), css_class='col-xs-6 col-sm-4'),
+                ),
+                Row(
+                    Column('phone_number', css_class='col-xs-6 col-sm-4'),
+                    Column('email', css_class='col-xs-6 col-sm-4'),
+                    Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>', css_class='btn-default bike-brand-dropdown')), css_class='col-xs-6 col-sm-4'),
+                ),
+                'id',
+                Div(
+                    Field('DELETE',),
+                    css_class='hidden',
+                ),
+                css_class='col-sm-9'
+                ),
+            ),
+        )
+
+
+
+class CompanyApplicationEmptyForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
+    class Meta:
+        model = CompanyApplication
+        fields = ()
+
+    class Media:
+        js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
+              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js',
+              'plugins/typeahead.js/typeahead.bundle.min.js',
+              'plugins/handlebars-v2.0.0.js',)
+        css = {
+            'all': ('plugins/datepicker/datepicker.css', )
+        }
+
+
+    def __init__(self, *args, **kwargs):
+        super(CompanyApplicationEmptyForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                    Fieldset(
+                        _('New Company Participants'),
+                        HTML('{% load crispy_forms_tags %}{% crispy participant participant.form.helper %}'),
+                    ),
+                    css_class='col-xs-12'
+                )
+            ),
+            Row(
+                Column(Submit('submit', _('Save')), css_class='col-sm-2 pull-right'),
+            ),
+        )
+
+    def get_app_label(self):
+        return "registration/application"

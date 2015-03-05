@@ -11,7 +11,9 @@ from sitetree.sitetreeapp import register_i18n_trees
 
 from core.views import CalendarView
 from payment.views import ApplicationPayView, ApplicationOKView
-from registration.views import ApplicationUpdate, ApplicationCreate
+from registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
+    CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
+    CompanyApplicationUpdate
 from results.views import ResultAllView
 from supporter.views import AgencySupporters
 from velo.views import CustomAutoResponseView
@@ -45,6 +47,18 @@ urlpatterns = i18n_patterns('',
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$'), ApplicationUpdate.as_view(), name='application'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pay/$'), ApplicationPayView.as_view(), name='application_pay'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$'), ApplicationOKView.as_view(), name='application_ok'),
+
+
+
+    url(_(r'^company_application/$'), MyCompanyApplicationList.as_view(), name='companyapplication_list'),
+    url(_(r'^company_application/add/$'), CompanyApplicationCreate.as_view(), name='companyapplication'),
+    url(_(r'^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$'), CompanyApplicationDetail.as_view(), name='companyapplication'),
+    url(_(r'^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/add/$'), CompanyApplicationParticipantAdd.as_view(), name='companyapplication_add'),
+    url(_(r'^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$'), CompanyApplicationParticipantAddOK.as_view(), name='companyapplication_ok'),
+    url(_(r'^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/edit/$'), CompanyApplicationUpdate.as_view(), name='companyapplication_edit'),
+
+
+
 
     url(_(r'^results/'), ResultAllView.as_view(), name="all_results"),
     url(_(r'^payment/'), include('payment.urls', namespace='payment')),

@@ -54,3 +54,10 @@ class CustomBaseInlineFormSet(GetClassNameMixin, BaseInlineFormSet):
             return super(CustomBaseInlineFormSet, self).save_new_objects(commit)
         else:
             return []
+
+
+class OnlyAddBaseInlineFormSet(CustomBaseInlineFormSet):
+    def save_existing_objects(self, commit=True):
+        return []
+    def get_queryset(self):
+        return []

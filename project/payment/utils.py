@@ -289,6 +289,9 @@ def approve_payment(payment, user=False):
         for participant in application.participant_set.all():
             participant.is_participating = True
             participant.save()
+            if participant.company_participant_id:
+                participant.company_participant.is_participating = True
+                participant.company_participant.save()
 
         send_success_email.delay(application.id)
         if user:

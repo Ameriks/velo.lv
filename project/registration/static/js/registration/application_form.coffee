@@ -5,6 +5,9 @@
   if (typeof console == "object")
     console.log 'removed'
 
+@CompanyParticipant_inline_class_added = (row) ->
+  update_every_line(row)
+
 
 set_typeahead_action = (item) ->
   $(item).on "click", ->
@@ -33,7 +36,9 @@ set_typeahead_action = (item) ->
 
     $("input[name$='birthday']", parent).val(datum.birthday).change()
     $("input[name$='ssn']", parent).val(datum.ssn).change()
-    $("input[name$='team_name']", parent).typeahead('val',datum.team_name)
+
+    if $("input[name$='team_name']", parent).length
+      $("input[name$='team_name']", parent).typeahead('val',datum.team_name)
     $("input[name$='phone_number']", parent).val(datum.phone_number).change()
     $("input[name$='email']", parent).val(datum.email).change()
 
@@ -109,10 +114,11 @@ update_every_line = (row) ->
 
   if !row.hasClass("noadd")
     $("select[name$='distance'], input[name$='birthday'], select[name$='insurance']", row).change ->
-      check_price(row)
+      if $('.participant_calculation', row).length
+        check_price(row)
       ""
-
-    check_price(row)
+    if $('.participant_calculation', row).length
+      check_price(row)
 
   if $("select[name$='country']", row).val() == 'LV'
     application_maskedssn $("input[name$='ssn']", row)
@@ -155,12 +161,12 @@ update_every_line = (row) ->
       else
         $("select[name$='gender']", row).val('M')
 
-
-  $('.team-typeahead', row).typeahead(null, {
-    name: 'team-name',
-    displayKey: 'team_name',
-    source: teams.ttAdapter()
-  })
+  if teams
+    $('.team-typeahead', row).typeahead(null, {
+      name: 'team-name',
+      displayKey: 'team_name',
+      source: teams.ttAdapter()
+    })
 
   if !row.hasClass('noadd')
     $("input[name$='first_name']", row).typeahead
@@ -232,13 +238,14 @@ $ ->
 
   bikeBrandSearch.initialize();
 
-  teams = new Bloodhound
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('team_name')
-    queryTokenizer: Bloodhound.tokenizers.whitespace
-    prefetch: $('#id_team_search').val()
-#    remote: $('#id_team_search_term').val()
+  if $('#id_team_search').length
+    teams = new Bloodhound
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('team_name')
+      queryTokenizer: Bloodhound.tokenizers.whitespace
+      prefetch: $('#id_team_search').val()
+  #    remote: $('#id_team_search_term').val()
 
-  teams.initialize()
+    teams.initialize()
 
 
   for container in $('.item:not(.template)')

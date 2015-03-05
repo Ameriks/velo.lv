@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-04 11:35+0200\n"
-"PO-Revision-Date: 2015-03-04 11:36+0137\n"
+"POT-Creation-Date: 2015-03-05 22:48+0200\n"
+"PO-Revision-Date: 2015-03-05 22:58+0137\n"
 "Last-Translator: Agris Ameriks <agris@pd.lv>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,45 +19,50 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 "X-Translated-Using: django-rosetta 0.7.5\n"
 
-#: forms.py:52
-msgid "E-mail confirmation"
-msgstr "E-pasta apstiprinājums"
-
-#: forms.py:52
-msgid "Enter the same e-mail as above, for verification."
-msgstr "Ievadiet vēlreiz e-pasta adresi, lai to apstiprinātu."
-
-#: forms.py:71
-msgid "The two email fields didn't match."
-msgstr "Abi e-pasta lauki nesakrīt"
-
-#: forms.py:104 templates/registration/application_pay.html:32
-msgid "Participants"
-msgstr "Dalībnieki"
-
-#: forms.py:111
+#: forms.py:74 forms.py:167 forms.py:550
 msgid "Save"
 msgstr "Saglabāt"
 
-#: forms.py:112
+#: forms.py:108
+msgid "E-mail confirmation"
+msgstr "E-pasta apstiprinājums"
+
+#: forms.py:108
+msgid "Enter the same e-mail as above, for verification."
+msgstr "Ievadiet vēlreiz e-pasta adresi, lai to apstiprinātu."
+
+#: forms.py:127
+msgid "The two email fields didn't match."
+msgstr "Abi e-pasta lauki nesakrīt"
+
+#: forms.py:160 templates/registration/application_pay.html:32
+msgid "Participants"
+msgstr "Dalībnieki"
+
+#: forms.py:168
 msgid "Save & Pay"
 msgstr "Saglabāt un maksāt"
 
-#: forms.py:118 templates/registration/application_pay.html:42
+#: forms.py:174 templates/registration/application_pay.html:42
 msgid "Insurance"
 msgstr "Apdrošināšana"
 
-#: forms.py:163 forms.py:168 forms.py:170
+#: forms.py:219 forms.py:224 forms.py:226 forms.py:443 forms.py:448
+#: forms.py:450
 msgid "Invalid Social Security Number."
 msgstr "Kļūdains personas kods."
 
-#: forms.py:174
+#: forms.py:230 forms.py:454
 msgid "Birthday is required."
 msgstr "Dzimšanas diena ir obligāta."
 
-#: forms.py:179
+#: forms.py:235 forms.py:459
 msgid "This distance not available for this participant."
 msgstr "Distance dalībniekam nav pieejama."
+
+#: forms.py:543
+msgid "New Company Participants"
+msgstr "Jauni uzņēmuma dalībnieki"
 
 #: models.py:25
 msgid "Cancelled"
@@ -79,7 +84,8 @@ msgstr "Gaida maksājumu"
 msgid "Payed"
 msgstr "Apmaksāts"
 
-#: models.py:31
+#: models.py:31 templates/registration/company_application_add.html:26
+#: templates/registration/company_application_detail.html:26
 msgid "Competition"
 msgstr "Sacensības"
 
@@ -87,7 +93,7 @@ msgstr "Sacensības"
 msgid "Payment Status"
 msgstr "Maksājuma statuss"
 
-#: models.py:35
+#: models.py:35 models.py:274
 msgid ""
 "You will receive payment confirmation and information about start numbers."
 msgstr ""
@@ -130,117 +136,126 @@ msgstr "Rēķina numurs"
 msgid "Donation"
 msgstr "Ziedojums"
 
-#: models.py:78
+#: models.py:78 models.py:280
 msgid "Male"
 msgstr "Vīrietis"
 
-#: models.py:79
+#: models.py:79 models.py:281
 msgid "Female"
 msgstr "Sieviete"
 
-#: models.py:91 tables.py:37 tables.py:75
+#: models.py:93 tables.py:37 tables.py:75
+#: templates/registration/company_application_detail.html:61
+#: templates/registration/company_application_detail.html:113
 msgid "Team"
 msgstr "Komanda"
 
-#: models.py:94
+#: models.py:96 models.py:285
 msgid "Is Participating"
 msgstr "Piedalās"
 
-#: models.py:95
+#: models.py:97
 msgid "Is Paying"
 msgstr "Ir apmaksājis"
 
-#: models.py:96
+#: models.py:98
 msgid "Is Competing"
 msgstr "Piedalās cīņā"
 
-#: models.py:98
+#: models.py:100 models.py:288
 msgid "First Name"
 msgstr "Vārds"
 
-#: models.py:99
+#: models.py:101 models.py:289
 msgid "Last Name"
 msgstr "Uzvārds"
 
-#: models.py:100 templates/registration/application_pay.html:39
+#: models.py:102 models.py:290 templates/registration/application_pay.html:39
 msgid "Birthday"
 msgstr "Dzimšanas diena"
 
-#: models.py:100
+#: models.py:102 models.py:290
 msgid "YYYY-MM-DD"
 msgstr "YYYY-MM-DD"
 
-#: models.py:104
+#: models.py:106 models.py:291
 msgid "Gender"
 msgstr "Dzimums"
 
-#: models.py:106
+#: models.py:108 models.py:292
 msgid "Social Security Number"
 msgstr "Personas kods"
 
-#: models.py:108
+#: models.py:110 models.py:293
 msgid "Phone Number"
 msgstr "Telefona numurs"
 
-#: models.py:109
+#: models.py:111 models.py:294
+#: templates/registration/company_application_add.html:30
+#: templates/registration/company_application_detail.html:30
 msgid "Email"
 msgstr "E-pasts"
 
-#: models.py:111
+#: models.py:113
 msgid "Send Email"
 msgstr "Sūtīt e-pastu"
 
-#: models.py:112
+#: models.py:114
 msgid "Send SMS"
 msgstr "Sūtīt SMS"
 
-#: models.py:114
+#: models.py:116 models.py:295
 msgid "Country"
 msgstr "Valsts"
 
-#: models.py:115
+#: models.py:117
 msgid "City"
 msgstr "Pilsēta"
 
-#: models.py:117 models.py:118
+#: models.py:119 models.py:120 models.py:296
 msgid "Bike Brand"
 msgstr "Velo"
 
-#: models.py:121
+#: models.py:123
 msgid "Occupation"
 msgstr "Nodarbošanās"
 
-#: models.py:122
+#: models.py:124
 msgid "Where Heard"
 msgstr "Kur dzirdējāt?"
 
-#: models.py:124 models.py:245
+#: models.py:126 models.py:247
 msgid "Group"
 msgstr "Grupa"
 
-#: models.py:124
+#: models.py:126
 msgid "Assigned automatically"
 msgstr "Piešķirts automātiski"
 
-#: models.py:126
+#: models.py:128
 msgid "Registrant"
 msgstr "Reģistrējis"
 
-#: models.py:129 templates/registration/application_pay.html:38
+#: models.py:131 templates/registration/application_pay.html:38
 msgid "Full Name"
 msgstr "Pilns vārds"
 
-#: models.py:137
+#: models.py:139
 msgid "Registration Date"
 msgstr "Reģistrācijas datums"
 
-#: models.py:147
+#: models.py:149
 msgid "participant"
 msgstr "dalībnieks"
 
-#: models.py:148
+#: models.py:150
 msgid "participants"
 msgstr "dalībnieki"
+
+#: models.py:275 templates/registration/company_application_add.html:32
+#: templates/registration/company_application_detail.html:32
+msgid "Description"
+msgstr "Apraksts"
 
 #: tables.py:19
 msgid "Download Invoice"
@@ -254,7 +269,7 @@ msgstr "Jūs neesat izveidojis nevienu pieteikumu."
 msgid "Year"
 msgstr "Gads"
 
-#: tables.py:64 tables.py:109
+#: tables.py:64 tables.py:109 tables.py:129
 msgid "There are no participants"
 msgstr "Nav dalībnieku"
 
@@ -262,21 +277,63 @@ msgstr "Nav dalībnieku"
 msgid "Last Year's Result"
 msgstr "Iepriekšējā gada rezultāts"
 
-#: views.py:135
+#: tables.py:145
+msgid "You haven't created any company application."
+msgstr "Jūs neesat izveidojis nevienu pieteikumu."
+
+#: views.py:109 views.py:115
+msgid "Select at least one participant."
+msgstr "Izvēlaties vismaz vienu dalībnieku."
+
+#: views.py:143
+msgid "Select team"
+msgstr "Izvēlieties komandu"
+
+#: views.py:152
+msgid "Add team title."
+msgstr "Pievienojiet komandas nosaukumu."
+
+#: views.py:157
+#, python-format
+msgid "Team with title %s already exists. Pick different title."
+msgstr "Komanda ar nosaukumu %s jau eksistē. Izvēlieties citu."
+
+#: views.py:164
+msgid "Select participants in selected competition distance."
+msgstr "Izvēlieties dalībniekus izvēlētajā distancē."
+
+#: views.py:174
+msgid ""
+"All selected participants are already participants in teams. One participant"
+" can be in only one team."
+msgstr ""
+"Visi izvēlētie dalībnieki jau ir pievienoti komandās. Viens dalībnieks var "
+"būt tikai vienā komandā."
+
+#: views.py:183
+#, python-format
+msgid "Member %s %s is already registered in other team."
+msgstr "Dalībnieks %s %s jau ir reģistrēts citā komandā."
+
+#: views.py:294
 msgid "Saved"
 msgstr "Saglabāts"
 
-#: views.py:137
+#: views.py:296
 msgid "Draft saved"
 msgstr "Melnraksts saglabāts"
 
-#: views.py:154
+#: views.py:313
 msgid ""
 "Currently logged in user doesn't have access to this application. Please, "
 "login with user that you used to create application."
 msgstr ""
 "Jums nav pieejas šim pieteikumam. Lūdzu pieslēdzaties ar lietotāju, ar kuru "
 "pieteikums tika izveidots."
+
+#: views.py:488
+msgid "Competition already passed. Cannot register to historic competitions."
+msgstr "Sacensības jau ir pagājušas. Nevar reģistrēties vecās sacensībās."
 
 #: competition_classes/seb2015.py:120
 #, python-format
@@ -304,6 +361,8 @@ msgid "Apply to Competitions"
 msgstr "Pieteikties sacensībām"
 
 #: templates/registration/application_pay.html:40
+#: templates/registration/company_application_add.html:28
+#: templates/registration/company_application_detail.html:28
 msgid "Team Name"
 msgstr "Komandas nosaukums"
 
@@ -327,6 +386,87 @@ msgstr "Cits"
 #: templates/registration/application_pay.html:114
 msgid "Pay"
 msgstr "Maksāt"
+
+#: templates/registration/company_application_add.html:34
+#: templates/registration/company_application_detail.html:34
+msgid "Public URL"
+msgstr "Publiskais URL"
+
+#: templates/registration/company_application_added.html:7
+msgid "Great! You have successfuly added participants to company application."
+msgstr ""
+"Ļoti labi! Jūs esat veiksmīgi pievienojuši dalībniekus kompānijas "
+"pieteikumam."
+
+#: templates/registration/company_application_added.html:9
+msgid "What's next?"
+msgstr "Kas tālāk?"
+
+#: templates/registration/company_application_added.html:11
+msgid ""
+"\n"
+"            Company's responsible person (the one who created company application) now see new participants and she must take action so that you appear in start list. Until he/she takes action, you haven't really applied to competition.\n"
+"            "
+msgstr ""
+"\n"
+"Uzņēmuma atbildīgā persona (tā kura ir izveidojusi šo kompānijas pieteikumu) tagad var redzēt jaunus dalībniekus un ir jāveic darbības, lai Jūsu norādītie dalībnieki parādītos starta sarakstā. Līdz tam Jūsu pieteiktie dalībnieki nav iekļauti starta sarakstā."
+
+#: templates/registration/company_application_detail.html:22
+msgid "Edit"
+msgstr "Labot"
+
+#: templates/registration/company_application_detail.html:37
+msgid ""
+"Reset public URL? If you reset URL, then nobody will be able to access using"
+" old URL."
+msgstr ""
+"Nomainīt publisko URL? Ja nomainīsiet, tad kompānijas pieteikumam vairs "
+"nevarēs piekļūt ar veco interneta adresi."
+
+#: templates/registration/company_application_detail.html:40
+msgid "Company riders"
+msgstr "Kompānijas braucēji"
+
+#: templates/registration/company_application_detail.html:53
+msgid "Add participant"
+msgstr "Pievienot dalībnieku"
+
+#: templates/registration/company_application_detail.html:64
+msgid "New Team"
+msgstr "Jauna komanda"
+
+#: templates/registration/company_application_detail.html:66
+#: templates/registration/company_application_detail.html:110
+msgid "Add to existing team"
+msgstr "Pievienot komandai"
+
+#: templates/registration/company_application_detail.html:71
+msgid "Pay for selected"
+msgstr "Maksāt par izvēlētajiem"
+
+#: templates/registration/company_application_detail.html:82
+msgid "Create new team"
+msgstr "Izveidot jaunu komandu"
+
+#: templates/registration/company_application_detail.html:85
+msgid "Distance"
+msgstr "Distance"
+
+#: templates/registration/company_application_detail.html:98
+msgid "Title"
+msgstr "Nosaukums"
+
+#: templates/registration/company_application_detail.html:104
+msgid "Create team"
+msgstr "Izveidot komandu"
+
+#: templates/registration/company_application_detail.html:125
+msgid "Add to Team"
+msgstr "Pievienot komandai"
+
+#: templates/registration/company_application_my.html:5
+msgid "Create New"
+msgstr "Izveidot jaunu"
 
 #: templates/registration/participant_list.html:22
 msgid "Filter"

@@ -4,7 +4,7 @@ import django_tables2 as tables
 from django.utils.translation import ugettext_lazy as _
 import itertools
 
-from registration.models import Participant, Application
+from registration.models import Participant, Application, CompanyParticipant
 from django_tables2.utils import A
 
 
@@ -111,3 +111,34 @@ class ParticipantTableWithResult(tables.Table):
         # ordering = ('created')
         per_page = 200
         template = "bootstrap/table.html"
+
+
+class CompanyParticipantTable(tables.Table):
+    selection = tables.CheckBoxColumn(accessor="pk", orderable=False)
+
+    class Meta:
+        model = CompanyParticipant
+        attrs = {"class": "table table-striped table-hover"}
+        fields = ("first_name", "last_name", "birthday", "distance", "phone_number", 'email', 'created', 'is_participating')
+        sequence = ('selection', "first_name", 'last_name', 'birthday', "distance", 'phone_number', 'email', 'created', 'is_participating')
+        empty_text = _("There are no participants")
+        order_by = ("created")
+        per_page = 200
+        template = "bootstrap/table.html"
+
+class CompanyApplicationTable(tables.Table):
+    id = tables.LinkColumn('companyapplication', args=[A('code')])
+    team_name = tables.LinkColumn('companyapplication', args=[A('code')])
+
+    def render_competition(self, value):
+        return value.get_full_name
+
+    class Meta:
+        model = Application
+        attrs = {"class": "table table-striped table-hover"}
+        fields = ("id", "team_name", "competition", "created", )
+        empty_text = _("You haven't created any company application.")
+        order_by = ("-created")
+        per_page = 20
+        template = "bootstrap/table.html"
+

@@ -83,6 +83,8 @@ class Participant(TimestampMixin, models.Model):
     distance = models.ForeignKey('core.Distance', blank=True, null=True)
     price = models.ForeignKey('payment.Price', blank=True, null=True)
 
+    company_participant = models.ForeignKey('registration.CompanyParticipant', blank=True, null=True)
+
     discount_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
     insurance = models.ForeignKey('core.Insurance', blank=True, null=True)
@@ -262,3 +264,48 @@ class PreNumberAssign(models.Model):
     segment = models.IntegerField(blank=True, null=True)
     participant_slug = models.SlugField(blank=True)
     group_together = models.SlugField(blank=True, null=True)
+
+
+class CompanyApplication(StatusMixin, TimestampMixin, models.Model):
+    competition = models.ForeignKey('core.Competition')
+    code = models.CharField(max_length=50, default=lambda: str(uuid.uuid4()), unique=True)
+    team_name = models.CharField(max_length=50)
+
+    email = models.EmailField(help_text=_("You will receive payment confirmation and information about start numbers."))
+    description = models.TextField(_('Description'), blank=True)
+
+
+class CompanyParticipant(TimestampMixin, models.Model):
+    GENDER_CHOICES = (
+        ('M', _('Male')),
+        ('F', _('Female')),
+    )
+    application = models.ForeignKey(CompanyApplication, related_name='participant_set')
+    team_member = models.ForeignKey('team.Member', blank=True, null=True)
+    is_participating = models.BooleanField(_('Is Participating'), default=False)
+
+    distance = models.ForeignKey('core.Distance', blank=True, null=True)
+    first_name = models.CharField(_('First Name'), max_length=60, blank=True)
+    last_name = models.CharField(_('Last Name'), max_length=60, blank=True)
+    birthday = models.DateField(_('Birthday'), help_text=_('YYYY-MM-DD'), blank=True, null=True)
+    gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True)
+    ssn = models.CharField(_('Social Security Number'), max_length=12, blank=True)
+    phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True, help_text="Uz šo telefona numuru tiks sūtīts rezultāts")
+    email = models.EmailField(_('Email'), blank=True)
+    country = CountryField(_('Country'), blank=True, null=True)
+    bike_brand2 = models.CharField(_('Bike Brand'), max_length=20, blank=True)
+
+    slug = models.SlugField(blank=True)
+
+    def set_slug(self):
+        if self.birthday:
+            try:
+                self.slug = CustomSlug.objects.get(first_name=self.first_name, last_name=self.last_name, birthday=self.birthday).slug
+            except CustomSlug.DoesNotExist:
+                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year))
+        else:
+            self.slug = slugify('%s-%s' % (self.first_name, self.last_name))
+
+    def save(self, *args, **kwargs):
+        self.set_slug()
+        return super(CompanyParticipant, self).save(*args, **kwargs)

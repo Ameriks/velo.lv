@@ -1,23 +1,28 @@
 # coding=utf-8
 from __future__ import unicode_literals
+import uuid
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Count, Sum
 from django.http import HttpResponseRedirect
 
 from django.template.defaultfilters import slugify
+from django.utils import timezone
 
-from django.views.generic import CreateView, ListView, View
+from django.views.generic import CreateView, ListView, View, DetailView, TemplateView, UpdateView
 from django_tables2 import SingleTableView
-from extra_views import UpdateWithInlinesView, NamedFormsetsMixin, InlineFormSet
+from extra_views import UpdateWithInlinesView, NamedFormsetsMixin, InlineFormSet, CreateWithInlinesView
 from braces.views import JsonRequestResponseMixin, LoginRequiredMixin, JSONResponseMixin
-from extra_views.advanced import BaseUpdateWithInlinesView
-from core.formsets import CustomBaseInlineFormSet
+from extra_views.advanced import BaseUpdateWithInlinesView, BaseCreateWithInlinesView
+from core.formsets import CustomBaseInlineFormSet, OnlyAddBaseInlineFormSet
+from core.models import Distance, CustomSlug
 
 from registration.forms import ApplicationCreateForm, ApplicationUpdateForm, ParticipantInlineForm, \
-    ParticipantInlineRestrictedForm, ParticipantInlineFullyRestrictedForm
-from registration.models import Participant, Application
-from registration.tables import ParticipantTable, ApplicationTable
+    ParticipantInlineRestrictedForm, ParticipantInlineFullyRestrictedForm, CompanyApplicationCreateForm, \
+    CompanyParticipantInlineForm, CompanyApplicationEmptyForm
+from registration.models import Participant, Application, CompanyApplication, CompanyParticipant
+from registration.tables import ParticipantTable, ApplicationTable, CompanyParticipantTable, CompanyApplicationTable
+from team.models import Team, Member
 from velo.mixins.forms import GetClassNameMixin
 from velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin
 from django.utils.translation import ugettext_lazy as _
@@ -63,6 +68,161 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
         #     })
 
         return queryset
+
+
+class CompanyApplicationCreate(LoginRequiredMixin, RequestFormKwargsMixin, CreateView):
+    template_name = 'registration/company_application_create.html'
+    model = CompanyApplication
+    form_class = CompanyApplicationCreateForm
+
+    def get_success_url(self):
+        return reverse('companyapplication', kwargs={'slug': self.object.code})
+
+class CompanyApplicationUpdate(LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
+    template_name = 'registration/company_application_create.html'
+    model = CompanyApplication
+    form_class = CompanyApplicationCreateForm
+    slug_field = 'code'
+
+    def get_queryset(self):
+        queryset = super(CompanyApplicationUpdate, self).get_queryset()
+        queryset = queryset.filter(created_by=self.request.user)
+        return queryset
+
+    def get_success_url(self):
+        return reverse('companyapplication', kwargs={'slug': self.object.code})
+
+
+class CompanyApplicationDetail(LoginRequiredMixin, SingleTableView):
+    model = CompanyParticipant
+    table_class = CompanyParticipantTable
+    template_name = 'registration/company_application_detail.html'
+    companyapplication = None
+
+    def post(self, request, *args, **kwargs):
+        self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)
+        competition_ids = self.companyapplication.competition.get_ids()
+        action = request.POST.get('action', 'none')
+        selected = request.POST.getlist('selection')
+        participants = self.companyapplication.participant_set.filter(id__in=selected)
+
+        if not selected:
+            messages.info(request, _('Select at least one participant.'))
+            return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+
+        if action == 'pay':
+            participants = participants.filter(is_participating=False)
+            if not participants:
+                messages.info(request, _('Select at least one participant.'))
+                return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+            new_application = Application.objects.create(competition=self.companyapplication.competition, email=self.companyapplication.email, created_by=request.user,)
+            for participant in participants:
+                new_application.participant_set.create(company_participant=participant,
+                                                       competition=self.companyapplication.competition,
+                                                       distance=participant.distance,
+                                                       first_name=participant.first_name,
+                                                       last_name=participant.last_name,
+                                                       birthday=participant.birthday,
+                                                       ssn=participant.ssn,
+                                                       country=participant.country,
+                                                       gender=participant.gender,
+                                                       bike_brand2=participant.bike_brand2,
+                                                       email=participant.email,
+                                                       phone_number=participant.phone_number,
+                                                       team_name=self.companyapplication.team_name,
+                                                       created_by=request.user,
+                                                       )
+            return HttpResponseRedirect(reverse('application', kwargs={'slug': new_application.code}))
+
+
+        if action == 'add_to_team':
+            team_id = request.POST.get('team', None)
+            try:
+                team = Team.objects.get(id=team_id, owner=request.user)
+                distance = team.distance
+            except:
+                messages.error(request, _('Select team'))
+                return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+
+
+        if action == 'create_team':
+            distance_id = request.POST.get('distance', None)
+            distance = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True, competition_id__in=competition_ids).exclude(competition__competition_date__lt=timezone.now()).select_related('competition').get(id=distance_id)
+            title = request.POST.get('title', None)
+            if not title:
+                messages.info(request, _('Add team title.'))
+                return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+            team = Team.objects.filter(slug=slugify(title), distance__competition=distance.competition)
+
+            if team:
+                messages.info(request, _('Team with title %s already exists. Pick different title.') % title)
+                return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+
+        if action in ('create_team', 'add_to_team'):
+            participants = participants.filter(distance=distance)
+
+            if not participants:
+                messages.info(request, _('Select participants in selected competition distance.'))
+                return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+            participant_already_in_teams = []
+            for participant in participants:
+                member = Member.objects.filter(status=Member.STATUS_ACTIVE, team__distance__competition_id=distance.competition_id, slug=participant.slug)
+
+                if member:
+                    participant_already_in_teams.append(participant.id)
+
+            if len(participant_already_in_teams) == participants.count():
+                messages.info(request, _('All selected participants are already participants in teams. One participant can be in only one team.'))
+                return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+
+        if action == 'create_team':
+            team = Team.objects.create(distance=distance, title=title, email=self.companyapplication.email, owner=request.user, created_by=request.user, country='LV')
+
+        if action in ('create_team', 'add_to_team'):
+            for participant in participants:
+                if participant.id in participant_already_in_teams:
+                    messages.info(request, _("Member %s %s is already registered in other team.") % (participant.first_name, participant.last_name))
+                else:
+                    team.member_set.create(first_name=participant.first_name,
+                                           last_name=participant.last_name,
+                                           birthday=participant.birthday,
+                                           slug=participant.slug,
+                                           ssn=participant.ssn,
+                                           country=participant.country,
+                                           status=Member.STATUS_ACTIVE)
+            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': team.id}))
+
+
+
+
+    def get_queryset(self):
+        queryset = super(CompanyApplicationDetail, self).get_queryset()
+        queryset = queryset.filter(application__code=self.kwargs.get('slug', '!'))
+        queryset = queryset.filter(application__created_by=self.request.user).select_related('distance')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyApplicationDetail, self).get_context_data(**kwargs)
+        context.update({'companyapplication': self.companyapplication})
+
+        competition_ids = self.companyapplication.competition.get_ids()
+
+        my_teams = Team.objects.filter(created_by=self.request.user, distance__competition_id=competition_ids)
+        context.update({'my_teams': my_teams})
+
+        distances = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True, competition_id__in=competition_ids).exclude(
+            competition__competition_date__lt=timezone.now())
+        distance_choices = [
+            (unicode(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())) for
+            distance in distances]
+
+        context.update({'distance_choices': distance_choices})
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)
+        return super(CompanyApplicationDetail, self).get(request, *args, **kwargs)
 
 
 class ApplicationCreate(RequestFormKwargsMixin, CreateView):
@@ -275,3 +435,79 @@ class DataForExternalAll(JSONResponseMixin, SetCompetitionContextMixin, View):
 
 
 
+class CompanyParticipantInline(GetClassNameMixin, InlineFormSet):
+    can_order = False
+    model = CompanyParticipant
+    formset_class = OnlyAddBaseInlineFormSet
+    form_class = CompanyParticipantInlineForm
+    extra = 1
+
+    @property
+    def can_delete(self):
+        return True
+
+    def get_formset_kwargs(self):
+        kwargs = super(CompanyParticipantInline, self).get_formset_kwargs()
+        kwargs.update({'application': self.view.object})
+        kwargs.update({'empty_form_class': self.form_class})
+        kwargs.update({'required': 1})
+        kwargs.update({'can_add_new': True})
+        return kwargs
+
+    def get_extra_form_kwargs(self):
+        kwargs = super(CompanyParticipantInline, self).get_extra_form_kwargs()
+        kwargs.update({'request': self.request})
+        kwargs.update({'request_kwargs': self.kwargs})
+        kwargs.update({'application': self.view.object})
+        return kwargs
+
+
+
+class CompanyApplicationParticipantAdd(RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
+    template_name = 'registration/company_application_add.html'
+    inlines = [CompanyParticipantInline, ]
+    inlines_names = ['participant']
+    model = CompanyApplication
+    form_class = CompanyApplicationEmptyForm
+    slug_field = 'code'
+
+    def get_queryset(self):
+        queryset = super(CompanyApplicationParticipantAdd, self).get_queryset()
+        queryset = queryset.filter(status=1)
+        return queryset
+
+    def get_success_url(self):
+        if self.object.created_by == self.request.user:
+            return reverse('companyapplication', kwargs={'slug': self.object.code})
+        else:
+            return reverse('companyapplication_ok', kwargs={'slug': self.object.code})
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.competition.is_past_due:
+            messages.error(request, _('Competition already passed. Cannot register to historic competitions.'))
+            return HttpResponseRedirect(reverse('companyapplication_add', kwargs={'slug': self.object.code}))
+        else:
+            return super(BaseUpdateWithInlinesView, self).post(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        return super(BaseUpdateWithInlinesView, self).get(request, *args, **kwargs)
+
+
+class MyCompanyApplicationList(LoginRequiredMixin, SingleTableView):
+    model = CompanyApplication
+    table_class = CompanyApplicationTable
+    template_name = 'registration/company_application_my.html'
+
+    def get_queryset(self):
+        queryset = super(MyCompanyApplicationList, self).get_queryset()
+        queryset = queryset.filter(created_by=self.request.user).select_related('competition', 'competition__parent')
+
+        return queryset
+
+
+class CompanyApplicationParticipantAddOK(TemplateView):
+    template_name = 'registration/company_application_added.html'
