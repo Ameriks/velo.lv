@@ -260,10 +260,12 @@ class Number(StatusMixin, TimestampMixin, models.Model):
 class PreNumberAssign(models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
-    number = models.IntegerField(blank=True, null=True)
-    segment = models.IntegerField(blank=True, null=True)
+    number = models.IntegerField(blank=True, null=True, help_text=_('If specific number should be given'))
+    segment = models.IntegerField(blank=True, null=True, help_text=_('If specific passage should be given'))
     participant_slug = models.SlugField(blank=True)
-    group_together = models.SlugField(blank=True, null=True)
+    group_together = models.SlugField(blank=True, null=True, help_text=_('Group together in one passage'))
+
+    description = models.TextField(blank=True)
 
 
 class CompanyApplication(StatusMixin, TimestampMixin, models.Model):

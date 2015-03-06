@@ -20,7 +20,7 @@ from manager.select2_fields import NumberChoices, UserChoices, NumberChoice, Par
 from manager.tasks import update_results_for_participant, update_results_for_result
 from payment.models import ActivePaymentChannel, Price
 from payment.utils import create_application_invoice
-from registration.models import Participant, Number, Application
+from registration.models import Participant, Number, Application, PreNumberAssign
 from results.models import DistanceAdmin, Result, LapResult, UrlSync
 from team.models import Member, Team, MemberApplication
 from velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin, GetClassNameMixin
@@ -1070,6 +1070,48 @@ class PriceForm(RequestKwargModelFormMixin, forms.ModelForm):
             Row(
                 Column('start_registering', css_class='col-sm-6'),
                 Column('end_registering', css_class='col-sm-6'),
+            Row(
+                Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
+            ),
+            ),
+
+        )
+
+
+class PreNumberAssignForm(RequestKwargModelFormMixin, forms.ModelForm):
+    competition = None
+
+    class Meta:
+        model = PreNumberAssign
+        fields = ('distance', 'number', 'segment', 'participant_slug', 'group_together', 'description')
+
+
+    def save(self, commit=True):
+        self.instance.competition = self.competition
+        return super(PreNumberAssignForm, self).save(commit)
+
+
+    def __init__(self, *args, **kwargs):
+        super(PreNumberAssignForm, self).__init__(*args, **kwargs)
+        self.competition = Competition.objects.get(id=self.request_kwargs.get('pk'))
+
+        self.fields['distance'].choices = [('', '------')] + [(obj.id, unicode(obj)) for obj in self.competition.get_distances()]
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+            Row(
+                Column('distance', css_class='col-sm-4'),
+                Column('participant_slug', css_class='col-sm-4'),
+
+            ),
+            Row(
+                Column('number', css_class='col-sm-4'),
+                Column('segment', css_class='col-sm-4'),
+                Column('group_together', css_class='col-sm-4'),
+            ),
+            Row(
+                Column('description', css_class='col-sm-12'),
             Row(
                 Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
             ),

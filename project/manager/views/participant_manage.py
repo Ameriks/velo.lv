@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.template.defaultfilters import slugify
@@ -8,11 +8,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import ListView, UpdateView, CreateView, DetailView
 from manager.forms import ParticipantListSearchForm, ParticipantForm, ParticipantCreateForm, ParticipantIneseCreateForm, \
-    ApplicationListSearchForm, InvoiceCreateForm
+    ApplicationListSearchForm, InvoiceCreateForm, PreNumberAssignForm
 from manager.tables import ManageParticipantTable, ManageApplicationTable
+from manager.tables.tables import PreNumberAssignTable
 from manager.views.permission_view import ManagerPermissionMixin
 from payment.models import Payment
-from registration.models import Participant, Application
+from registration.models import Participant, Application, PreNumberAssign
 from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin, \
     CreateViewWithCompetition, UpdateViewWithCompetition
 from velo.utils import load_class
@@ -20,7 +21,7 @@ from velo.utils import load_class
 
 __all__ = [
     'ManageParticipantList', 'ManageParticipantUpdate', 'ManageParticipantCreate', 'ManageParticipantIneseCreate', 'ManageParticipantPDF',
-    'ManageApplicationList', 'ManageApplication',
+    'ManageApplicationList', 'ManageApplication', 'ManagePreNumberAssignList', 'ManagePreNumberAssignUpdate', 'ManagePreNumberAssignCreate',
 ]
 
 
@@ -225,3 +226,39 @@ class ManageParticipantPDF(ManagerPermissionMixin, DetailView):
         response.write(file_obj.getvalue())
         file_obj.close()
         return response
+
+
+class ManagePreNumberAssignList(ManagerPermissionMixin, SingleTableViewWithRequest):
+    model = PreNumberAssign
+    table_class = PreNumberAssignTable
+    template_name = 'manager/table.html'
+    
+    @property
+    def add_link(self):
+        return reverse_lazy('manager:prenumber', kwargs={'pk': self.competition.id})
+
+    def get_queryset(self):
+        queryset = super(ManagePreNumberAssignList, self).get_queryset()
+        queryset = queryset.filter(competition_id=self.competition.id)
+
+        queryset = queryset.select_related('competition', 'distance').distinct()
+        return queryset
+
+
+class ManagePreNumberAssignUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
+    pk_url_kwarg = 'pk2'
+    model = PreNumberAssign
+    template_name = 'manager/form.html'
+    form_class = PreNumberAssignForm
+
+    def get_success_url(self):
+        return reverse('manager:prenumber_list', kwargs={'pk': self.kwargs.get('pk')})
+
+class ManagePreNumberAssignCreate(ManagerPermissionMixin, CreateViewWithCompetition):
+    pk_url_kwarg = 'pk2'
+    model = PreNumberAssign
+    template_name = 'manager/form.html'
+    form_class = PreNumberAssignForm
+
+    def get_success_url(self):
+        return reverse('manager:prenumber_list', kwargs={'pk': self.kwargs.get('pk')})
