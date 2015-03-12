@@ -1,0 +1,7 @@
+body > div.wrapper {
+    background-image: url('bg.jpg');
+}
+
+body > div.wrapper > div.container.content {
+    background: #FFF;
+}
