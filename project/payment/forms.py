@@ -8,6 +8,7 @@ from django.template.defaultfilters import floatformat
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from payment.models import ActivePaymentChannel
 from payment.utils import create_application_invoice, create_application_bank_transaction
 from payment.widgets import PaymentTypeWidget, DoNotRenderWidget
@@ -107,7 +108,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         insured_participants = self.participants.exclude(insurance=None)
         if insured_participants:
             self.fields['accept_insurance'].required = True
-            self.fields['accept_insurance'].label = insured_participants[0].insurance.insurance_company.term
+            insurance_company = insured_participants[0].insurance.insurance_company
+            terms_doc = "<a href='%s' target='_blank'>Noteikumi</a>" % insurance_company.terms_doc.url if insurance_company.terms_doc else ""
+            self.fields['accept_insurance'].label = mark_safe("%s %s" % (insurance_company.term, terms_doc))
+
         else:
             self.fields['accept_insurance'].widget = forms.HiddenInput()
 

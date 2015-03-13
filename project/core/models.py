@@ -24,6 +24,10 @@ from save_the_change.mixins import SaveTheChange, TrackChanges
 from requests.exceptions import ConnectionError
 
 
+def _get_insurance_term_upload_path(instance, filename):
+    return os.path.join("insurance", str(uuid.uuid4()), filename)
+
+
 def _get_logo_upload_path(instance, filename):
     ext = os.path.splitext(filename)[1]
     filename = str(uuid.uuid4())
@@ -283,6 +287,8 @@ class Distance(TimestampMixin, models.Model):
 class InsuranceCompany(models.Model):
     name = models.CharField(max_length=50)
     term = models.TextField(blank=True)
+
+    terms_doc = models.FileField(upload_to=_get_insurance_term_upload_path, blank=True, )
 
     def __unicode__(self):
         return self.name
