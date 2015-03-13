@@ -44,7 +44,7 @@ class AlbumAssignNumberView(PermissionRequiredMixin, LoginRequiredMixin, DetailV
         context = super(AlbumAssignNumberView, self).get_context_data(**kwargs)
         context.update({'album': Album.objects.get(id=self.kwargs.get('album_pk'))})
 
-        form = AssignNumberForm(request=self.request, request_kwargs=self.kwargs)
+        form = AssignNumberForm(request=self.request, request_kwargs=self.kwargs, object=self.object)
         context.update({'form': form})
 
         context.update({'next': self.get_next()})

@@ -20,6 +20,13 @@ class AssignNumberForm(RequestKwargModelFormMixin, forms.Form):
     }))
 
     def __init__(self, *args, **kwargs):
+
+        self.object = kwargs.pop('object', None)
         super(AssignNumberForm, self).__init__(*args, **kwargs)
 
-        self.fields['numbers'].choices = ((1,1), (2,2))
+        numbers = self.object.numbers.all()
+        val = []
+        for number in numbers:
+            val.append(number.id)
+
+        self.fields['numbers'].initial = val
