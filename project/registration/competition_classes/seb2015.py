@@ -93,20 +93,21 @@ class Seb2015(SEBCompetitionBase):
                     return 'T W-45'
         elif distance_id == self.BERNU_DISTANCE_ID:
             # bernu sacensibas
-            if year >= self._update_year(2010):
-                return 'B 10-'
-            elif year == self._update_year(2009):
+            if year >= 2011:
+                return 'B 11-'
+            elif year == 2010:
+                return 'B 10'
+            elif year == 2009:
                 return 'B 09'
-            elif year == self._update_year(2008):
+            elif year == 2008:
                 return 'B 08'
-            elif year == self._update_year(2007):
+            elif year == 2007:
                 return 'B 07'
-            elif year == self._update_year(2006):
+            elif year == 2006:
                 return 'B 06'
-            elif year in (self._update_year(2005), self._update_year(2004)):
+            elif year in (2005, 2004):
                 return 'B 05-04'
-            elif year in (self._update_year(2003), self._update_year(2002)):
-                return 'B 03-02'
+
 
         print 'here I shouldnt be...'
         raise Exception('Invalid group assigning.')
