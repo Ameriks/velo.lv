@@ -672,6 +672,8 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         "minimumInputLength": 0,
         "closeOnSelect": True
     }))
+
+    reset_group = False
     class Meta:
         model = Participant
         fields = (
@@ -716,6 +718,9 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         if not self.instance.id:
             self.instance.set_slug()
 
+        if self.reset_group:
+            self.instance.group = ''
+
         if commit:
             # Process numbers. Remove link to old number. assign link to new number. Set new primary number.
             numbers = self.cleaned_data.get('numbers')
@@ -749,13 +754,16 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
             return instance.competition
         else:
             return self.cleaned_data['competition']
+
     # TODO: enable restriction to change distance for SEB competitions (that have multiple stages), but allow where are no stages
     def clean_distance(self):
-       instance = getattr(self, 'instance', None)
-       if instance and instance.pk:
-           return instance.distance
-       else:
-           return self.cleaned_data['distance']
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            if self.instance.primary_number_id:
+                return instance.distance
+            elif instance.distance != self.cleaned_data['distance']:
+                self.reset_group = True
+        return self.cleaned_data['distance']
 
     def __init__(self, *args, **kwargs):
         super(ParticipantForm, self).__init__(*args, **kwargs)
@@ -800,7 +808,9 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         #self.fields['legacy_id'].widget.attrs['readonly'] = True
 
         self.fields['competition'].widget.attrs['readonly'] = True
-        self.fields['distance'].widget.attrs['readonly'] = True
+
+        if self.instance and self.instance.pk and self.instance.primary_number_id:
+            self.fields['distance'].widget.attrs['readonly'] = True
 
         self.fields['gender'].required = True
         self.fields['country'].required = True
