@@ -87,7 +87,9 @@ class Photo(TimestampMixin, models.Model):
 
     class Meta:
         ordering = ('image', )
-
+        permissions = (
+            ("can_assign_numbers", "Can assign numbers"),
+        )
 
 @receiver(saved_file)
 def generate_thumbnails_async(sender, fieldfile, **kwargs):

@@ -1,0 +1,57 @@
+{% extends 'public/base.html' %}
+{% load thumbnail %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link href="{{ STATIC_URL }}css/select2.css" type="text/css" media="screen" rel="stylesheet" />
+    <link href="{{ STATIC_URL }}css/extra.css" type="text/css" media="screen" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/select2-bootstrap.css">
+    {{ form.media.css }}
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        get_number_params = function(term, page, context) {
+            var field_id = $(this).data('field_id');
+            var res = {
+                'term': term,
+                'page': page,
+                'context': '',
+                'competition_id': {{ album.competition_id }}
+            };
+            if (field_id !== undefined) {
+                res['field_id'] = field_id
+            }
+            return res;
+        }
+    </script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/select2.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/heavy_data.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}coffee/manager/participant.js"></script>
+{% endblock %}
+
+{% block main %}
+    {% spaceless %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>{{ album }} {% if album.photographer %}<small>{{ album.photographer }}</small>{% endif %}</h2>
+            {% if album.competition %}<p>{{ album.competition.get_full_name }}</p>{% endif %}
+    {% if album.gallery_date %}<p>{{ album.gallery_date }}</p>{% endif %}
+        <div class="row">
+            <div class="col-xs-12">
+                    <img src="{{ object.image.img.url }}" class="margin-bottom-10 img-responsive" alt="{% firstof object.description object.filename %}" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">{% if prev %}<button type="submit" class="btn btn-primary" name="action" value="prev">Prev</button>{% endif %}</div>
+            <div class="col-sm-4">
+                    {{ form }}
+            </div>
+            <div class="col-sm-4">{% if next %}<button type="submit" class="btn btn-primary pull-right" name="action" value="next">Next</button>{% endif %}</div>
+        </div>
+    {{ block.super }}
+        </form>
+    {% endspaceless %}
+{% endblock %}

@@ -24,6 +24,9 @@
                     <img src="{% if forloop.counter < 20 %}{{ object.primary_image.image.thumb.url }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" height="200" width="200" data-src="{{ object.primary_image.image.thumb.url }}"  class="margin-bottom-10" alt="{{ object.title }}" />
         <span class="gallery_album_title">{{ object.title }}</span>
                 </a>
+            {% if perms.gallery.can_assign_numbers %}
+                <a href="{% url 'gallery:photo_number_assign' album_pk=object.id pk=object.primary_image_id %}" class="text-center">Assign Numbers</a>
+            {% endif %}
             </div>
         {% endfor %}
     </div>
