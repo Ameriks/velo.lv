@@ -44,11 +44,10 @@ class Seb2015(SEBCompetitionBase):
         if distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.BERNU_DISTANCE_ID):
             return ''
         elif distance_id == self.SPORTA_DISTANCE_ID:
-            if year in (self._update_year(1997), self._update_year(1996)):
-                return 'M-18'
-
             if gender == 'M':
-                if self._update_year(1995) >= year >= self._update_year(1980):
+                if year in (self._update_year(1997), self._update_year(1996)):
+                    return 'M-18'
+                elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'M'
                 elif self._update_year(1979) >= year >= self._update_year(1975):
                     return 'M-35'
