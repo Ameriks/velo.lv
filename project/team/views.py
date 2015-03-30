@@ -73,7 +73,7 @@ class TeamListView(SingleTableViewWithRequest):
 
     def get_queryset(self):
         queryset = super(TeamListView, self).get_queryset()
-        queryset = queryset.filter(distance=self.distance, distance__competition_id__in=self.competition.get_ids())
+        queryset = queryset.filter(distance=self.distance, distance__competition_id__in=self.competition.get_ids(), status__gte=0)
         return queryset
 
 class TeamView(DetailView):
