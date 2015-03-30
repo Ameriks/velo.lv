@@ -1,44 +1,26 @@
 # coding=utf-8
 from __future__ import unicode_literals
-import datetime
-from django.core.cache.utils import make_template_fragment_key
-from django.db.models import Count
-from django.template.defaultfilters import slugify
-import math
-import csv
-from django.core.cache import cache
-from sitetree.utils import item
 import StringIO
-from core.models import Competition, Choices, Log
 from marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
-from registration.competition_classes.base import CompetitionScriptBase, RMCompetitionBase
+from registration.competition_classes.base import RMCompetitionBase
 from registration.models import Number, Participant
-from registration.tables import ParticipantTableWithResult, ParticipantTable
-from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceAdmin, SebStandings, TeamResultStandings, \
-    LapResult
-from results.tables import *
-from results.tables import ResultDistanceStandingTable, ResultRMSportsDistanceTable, ResultRMTautaDistanceTable, \
-    ResultRMGroupTable
-from results.tasks import send
-from results.helper import time_to_seconds
-from team.models import Team, MemberApplication
+
 from marketing.tasks import send_mailgun
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm
 from reportlab.pdfgen import canvas
-from core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, \
-    _baseFontNameB
-from django.conf import settings
-from django.db import connection
+from core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, _baseFontNameB
 import os.path
 
 
-class RM2014(RMCompetitionBase):
-    SPORTA_DISTANCE_ID = 28
-    TAUTAS_DISTANCE_ID = 29
-    GIMENU_DISTANCE_ID = 30
+class RM2015(RMCompetitionBase):
+    SPORTA_DISTANCE_ID = 40
+    TAUTAS_DISTANCE_ID = 41
+    GIMENU_DISTANCE_ID = 42
 
+    def _update_year(self, year):
+        return year + 1
 
     def assign_group(self, distance_id, gender, birthday):
         year = birthday.year
@@ -46,28 +28,28 @@ class RM2014(RMCompetitionBase):
             return ''
         elif distance_id == self.SPORTA_DISTANCE_ID:
             if gender == 'M':
-                if 1999 >= year >= 1998:
+                if self._update_year(1999) >= year >= self._update_year(1998):
                     return 'Jaunieši'
-                elif 1997 >= year >= 1996:
+                elif self._update_year(1997) >= year >= self._update_year(1996):
                     return 'Juniori'
-                elif 1995 >= year >= 1980:
+                elif self._update_year(1995) >= year >= self._update_year(1983):
                     return 'Vīrieši'
-                elif 1979 >= year >= 1975:
+                elif self._update_year(1984) >= year >= self._update_year(1975):
                     return 'Seniori I'
-                elif 1974 >= year >= 1970:
+                elif self._update_year(1974) >= year >= self._update_year(1970):
                     return 'Seniori II'
-                elif 1969 >= year >= 1965:
+                elif self._update_year(1969) >= year >= self._update_year(1965):
                     return 'Veterāni I'
-                elif year <= 1964:
+                elif year <= self._update_year(1964):
                     return 'Veterāni II'
             else:
-                if 1999 >= year >= 1998:
+                if self._update_year(1999) >= year >= self._update_year(1998):
                     return 'Jaunietes'
-                elif 1997 >= year >= 1996:
+                elif self._update_year(1997) >= year >= self._update_year(1996):
                     return 'Juniores'
-                elif 1995 >= year >= 1980:
+                elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'Sievietes'
-                elif year <= 1979:
+                elif year <= self._update_year(1979):
                     return 'Sievietes II'
 
         elif distance_id == self.TAUTAS_DISTANCE_ID:
@@ -88,7 +70,7 @@ class RM2014(RMCompetitionBase):
         doc = SimpleDocTemplate(output, pagesize=A4, showBoundary=0)
         elements = []
         elements.append(get_image(self.competition.logo.path, width=10*cm))
-        elements.append(Paragraph(u"Apsveicam ar sekmīgu reģistrēšanos 31.Rīgas Velomaratonam, kas notiks šo svētdien, 1.jūnijā 11.novembra Krastmalā!", styles['h3']))
+        elements.append(Paragraph(u"Apsveicam ar sekmīgu reģistrēšanos Elkor Rīgas Velomaratonam 2015, kas notiks šo svētdien, 31.maijā 11.novembra Krastmalā!", styles['h3']))
 
         data = [['Vārds, uzvārds:', participant.full_name],
                 ['Dzimšanas gads:', participant.birthday.year],
@@ -103,7 +85,7 @@ class RM2014(RMCompetitionBase):
 
         elements.append(Table(data, style=table_style, hAlign='LEFT'))
 
-        elements.append(Paragraph(u"Šo vēstuli, lūdzam saglabāt un izprintēt un ņemt līdzi uz Rīgas Velomaratona Expo centru, kas darbosies pie tirdzniecības centra „Spice” A ieejas 30. un 31.maijā no pkst.10:00-21:00.", styles['h3']))
+        elements.append(Paragraph(u"Šo vēstuli, lūdzam saglabāt un izprintēt un ņemt līdzi uz Rīgas Velomaratona Expo centru, kas darbosies pie Elkor Plaza Brīvības gatvē 201 29. un 30.maijā no pkst.10:00-21:00.", styles['h3']))
         elements.append(Paragraph(u"Uzrādot šo vēstuli, Jūs varēsiet saņemt aploksni ar savu starta numuru. Lūdzam paņemt no reģistrācijas darbiniekiem instrukciju par pareizu numura piestiprināšanu.", styles['h3']))
         elements.append(Paragraph(u"Papildus informāciju meklējiet www.velo.lv", styles['h3']))
         elements.append(Paragraph(u"Vēlreiz apsveicam ar reģistrēšanos Rīgas Velomaratonam un novēlam veiksmīgu startu!", styles['h3']))
@@ -150,6 +132,7 @@ class RM2014(RMCompetitionBase):
 
 
     def generate_diploma(self, result):
+        raise NotImplementedError
         output = StringIO.StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
