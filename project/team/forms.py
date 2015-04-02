@@ -102,13 +102,13 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         if self.instance.id:
             return self.instance.first_name
         else:
-            return self.cleaned_data.get('first_name')
+            return self.cleaned_data.get('first_name').strip().title()
 
     def clean_last_name(self):
         if self.instance.id:
             return self.instance.last_name
         else:
-            return self.cleaned_data.get('last_name')
+            return self.cleaned_data.get('last_name').strip().title()
 
     def clean_country(self):
         if self.instance.id:

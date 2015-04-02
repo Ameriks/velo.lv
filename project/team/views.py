@@ -83,7 +83,7 @@ class TeamView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(TeamView, self).get_context_data(**kwargs)
 
-        context.update({'members': self.object.member_set.order_by('last_name')})
+        context.update({'members': self.object.member_set.filter(status=Member.STATUS_ACTIVE).order_by('last_name')})
 
         return context
 
