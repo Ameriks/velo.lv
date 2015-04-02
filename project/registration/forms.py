@@ -295,6 +295,10 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['gender'].required = True
 
         self.fields['team_name'].widget.attrs.update({'class': 'team-typeahead'})
+
+        self.fields['team_name'].initial = competition.params.get('default_team', "")
+        self.fields['team_name'].help_text = competition.params.get('default_team_help', "")
+
         self.fields['distance'].widget.attrs.update({'data-url': str(reverse('payment:check_price', kwargs={'pk': self.application.competition_id}))})
 
         if self.data.get('submit_draft'):
