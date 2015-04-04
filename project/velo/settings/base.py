@@ -246,6 +246,10 @@ THUMBNAIL_ALIASES = {
     'gallery': {
         'thumb': {'size': (200, 200), 'crop': True},
         'img': {'size': (1000, 1000), 'crop': False},
+    },
+    'core': {
+        'email_logo': {'size': (210, 120), 'crop': False},
+        'email_logo_double': {'size': (420, 240), 'crop': False},
     }
 }
 

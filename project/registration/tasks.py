@@ -23,9 +23,17 @@ def send_success_email(application_id):
     else:
         competitions = (competition, )
 
+    if competition.level == 2:
+        primary_competition = competition.parent
+    else:
+        primary_competition = competition
+
+
     context = {
+        'domain': settings.MY_DEFAULT_DOMAIN,
         'application': application,
         'competitions': competitions,
+        'competition': primary_competition,
         'url': "{0}{1}".format(settings.MY_DEFAULT_DOMAIN, reverse('application', kwargs={'slug': application.code}))
     }
 

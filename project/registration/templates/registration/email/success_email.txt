@@ -6,7 +6,7 @@ Apsveicam ar sekmīgu reģistrēšanos {{ application.competition.get_full_name 
 
 Sacensību datumi:
 {% for competition in competitions %}
-    {{ competition }} - {{ competition.competition_date|date:"Y-m-d" }}<br />
+    {{ competition }} - {{ competition.competition_date|date:"Y-m-d" }}
 {% endfor %}
 
 Dalībnieki veiksmīgi apmaksāti!

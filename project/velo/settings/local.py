@@ -47,11 +47,12 @@ CACHES = {
     },
 }
 
-ALLOWED_HOSTS = ['docker.local:58000', ]
+ALLOWED_HOSTS = ['docker.local:58000', 'docker.local',]
 
 
 LOGGING.get('loggers', {}).get('django.db.backends', {}).update({'level': 'DEBUG'})
 
+MY_DEFAULT_DOMAIN = 'http://docker.local:58000'
 
 # Database
 DATABASES = {

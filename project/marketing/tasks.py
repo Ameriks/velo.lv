@@ -10,11 +10,16 @@ def send_mailgun(_id=None, email=None):
     if not email:
         email = MailgunEmail.objects.get(id=_id)
 
-    try:
-        if email.is_sent:
-            print 'Already sent'
-            return False
+    if email.is_sent:
+        print 'Already sent'
+        return False
 
+    if settings.DEBUG:
+        msg = EmailMultiAlternatives(email.subject, email.text, email.em_from, to=[email.em_to, ], cc=[email.em_cc, ])
+        msg.attach_alternative(email.html, "text/html")
+        msg.send()
+        return True
+    try:
         data = {
             "from": email.em_from,
             "to": email.em_to.split(';'),
@@ -36,7 +41,6 @@ def send_mailgun(_id=None, email=None):
             email.is_sent = True
             email.email_id = ret.json().get('id')
             email.save()
-            print 'ok'
         else:
             raise Exception
     except Exception as exc:
