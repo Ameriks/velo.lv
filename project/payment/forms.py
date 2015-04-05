@@ -10,7 +10,8 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from payment.models import ActivePaymentChannel
-from payment.utils import create_application_invoice, create_application_bank_transaction
+from payment.utils import create_application_invoice, create_application_bank_transaction, create_team_invoice, \
+    create_team_bank_transaction
 from payment.widgets import PaymentTypeWidget, DoNotRenderWidget
 from registration.models import Application
 from velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
@@ -166,6 +167,103 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                         'company_address',
                         'company_juridical_address',
                         'invoice_show_names',
+                        css_class='invoice_fields',
+                    ),
+                    css_class='col-sm-4',
+                )
+            ),
+        )
+
+
+
+
+
+class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm):
+    payment_type = forms.ChoiceField(choices=(), label=_("Payment Type"), widget=PaymentTypeWidget)
+
+    prepend = 'payment_'
+    success_url = None
+
+    class Meta:
+        model = Application
+        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address', )
+
+    def _post_clean(self):
+        super(TeamPayForm, self)._post_clean()
+        # if not bool(self.errors):
+        #     try:
+        instance = self.instance
+        active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
+
+        if active_payment_type.payment_channel.is_bill:
+            instance.external_invoice_code, instance.external_invoice_nr = create_team_invoice(instance, active_payment_type)
+            self.success_url = reverse('accounts:team', kwargs={'pk2': instance.id})
+            messages.info(self.request, _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
+        else:
+            self.success_url = create_team_bank_transaction(instance, active_payment_type)
+
+            # except:
+            #     TODO We need to catch exception and log it to sentry
+                # self._errors['payment_type'] = self.error_class([_("Error in connection with bank. Try again later.")])
+
+
+
+    def clean(self):
+        super(TeamPayForm, self).clean()
+        try:
+            active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
+        except:
+            active_payment_type = None
+        if active_payment_type and active_payment_type.payment_channel.is_bill:  # Hard coded bill ids.
+            if self.cleaned_data.get('company_name', '') == '':
+                self._errors.update({'company_name': [_("Company Name required."), ]})
+            if self.cleaned_data.get('company_regnr', '') == '':
+                self._errors.update({'company_regnr': [_("Company registration number required."), ]})
+            if self.cleaned_data.get('company_address', '') == '':
+                self._errors.update({'company_address': [_("Company Address required."), ]})
+            if self.cleaned_data.get('company_juridical_address', '') == '':
+                self._errors.update({'company_juridical_address': [_("Company Juridical Address required."), ]})
+
+        return self.cleaned_data
+
+
+    def __init__(self, *args, **kwargs):
+
+        super(TeamPayForm, self).__init__(*args, **kwargs)
+
+        now = timezone.now()
+
+        competition = self.instance.distance.competition
+
+        payments = competition.activepaymentchannel_set.filter(from_date__lte=now, till_date__gte=now).select_related('payment_channel')
+        # If user have already requested bill, then we are not showing possibility to request one more.
+        if self.instance.external_invoice_code:
+            payments = payments.filter(payment_channel__is_bill=False)
+
+        self.fields['payment_type'].choices = [(obj.id, obj) for obj in payments]
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                    css_class='col-sm-8'
+                ),
+                Column(
+                    Div(
+                        HTML(
+                            "<h4>%s: <span id='final_price' data-amount='%s'>%s</span> €</h4>" % (_('Final Price'), self.instance.final_price, floatformat(self.instance.final_price, -2)),
+                        ),
+                        css_class='margin-bottom-40'
+                    ),
+                    'payment_type',
+                    Fieldset(
+                        _('Invoice Fields'),
+                        'company_name',
+                        'company_vat',
+                        'company_regnr',
+                        'company_address',
+                        'company_juridical_address',
                         css_class='invoice_fields',
                     ),
                     css_class='col-sm-4',

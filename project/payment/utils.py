@@ -118,6 +118,91 @@ def get_form_message(competition, distance_id, year, insurance_id=None):
     return messages
 
 
+def create_team_invoice(team, active_payment_type, action="send"):
+    bill_series = team.distance.competition.bill_series
+    prefix = active_payment_type.payment_channel.erekins_url_prefix
+
+    # Create new requests session with Auth keys and prepended url
+    session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key}, url="https://%s.e-rekins.lv" % prefix)
+
+    # Find series resource_uri from e-rekins
+    series_obj = session.get("/api/v1/series/?prefix=%s" % bill_series)
+    if series_obj.json().get('meta').get('total_count') == 0:
+        series_obj = session.post("/api/v1/series/", data=json.dumps({
+            'title': bill_series,
+            'reset_period': 4,
+            'prefix': bill_series,
+            'formatting': '- #'
+        }))
+        series_obj.raise_for_status()
+        series_resource_uri = series_obj.headers.get('Location')
+    else:
+        series_resource_uri = series_obj.json().get('objects')[0].get('resource_uri')
+
+    client_data = {
+        'name': team.company_name,
+        'name_short': team.company_name,
+        'integration_code': "team_%s" % str(team.id),
+        'number': team.company_regnr,
+        'vat': team.company_vat,
+        'email': team.email,
+        'office_address': {
+            'address': team.company_address,
+            'country': '/api/v1/country/124/',  # Always default is Latvia
+        },
+        'juridical_address':  {
+            'address': team.company_juridical_address,
+            'country': '/api/v1/country/124/',  # Always default is Latvia
+        },
+        'form': 1,  # Juridical
+    }
+
+    # Find or Create customer
+    client_obj = session.get("/api/v1/client/?number=%s" % team.company_regnr)
+    if client_obj.json().get('meta').get('total_count') == 0:
+        client_obj = session.post("/api/v1/client/", data=json.dumps(client_data))
+        client_obj.raise_for_status()
+        client_obj = session.get(client_obj.headers.get('Location'))
+        client_obj.raise_for_status()
+        client_resource_uri = client_obj.json().get('resource_uri')
+    else:
+        client_resource_uri = client_obj.json().get('objects')[0].get('resource_uri')
+        client_obj = session.put(client_resource_uri, data=json.dumps(client_data))
+        client_obj.raise_for_status()
+
+    items = [{
+            "description": "Komandas %s profila apmaksa" % unicode(team),
+            "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
+            "units": "gab.",
+            "amount": "1",
+            "price": float(team.final_price)
+        }, ]
+
+    due_date = datetime.datetime.now() + datetime.timedelta(days=7)
+    invoice_data = {
+        "due_date": due_date.strftime('%Y-%m-%d'),
+        "client": client_resource_uri,
+        "currency": "/api/v1/currency/1/",
+        "invoice_creator": getattr(settings, "EREKINS_%s_DEFAULT_CREATOR" % active_payment_type.payment_channel.payment_channel),
+        "series": series_resource_uri,
+        "language": getattr(settings, "EREKINS_%s_DEFAULT_LANGUAGE" % active_payment_type.payment_channel.payment_channel),
+        "payment_type": "Pārskaitījums",
+        "kind": "2",
+        "items": items,
+        "status": "10",
+        "activity": 'Pakalpojumu sniegšana',
+        "ad_integration_code": "team_%i" % team.id,
+        "action": action,
+    }
+
+    # Create invoice
+    invoice_obj = session.post("/api/v1/invoice/", data=json.dumps(invoice_data))
+    invoice_obj.raise_for_status()
+    invoice_obj = session.get(invoice_obj.headers.get('Location'))
+    invoice_obj.raise_for_status()
+    invoice = invoice_obj.json()
+    return invoice.get('code'), invoice.get('invoice_nr')
+
 
 def create_application_invoice(application, active_payment_type, action="send"):
     bill_series = application.competition.bill_series
@@ -250,6 +335,37 @@ def create_application_invoice(application, active_payment_type, action="send"):
     invoice = invoice_obj.json()
     return invoice.get('code'), invoice.get('invoice_nr')
 
+
+
+def create_team_bank_transaction(team, active_payment_type):
+    prefix = active_payment_type.payment_channel.erekins_url_prefix
+
+    # Create new requests session with Auth keys and prepended url
+    session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key}, url="https://%s.e-rekins.lv" % prefix)
+
+    information = "Komandas %s profila apmaksa %s" % (unicode(team), team.distance.competition.get_full_name) if not team.external_invoice_code else "Rekins nr.%s" % team.external_invoice_nr
+
+    bank_data = {
+        "information": information,
+        "integration_id": team.id,
+        "amount": float(team.final_price),
+        "link": active_payment_type.payment_channel.erekins_link,
+    }
+
+    transaction_obj = session.post("/api/v1/transaction/", data=json.dumps(bank_data))
+    transaction_obj.raise_for_status()
+    transaction = transaction_obj.json()
+
+    Payment.objects.create(content_object=team,
+                           channel=active_payment_type,
+                           erekins_code=transaction.get('code'),
+                           total=team.final_price,
+                           status=Payment.STATUS_PENDING, )
+
+    return "https://%s.e-rekins.lv/bank/%s/" % (prefix, transaction.get('code'))
+
+
+
 def create_application_bank_transaction(application, active_payment_type):
     prefix = active_payment_type.payment_channel.erekins_url_prefix
 
@@ -281,7 +397,7 @@ def create_application_bank_transaction(application, active_payment_type):
     return "https://%s.e-rekins.lv/bank/%s/" % (prefix, transaction.get('code'))
 
 
-def approve_payment(payment, user=False):
+def approve_payment(payment, user=False, request=None):
     if payment.content_type.model == 'application':
         application = payment.content_object
         application.payment_status = Application.PAY_STATUS_PAYED
@@ -294,12 +410,23 @@ def approve_payment(payment, user=False):
                 participant.company_participant.save()
 
         send_success_email.delay(application.id)
+
         if user:
             return HttpResponseRedirect(reverse('application_ok', kwargs={'slug': payment.content_object.code}))
         else:
             return True
+
     elif payment.content_type.model == 'team':
-        pass  # TODO: Create team payment view
+        team = payment.content_object
+        team.is_featured = True
+        team.save()
+
+        if user:
+            messages.success(request, _('Team profile successfully paid.'))
+            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': payment.content_object.id}))
+        else:
+            return True
+
 
 
 def validate_payment(payment, user=False, request=None):
@@ -328,7 +455,7 @@ def validate_payment(payment, user=False, request=None):
 
     if status == 30:
         # Transaction is successful.
-        return approve_payment(payment, user)
+        return approve_payment(payment, user, request)
     elif status < 0:
 
         other_active_payments = Payment.objects.filter(content_type=payment.content_type, object_id=payment.object_id, status__gte=0).exclude(id=payment.id)
@@ -345,7 +472,7 @@ def validate_payment(payment, user=False, request=None):
             if payment.content_type.model == 'application':
                 return HttpResponseRedirect(reverse('application_pay', kwargs={'slug': payment.content_object.code}))
             elif payment.content_type.model == 'team':
-                pass  # TODO: Create team payment view
+                return HttpResponseRedirect(reverse('accounts:team_pay', kwargs={'pk2': payment.content_object.id}))
         else:
             return False
     else:
@@ -356,6 +483,6 @@ def validate_payment(payment, user=False, request=None):
             if payment.content_type.model == 'application':
                 return HttpResponseRedirect(reverse('application_pay', kwargs={'slug': payment.content_object.code}))
             elif payment.content_type.model == 'team':
-                pass  # TODO: Create team payment view
+                return HttpResponseRedirect(reverse('accounts:team_pay', kwargs={'pk2': payment.content_object.id}))
         else:
             return False

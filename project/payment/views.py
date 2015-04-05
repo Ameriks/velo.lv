@@ -11,11 +11,12 @@ from django_tables2 import SingleTableView
 import urllib
 from core.models import Competition, Log
 from django.utils.translation import ugettext as _
-from payment.forms import ApplicationPayUpdateForm
+from payment.forms import ApplicationPayUpdateForm, TeamPayForm
 from payment.models import Payment
 from payment.utils import get_price, get_form_message, approve_payment, validate_payment, get_total, \
     get_participant_fee_from_price, get_insurance_fee_from_insurance
 from registration.models import Application
+from team.models import Team
 from velo.mixins.views import RequestFormKwargsMixin
 from velo.utils import SessionWHeaders
 
@@ -159,6 +160,72 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
         return super(BaseUpdateView, self).post(request, *args, **kwargs)
 
 
+class TeamPayView(RequestFormKwargsMixin, UpdateView):
+    model = Team
+    form_class = TeamPayForm
+    template_name = 'team/team_pay.html'
+    pk_url_kwarg = 'pk2'
+
+    payment_amount = None
+
+    def get_queryset(self):
+        queryset = super(TeamPayView, self).get_queryset()
+        queryset = queryset.filter(owner=self.request.user).select_related('distance', 'distance__competition', 'distance__competition__parent')
+        return queryset
+
+    def get_form_success_url(self, form):
+        return form.success_url
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_form_success_url(form))
+
+    def validate(self):
+
+        if self.object.is_featured:
+            messages.success(self.request, _('Team profile already payed.'))
+            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.id}))
+
+        if self.object.distance.competition.is_past_due:
+            messages.error(self.request, _('Competition already passed.'))
+            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.id}))
+
+        self.payment_amount = self.object.distance.profile_price
+
+        if not self.payment_amount or self.payment_amount == 0.0:
+            messages.error(self.request, _('Price for team profile not defined.'))
+            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.id}))
+        else:
+            # Let's set amount here
+            self.object.final_price = self.payment_amount
+            self.object.save()
+
+        return False
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        redirect = self.validate()
+        if redirect:
+            return redirect
+
+        return super(BaseUpdateView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        redirect = self.validate()
+        if redirect:
+            return redirect
+
+        return super(BaseUpdateView, self).post(request, *args, **kwargs)
+
+
+
+
+
+
+
 class PaymentReturnView(DetailView):
     model = Payment
     slug_field = 'erekins_code'
@@ -169,6 +236,7 @@ class PaymentReturnView(DetailView):
         if self.object.status == Payment.STATUS_OK:
             if self.object.content_type.model == 'application':
                 return HttpResponseRedirect(reverse('application_ok', kwargs={'slug': self.object.content_object.code}))
-
+            elif self.object.content_type.model == 'team':
+                return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.content_object.id}))
         return validate_payment(self.object, user=True, request=request)
 

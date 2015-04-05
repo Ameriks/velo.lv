@@ -35,10 +35,17 @@ class TeamMyTable(tables.Table):
     apply = tables.Column(verbose_name=" ", empty_values=())
 
     def render_apply(self, record, **kwargs):
+        ret = ''
         if record.distance.competition.params.get('teams_should_apply', False):
-            return mark_safe("<a href='%s'>%s</a>" % (reverse('accounts:team_apply_list', kwargs={'pk2': record.id}), ugettext('Apply')))
-        else:
-            return ''
+            ret = mark_safe("<a href='%s'>%s</a>" % (reverse('accounts:team_apply_list', kwargs={'pk2': record.id}), ugettext('Apply')))
+
+        if record.distance.profile_price and not record.is_featured:
+            if ret != '':
+                ret += mark_safe('<br />')
+            ret += mark_safe("<a href='%s'>%s</a>" % (reverse('accounts:team_pay', kwargs={'pk2': record.id}), ugettext('Pay for team account')))
+
+        return ret
+
 
     class Meta:
         model = Team

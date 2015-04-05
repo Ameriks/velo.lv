@@ -7,6 +7,7 @@ from core.forms import PasswordResetForm, StrictSetPasswordFormCustom, StrictAut
 from core.views import UserRegistrationView, UserEmailConfirm, ChangeEmailView, ChangePasswordView, ProfileView, \
     ResendEmailView
 from django.utils.translation import ugettext_lazy as _
+from payment.views import TeamPayView
 from registration.views import MyApplicationList
 from team.views import MyTeamList, TeamCreateView, TeamUpdateView, TeamApplyList, TeamApply
 
@@ -54,6 +55,9 @@ urlpatterns = patterns('',
                        url(_(r'^my_team/$'), MyTeamList.as_view(), name='team_list'),
                        url(_(r'^my_team/add/$'), TeamCreateView.as_view(), name='team'),
                        url(_(r'^my_team/(?P<pk2>\d+)/$'), TeamUpdateView.as_view(), name='team'),
+
+                       url(_(r'^my_team/(?P<pk2>\d+)/pay/$'), TeamPayView.as_view(), name='team_pay'),
+
                        url(_(r'^my_team/(?P<pk2>\d+)/apply/$'), TeamApplyList.as_view(), name='team_apply_list'),
                        url(_(r'^my_team/(?P<pk2>\d+)/apply/(?P<competition_pk>\d+)/$'), TeamApply.as_view(),
                            name='team_apply_list'),

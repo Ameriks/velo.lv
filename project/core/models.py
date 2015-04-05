@@ -271,6 +271,8 @@ class Distance(TimestampMixin, models.Model):
     can_have_teams = models.BooleanField(default=True)
     have_results = models.BooleanField(default=True)
 
+    profile_price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+
     def get_participants(self, competition_ids):
         return self.participant_set.filter(competition_id__in=competition_ids)
 

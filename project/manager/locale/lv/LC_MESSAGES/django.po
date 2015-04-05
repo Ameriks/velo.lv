@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-26 11:28+0000\n"
+"POT-Creation-Date: 2015-04-05 21:47+0300\n"
 "PO-Revision-Date: 2014-08-13 20:08+0136\n"
 "Last-Translator: Agris Ameriks <agris@pd.lv>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 msgid "Company Juridical Address required."
 msgstr ""
 
-#: forms.py:702 forms.py:707 forms.py:709
+#: forms.py:704 forms.py:709 forms.py:711
 msgid "Invalid Social Security Number."
 msgstr "Kļūdains personas kods."
 
@@ -80,6 +80,7 @@ msgid "You haven't added any applied member"
 msgstr "Jūs neesat pievienojis nevienu pieteikto komandas biedru"
 
 #: tables/tables.py:229 tables/tables.py:273 tables/tables.py:285
+#: tables/tables.py:297
 msgid "ID"
 msgstr "ID"
 
@@ -119,6 +120,11 @@ msgstr "Nav neviena ieraksta"
 #: tables/tables.py:291
 #, fuzzy
 msgid "There are no pricing records."
+msgstr "Nav neviena ieraksta"
+
+#: tables/tables.py:303
+#, fuzzy
+msgid "There are no records."
 msgstr "Nav neviena ieraksta"
 
 #: templates/manager/team_apply_list.html:17

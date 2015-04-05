@@ -45,6 +45,18 @@ class Team(StatusMixin, TimestampMixin, models.Model):
 
     legacy_id = models.IntegerField(blank=True, null=True)
 
+
+    # This is for invoice
+    final_price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    company_name = models.CharField(_('Company name / Full Name'), max_length=100, blank=True)
+    company_vat = models.CharField(_('VAT Number'), max_length=100, blank=True)
+    company_regnr = models.CharField(_('Company number / SSN'), max_length=100, blank=True)
+    company_address = models.CharField(_('Address'), max_length=100, blank=True)
+    company_juridical_address = models.CharField(_('Juridical Address'), max_length=100, blank=True)
+    external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
+    external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
+
+
     class Meta:
         ordering = ('distance', '-is_featured', 'title')
 
