@@ -372,3 +372,11 @@ form.smaller input, form.smaller select {
 .breadcrumbs .apply-competition {
     margin-top: 7px;
 }
+
+table .is_featured {
+    width:30px;
+}
+table td.is_featured {
+    text-align:right;
+    color:#FFCC00;
+}

@@ -7,6 +7,8 @@ from django_tables2.utils import A
 
 
 class TeamTable(tables.Table):
+    is_featured = tables.TemplateColumn(verbose_name=" ", accessor='is_featured', empty_values=(), template_name='team/table/is_featured.html')
+
     def render_title(self, record, **kwargs):
         url = reverse('competition:team', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.id})
         return mark_safe('<a href="%s">%s</a>' % (url, record.title))
@@ -26,6 +28,8 @@ class TeamTable(tables.Table):
 
 
 class TeamMyTable(tables.Table):
+    is_featured = tables.TemplateColumn(verbose_name=" ", accessor='is_featured', empty_values=(), template_name='team/table/is_featured.html')
+
     title = tables.LinkColumn('accounts:team', args=[A('id')])
     competition = tables.Column(verbose_name=_('Competition'), accessor='distance.competition.get_full_name', order_by='distance.competition.name')
     apply = tables.Column(verbose_name=" ", empty_values=())
@@ -40,7 +44,7 @@ class TeamMyTable(tables.Table):
         model = Team
         attrs = {"class": "table table-striped table-hover"}
         fields = ("title", "is_featured", "distance")
-        sequence = ("title", "competition", "distance", "is_featured", "apply")
+        sequence = ("is_featured", "title", "competition", "distance", "apply")
         empty_text = _("You haven't created any official team.")
         order_by = ("-id")
         per_page = 20
