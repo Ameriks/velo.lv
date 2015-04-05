@@ -459,11 +459,12 @@ def validate_payment(payment, user=False, request=None):
     elif status < 0:
 
         other_active_payments = Payment.objects.filter(content_type=payment.content_type, object_id=payment.object_id, status__gte=0).exclude(id=payment.id)
-        application = payment.content_object
-        # If there are no other active payments and user haven't taken invoice, then lets reset application payment status.
-        if not other_active_payments and not application.external_invoice_code:
-            application.payment_status = application.PAY_STATUS_NOT_PAYED
-            application.save()
+        if payment.content_type.model == 'application':
+            application = payment.content_object
+            # If there are no other active payments and user haven't taken invoice, then lets reset application payment status.
+            if not other_active_payments and not application.external_invoice_code:
+                application.payment_status = application.PAY_STATUS_NOT_PAYED
+                application.save()
 
         Log.objects.create(content_object=payment, action="TRANSACTION_VALIDATE", message="Transaction unsuccessful. Redirecting to payment view.", params={'user': user})
 
