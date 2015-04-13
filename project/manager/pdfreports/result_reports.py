@@ -199,7 +199,7 @@ class PDFReports(object):
 
 
     def results_distance(self, top=10000):
-        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 2 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
+        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -222,7 +222,7 @@ class PDFReports(object):
 
 
     def results_groups(self, top=10000):
-        col_width = (1 * cm, 1 * cm, 3 * cm, 3 * cm, 2 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm)
+        col_width = (1 * cm, 1 * cm, 3 * cm, 3 * cm, 1.5 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -243,7 +243,7 @@ class PDFReports(object):
             self.elements.append(PageBreak())
 
     def results_gender(self, top=10):
-        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 2 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
+        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
