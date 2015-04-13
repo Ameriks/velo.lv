@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.utils.text import slugify
 from django.views.generic import UpdateView, TemplateView
 from extra_views import NamedFormsetsMixin, UpdateWithInlinesView, InlineFormSet, CreateWithInlinesView
@@ -13,7 +13,7 @@ from manager.tables.tables import UrlSyncTable
 from manager.views.participant_manage import ManagerPermissionMixin
 from results.models import Result, LapResult, UrlSync
 from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
-
+from manager.tasks import generate_pdfreport
 
 __all__ = ['ManageResultList', 'ManageResultUpdate', 'ManageResultCreate', 'ManageResultReports', 'ManageUrlSyncList', 'ManageUrlSyncUpdate']
 
@@ -110,42 +110,17 @@ class ManageResultReports(ManagerPermissionMixin, SetCompetitionContextMixin, Te
     template_name = 'manager/result_reports.html'
 
     def post(self, request, *args, **kwargs):
-        pdf_class = PDFReports(competition=self.set_competition(kwargs.get('pk')))
-
         action = request.POST.get('action')
 
-        if action == 'results_groups':
-            pdf_class.results_groups()
-        elif action == 'results_groups_top20':
-            pdf_class.results_groups(20)
-        elif action == 'results_gender':
-            pdf_class.results_gender()
-        elif action == 'results_distance':
-            pdf_class.results_distance()
-        elif action == 'results_distance_top20':
-            pdf_class.results_distance(20)
-        elif action == 'results_standings':
-            pdf_class.results_standings()
-        elif action == 'results_standings_top20':
-            pdf_class.results_standings(20)
-        elif action == 'results_standings_groups':
-            pdf_class.results_standings_groups()
-        elif action == 'results_standings_groups_top20':
-            pdf_class.results_standings_groups(20)
-        elif action == 'results_team':
-            pdf_class.results_team()
-        elif action == 'results_team_standings':
-            pdf_class.results_team_standings()
+        if action in ('results_groups', 'results_groups_top20', 'results_gender', 'results_distance',
+                      'results_distance_top20', 'results_standings', 'results_standings_top20', 'results_standings_groups',
+                      'results_standings_groups_top20', 'results_team', 'results_team_standings'):
+            generate_pdfreport.delay(kwargs.get('pk'), action, request.user.id)
+            messages.info(request, 'Report is being generated. It will be emailed to %s' % request.user.email)
         else:
             raise Http404
 
-        file_obj = pdf_class.build()
-
-        response = HttpResponse(mimetype='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=%s.pdf' % action
-        response.write(file_obj.getvalue())
-        file_obj.close()
-        return response
+        return HttpResponseRedirect(reverse('manager:result_reports', kwargs={'pk': kwargs.get('pk')}))
 
 
 class ManageUrlSyncList(ManagerPermissionMixin, SingleTableViewWithRequest):

@@ -11,6 +11,7 @@ INSTALLED_APPS += (
 EMAIL_HOST = '192.168.59.3'
 EMAIL_PORT = 1025
 
+CELERY_ALWAYS_EAGER = True
 
 INSTALLED_APPS += ('debug_toolbar', 'django_extensions', 'template_timings_panel', )
 INTERNAL_IPS = ('87.99.89.245', '87.99.89.245, 172.17.42.1', '192.168.59.3')

@@ -1,7 +1,15 @@
+# coding=utf-8
+from __future__ import unicode_literals
 import celery
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.core.mail import send_mail
+from core.models import User
+from core.tasks import LogErrorsTask
 from legacy.utils import full_sync
+from manager.models import TempDocument
+from manager.pdfreports import PDFReports
+from marketing.models import MailgunEmail
 from registration.models import Participant
 from velo.utils import load_class
 
@@ -42,3 +50,48 @@ def update_results_for_participant(participant_id):
     results = participant.result_set.all()
     for result in results:
         update_results_for_result(result)
+
+
+
+@celery.task(base=LogErrorsTask)
+def generate_pdfreport(competition_id, action, user_id):
+    user = User.objects.get(id=user_id)
+    pdf_class = PDFReports(competition_id=competition_id)
+
+    if action == 'results_groups':
+        pdf_class.results_groups()
+    elif action == 'results_groups_top20':
+        pdf_class.results_groups(20)
+    elif action == 'results_gender':
+        pdf_class.results_gender()
+    elif action == 'results_distance':
+        pdf_class.results_distance()
+    elif action == 'results_distance_top20':
+        pdf_class.results_distance(20)
+    elif action == 'results_standings':
+        pdf_class.results_standings()
+    elif action == 'results_standings_top20':
+        pdf_class.results_standings(20)
+    elif action == 'results_standings_groups':
+        pdf_class.results_standings_groups()
+    elif action == 'results_standings_groups_top20':
+        pdf_class.results_standings_groups(20)
+    elif action == 'results_team':
+        pdf_class.results_team()
+    elif action == 'results_team_standings':
+        pdf_class.results_team_standings()
+
+    file_obj = pdf_class.build()
+
+    obj = TempDocument(created_by=user)
+    obj.doc.save("%s.pdf" % action, ContentFile(file_obj.read()))
+    obj.save()
+    file_obj.close()
+
+    MailgunEmail.objects.create(content_object=obj,
+                                em_to=user.email,
+                                subject='PDF atskaite %s' % action,
+                                html='Atskaite atrodama šeit: <a href="{0}{1}">{0}{1}</a>'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url),
+                                text='Atskaite atrodama šeit: {0}{1}'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url)
+                                )
+    return True
