@@ -2,8 +2,8 @@ from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
-from gallery.forms import AssignNumberForm
-from gallery.models import Photo, Album, PhotoNumber
+from gallery.forms import AssignNumberForm, VideoSearchForm
+from gallery.models import Photo, Album, PhotoNumber, Video
 
 
 class AlbumListView(ListView):
@@ -81,4 +81,30 @@ class AlbumAssignNumberView(PermissionRequiredMixin, LoginRequiredMixin, DetailV
             return HttpResponseRedirect(reverse('gallery:photo_number_assign', kwargs={'album_pk': self.object.album_id, 'pk': self.get_prev().id}))
         else:
             return HttpResponseRedirect(reverse('gallery:photo_number_assign', kwargs={'album_pk': self.object.album_id, 'pk': self.object.id}))
+
+
+class VideoListView(ListView):
+    model = Video
+
+    search_form = None
+    def get_search_form(self):
+        if not self.search_form:
+            self.search_form = VideoSearchForm(request=self.request)
+        return self.search_form
+
+    def get_context_data(self, **kwargs):
+        context = super(VideoListView, self).get_context_data(**kwargs)
+        context.update({'search_form': self.get_search_form()})
+        return context
+
+    def get_queryset(self):
+        queryset = super(VideoListView, self).get_queryset()
+
+        if self.get_search_form():
+            queryset = self.get_search_form().append_queryset(queryset)
+
+        return queryset
+
+
+
 

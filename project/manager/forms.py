@@ -445,7 +445,7 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
         js = ('plugins/jquery.maskedinput.js',
               'plugins/mailgun_validator.js',
               'plugins/typeahead.js/typeahead.bundle.min.js',
-              'plugins/handlebars-v2.0.0.js',
+              'plugins/handlebars-v3.0.1.js',
               'plugins/moment.min.js',
               'plugins/datetimepicker/bootstrap-datetimepicker.min.js',
               'coffee/manager/participant_add.js')

@@ -126,7 +126,7 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
         js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
               'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js',
               'plugins/typeahead.js/typeahead.bundle.min.js',
-              'plugins/handlebars-v2.0.0.js',)
+              'plugins/handlebars-v3.0.1.js',)
         css = {
             'all': ('plugins/datepicker/datepicker.css', )
         }
@@ -541,7 +541,7 @@ class CompanyApplicationEmptyForm(GetClassNameMixin, CleanEmailMixin, RequestKwa
         js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
               'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js',
               'plugins/typeahead.js/typeahead.bundle.min.js',
-              'plugins/handlebars-v2.0.0.js',)
+              'plugins/handlebars-v3.0.1.js',)
         css = {
             'all': ('plugins/datepicker/datepicker.css', )
         }

@@ -296,7 +296,7 @@ initPhotoSwipeFromDOM('.my-gallery');
         {% for object in object_list %}
         <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject" class="col-xs-6 col-sm-4 col-lg-3">
             <a href="{{ object.image.img.url }}" itemprop="contentUrl" data-size="{{ object.width }}x{{ object.height }}">
-                <img src="{% if forloop.counter < 20 %}{{ object.image.thumb.url }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" height="200" width="200" data-src="{{ object.image.thumb.url }}" itemprop="thumbnail" class="margin-bottom-10" alt="{% firstof object.description object.filename %}" />
+                <img src="{% if forloop.counter < 20 %}{{ object.image.thumb.url }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" data-src="{{ object.image.thumb.url }}" itemprop="thumbnail" class="margin-bottom-10 img-responsive" alt="{% firstof object.description object.filename %}" />
             </a>
         </figure>
     {% endfor %}

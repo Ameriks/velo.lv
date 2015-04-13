@@ -72,6 +72,11 @@ INSTALLED_APPS = (
    # 'legacy',
 )
 
+VIMEO_KEY = os.getenv('VIMEO_KEY')
+VIMEO_SECRET = os.getenv('VIMEO_SECRET')
+VIMEO_TOKEN = os.getenv('VIMEO_TOKEN')
+
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
