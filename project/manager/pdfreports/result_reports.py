@@ -121,7 +121,7 @@ class PDFReports(object):
 
     def results_standings(self, top=10000):
         col_width = (
-            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 2 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
+            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -134,7 +134,7 @@ class PDFReports(object):
             data = [[Paragraph(unicode(distance), styles["Heading2"]), '', '', '', '', ''], ]
             if items:
                 children_count = self.primary_competition.children.count()
-                data_line = ['', '#', 'Vārds', 'Uzvārds', 'Gads']
+                data_line = ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Grupa']
                 for index in range(1, children_count + 1):
                     data_line.append('%i.' % index)
                 data_line.append('Punkti kopā')
@@ -143,7 +143,8 @@ class PDFReports(object):
                     data_line = [str(obj.distance_place), unicode(obj.participant.primary_number),
                                  Paragraph(obj.participant.first_name, styles["SmallNormal"]),
                                  Paragraph(obj.participant.last_name, styles["SmallNormal"]),
-                                 Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]), ]
+                                 Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                                 Paragraph(str(obj.participant.group), styles["SmallNormal"])]
                     for index in range(1, children_count + 1):
                         data_line.append(str(getattr(obj, 'distance_points%i' % index)))
 
@@ -158,7 +159,7 @@ class PDFReports(object):
 
     def results_standings_groups(self, top=10000):
         col_width = (
-            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 2 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
+            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
 
@@ -174,7 +175,7 @@ class PDFReports(object):
                     'participant', 'competition', 'distance', 'participant__primary_number')[:top]
                 data = [[Paragraph(unicode(group), styles["Heading2"]), '', '', unicode(distance), '', ''], ]
                 if items:
-                    data_line = ['', '#', 'Vārds', 'Uzvārds', 'Gads']
+                    data_line = ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Grupa']
                     for index in range(1, children_count + 1):
                         data_line.append('%i.' % index)
                     data_line.append('Punkti kopā')
@@ -183,7 +184,8 @@ class PDFReports(object):
                         data_line = [str(obj.group_place), unicode(obj.participant.primary_number),
                                      Paragraph(obj.participant.first_name, styles["SmallNormal"]),
                                      Paragraph(obj.participant.last_name, styles["SmallNormal"]),
-                                     Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]), ]
+                                     Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                                     Paragraph(str(obj.participant.group), styles["SmallNormal"]), ]
                         for index in range(1, children_count + 1):
                             data_line.append(str(getattr(obj, 'group_points%i' % index)))
 
