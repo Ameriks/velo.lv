@@ -139,6 +139,7 @@ class ParagraphStyle(PropertySet):
         'wordWrap':None,
         'borderWidth': 0,
         'borderPadding': 0,
+        'underlineProportion': 0.05,
         'borderColor': None,
         'borderRadius': None,
         'allowWidows': 1,
