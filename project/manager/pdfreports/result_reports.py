@@ -119,7 +119,7 @@ class PDFReports(object):
         return "%s - %s" % (self.competition.parent, self.competition) if self.competition.level == 2 else unicode(
             self.competition)
 
-    def results_standings(self, top=1000):
+    def results_standings(self, top=10000):
         col_width = (
             1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 2 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
@@ -156,7 +156,7 @@ class PDFReports(object):
             self.elements.append(PageBreak())
 
 
-    def results_standings_groups(self, top=1000):
+    def results_standings_groups(self, top=10000):
         col_width = (
             1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 2 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
