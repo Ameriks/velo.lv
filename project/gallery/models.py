@@ -51,6 +51,9 @@ class Video(StatusMixin, TimestampMixin, models.Model):
     class Meta:
         ordering = ('is_featured', 'ordering', 'title')
         unique_together = (('kind', 'video_id'), )
+        permissions = (
+            ("can_see_unpublished_video", "Can see unpublished video"),
+        )
 
     @property
     def url_embed(self):

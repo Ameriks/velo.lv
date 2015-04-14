@@ -1,13 +1,18 @@
 # coding=utf-8
 from __future__ import unicode_literals
+import re
 from crispy_forms.bootstrap import StrictButton, Tab, TabHolder
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Div
+from crispy_forms.layout import Layout, Row, Div, HTML
 from django import forms
+from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django_select2 import AutoHeavySelect2MultipleWidget
 from django_select2.util import JSFunctionInContext
 from core.models import Competition
+from gallery.models import Video
 from gallery.select2_fields import PhotoNumberChoices
+from gallery.utils import youtube_video_id
 from velo.mixins.forms import RequestKwargModelFormMixin
 from django.utils.translation import ugettext_lazy as _
 
@@ -38,6 +43,56 @@ class AssignNumberForm(RequestKwargModelFormMixin, forms.Form):
 
         self.fields['numbers'].initial = val
 
+
+class AddVideoForm(RequestKwargModelFormMixin, forms.ModelForm):
+    link = forms.URLField(label=_('Link'), help_text=_('Youtube or Vimeo link'), required=True)
+    class Meta:
+        model = Video
+        fields = ['competition', ]
+
+    def __init__(self, *args, **kwargs):
+        super(AddVideoForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+                    'competition',
+                    'link',
+                        StrictButton('Add', css_class="btn-primary search-button-margin", type="submit"),
+        )
+
+    def clean_link(self):
+        link = self.cleaned_data.get('link')
+        if "youtube" not in link and "youtu.be" not in link and "vimeo" not in link:
+            raise forms.ValidationError(_("You can add only youtube and vimeo videos."),)
+
+        if "youtube" in link or "youtu.be" in link:
+            if not youtube_video_id(link):
+                raise forms.ValidationError(_("Incorrect youtube link."),)
+        else:
+            video_id = re.search(r'^((http|https)://)?(www\.)?(vimeo\.com/)?(\d+)', link).group(5)
+            if not video_id:
+                raise forms.ValidationError(_("Incorrect vimeo link."),)
+
+        return link
+
+
+    def save(self, commit=True):
+        link = self.cleaned_data.get('link')
+        if "youtube" in link or "youtu.be" in link:
+            self.instance.kind = 1
+            self.instance.video_id = youtube_video_id(link)
+        else:
+            self.instance.kind = 2
+            self.instance.video_id = re.search(r'^((http|https)://)?(www\.)?(vimeo\.com/)?(\d+)', link).group(5)
+
+        if self.request and self.request.user.is_authenticated():
+            self.instance.created_by = self.request.user
+            self.instance.modified_by = self.request.user
+
+        messages.info(self.request, _('Video successfully added. Video must be approved by agency to be available to public.'))
+
+        return super(AddVideoForm, self).save(commit)
 
 
 
@@ -101,13 +156,14 @@ class VideoSearchForm(RequestKwargModelFormMixin, forms.Form):
                 Div(
                     'search',
                     'sort',
-                    css_class='col-sm-3',
+                    css_class='col-sm-2',
                 ),
                 Div(
                     Div(
                         StrictButton('<span data-icon="&#xe090;"></span>', css_class="btn-primary search-button-margin", type="submit"),
-                        css_class="buttons",
+                        HTML('<a href="%s" class="btn btn-primary search-button-margin"><i class="glyphicon glyphicon-plus"></i></a>' % reverse('gallery:video_add')),
+                        css_class="buttons pull-right",
                     ),
-                    css_class='col-sm-1',
+                    css_class='col-sm-2',
                 ),
         )

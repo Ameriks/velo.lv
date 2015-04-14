@@ -63,11 +63,11 @@
         </form>
         </div>
 
-
     <div class="row" id="links">
         {% for object in object_list %}
             <div class="col-xs-12 {% if object.is_featured %}col-sm-12{% else %}col-sm-6{% endif %}">
             {% if object.is_agency_video %}<div class="agency-video" title="Aģentūras video"><span class="label label-success"><i class="glyphicon glyphicon-star"></i></span></div>{% endif %}
+            {% if object.status == 0 %}<div class="video-status" title="Somebody from agency must approve video"><span class="label label-danger">Unpublished</span></div>{% endif %}
             <div class="video-viewcount"><span class="label label-default pull-right">{{ object.view_count }}</span></div>
                 <a href="#" title="{{ object.title }}" class="gallery_album" data-url="{{ object.url_embed }}" data-kind="{{ object.kind }}">
                     <img src="{% if forloop.counter < 20 %}{{ object.image }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" data-src="{{ object.image }}"  class="gallery-img margin-bottom-10 img-responsive center-block" alt="" />

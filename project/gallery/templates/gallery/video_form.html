@@ -1,0 +1,15 @@
+{% extends 'public/base.html' %}
+{% load thumbnail crispy_forms_tags %}
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block main %}
+    {% spaceless %}
+        <div class="row">
+            <div class="col-sm-12">
+                {% crispy form %}
+            </div>
+        </div>
+    {{ block.super }}
+    {% endspaceless %}
+{% endblock %}

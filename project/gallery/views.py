@@ -1,9 +1,11 @@
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView, DetailView
-from gallery.forms import AssignNumberForm, VideoSearchForm
+from django.views.generic import ListView, DetailView, CreateView
+from gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm
 from gallery.models import Photo, Album, PhotoNumber, Video
+from velo.mixins.views import RequestFormKwargsMixin
 
 
 class AlbumListView(ListView):
@@ -103,8 +105,19 @@ class VideoListView(ListView):
         if self.get_search_form():
             queryset = self.get_search_form().append_queryset(queryset)
 
+        if self.request.user.is_superuser or self.request.user.has_perm('gallery.can_see_unpublished_video'):
+            pass
+        elif self.request.user.is_authenticated():
+            queryset = queryset.filter(Q(status=1)|Q(created_by=self.request.user))
+        else:
+            queryset = queryset.filter(status=1)
+
         return queryset
 
 
+class VideoCreateView(RequestFormKwargsMixin, CreateView):
+    model = Video
+    form_class = AddVideoForm
 
-
+    def get_success_url(self):
+        return reverse('gallery:video')

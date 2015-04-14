@@ -413,3 +413,9 @@ table td.is_featured {
     position:absolute;
     right:15px;
 }
+
+.video-status {
+    position:absolute;
+    top:0;
+    left:50px;
+}
