@@ -190,21 +190,21 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
 
     def _post_clean(self):
         super(TeamPayForm, self)._post_clean()
-        # if not bool(self.errors):
-        #     try:
-        instance = self.instance
-        active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
+        if not bool(self.errors):
+            try:
+                instance = self.instance
+                active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
 
-        if active_payment_type.payment_channel.is_bill:
-            instance.external_invoice_code, instance.external_invoice_nr = create_team_invoice(instance, active_payment_type)
-            self.success_url = reverse('accounts:team', kwargs={'pk2': instance.id})
-            messages.info(self.request, _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
-        else:
-            self.success_url = create_team_bank_transaction(instance, active_payment_type)
+                if active_payment_type.payment_channel.is_bill:
+                    instance.external_invoice_code, instance.external_invoice_nr = create_team_invoice(instance, active_payment_type)
+                    self.success_url = reverse('accounts:team', kwargs={'pk2': instance.id})
+                    messages.info(self.request, _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
+                else:
+                    self.success_url = create_team_bank_transaction(instance, active_payment_type)
 
-            # except:
+            except:
             #     TODO We need to catch exception and log it to sentry
-                # self._errors['payment_type'] = self.error_class([_("Error in connection with bank. Try again later.")])
+                self._errors['payment_type'] = self.error_class([_("Error in connection with bank. Try again later.")])
 
 
 
