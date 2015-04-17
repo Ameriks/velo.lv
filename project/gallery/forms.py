@@ -4,6 +4,7 @@ import re
 from crispy_forms.bootstrap import StrictButton, Tab, TabHolder
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Div, HTML
+import datetime
 from django import forms
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -52,6 +53,8 @@ class AddVideoForm(RequestKwargModelFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AddVideoForm, self).__init__(*args, **kwargs)
+        competitions = Competition.objects.filter(competition_date__year=datetime.datetime.now().year)
+        self.fields['competition'].choices = ((obj.id, obj.get_full_name) for obj in competitions)
 
         self.helper = FormHelper()
         self.helper.form_tag = True
