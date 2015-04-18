@@ -45,3 +45,5 @@ install
 project/medias
 project/media
 
+project/gallery/client_secrets.json
+project/gallery/youtube-oauth2.json
