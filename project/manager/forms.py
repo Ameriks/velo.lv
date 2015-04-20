@@ -20,7 +20,7 @@ from manager.select2_fields import NumberChoices, UserChoices, NumberChoice, Par
 from manager.tasks import update_results_for_participant, update_results_for_result
 from payment.models import ActivePaymentChannel, Price
 from payment.utils import create_application_invoice
-from registration.models import Participant, Number, Application, PreNumberAssign
+from registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
 from results.models import DistanceAdmin, Result, LapResult, UrlSync
 from team.models import Member, Team, MemberApplication
 from velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin, GetClassNameMixin
@@ -1127,4 +1127,27 @@ class PreNumberAssignForm(RequestKwargModelFormMixin, forms.ModelForm):
             ),
             ),
 
+        )
+
+
+class ChangedNameForm(RequestKwargModelFormMixin, forms.ModelForm):
+    competition = None
+
+    class Meta:
+        model = ChangedName
+        fields = ('slug', 'new_slug')
+
+    def __init__(self, *args, **kwargs):
+        super(ChangedNameForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+            Row(
+                Column('slug', css_class='col-sm-4'),
+                Column('new_slug', css_class='col-sm-4'),
+            ),
+            Row(
+                Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
+            ),
         )

@@ -67,6 +67,8 @@ class SetCompetitionContextMixin(object):
 
 
     def get_banners(self):
+        if not self.competition:
+            return None
         return FlashBanner.objects.filter(status=1).filter(competition__in=self.competition.get_ids())
 
 

@@ -12,7 +12,7 @@ from results.models import DistanceAdmin, Result, UrlSync
 from team.models import MemberApplication, Team
 from velo.mixins.table import GetRequestTableKwargs
 from velo.tables import CustomCheckBoxColumn
-from registration.models import Participant, Number, Application, PreNumberAssign
+from registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
 from django_tables2.utils import A
 from django_tables2_reports.tables import TableReport
 
@@ -300,6 +300,17 @@ class PreNumberAssignTable(GetRequestTableKwargs, tables.Table):
         model = PreNumberAssign
         attrs = {"class": "table table-striped table-hover"}
         fields = ("id", "distance", "number", "segment", "participant_slug", "group_together")
+        empty_text = _("There are no records.")
+        per_page = 100
+        template = "bootstrap/table.html"
+
+class ChangedNameTable(GetRequestTableKwargs, tables.Table):
+    id = LinkColumn('manager:changedname', args=[A('id')], accessor="id", verbose_name=_('ID'), )
+
+    class Meta:
+        model = ChangedName
+        attrs = {"class": "table table-striped table-hover"}
+        fields = ("id", "slug", "new_slug", )
         empty_text = _("There are no records.")
         per_page = 100
         template = "bootstrap/table.html"

@@ -8,12 +8,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import ListView, UpdateView, CreateView, DetailView
 from manager.forms import ParticipantListSearchForm, ParticipantForm, ParticipantCreateForm, ParticipantIneseCreateForm, \
-    ApplicationListSearchForm, InvoiceCreateForm, PreNumberAssignForm
+    ApplicationListSearchForm, InvoiceCreateForm, PreNumberAssignForm, ChangedNameForm
 from manager.tables import ManageParticipantTable, ManageApplicationTable
-from manager.tables.tables import PreNumberAssignTable
+from manager.tables.tables import PreNumberAssignTable, ChangedNameTable
 from manager.views.permission_view import ManagerPermissionMixin
 from payment.models import Payment
-from registration.models import Participant, Application, PreNumberAssign
+from registration.models import Participant, Application, PreNumberAssign, ChangedName
 from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin, \
     CreateViewWithCompetition, UpdateViewWithCompetition
 from velo.utils import load_class
@@ -262,3 +262,38 @@ class ManagePreNumberAssignCreate(ManagerPermissionMixin, CreateViewWithCompetit
 
     def get_success_url(self):
         return reverse('manager:prenumber_list', kwargs={'pk': self.kwargs.get('pk')})
+
+
+class ChangedNameList(ManagerPermissionMixin, SingleTableViewWithRequest):
+    model = ChangedName
+    table_class = ChangedNameTable
+    template_name = 'manager/table.html'
+
+    @property
+    def add_link(self):
+        return reverse_lazy('manager:changedname')
+
+
+
+class ChangedNameUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
+    pk_url_kwarg = 'pk2'
+    model = ChangedName
+    template_name = 'manager/form.html'
+    form_class = ChangedNameForm
+
+    def get_success_url(self):
+        return reverse('manager:changedname_list')
+
+class ChangedNameCreate(ManagerPermissionMixin, CreateViewWithCompetition):
+    pk_url_kwarg = 'pk2'
+    model = ChangedName
+    template_name = 'manager/form.html'
+    form_class = ChangedNameForm
+
+    def get_success_url(self):
+        return reverse('manager:changedname_list')
+
+
+
+
+

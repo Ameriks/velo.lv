@@ -311,3 +311,11 @@ class CompanyParticipant(TimestampMixin, models.Model):
     def save(self, *args, **kwargs):
         self.set_slug()
         return super(CompanyParticipant, self).save(*args, **kwargs)
+
+
+class ChangedName(models.Model):
+    slug = models.SlugField()
+    new_slug = models.SlugField()
+
+    def __unicode__(self):
+        return self.new_slug
