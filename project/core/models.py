@@ -252,7 +252,7 @@ class Competition(MPTTModel):
     params = JSONField(blank=True, null=True)
 
     class MPTTMeta:
-        order_insertion_by = ['name']
+        order_insertion_by = ['competition_date']
 
     def save(self, *args, **kwargs):
         self.alias = slugify(self.name)
