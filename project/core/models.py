@@ -315,6 +315,7 @@ class Distance(TimestampMixin, models.Model):
     have_results = models.BooleanField(default=True)
 
     profile_price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    kind = models.CharField(max_length=1, blank=True)  # We need kind to map distances between competitions
 
     def get_participants(self, competition_ids):
         return self.participant_set.filter(competition_id__in=competition_ids)
