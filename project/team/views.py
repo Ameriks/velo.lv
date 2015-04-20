@@ -261,6 +261,7 @@ class TeamApplyList(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMix
                                                    last_name=member.last_name,
                                                    country=member.country,
                                                    birthday=member.birthday,
+                                                   gender=member.gender,
                                                    ssn=member.ssn,
                                                    competition_id=key,
                                                    distance=self.object.distance,

@@ -18,7 +18,7 @@ from velo.utils import bday_from_LV_SSN
 class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     class Meta:
         model = Member
-        fields = ('country', 'ssn', 'first_name', 'last_name', 'id', 'birthday',  )
+        fields = ('country', 'ssn', 'first_name', 'last_name', 'id', 'birthday', 'gender' )
 
     def save(self, commit=True):
         obj = super(MemberInlineForm, self).save(commit=False)
@@ -104,6 +104,13 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         else:
             return self.cleaned_data.get('first_name').strip().title()
 
+    def clean_gender(self):
+        if self.instance.id:
+            return self.instance.gender
+        else:
+            return self.cleaned_data.get('gender')
+
+
     def clean_last_name(self):
         if self.instance.id:
             return self.instance.last_name
@@ -127,6 +134,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['country'].required = True
+        self.fields['gender'].required = True
 
         if self.instance.id:
             self.fields['first_name'].widget.attrs['readonly'] = True
@@ -134,6 +142,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['ssn'].widget.attrs['readonly'] = True
             self.fields['country'].widget.attrs['readonly'] = True
             self.fields['birthday'].widget.attrs['readonly'] = True
+            self.fields['gender'].widget.attrs['readonly'] = True
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -142,9 +151,10 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             Row(
                 Column(
                     Row(
-                        Column('first_name', css_class='col-xs-6 col-sm-3'),
+                        Column('first_name', css_class='col-xs-6 col-sm-2'),
                         Column('last_name', css_class='col-xs-6 col-sm-3'),
-                        Column('country', css_class='col-xs-6 col-sm-3'),
+                        Column('gender', css_class='col-xs-6 col-sm-2'),
+                        Column('country', css_class='col-xs-6 col-sm-2'),
                         Column('ssn', css_class='col-xs-6 col-sm-3'),
                         Column('birthday', css_class='col-xs-6 col-sm-3'),
                     ),

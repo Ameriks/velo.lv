@@ -69,12 +69,18 @@ class Team(StatusMixin, TimestampMixin, models.Model):
 
 
 class Member(StatusMixin, models.Model):
+    GENDER_CHOICES = (
+        ('M', _('Male')),
+        ('F', _('Female')),
+    )
     team = models.ForeignKey(Team)
     first_name = models.CharField(_('First Name'), max_length=60)
     last_name = models.CharField(_('Last Name'), max_length=60)
     birthday = models.DateField(_('Birthday'))
     slug = models.SlugField()
     ssn = models.CharField(_('SSN'), max_length=12, blank=True)
+
+    gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True)
 
     country = CountryField(_('Country'))
     license_nr = models.CharField(_('License NR'), max_length=50, blank=True)
