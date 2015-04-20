@@ -8,6 +8,16 @@
             $('th.selection').on('click', function() {
                 $('tr td:nth-child(1) input[type=checkbox]', $(this).parents('table')).prop("checked", $(this).prop('checked'));
             });
+            $('.competition_pay_button').on('click', function(evt) {
+                var element = $(evt.target);
+                var form = element.parents('form');
+
+                $('#pay_for').val(element.data('competition'));
+                form.submit();
+                return false;
+            });
+
+
         });
 
     </script>
@@ -68,7 +78,25 @@
                           </ul>
                         </div>
                         {% endif %}
-                        <button type="submit" name="action" value="pay" class="btn btn-primary">{% trans 'Pay for selected' %}</button>
+                        {% if payable_competitions %}
+                            <input type="hidden" id="pay_for" name="pay_for" value="" />
+                            {% if payable_competitions.count == 1 %}
+                                <a href="#" class="btn btn-primary competition_pay_button" data-competition="{{ payable_competitions.0.id }}">{% trans 'Pay for selected' %}{% if payable_competitions.0.level == 2 %} ({{ payable_competitions.0 }}) {% endif %}</a>
+                            {% else %}
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        {% trans 'Pay for selected' %} <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                          {% for comp in payable_competitions %}
+                                              <li>
+                                              <a href="#" class="competition_pay_button" data-competition="{{ comp.id }}">{{ comp }}</a>
+                                              </li>
+                                          {% endfor %}
+                                      </ul>
+                                    </div>
+                            {% endif %}
+                        {% endif %}
                     </div>
 
                 </div>

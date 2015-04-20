@@ -15,7 +15,7 @@ from extra_views import UpdateWithInlinesView, NamedFormsetsMixin, InlineFormSet
 from braces.views import JsonRequestResponseMixin, LoginRequiredMixin, JSONResponseMixin
 from extra_views.advanced import BaseUpdateWithInlinesView, BaseCreateWithInlinesView
 from core.formsets import CustomBaseInlineFormSet, OnlyAddBaseInlineFormSet
-from core.models import Distance, CustomSlug
+from core.models import Distance, CustomSlug, Competition
 
 from registration.forms import ApplicationCreateForm, ApplicationUpdateForm, ParticipantInlineForm, \
     ParticipantInlineRestrictedForm, ParticipantInlineFullyRestrictedForm, CompanyApplicationCreateForm, \
@@ -101,24 +101,37 @@ class CompanyApplicationDetail(LoginRequiredMixin, SingleTableView):
 
     def post(self, request, *args, **kwargs):
         self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)
-        competition_ids = self.companyapplication.competition.get_ids()
+        competition = self.companyapplication.competition
+        team_member_count = 0
+        max_team_members = self.companyapplication.competition.params.get('team_member_count', 1000)
+
         action = request.POST.get('action', 'none')
+        pay_for = request.POST.get('pay_for', '')
         selected = request.POST.getlist('selection')
         participants = self.companyapplication.participant_set.filter(id__in=selected)
 
         if not selected:
             messages.info(request, _('Select at least one participant.'))
             return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
-
-        if action == 'pay':
+        if len(pay_for) > 0:
             participants = participants.filter(is_participating=False)
             if not participants:
                 messages.info(request, _('Select at least one participant.'))
                 return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
-            new_application = Application.objects.create(competition=self.companyapplication.competition, email=self.companyapplication.email, created_by=request.user,)
+
+
+            # Double check if competition ID is valid
+            try:
+                competition = self.get_payable_competitions().get(id=pay_for)
+            except:
+                messages.info(request, _('Competition selected for payment is not available.'))
+                return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+
+
+            new_application = Application.objects.create(competition=competition, email=self.companyapplication.email, created_by=request.user,)
             for participant in participants:
                 new_application.participant_set.create(company_participant=participant,
-                                                       competition=self.companyapplication.competition,
+                                                       competition=competition,
                                                        distance=participant.distance,
                                                        first_name=participant.first_name,
                                                        last_name=participant.last_name,
@@ -139,6 +152,7 @@ class CompanyApplicationDetail(LoginRequiredMixin, SingleTableView):
             team_id = request.POST.get('team', None)
             try:
                 team = Team.objects.get(id=team_id, owner=request.user)
+                team_member_count = team.member_set.filter(status=1).count()
                 distance = team.distance
             except:
                 messages.error(request, _('Select team'))
@@ -147,13 +161,12 @@ class CompanyApplicationDetail(LoginRequiredMixin, SingleTableView):
 
         if action == 'create_team':
             distance_id = request.POST.get('distance', None)
-            distance = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True, competition_id__in=competition_ids).exclude(competition__competition_date__lt=timezone.now()).select_related('competition').get(id=distance_id)
+            distance = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True, competition=competition).exclude(competition__competition_date__lt=timezone.now()).select_related('competition').get(id=distance_id)
             title = request.POST.get('title', None)
             if not title:
                 messages.info(request, _('Add team title.'))
                 return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
             team = Team.objects.filter(slug=slugify(title), distance__competition=distance.competition)
-
             if team:
                 messages.info(request, _('Team with title %s already exists. Pick different title.') % title)
                 return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
@@ -164,6 +177,12 @@ class CompanyApplicationDetail(LoginRequiredMixin, SingleTableView):
             if not participants:
                 messages.info(request, _('Select participants in selected competition distance.'))
                 return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+
+            if team_member_count + len(participants) > max_team_members:
+                messages.info(request, _('Maximum team member count in this competition is %s. Please select less participants to add to team.') % max_team_members)
+                return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
+
+
             participant_already_in_teams = []
             for participant in participants:
                 member = Member.objects.filter(status=Member.STATUS_ACTIVE, team__distance__competition_id=distance.competition_id, slug=participant.slug)
@@ -186,12 +205,14 @@ class CompanyApplicationDetail(LoginRequiredMixin, SingleTableView):
                     team.member_set.create(first_name=participant.first_name,
                                            last_name=participant.last_name,
                                            birthday=participant.birthday,
+                                           gender=participant.gender,
                                            slug=participant.slug,
                                            ssn=participant.ssn,
                                            country=participant.country,
                                            status=Member.STATUS_ACTIVE)
             return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': team.id}))
 
+        return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
 
 
 
@@ -205,12 +226,13 @@ class CompanyApplicationDetail(LoginRequiredMixin, SingleTableView):
         context = super(CompanyApplicationDetail, self).get_context_data(**kwargs)
         context.update({'companyapplication': self.companyapplication})
 
-        competition_ids = self.companyapplication.competition.get_ids()
+        competition = self.companyapplication.competition
 
-        my_teams = Team.objects.filter(created_by=self.request.user, distance__competition_id=competition_ids)
+
+        my_teams = Team.objects.filter(created_by=self.request.user, distance__competition=competition)
         context.update({'my_teams': my_teams})
 
-        distances = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True, competition_id__in=competition_ids).exclude(
+        distances = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True, competition=competition).exclude(
             competition__competition_date__lt=timezone.now())
         distance_choices = [
             (unicode(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())) for
@@ -218,7 +240,17 @@ class CompanyApplicationDetail(LoginRequiredMixin, SingleTableView):
 
         context.update({'distance_choices': distance_choices})
 
+        payable_competitions = self.get_payable_competitions()
+        context.update({'payable_competitions': payable_competitions})
+
+
         return context
+
+    def get_payable_competitions(self):
+        now = timezone.now()
+        competition = self.companyapplication.competition
+        return Competition.objects.filter(Q(id=competition.id) | Q(parent_id=competition.id)).filter(Q(complex_payment_enddate__gt=now) | Q(price__end_registering__gt=now, price__start_registering__lte=now)).distinct().order_by('complex_payment_enddate', 'competition_date')
+
 
     def get(self, request, *args, **kwargs):
         self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)

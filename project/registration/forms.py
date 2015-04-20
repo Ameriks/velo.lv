@@ -53,8 +53,7 @@ class CompanyApplicationCreateForm(GetClassNameMixin, CleanEmailMixin, RequestKw
 
         self.fields['email'].initial = self.request.user.email
 
-        now = timezone.now()
-        competitions = Competition.objects.filter(Q(complex_payment_enddate__gt=now) | Q(price__end_registering__gt=now, price__start_registering__lte=now)).distinct().order_by('complex_payment_enddate', 'competition_date')
+        competitions = Competition.objects.filter(is_in_menu=True).exclude(competition_date__lt=timezone.now())
         self.fields['competition'].choices = [(c.id, c.get_full_name) for c in competitions]
 
         if self.instance.id:
