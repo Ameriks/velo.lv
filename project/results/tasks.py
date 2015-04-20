@@ -1,7 +1,11 @@
 # coding=utf-8
 from __future__ import unicode_literals
+from difflib import get_close_matches
 
 from celery import task
+import datetime
+from celery.schedules import crontab
+from celery.task import periodic_task
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
@@ -11,12 +15,12 @@ import StringIO
 import unicodedata
 import urllib
 import uuid
-from core.models import Log
+from core.models import Log, Competition
 from marketing.models import SMS
 from marketing.utils import send_smses
 
-from registration.models import Number
-from results.models import Result, UrlSync, ChipScan
+from registration.models import Number, Participant, ChangedName
+from results.models import Result, UrlSync, ChipScan, SebStandings, HelperResults
 from velo.utils import load_class
 import traceback
 from django.utils import timezone
@@ -145,3 +149,26 @@ def fetch_results(_id):
             'error': error,
         })
         raise Exception('Error processing external chip file')
+
+
+@task
+def update_helper_result_table(competition_id, update=False):
+    competition = Competition.objects.get(id=competition_id)
+
+    participants = Participant.objects.filter(competition_id__in=competition.get_ids(), is_participating=True).order_by('distance', 'registration_dt')
+
+    if not update:
+        participants = participants.filter(helperresults=None)
+
+
+    class_ = load_class(competition.processing_class)
+    competition_class = class_(competition=competition)
+
+    competition_class.create_helper_results(participants)
+
+
+@periodic_task(run_every=crontab(minute="*/11", ))
+def master_update_helper_result_table(update=False):
+    competitions = Competition.objects.filter(competition_date__gte=(timezone.now() - datetime.timedelta(days=1))).exclude(participant=None)
+    for competition in competitions:
+        update_helper_result_table(competition_id=competition.id, update=update)

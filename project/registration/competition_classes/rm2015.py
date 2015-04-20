@@ -162,4 +162,5 @@ class RM2015(RMCompetitionBase):
         output.seek(0)
         return output
 
-
+    def create_helper_results(self, participants):
+        return True

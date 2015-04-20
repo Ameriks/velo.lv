@@ -1,9 +1,12 @@
 # coding=utf-8
 from __future__ import unicode_literals
+from difflib import get_close_matches
 from registration.competition_classes.base import SEBCompetitionBase
-from registration.models import Application
+from registration.models import Application, ChangedName
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
+from registration.tables import ParticipantTableWithResult, ParticipantTable, ParticipantTableBase
+from results.models import SebStandings, HelperResults
 
 
 class Seb2015(SEBCompetitionBase):
@@ -11,6 +14,7 @@ class Seb2015(SEBCompetitionBase):
 
     SPORTA_DISTANCE_ID = 36
     TAUTAS_DISTANCE_ID = 37
+    VESELIBAS_DISTANCE_ID = 38
     BERNU_DISTANCE_ID = 39
 
     STAGES_COUNT = 7
@@ -35,6 +39,14 @@ class Seb2015(SEBCompetitionBase):
             self.TAUTAS_DISTANCE_ID: [{'start': 500, 'end': 3500, 'group': ''}, ],
             self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
         }
+
+    def get_startlist_table_class(self, distance=None):
+        if distance.id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            return ParticipantTableWithResult
+        elif distance.id == self.VESELIBAS_DISTANCE_ID:
+             return ParticipantTableBase
+        else:
+            return ParticipantTable
 
     def _update_year(self, year):
         return year + 1
@@ -120,3 +132,80 @@ class Seb2015(SEBCompetitionBase):
             return (('sport_approval', forms.BooleanField(label=_("I am informed that participation in Skandi Motors distance requires LRF licence. More info - %s") % "http://lrf.lv/licences/licences-2015.html", required=True)), )
 
         return ()
+
+    def create_helper_results(self, participants):
+        if self.competition.level != 2:
+            return Exception('We allow creating helper results only for stages.')
+
+        current_competition = self.competition.parent
+        prev_competition = current_competition.get_previous_sibling()
+
+        # used for matching similar participants (grammar errors)
+        prev_slugs = [obj.participant_slug for obj in SebStandings.objects.filter(competition=prev_competition)]
+        current_slugs = [obj.participant_slug for obj in SebStandings.objects.filter(competition=current_competition)]
+
+
+        def get_prev_standing(participant):
+            standings = SebStandings.objects.filter(competition=prev_competition, participant_slug=participant.slug).order_by('-distance_total')
+
+            if not standings:
+                # 1. check if participant have changed name
+                try:
+                    changed = ChangedName.objects.get(new_slug=participant.slug)
+                    standings = SebStandings.objects.filter(competition=prev_competition, participant_slug=changed.slug).order_by('-distance_total')
+                except:
+                    pass
+            if standings:
+                return standings[0]
+            return None
+
+        def get_current_standing(participant):
+            standings = SebStandings.objects.filter(competition=current_competition, participant_slug=participant.slug).order_by('-distance_total')
+            if standings:
+                return standings[0]
+            return None
+
+        for participant in participants:
+            helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant, defaults={'calculated_total': 0})
+
+            current_standing = get_current_standing(participant)
+
+            if self.competition_index == 1 or (self.competition_index == 2 and (not current_standing or current_standing.distance_points1 == 0)):
+                standing = get_prev_standing(participant)
+
+                helper.matches_slug = ''
+                if standing:
+                    helper.calculated_total = (standing.distance_total or 0.0) / 5.0
+
+                    if self.competition_index == 2:
+                        helper.calculated_total /= 1.15
+
+                    helper.result_used = standing
+                else:
+                    matches = get_close_matches(participant.slug, prev_slugs)
+                    if matches:
+                        helper.matches_slug = matches[0]
+            else:
+                participated_count = 0
+                skipped_count = 0
+                total_points = 0
+
+                stages = range(1, self.competition_index)
+                for stage in stages:
+                    points = getattr(current_standing, 'distance_points%i' % stage)
+                    if points > 0:
+                        participated_count += 1
+                        total_points += points
+                    else:
+                        skipped_count += 1
+
+                helper.calculated_total = total_points / participated_count
+                if skipped_count == 1:
+                    helper.calculated_total /= 1.15
+                elif skipped_count == 2:
+                    helper.calculated_total /= 1.25
+                elif skipped_count > 2:
+                    helper.calculated_total = total_points / (participated_count + (skipped_count - 2))
+
+
+            helper.save()

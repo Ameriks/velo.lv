@@ -471,7 +471,7 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
             comp_choices = [(competition.id, competition.__unicode__())]
 
 
-        if competition.tree_id == 1 and competition.level == 1:
+        if competition.get_root().id == 1 and competition.level == 1:
             comps = competition.get_descendants()
             prices_obj = comps[0].price_set.all()
             prices = [(price.id, "%s€- %s" % (str(price.price * comps.count() * (100 - competition.complex_discount) / 100), price.distance)) for price in prices_obj]
@@ -786,7 +786,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
         self.fields['insurance'].choices = [('', '------')] + [(insurance.id, insurance.__unicode__()) for insurance in insurances]
 
-        if competition.tree_id == 1 and competition.level == 1:
+        if competition.get_root().id == 1 and competition.level == 1:
             comps = competition.get_descendants()
             prices_obj = comps[0].price_set.all()
             prices = [(price.id, "%s€- %s" % (str(price.price * comps.count() * (100 - competition.complex_discount) / 100), price.distance)) for price in prices_obj]

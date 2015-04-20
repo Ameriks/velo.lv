@@ -162,7 +162,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
         return item(unicode(self.competition), '#', url_as_pattern=False, children=child_items, in_menu=self.competition.is_in_menu)
 
-    def get_startlist_table_class(self):
+    def get_startlist_table_class(self, distance=None):
         return ParticipantTable
 
 
@@ -663,7 +663,7 @@ class RMCompetitionBase(CompetitionScriptBase):
             else:
                 return ResultRMTautaDistanceTable
 
-    def get_startlist_table_class(self):
+    def get_startlist_table_class(self, distance=None):
         return ParticipantTable
 
 

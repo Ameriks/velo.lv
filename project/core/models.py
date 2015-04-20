@@ -267,7 +267,7 @@ class Competition(MPTTModel):
     def get_all_children_ids(self):
         if self.level == 2:
             return tuple(obj.id for obj in Competition.objects.filter(parent_id=self.parent_id))
-        elif self.tree_id == 1:
+        elif self.get_root().id == 1:
             return tuple(obj.id for obj in Competition.objects.filter(parent_id=self.id))
         else:
             return (self.id, )
@@ -277,7 +277,7 @@ class Competition(MPTTModel):
 
     def get_insurances(self):
         insurances = Insurance.objects.filter(competition_id__in=self.get_ids())
-        if self.level == 1 and self.tree_id == 1:
+        if self.level == 1 and self.get_root().id == 1:
             insurances = insurances.filter(in_complex=True)
         return insurances.select_related('competition')
 

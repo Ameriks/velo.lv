@@ -13,7 +13,6 @@ from core.models import Competition, Choices, Log
 from marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from registration.competition_classes.base import CompetitionScriptBase, RMCompetitionBase
 from registration.models import Number, Participant
-from registration.tables import ParticipantTableWithResult, ParticipantTable
 from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceAdmin, SebStandings, TeamResultStandings, \
     LapResult
 from results.tables import *

@@ -13,7 +13,7 @@ from core.models import Competition, Choices, Log
 from marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from registration.competition_classes.base import CompetitionScriptBase
 from registration.models import Number, Participant, PreNumberAssign
-from registration.tables import ParticipantTableWithResult, ParticipantTable
+from registration.tables import ParticipantTable
 from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceAdmin, SebStandings, TeamResultStandings, \
     LapResult
 from results.tables import *
@@ -188,7 +188,7 @@ class VB2014(CompetitionScriptBase):
         else:
             return ResultRMDistanceTable
 
-    def get_startlist_table_class(self):
+    def get_startlist_table_class(self, distance=None):
         return ParticipantTable
 
 

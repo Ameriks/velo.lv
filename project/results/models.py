@@ -13,6 +13,7 @@ import math
 import uuid
 from core.models import Log
 from results.helper import time_to_seconds
+from velo.mixins.models import TimestampMixin
 from velo.utils import load_class
 from save_the_change.mixins import SaveTheChange
 
@@ -328,3 +329,23 @@ class TeamResultStandings(SaveTheChange, models.Model):
     points5 = models.IntegerField('5.', blank=True, null=True, db_index=True)
     points6 = models.IntegerField('6.', blank=True, null=True, db_index=True)
     points7 = models.IntegerField('7.', blank=True, null=True, db_index=True)
+
+
+class HelperResults(SaveTheChange, TimestampMixin, models.Model):
+    """
+    This is helper table to calculate number and stage assigning for participants.
+    """
+    competition = models.ForeignKey('core.Competition')
+    participant = models.ForeignKey('registration.Participant')
+
+    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    result_used = generic.GenericForeignKey('content_type', 'object_id')  # Can be standing or result
+
+    calculated_total = models.FloatField(blank=True, null=True)
+
+    stage_assigned = models.IntegerField(blank=True, null=True)
+
+    is_manual = models.BooleanField(default=False)  # Manually added records will not be overwritten
+
+    matches_slug = models.SlugField(blank=True)

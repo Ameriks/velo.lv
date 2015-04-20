@@ -241,7 +241,7 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
         try:
             next_competition = None
             competition = self.instance.distance.competition
-            if competition.tree_id == 2:
+            if competition.get_root().id == 1:
                 next_competition = self.instance.distance.competition.children.filter(
                     competition_date__gt=timezone.now())[:1]
             elif competition.competition_date and competition.competition_date > datetime.date.today():
