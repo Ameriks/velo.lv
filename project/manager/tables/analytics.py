@@ -4,13 +4,13 @@ from django_tables2 import tables, A, LinkColumn, Column
 from django.utils.safestring import mark_safe
 from core.models import Competition
 from registration.models import Participant, Number
-from results.models import Result
+from results.models import Result, HelperResults
 from velo.mixins.table import GetRequestTableKwargs
 from django.utils.translation import ugettext_lazy as _
 
 
 __all__ = [
-    'ManageResultNonParticipantTable', 'ManageFindNumberViewTable',
+    'ManageResultNonParticipantTable', 'ManageFindNumberViewTable', 'HelperResultsMatchViewTable',
 ]
 
 class ManageResultNonParticipantTable(GetRequestTableKwargs, tables.Table):
@@ -52,5 +52,26 @@ class ManageFindNumberViewTable(GetRequestTableKwargs, tables.Table):
         per_page = 10
         template = "bootstrap/table.html"
         empty_text = _("There are no records")
+
+
+
+class HelperResultsMatchViewTable(GetRequestTableKwargs, tables.Table):
+    current_slug = Column(accessor='participant.slug')
+
+    def render_current_slug(self, record, **kwargs):
+        url = reverse('manager:participant', kwargs={'pk': self.request_kwargs.get('pk'), 'pk_participant': record.participant_id})
+        return mark_safe('<a href="%s">%s</a>' % (url, record.participant.slug))
+
+    class Meta:
+        model = HelperResults
+        attrs = {"class": "table table-striped table-hover"}
+        fields = ("id", 'matches_slug', )
+        sequence = ('id', 'current_slug', 'matches_slug', )
+        per_page = 30
+        template = "bootstrap/table.html"
+        empty_text = _("There are no records")
+        order_by = ("-id",)
+
+
 
 

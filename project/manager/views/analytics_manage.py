@@ -1,17 +1,17 @@
 from django.db.models import Count, F
 from django_tables2 import SingleTableView
 from manager.tables import ManageParticipantTable, ManageResultNonParticipantTable, ManageFindNumberViewTable, \
-    ManageApplicationTable
+    ManageApplicationTable, HelperResultsMatchViewTable
 from manager.tables.tables import ManageParticipantDifferSlugTable, ManageParticipantToNumberTable
 from manager.views.permission_view import ManagerPermissionMixin
 from payment.models import Payment
 from registration.models import Participant, Number, Application
-from results.models import Result
+from results.models import Result, HelperResults
 from velo.mixins.views import SingleTableViewWithRequest
 
 
 __all__ = [
-    'MultipleSameSlugView', 'MultipleNumbersView', 'ResultAssignedToInactiveParticipant', 'DifferNumberSlugView', 'MatchParticipantToNumberView', 'FindNumberView', 'PayedAmountNotEqualView',
+    'MultipleSameSlugView', 'MultipleNumbersView', 'ResultAssignedToInactiveParticipant', 'DifferNumberSlugView', 'MatchParticipantToNumberView', 'FindNumberView', 'PayedAmountNotEqualView', 'MatchResultParticipantView'
 ]
 
 class PayedAmountNotEqualView(ManagerPermissionMixin, SingleTableViewWithRequest):
@@ -122,5 +122,18 @@ class FindNumberView(ManagerPermissionMixin, SingleTableViewWithRequest):
         queryset = super(FindNumberView, self).get_queryset()
         queryset = queryset.filter(competition_id__in=self.competition.get_ids(), is_participating=True, primary_number=None)
         queryset = queryset.select_related('distance', 'competition')
+        return queryset
+
+
+class MatchResultParticipantView(ManagerPermissionMixin, SingleTableViewWithRequest):
+    model = HelperResults
+    table_class = HelperResultsMatchViewTable
+    template_name = 'manager/table.html'
+
+    def get_queryset(self):
+        queryset = super(MatchResultParticipantView, self).get_queryset()
+        queryset = queryset.filter(competition_id__in=self.competition.get_ids()).exclude(matches_slug='')
+
+        queryset = queryset.select_related('competition', 'participant')
         return queryset
 

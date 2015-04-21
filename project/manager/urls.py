@@ -5,7 +5,8 @@ from manager.views import ManageParticipantList, ManageCompetitionList, ManageCo
     ResultAssignedToInactiveParticipant, ManageParticipantPDF, ManageResultCreate, DifferNumberSlugView, \
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
-    ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView, ManagePriceList, ManagePriceCreate, ManagePriceUpdate
+    ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView, ManagePriceList, ManagePriceCreate, ManagePriceUpdate, \
+    MatchResultParticipantView
 from manager.views.participant_manage import ManagePreNumberAssignList, ManagePreNumberAssignUpdate, \
     ManagePreNumberAssignCreate, ChangedNameList, ChangedNameCreate, ChangedNameUpdate
 from manager.views.results_manage import ManageResultList, ManageResultUpdate
@@ -75,6 +76,9 @@ urlpatterns = patterns('',
 
                        url(r'^competition/(?P<pk>\d+)/analytics/unmatched/$', FindNumberView.as_view(), name='analytics_find_unmatched_participant'),
                        url(r'^competition/(?P<pk>\d+)/analytics/payment_mismatch/$', PayedAmountNotEqualView.as_view(), name='analytics_find_payment_mismatch'),
+
+                       url(r'^competition/(?P<pk>\d+)/analytics/match_results/$', MatchResultParticipantView.as_view(), name='analytics_match_results'),
+
 
 
                        url(r'^competition/(?P<pk>\d+)/prenumber/$', ManagePreNumberAssignList.as_view(), name='prenumber_list'),
