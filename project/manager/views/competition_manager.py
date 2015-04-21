@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DetailView, TemplateView
 from core.models import Competition
+from legacy.utils_marketing import create_csv_seb
 from manager.excels.insured import create_insured_list
 from manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
     create_team_list, payment_list
@@ -130,6 +131,15 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         elif request.POST.get('action') == 'recalculate_all_points':
             self._competition_class.recalculate_all_points()
             messages.info(request, 'Veiksmīgi atjaunots')
+        elif request.POST.get('action') == 'marketing_create_csv_seb':
+            if request.user.is_superuser:
+                create_csv_seb(request.user)
+                messages.info(request, 'Nosūtīts e-pasts')
+            else:
+                messages.info(request, 'Nav tiesību.')
+
+
+
         return super(ManageCompetitionDetail, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
