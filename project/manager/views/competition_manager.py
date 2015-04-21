@@ -14,10 +14,11 @@ from manager.tables import ManageCompetitionTable
 from manager.views import ManageApplication
 from manager.views.permission_view import ManagerPermissionMixin
 from registration.models import Participant, Application
-from team.utils import match_applied_to_participants
 from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
 from velo.utils import load_class
 from manager.tasks import *
+from team.tasks import match_team_members_to_participants
+
 
 __all__ = [
     'ManageCompetitionList', 'ManageCompetitionDetail', 'ManageApplicationExternalPay'
@@ -123,9 +124,9 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
-        elif request.POST.get('action') == 'match_applied_to_participants':
-            match_applied_to_participants(competition_id=self.competition.id)
-            messages.info(request, 'Veiksmīgi atjaunots')
+        elif request.POST.get('action') == 'match_team_members_to_participants':
+            match_team_members_to_participants.delay(self.competition.id)
+            messages.info(request, 'Sinhronizācijas process veiksmīgi palaists.')
         elif request.POST.get('action') == 'recalculate_all_points':
             self._competition_class.recalculate_all_points()
             messages.info(request, 'Veiksmīgi atjaunots')

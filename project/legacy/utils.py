@@ -837,6 +837,3 @@ def full_sync():
     sync_insurance()
     sync_participants()
     sync_teams_and_members()
-    # sync_RM_teams_and_members()
-    from team.utils import match_applied_to_participants
-    match_applied_to_participants(28, update_participant_team=True)
