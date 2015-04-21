@@ -137,6 +137,8 @@ class Seb2015(SEBCompetitionBase):
         if self.competition.level != 2:
             return Exception('We allow creating helper results only for stages.')
 
+        participants = participants.filter(distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID))
+
         current_competition = self.competition.parent
         prev_competition = current_competition.get_previous_sibling()
 
@@ -168,6 +170,9 @@ class Seb2015(SEBCompetitionBase):
         for participant in participants:
             helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant, defaults={'calculated_total': 0})
 
+            if helper.is_manual:
+                continue # We do not want to overwrite manually created records
+
             current_standing = get_current_standing(participant)
 
             if self.competition_index == 1 or (self.competition_index == 2 and (not current_standing or current_standing.distance_points1 == 0)):
@@ -175,7 +180,10 @@ class Seb2015(SEBCompetitionBase):
 
                 helper.matches_slug = ''
                 if standing:
-                    helper.calculated_total = (standing.distance_total or 0.0) / 5.0
+                    if standing.distance.kind == 'S':
+                        helper.calculated_total = (standing.distance_total or 0.0) / 4.0
+                    else:
+                        helper.calculated_total = (standing.distance_total or 0.0) / 5.0
 
                     if self.competition_index == 2:
                         helper.calculated_total /= 1.15
