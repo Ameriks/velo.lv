@@ -46,6 +46,7 @@ class TeamAppliedView(SetCompetitionContextMixin, ListView):
                                         'member__first_name', 'member__last_name', 'member__birthday',
                                         'member__memberapplication__kind',
                                         'member__memberapplication__participant__primary_number__number',
+                                        'member__memberapplication__participant_id',
                                         )
         return queryset
 
