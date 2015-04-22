@@ -97,7 +97,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             ]))
             children.append(item('Komandas', '#', url_as_pattern=False, access_loggedin=True, in_menu=False, children=[
                 item('Pieteiktās komandas', 'manager:applied_team_list %i' % child.id, access_loggedin=True),
-                item('{{ object }}', 'manager:applied_team %i object.id' % child.id, in_menu=False, access_loggedin=True),
+                item('{{ object }}', 'manager:edit_team %i object.id' % child.id, in_menu=False, access_loggedin=True),
                 item('Dalībnieku saraksts', 'manager:team_applied_participant_list %i' % child.id, in_menu=False, access_loggedin=True),
 
 

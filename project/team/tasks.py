@@ -61,9 +61,21 @@ def match_team_members_to_participants(competition_id):
                 member.save()
 
 
+def check_participant_team_is_filled(competition_id):
+    competition = Competition.objects.get(id=competition_id)
+
+    if MemberApplication.objects.filter(competition=competition).count() == 0:
+        return False
+
+    members = MemberApplication.objects.filter(competition=competition, participant__team=None).exclude(participant=None)
+    for member in members:
+        member.participant.team = member.member.team
+        member.participant.save()
+
 
 @periodic_task(run_every=crontab(minute="4", ))
 def master_match_team_members_to_participants():
     competitions = Competition.objects.filter(competition_date__gte=(timezone.now() - datetime.timedelta(days=1))).exclude(participant=None)
     for competition in competitions:
         match_team_members_to_participants(competition_id=competition.id)
+        check_participant_team_is_filled(competition_id=competition.id)

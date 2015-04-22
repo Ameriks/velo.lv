@@ -7,6 +7,9 @@
 {% block js %}
     {{ block.super }}
     {{ form.media.js }}
+    {% for inline in inlines %}
+        {{ inline.media.js }}
+    {% endfor %}
     <script type="text/javascript">
         get_participant_params = function(term, page, context) {
             var field_id = $(this).data('field_id');
@@ -42,6 +45,9 @@
     <link href="{{ STATIC_URL }}css/extra.css" type="text/css" media="screen" rel="stylesheet" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/select2-bootstrap.css">
     {{ form.media.css }}
+    {% for inline in inlines %}
+        {{ inline.media.css }}
+    {% endfor %}
 {% endblock %}
 
 

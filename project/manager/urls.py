@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from manager.views import ManageParticipantList, ManageCompetitionList, ManageCompetitionDetail, ManageParticipantUpdate, \
     ManageAppliedTeamMembersList, ManageParticipantCreate, ManageNumberList, ManageNumberUpdate, ManageDistanceAdminList, \
-    ManageDistanceAdminUpdate, ManageTeamList, ManageTeamAppliedUpdate, MultipleSameSlugView, MultipleNumbersView, \
+    ManageDistanceAdminUpdate, ManageTeamList, ManageTeamUpdate, MultipleSameSlugView, MultipleNumbersView, \
     ResultAssignedToInactiveParticipant, ManageParticipantPDF, ManageResultCreate, DifferNumberSlugView, \
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
@@ -27,7 +27,7 @@ urlpatterns = patterns('',
 
 
                        url(r'^competition/(?P<pk>\d+)/team/applied/$', ManageTeamList.as_view(), name='applied_team_list'),
-                       url(r'^competition/(?P<pk>\d+)/team/applied/(?P<pk2>\d+)/$', ManageTeamAppliedUpdate.as_view(), name='applied_team'),
+                       url(r'^competition/(?P<pk>\d+)/team/(?P<pk2>\d+)/edit/$', ManageTeamUpdate.as_view(), name='edit_team'),
 
                        url(r'^competition/(?P<pk>\d+)/team/participant/applied/$', ManageAppliedTeamMembersList.as_view(), name='team_applied_participant_list'),
                        url(r'^competition/(?P<pk>\d+)/participant/$', ManageParticipantList.as_view(), name='participant_list'),

@@ -11,13 +11,14 @@ from manager.forms import ManageTeamMemberForm, ManageTeamForm
 from manager.tables import ManageMemberApplicationTable, ManageTeamTable
 from manager.tables.tables import ManageTeamApplyTable
 from manager.views.permission_view import ManagerPermissionMixin
+from team.forms import TeamForm, MemberInlineForm
 from team.models import MemberApplication, Team, Member
 from velo.mixins.views import SetCompetitionContextMixin, SingleTableViewWithRequest, RequestFormKwargsMixin
 from velo.utils import load_class
 
 
 __all__ = [
-    'ManageAppliedTeamMembersList', 'ManageTeamList', 'ManageTeamAppliedUpdate', 'ManageTeams', 'ManageTeamApplyList'
+    'ManageAppliedTeamMembersList', 'ManageTeamList', 'ManageTeamUpdate', 'ManageTeams', 'ManageTeamApplyList'
 ]
 
 
@@ -59,10 +60,17 @@ class ManageTeams(ManagerPermissionMixin, SingleTableViewWithRequest):
         queryset = super(ManageTeams, self).get_queryset()
         queryset = queryset.filter(distance__competition_id__in=self.competition.get_ids()).distinct()
         queryset = queryset.select_related('distance', 'distance__competition')
+
+        applied = self.request.GET.get('applied', None)
+        if applied == '1':
+            queryset = queryset.filter(member__memberapplication__competition=self.competition)
+        elif applied == '-1':
+            queryset = queryset.exclude(member__memberapplication__competition=self.competition)
+
         return queryset
 
 
-class ManageAppliedTeamMembersList(ManagerPermissionMixin, SetCompetitionContextMixin, ReportTableView):
+class ManageAppliedTeamMembersList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = MemberApplication
     table_class = ManageMemberApplicationTable
     template_name = 'manager/table.html'
@@ -95,11 +103,11 @@ class TeamMemberBaseInlineFormSet(BaseInlineFormSet):
         self.request_kwargs = kwargs.pop('request_kwargs', None)
         super(TeamMemberBaseInlineFormSet, self).__init__(*args, **kwargs)
 
-    def get_queryset(self):
-        queryset = super(TeamMemberBaseInlineFormSet, self).get_queryset()
-        queryset = queryset.filter(memberapplication__competition_id=self.request_kwargs.get('pk'))
-        queryset = queryset.order_by('memberapplication__kind').distinct()
-        return queryset
+    # def get_queryset(self):
+    #     queryset = super(TeamMemberBaseInlineFormSet, self).get_queryset()
+    #     queryset = queryset.filter(memberapplication__competition_id=self.request_kwargs.get('pk'))
+    #     queryset = queryset.order_by('memberapplication__kind').distinct()
+    #     return queryset
 
 
 class ManageTeamMemberInline(InlineFormSet):
@@ -124,20 +132,20 @@ class ManageTeamMemberInline(InlineFormSet):
 
 
 
-class ManageTeamAppliedUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
+class ManageTeamUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
     pk_url_kwarg = 'pk2'
     model = Team
     inlines = [ManageTeamMemberInline, ]
     inlines_names = ['member']
     form_class = ManageTeamForm
-    template_name = 'manager/participant_form.html'
+    template_name = 'manager/team_form.html'
 
     def get_success_url(self):
         return reverse('manager:applied_team_list', kwargs={'pk': self.kwargs.get('pk')})
 
 
     def forms_valid(self, form, inlines):
-        ret = super(ManageTeamAppliedUpdate, self).forms_valid(form, inlines)
+        ret = super(ManageTeamUpdate, self).forms_valid(form, inlines)
 
         class_ = load_class(self.object.distance.competition.processing_class)
         competition_class = class_(competition_id=self.kwargs.get('pk'))

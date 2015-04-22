@@ -31,13 +31,13 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         return obj
 
     def clean_ssn(self):
-        if self.instance.id:
+        if self.instance.id and not self.request.user.has_perm('team.change_member'):
             return self.instance.ssn
         else:
             return self.cleaned_data.get('ssn', '').replace('-', '').replace(' ', '')
 
     def clean_birthday(self):
-        if self.instance.id:
+        if self.instance.id and not self.request.user.has_perm('team.change_member'):
             return self.instance.birthday
         else:
             if self.cleaned_data.get('country') == 'LV':
@@ -99,26 +99,26 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         return cleaned_data
 
     def clean_first_name(self):
-        if self.instance.id:
+        if self.instance.id and not self.request.user.has_perm('team.change_member'):
             return self.instance.first_name
         else:
             return self.cleaned_data.get('first_name').strip().title()
 
     def clean_gender(self):
-        if self.instance.id:
+        if self.instance.id and not self.request.user.has_perm('team.change_member'):
             return self.instance.gender
         else:
             return self.cleaned_data.get('gender')
 
 
     def clean_last_name(self):
-        if self.instance.id:
+        if self.instance.id and not self.request.user.has_perm('team.change_member'):
             return self.instance.last_name
         else:
             return self.cleaned_data.get('last_name').strip().title()
 
     def clean_country(self):
-        if self.instance.id:
+        if self.instance.id and not self.request.user.has_perm('team.change_member'):
             return self.instance.country
         else:
             return self.cleaned_data.get('country')
@@ -136,7 +136,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['country'].required = True
         self.fields['gender'].required = True
 
-        if self.instance.id:
+        if self.instance.id and not self.request.user.has_perm('team.change_member'):
             self.fields['first_name'].widget.attrs['readonly'] = True
             self.fields['last_name'].widget.attrs['readonly'] = True
             self.fields['ssn'].widget.attrs['readonly'] = True
@@ -246,7 +246,7 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
                     competition_date__gt=timezone.now())[:1]
             elif competition.competition_date and competition.competition_date > datetime.date.today():
                 next_competition = [competition, ]
-            if next_competition:
+            if next_competition and not self.request.user.has_perm('team.change_member'):
                 next_competition = next_competition[0]
                 button = Submit('submit_pay', _('Pay for %s') % next_competition)
             else:

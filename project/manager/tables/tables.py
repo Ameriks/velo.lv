@@ -18,7 +18,7 @@ from django_tables2_reports.tables import TableReport
 
 
 class ManageTeamTable(GetRequestTableKwargs, tables.Table):
-    # status = LinkColumn('manager:applied_team', args=[A('competition_id'), A('pk')])
+    # status = LinkColumn('manager:edit_team', args=[A('competition_id'), A('pk')])
     apply = tables.Column(verbose_name=" ", empty_values=())
 
     def render_apply(self, record, **kwargs):
@@ -27,9 +27,9 @@ class ManageTeamTable(GetRequestTableKwargs, tables.Table):
         else:
             return ''
 
-    # def render_title(self, record, **kwargs):
-    #     url = reverse('manager:team', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.id})
-    #     return mark_safe('<a href="%s">%s</a>' % (url, record.title))
+    def render_title(self, record, **kwargs):
+        url = reverse('manager:edit_team', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.id})
+        return mark_safe('<a href="%s">%s</a>' % (url, record.title))
 
     class Meta:
         model = Team
@@ -42,10 +42,10 @@ class ManageTeamTable(GetRequestTableKwargs, tables.Table):
 
 
 class ManageTeamApplyTable(GetRequestTableKwargs, tables.Table):
-    # status = LinkColumn('manager:applied_team', args=[A('competition_id'), A('pk')])
+    # status = LinkColumn('manager:edit_team', args=[A('competition_id'), A('pk')])
 
     def render_title(self, record, **kwargs):
-        url = reverse('manager:applied_team', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.id})
+        url = reverse('manager:edit_team', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.id})
         return mark_safe('<a href="%s">%s</a>' % (url, record.title))
 
     class Meta:
@@ -210,17 +210,23 @@ class ManageCompetitionTable(tables.Table):
         # order_by = ("-created")
         per_page = 100
 
-class ManageMemberApplicationTable(TableReport):
+class ManageMemberApplicationTable(GetRequestTableKwargs, tables.Table):
+    title = Column(verbose_name='Team Title', accessor='member.team')
     participant = LinkColumn('manager:participant', args=[A('competition_id'), A('participant.id')], accessor="participant.full_name", verbose_name='Participant')
     unpaid_participant = LinkColumn('manager:participant', args=[A('competition_id'), A('participant_unpaid.id')], accessor="participant_unpaid.full_name", verbose_name='Unpaid Participant')
     potential_participant = LinkColumn('manager:participant', args=[A('competition_id'), A('participant_potential.id')], accessor="participant_potential.full_name", verbose_name=' Potential Participant')
 
+    def render_title(self, record, **kwargs):
+        url = reverse('manager:edit_team', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.member.team_id})
+        return mark_safe('<a href="%s">%s</a>' % (url, record.member.team))
+
     class Meta:
         model = MemberApplication
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("member.team", "member", "kind",)
+        fields = ("member", "kind",)
+        sequence = ('title', 'member', 'kind', 'participant', 'unpaid_participant', 'potential_participant')
         empty_text = _("You haven't added any applied member")
-        order_by = ("member.team", "kind")
+        order_by = ("title", "kind")
         per_page = 100
         template = "bootstrap/table.html"
 

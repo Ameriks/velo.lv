@@ -22,6 +22,7 @@ from payment.models import ActivePaymentChannel, Price
 from payment.utils import create_application_invoice
 from registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
 from results.models import DistanceAdmin, Result, LapResult, UrlSync
+from team.forms import MemberInlineForm, TeamForm
 from team.models import Member, Team, MemberApplication
 from velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin, GetClassNameMixin
 from django.utils.translation import ugettext as _
@@ -350,38 +351,39 @@ class NumberForm(RequestKwargModelFormMixin, forms.ModelForm):
         )
 
 
-class ManageTeamMemberForm(RequestKwargModelFormMixin, forms.ModelForm):
-    kind = forms.ChoiceField(required=False, choices=(('', '------'), (MemberApplication.KIND_PARTICIPANT, 'Ieskaitē'), (MemberApplication.KIND_RESERVE, 'Rezervē')))
+class ManageTeamMemberForm(MemberInlineForm):
     class Meta:
         model = Member
-        fields = ('first_name', 'last_name', 'birthday', 'slug', )
+        fields = ('country', 'ssn', 'first_name', 'last_name', 'id', 'birthday', 'gender', 'status' )
 
-    def save(self, commit=True):
-        obj = super(ManageTeamMemberForm, self).save(commit)
-        if commit:
-            kind = self.cleaned_data.get('kind')
-            if kind:
-                memberappl, created = self.instance.memberapplication_set.get_or_create(competition_id=self.request_kwargs.get('pk'), defaults={'kind': kind})
-                if not created:
-                    memberappl.kind = kind
-                    memberappl.save()
-            else:
-                try:
-                    self.instance.memberapplication_set.get(competition_id=self.request_kwargs.get('pk')).delete()
-                except:
-                    pass
-        return obj
 
     def __init__(self, *args, **kwargs):
         super(ManageTeamMemberForm, self).__init__(*args, **kwargs)
 
-        try:
-            self.fields['kind'].initial = self.instance.memberapplication_set.get(competition_id=self.request_kwargs.get('pk')).kind
-        except:
-            pass
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.template = "bootstrap/velo_table_inline_formset.html"
+        self.helper.template = "bootstrap/velo_whole_uni_formset.html"
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                    Row(
+                        Column('first_name', css_class='col-xs-6 col-sm-2'),
+                        Column('last_name', css_class='col-xs-6 col-sm-3'),
+                        Column('gender', css_class='col-xs-6 col-sm-2'),
+                        Column('country', css_class='col-xs-6 col-sm-2'),
+                        Column('ssn', css_class='col-xs-6 col-sm-3'),
+                        Column('birthday', css_class='col-xs-6 col-sm-3'),
+                        Column('status', css_class='col-xs-6 col-sm-3 pull-right'),
+                    ),
+                    'id',
+                    Div(
+                        Field('DELETE',),
+                        css_class='hidden',
+                    ),
+                    css_class='col-sm-12'
+                ),
+            ),
+        )
 
 
 class ManageLapResultForm(RequestKwargModelFormMixin, forms.ModelForm):
@@ -405,28 +407,48 @@ class ManageLapResultForm(RequestKwargModelFormMixin, forms.ModelForm):
         )
 
 
-class ManageTeamForm(RequestKwargModelFormMixin, forms.ModelForm):
+class ManageTeamForm(TeamForm):
     class Meta:
         model = Team
-        fields = ('title', )
+        fields = (
+        'distance', 'title', 'description', 'img', 'shirt_image', 'country', 'contact_person', 'email', 'phone_number',
+        'management_info', 'is_featured', 'status')
 
     def __init__(self, *args, **kwargs):
-        super(ManageTeamForm, self).__init__(*args, **kwargs)
-
-        self.fields['title'].widget.attrs['readonly'] = True
+        super(TeamForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.layout = Layout(
-            'title',
             Row(
-                Fieldset(
-                    'Komandas biedri',
-                    HTML('{% load crispy_forms_tags %}{% crispy member member.form.helper %}'),
+                Column(
+                    'distance',
+                    'title',
+                    'country',
+                    'is_featured',
+                    'description',
+                    'img',
+                    css_class='col-sm-6'
+                ),
+                Column(
+                    'contact_person',
+                    'email',
+                    'phone_number',
+                    'status',
+                    'management_info',
+                    'shirt_image',
+                    css_class='col-sm-6'
                 ),
             ),
             Row(
-                Column(Submit('submit', 'Saglabāt'), css_class='col-sm-2'),
+                Column(
+                    Fieldset(
+                        'Dalībnieki',
+                        HTML('{% load crispy_forms_tags %}{% crispy member member.form.helper %}'),
+                    ),
+                    css_class='col-xs-12'
+                ),
+                Column(Submit('submit', _('Save')), css_class='col-sm-12'),
             ),
         )
 
