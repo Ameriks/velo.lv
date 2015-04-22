@@ -101,6 +101,10 @@ class ApplicationCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         now = timezone.now()
         competitions = Competition.objects.filter(Q(complex_payment_enddate__gt=now) | Q(price__end_registering__gt=now, price__start_registering__lte=now)).distinct().order_by('complex_payment_enddate', 'competition_date')
+
+        if not self.request.GET.get('all', None):
+            competitions = competitions.exclude(complex_payment_hideon__lt=now)
+
         self.fields['competition'].choices = [(c.id, c) for c in competitions]
 
     def save(self, commit=True):

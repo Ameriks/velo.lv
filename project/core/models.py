@@ -229,6 +229,7 @@ class Competition(MPTTModel):
     kind = models.SmallIntegerField(choices=KINDS, default=KIND_VELO)
 
     complex_payment_enddate = models.DateTimeField(blank=True, null=True)
+    complex_payment_hideon = models.DateTimeField(blank=True, null=True)
     complex_discount = models.SmallIntegerField(default=0)
 
     bill_series = models.CharField(max_length=20, blank=True, default='B')
@@ -250,6 +251,8 @@ class Competition(MPTTModel):
     apply_image = ThumbnailerImageField(upload_to=_get_logo_upload_path, blank=True, )
 
     params = JSONField(blank=True, null=True)
+
+    sms_text = models.CharField(max_length=255, blank=True)
 
     class MPTTMeta:
         order_insertion_by = ['competition_date', 'id']
