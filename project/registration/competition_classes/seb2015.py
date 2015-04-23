@@ -219,10 +219,6 @@ class Seb2015(SEBCompetitionBase):
         if self.competition.level != 2:
             return Exception('We allow creating helper results only for stages.')
 
-        # Calculate stage points only if last stage have finished + 2 days.
-        if self.competition_index > 1:
-            if self.competition.get_previous_sibling().competition_date  + datetime.timedelta(days=2) > datetime.date.today():
-                return False
 
         participants = participants.filter(distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID))
 
@@ -253,7 +249,12 @@ class Seb2015(SEBCompetitionBase):
             return None
 
         for participant in participants:
-            helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant, defaults={'calculated_total': 0})
+            helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
+
+            # Calculate stage points only if last stage have finished + 2 days.
+            if self.competition_index > 1:
+                if self.competition.get_previous_sibling().competition_date  + datetime.timedelta(days=2) > datetime.date.today():
+                    continue
 
             if helper.is_manual:
                 continue # We do not want to overwrite manually created records

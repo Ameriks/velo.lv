@@ -158,8 +158,10 @@ def update_helper_result_table(competition_id, update=False):
     participants = Participant.objects.filter(competition_id__in=competition.get_ids(), is_participating=True).order_by('distance', 'registration_dt')
 
     if not update:
-        participants = participants.filter(helperresults=None)
-
+        participants = participants.extra(
+            where=[
+                "(Select hr1.calculated_total from results_helperresults hr1 where hr1.participant_id=registration_participant.id and hr1.competition_id = %s) is null"
+            ], params=[competition_id, ],)
 
     class_ = load_class(competition.processing_class)
     competition_class = class_(competition=competition)
