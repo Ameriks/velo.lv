@@ -152,7 +152,7 @@ def fetch_results(_id):
 
 
 @task
-def update_helper_result_table(competition_id, update=False):
+def update_helper_result_table(competition_id, update=False, participant_id=None):
     competition = Competition.objects.get(id=competition_id)
 
     participants = Participant.objects.filter(competition_id__in=competition.get_ids(), is_participating=True).order_by('distance', 'registration_dt')
@@ -163,14 +163,20 @@ def update_helper_result_table(competition_id, update=False):
                 "(Select hr1.calculated_total from results_helperresults hr1 where hr1.participant_id=registration_participant.id and hr1.competition_id = %s) is null"
             ], params=[competition_id, ],)
 
-    class_ = load_class(competition.processing_class)
-    competition_class = class_(competition=competition)
+    if participant_id:
+        participants = participants.filter(id=participant_id)
 
-    competition_class.create_helper_results(participants)
+    if participants:
+        class_ = load_class(competition.processing_class)
+        competition_class = class_(competition=competition)
+
+        competition_class.create_helper_results(participants)
 
 
-@periodic_task(run_every=crontab(minute="*/11", ))
-def master_update_helper_result_table(update=False):
-    competitions = Competition.objects.filter(competition_date__gte=(timezone.now() - datetime.timedelta(days=1))).exclude(participant=None)
+@periodic_task(run_every=crontab(minute="2", ))
+def master_update_helper_result_table(update=False, participant_id=None):
+    competitions = Competition.objects.filter(competition_date__gte=(timezone.now() - datetime.timedelta(days=1)))\
+        .exclude(participant=None)\
+        .exclude(competition_date__lte=datetime.date.today())
     for competition in competitions:
-        update_helper_result_table(competition_id=competition.id, update=update)
+        update_helper_result_table(competition_id=competition.id, update=update, participant_id=participant_id)

@@ -7,6 +7,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 import uuid
+from save_the_change.mixins import SaveTheChange
 from core.models import Choices, CustomSlug
 from payment.models import Payment
 from registration.utils import recalculate_participant
@@ -73,7 +74,7 @@ class Application(TimestampMixin, models.Model):
         self.set_final_price()
         return super(Application, self).save(*args, **kwargs)
 
-class Participant(TimestampMixin, models.Model):
+class Participant(SaveTheChange, TimestampMixin, models.Model):
     GENDER_CHOICES = (
         ('M', _('Male')),
         ('F', _('Female')),
@@ -220,7 +221,15 @@ class Participant(TimestampMixin, models.Model):
         # Recalculate totals. # TODO: This should be done when creating payment, not on any save.
         recalculate_participant(self, commit=False)
 
+        is_participating_changed = False
+        if 'is_participating' in self._changed_fields and self.is_participating:
+            is_participating_changed = True
+
         obj = super(Participant, self).save(*args, **kwargs)
+
+        if is_participating_changed:
+            from results.tasks import master_update_helper_result_table
+            master_update_helper_result_table.delay(participant_id=self.id)
 
         if old_slug != self.slug:
             from team.utils import match_participant_to_applied

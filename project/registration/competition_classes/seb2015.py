@@ -282,6 +282,7 @@ class Seb2015(SEBCompetitionBase):
 
                     helper.result_used = standing
                 else:
+                    helper.calculated_total = 0.0
                     matches = get_close_matches(participant.slug, prev_slugs)
                     if matches:
                         helper.matches_slug = matches[0]
@@ -298,14 +299,15 @@ class Seb2015(SEBCompetitionBase):
                         total_points += points
                     else:
                         skipped_count += 1
-
-                helper.calculated_total = total_points / participated_count
-                if skipped_count == 1:
-                    helper.calculated_total /= 1.15
-                elif skipped_count == 2:
-                    helper.calculated_total /= 1.25
-                elif skipped_count > 2:
-                    helper.calculated_total = total_points / (participated_count + (skipped_count - 2))
-
+                if participated_count:
+                    helper.calculated_total = total_points / participated_count
+                    if skipped_count == 1:
+                        helper.calculated_total /= 1.15
+                    elif skipped_count == 2:
+                        helper.calculated_total /= 1.25
+                    elif skipped_count > 2:
+                        helper.calculated_total = total_points / (participated_count + (skipped_count - 2))
+                else:
+                    helper.calculated_total = 0.0
 
             helper.save()
