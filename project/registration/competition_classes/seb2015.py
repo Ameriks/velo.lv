@@ -85,7 +85,6 @@ class Seb2015(SEBCompetitionBase):
 
                 # In 1.stage 10 girls and 50 women that are not in first 3 passages will be assigned to 4.passage
                 if passage_nr == 4 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
-                    import pdb; pdb.set_trace()
                     girls = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('W-16', 'T W-18')).order_by('-calculated_total')[0:10]
                     for _ in girls:
                         _.passage_assigned = passage_nr

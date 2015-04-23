@@ -477,6 +477,28 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
             ),
         }
 
+    def clean(self):
+        super(ParticipantIneseCreateForm, self).clean()
+
+        distance = self.cleaned_data.get('distance')
+        gender = self.cleaned_data.get('gender')
+        birthday = self.cleaned_data.get('birthday')
+
+        if distance and gender and birthday:
+
+            try:
+                competition = Competition.objects.get(id=self.request_kwargs.get('pk'))
+                if competition.processing_class:
+                    class_ = load_class(competition.processing_class)
+                    processing_class = class_(competition.id)
+                    processing_class.assign_group(distance.id, gender, birthday)
+
+            except:
+                self._errors.update({'distance': ['Dalībnieks nevar startēt šajā distancē.', ]})
+
+        return self.cleaned_data
+
+
     def __init__(self, *args, **kwargs):
         super(ParticipantIneseCreateForm, self).__init__(*args, **kwargs)
 
@@ -600,6 +622,30 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
         js = ('plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js')
 
 
+    def clean(self):
+        super(ParticipantCreateForm, self).clean()
+
+        distance = self.cleaned_data.get('distance')
+        gender = self.cleaned_data.get('gender')
+        birthday = self.cleaned_data.get('birthday')
+
+        if distance and gender and birthday:
+
+            try:
+                competition = Competition.objects.get(id=self.request_kwargs.get('pk'))
+                if competition.processing_class:
+                    class_ = load_class(competition.processing_class)
+                    processing_class = class_(competition.id)
+                    processing_class.assign_group(distance.id, gender, birthday)
+
+            except:
+                self._errors.update({'distance': ['Dalībnieks nevar startēt šajā distancē.', ]})
+
+        return self.cleaned_data
+
+
+
+
     def save(self, commit=True):
         # If this is new record, then create slug.
         if not self.instance.id:
@@ -640,6 +686,9 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
         self.fields['gender'].required = True
         self.fields['country'].required = True
         self.fields['birthday'].required = True
+        self.fields['last_name'].required = True
+        self.fields['first_name'].required = True
+        self.fields['distance'].required = True
 
         self.helper = FormHelper()
         self.helper.form_tag = True
