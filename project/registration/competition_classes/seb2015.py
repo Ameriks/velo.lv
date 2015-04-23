@@ -1,6 +1,8 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from difflib import get_close_matches
+import datetime
+from django.utils import timezone
 from registration.competition_classes.base import SEBCompetitionBase
 from registration.models import Application, ChangedName, PreNumberAssign
 from django import forms
@@ -216,6 +218,11 @@ class Seb2015(SEBCompetitionBase):
     def create_helper_results(self, participants):
         if self.competition.level != 2:
             return Exception('We allow creating helper results only for stages.')
+
+        # Calculate stage points only if last stage have finished + 2 days.
+        if self.competition_index > 1:
+            if self.competition.get_previous_sibling().competition_date  + datetime.timedelta(days=2) > datetime.date.today():
+                return False
 
         participants = participants.filter(distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID))
 
