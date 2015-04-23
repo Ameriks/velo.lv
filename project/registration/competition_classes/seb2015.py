@@ -2,10 +2,10 @@
 from __future__ import unicode_literals
 from difflib import get_close_matches
 from registration.competition_classes.base import SEBCompetitionBase
-from registration.models import Application, ChangedName
+from registration.models import Application, ChangedName, PreNumberAssign
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
-from registration.tables import ParticipantTableWithResult, ParticipantTable, ParticipantTableBase
+from registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
 from results.models import SebStandings, HelperResults
 
 
@@ -18,6 +18,83 @@ class Seb2015(SEBCompetitionBase):
     BERNU_DISTANCE_ID = 39
 
     STAGES_COUNT = 7
+
+    def number_ranges(self):
+        """
+        Returns number ranges for each distance.
+        """
+        return {
+            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 500, 'end': 3500, 'group': ''}, ],
+            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
+        }
+
+    @property
+    def passages(self):
+        return {
+            # Passage, participant count, reserve
+            self.SPORTA_DISTANCE_ID: [
+                (1, 50, 0),
+                (2, 50, 0),
+                (3, 100, 0),
+                (4, 100, 0),
+                (5, 100, 0),
+                (6, 100, 0)],
+            self.TAUTAS_DISTANCE_ID: [
+                (1,  50,  0),
+                (2,  50,  0),
+                (3,  100, 0),
+                (4,  100, 10),
+                (5,  200, 20),
+                (6,  200, 0),
+                (7,  200, 0),
+                (8,  200, 0),
+                (9,  200, 0),
+                (10, 200, 0),
+                (11, 200, 0),
+                (12, 200, 0),
+                (13, 200, 0),
+                (14, 200, 0),
+                (15, 200, 0),
+                ],
+        }
+
+
+    def assign_passage(self, reset=False):
+        if reset:
+            HelperResults.objects.filter(competition=self.competition).update(passage_assigned=None)
+
+        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None).order_by('-calculated_total')
+            for passage_nr, total, passage_extra in self.passages.get(distance_id):
+                specials = [obj.participant_slug for obj in PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).filter(segment=passage_nr)]
+                # Assign passage for specials
+                HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, participant__slug__in=specials, passage_assigned=None).update(passage_assigned=passage_nr)
+                places = total - len(specials) - passage_extra + 1
+
+                for result in helperresults[0:places]:
+                    result.passage_assigned = passage_nr
+                    result.save()
+
+                # Exceptions
+
+                # In 1.stage all women will be starting from 3.passage (except those with better results and already in better passage)
+                if passage_nr == 3 and self.competition_index == 1 and distance_id == self.SPORTA_DISTANCE_ID:
+                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__gender='F').order_by('-calculated_total')
+                    women.update(passage_assigned=passage_nr)
+
+                # In 1.stage 10 girls and 50 women that are not in first 3 passages will be assigned to 4.passage
+                if passage_nr == 4 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
+                    import pdb; pdb.set_trace()
+                    girls = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('W-16', 'T W-18')).order_by('-calculated_total')[0:10]
+                    for _ in girls:
+                        _.passage_assigned = passage_nr
+                        _.save()
+                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('T W', 'T W-35', 'T W-45')).order_by('-calculated_total')[0:50]
+                    for _ in women:
+                        _.passage_assigned = passage_nr
+                        _.save()
+
 
     @property
     def groups(self):
@@ -42,7 +119,11 @@ class Seb2015(SEBCompetitionBase):
 
     def get_startlist_table_class(self, distance=None):
         if distance.id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
-            return ParticipantTableWithResult
+            are_passages_assigned = HelperResults.objects.filter(competition=self.competition).exclude(passage_assigned=None).count()
+            if are_passages_assigned:
+                return ParticipantTableWithPassage
+            else:
+                return ParticipantTableWithPoints
         elif distance.id == self.VESELIBAS_DISTANCE_ID:
              return ParticipantTableBase
         else:
@@ -144,8 +225,6 @@ class Seb2015(SEBCompetitionBase):
 
         # used for matching similar participants (grammar errors)
         prev_slugs = [obj.participant_slug for obj in SebStandings.objects.filter(competition=prev_competition)]
-        current_slugs = [obj.participant_slug for obj in SebStandings.objects.filter(competition=current_competition)]
-
 
         def get_prev_standing(participant):
             standings = SebStandings.objects.filter(competition=prev_competition, participant_slug=participant.slug).order_by('-distance_total')

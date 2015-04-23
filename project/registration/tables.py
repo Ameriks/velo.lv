@@ -74,12 +74,20 @@ class ParticipantTable(ParticipantTableBase):
 
 
 
-class ParticipantTableWithResult(ParticipantTable):
-    calc_result = tables.Column(verbose_name=_('Points'), accessor='calculated_total')
+class ParticipantTableWithPoints(ParticipantTable):
+    calculated_total = tables.Column(verbose_name=_('Points'), accessor='calculated_total')
 
     class Meta(ParticipantTable.Meta):
-        sequence = ("calc_result", "primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2',)
-        order_by = ("-calc_result", "primary_number")
+        sequence = ("calculated_total", "primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2',)
+        order_by = ("-calculated_total", "primary_number")
+
+
+class ParticipantTableWithPassage(ParticipantTable):
+    passage_assigned = tables.Column(verbose_name=_('Passage'), accessor='passage_assigned')
+
+    class Meta(ParticipantTable.Meta):
+        sequence = ("passage_assigned", "primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2',)
+        order_by = ("passage_assigned", "primary_number")
 
 
 

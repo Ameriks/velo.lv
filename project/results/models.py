@@ -333,7 +333,7 @@ class TeamResultStandings(SaveTheChange, models.Model):
 
 class HelperResults(SaveTheChange, TimestampMixin, models.Model):
     """
-    This is helper table to calculate number and stage assigning for participants.
+    This is helper table to calculate number and passage assigning for participants.
     """
     competition = models.ForeignKey('core.Competition')
     participant = models.ForeignKey('registration.Participant')
@@ -344,7 +344,7 @@ class HelperResults(SaveTheChange, TimestampMixin, models.Model):
 
     calculated_total = models.FloatField(blank=True, null=True)
 
-    stage_assigned = models.IntegerField(blank=True, null=True)
+    passage_assigned = models.IntegerField(blank=True, null=True)
 
     is_manual = models.BooleanField(default=False)  # Manually added records will not be overwritten
 

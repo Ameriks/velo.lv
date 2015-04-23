@@ -65,7 +65,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
         queryset = queryset.annotate(Count('helperresults')).extra(
                 select={
                     'calculated_total': 'results_helperresults.calculated_total',
-                    'stage_assigned': 'results_helperresults.stage_assigned',
+                    'passage_assigned': 'results_helperresults.passage_assigned',
                     },
                 where=["(results_helperresults.competition_id = %s OR results_helperresults.competition_id is null)"],
                 params=[self.competition.id, ]
