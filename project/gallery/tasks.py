@@ -1,3 +1,5 @@
+# coding=utf-8
+from __future__ import unicode_literals
 from celery import task
 from django.conf import settings
 from easy_thumbnails.files import generate_all_aliases
@@ -92,3 +94,43 @@ def get_video_info(_id):
                     video.status = 1
 
     video.save()
+
+
+
+@task
+def refresh_view_count(_id):
+    from gallery.models import Video
+    videos = Video.objects.filter(status=1)
+
+    YOUTUBE_API_SERVICE_NAME = "youtube"
+    YOUTUBE_API_VERSION = "v3"
+
+    storage = Storage("gallery/youtube-oauth2.json")
+    credentials = storage.get()
+
+    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+      http=credentials.authorize(httplib2.Http()))
+
+    v = vimeo.VimeoClient(token=settings.VIMEO_TOKEN, key=settings.VIMEO_KEY, secret=settings.VIMEO_SECRET)
+
+    for video in videos:
+        if video.kind == 1: # youtube
+            video_response = youtube.videos().list(
+                id=video.video_id,
+                part='statistics'
+              ).execute()
+            item = video_response.get('items')[0]
+            video.view_count = int(item.get('statistics').get('viewCount'))
+
+            # TODO: Add YOUTUBE VIDEO Availability checker
+
+        elif video.kind == 2: # vimeo
+            video_response = v.get('/videos/%s' % video.video_id)
+            if video_response.status_code == 200:
+                item = video_response.json()
+                video.view_count = int(item.get('stats').get('plays'))
+                if item.get('status') != 'available':
+                    video.status = 0
+            elif video_response.status_code == 404:
+                video.status = 0
+        video.save()

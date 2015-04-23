@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 # This is migration script from www.velo.lv to mans.velo.lv.
 # Migration was online, so that in migration beginning participants could register in both sites - www.velo.lv and
 # mans.velo.lv.
+import csv
 
 from django.core.files.base import ContentFile
 import hashlib
@@ -17,10 +18,11 @@ from core.models import User, Choices, Competition, Distance, Insurance, CustomS
 from Crypto.Cipher import AES
 from django.conf import settings
 from social.apps.django_app.default.models import UserSocialAuth
+from manager.models import TempDocument
 
 from payment.models import Price, DiscountCode, Payment, DiscountCampaign
 from registration.models import Application, Participant
-from results.models import LegacySEBStandingsResult, LegacyResult
+from results.models import LegacySEBStandingsResult, LegacyResult, HelperResults
 from team.models import Team, Member, MemberApplication
 import os
 riga_tz = pytz.timezone("Europe/Riga")
@@ -837,3 +839,53 @@ def full_sync():
     sync_insurance()
     sync_participants()
     sync_teams_and_members()
+
+
+
+def check_previous_results():
+    with open('check_previous_results.csv', 'wb') as file_obj:
+        no_results = HelperResults.objects.filter(competition_id=39, calculated_total=0.0).select_related('participant')
+        wrt = csv.writer(file_obj)
+        wrt.writerow(['SLUG', 'YEAR', 'PLACE', 'PASSAGE'])
+        for result in no_results:
+            passage = None
+            res = Ev68RVeloResultsSebTotal.objects.filter(alias=result.participant.slug, competition_id__in=(12, 28)).order_by('-competition_id')
+            if res:
+                res = res[0]
+                if res.competition_id == 28:
+                    year = 2013
+                    if res.d_place <= 50:
+                        passage = 3
+                    elif res.d_place <= 100:
+                        passage = 4
+                    elif res.d_place <= 200:
+                        passage = 4
+                    elif res.d_place <= 300:
+                        passage = 5
+                    elif res.d_place <= 500:
+                        passage = 6
+                    elif res.d_place <= 700:
+                        passage = 7
+                    elif res.d_place <= 900:
+                        passage = 8
+                    elif res.d_place <= 1000:
+                        passage = 9
+                elif res.competition_id == 12:
+                    year = 2012
+                    if res.d_place <= 50:
+                        passage = 4
+                    elif res.d_place <= 100:
+                        passage = 5
+                    elif res.d_place <= 200:
+                        passage = 5
+                    elif res.d_place <= 300:
+                        passage = 6
+                    elif res.d_place <= 500:
+                        passage = 7
+                    elif res.d_place <= 700:
+                        passage = 8
+                    elif res.d_place <= 900:
+                        passage = 9
+
+                if year and passage:
+                    wrt.writerow([result.participant.slug.encode('utf-8'), str(year), str(res.d_place), str(passage)])
