@@ -215,6 +215,9 @@ class Seb2015(SEBCompetitionBase):
 
         for participant in participants:
             helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
+            
+            if participant.distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+                continue
 
             # Calculate stage points only if last stage have finished + 2 days.
             if self.competition_index > 1:
