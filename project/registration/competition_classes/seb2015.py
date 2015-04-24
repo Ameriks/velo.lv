@@ -62,41 +62,6 @@ class Seb2015(SEBCompetitionBase):
         }
 
 
-    def assign_passage(self, reset=False):
-        if reset:
-            HelperResults.objects.filter(competition=self.competition).update(passage_assigned=None)
-
-        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
-            helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None).order_by('-calculated_total')
-            for passage_nr, total, passage_extra in self.passages.get(distance_id):
-                specials = [obj.participant_slug for obj in PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).filter(segment=passage_nr)]
-                # Assign passage for specials
-                HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, participant__slug__in=specials, passage_assigned=None).update(passage_assigned=passage_nr)
-                places = total - len(specials) - passage_extra + 1
-
-                for result in helperresults[0:places]:
-                    result.passage_assigned = passage_nr
-                    result.save()
-
-                # Exceptions
-
-                # In 1.stage all women will be starting from 3.passage (except those with better results and already in better passage)
-                if passage_nr == 3 and self.competition_index == 1 and distance_id == self.SPORTA_DISTANCE_ID:
-                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__gender='F').order_by('-calculated_total')
-                    women.update(passage_assigned=passage_nr)
-
-                # In 1.stage 10 girls and 50 women that are not in first 3 passages will be assigned to 4.passage
-                if passage_nr == 4 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
-                    girls = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('W-16', 'T W-18')).order_by('-calculated_total')[0:10]
-                    for _ in girls:
-                        _.passage_assigned = passage_nr
-                        _.save()
-                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('T W', 'T W-35', 'T W-45')).order_by('-calculated_total')[0:50]
-                    for _ in women:
-                        _.passage_assigned = passage_nr
-                        _.save()
-
-
     @property
     def groups(self):
         """
@@ -220,7 +185,7 @@ class Seb2015(SEBCompetitionBase):
             return Exception('We allow creating helper results only for stages.')
 
 
-        participants = participants.filter(distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID))
+        # participants = participants.filter(distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID))
 
         current_competition = self.competition.parent
         prev_competition = current_competition.get_previous_sibling()

@@ -12,7 +12,7 @@ from registration.models import Number, Participant, PreNumberAssign
 from django.core.cache import cache
 from registration.tables import ParticipantTable
 from results.helper import time_to_seconds
-from results.models import Result, DistanceAdmin, ChipScan, SebStandings, TeamResultStandings, LapResult
+from results.models import Result, DistanceAdmin, ChipScan, SebStandings, TeamResultStandings, LapResult, HelperResults
 from results.tables import ResultChildrenGroupTable, ResultGroupTable, ResultDistanceTable, \
     ResultChildrenGroupStandingTable, ResultGroupStandingTable, ResultDistanceStandingTable, ResultRMGroupTable, \
     ResultRMSportsDistanceTable, ResultRMTautaDistanceTable
@@ -470,34 +470,76 @@ class SEBCompetitionBase(CompetitionScriptBase):
                     result.result_group = index
                     result.save()
 
+
+
+    def assign_passage(self, reset=False):
+        if self.competition.level != 2:
+            return Exception('We allow assigning passages only for stages.')
+
+        if reset:
+            HelperResults.objects.filter(competition=self.competition).update(passage_assigned=None)
+
+        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None).select_related('participant').order_by('-calculated_total', 'participant__registration_dt')
+            for passage_nr, total, passage_extra in self.passages.get(distance_id):
+                specials = [obj.participant_slug for obj in PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).filter(segment=passage_nr)]
+                # Assign passage for specials
+                HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, participant__slug__in=specials, passage_assigned=None).update(passage_assigned=passage_nr)
+                places = total - len(specials) - passage_extra + 1
+
+                for result in helperresults[0:places]:
+                    result.passage_assigned = passage_nr
+                    result.save()
+
+                # Exceptions
+
+                # In 1.stage all women will be starting from 3.passage (except those with better results and already in better passage)
+                if passage_nr == 3 and self.competition_index == 1 and distance_id == self.SPORTA_DISTANCE_ID:
+                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__gender='F').order_by('-calculated_total', 'participant__registration_dt')
+                    women.update(passage_assigned=passage_nr)
+
+                # In 1.stage 10 girls and 50 women that are not in first 3 passages will be assigned to 4.passage
+                if passage_nr == 4 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
+                    girls = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('W-16', 'T W-18')).order_by('-calculated_total', 'participant__registration_dt')[0:10]
+                    for _ in girls:
+                        _.passage_assigned = passage_nr
+                        _.save()
+                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('T W', 'T W-35', 'T W-45')).order_by('-calculated_total', 'participant__registration_dt')[0:50]
+                    for _ in women:
+                        _.passage_assigned = passage_nr
+                        _.save()
+
+
     def assign_numbers_continuously(self):
         self.assign_numbers(reassign=False, assign_special=False)
 
 
     def assign_numbers(self, reassign=False, assign_special=False):
+
+        if self.competition.level != 2:
+            return Exception('We allow assigning numbers only for stages.')
+
         if reassign:
             Number.objects.filter(competition_id__in=self.competition.get_ids()).update(participant_slug='', number_text='')
-            Participant.objects.filter(competition=self.competition, is_participating=True).update(primary_number=None)
+            Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True).update(primary_number=None)
 
-        if self.competition.level == 2:
-            parent_competition = self.competition.parent
-        else:
-            parent_competition = self.competition
+        parent_competition = self.competition.parent
 
         if assign_special:
             # first assign special numbers
-            pre_numbers = PreNumberAssign.objects.filter(competition=parent_competition).exclude(number=None)
+            pre_numbers = PreNumberAssign.objects.filter(competition_id__in=self.competition.get_ids()).exclude(number=None)
             for nr in pre_numbers:
-                number = Number.objects.get(number=nr.number, competition=parent_competition)
+                number = Number.objects.get(number=nr.number, competition=parent_competition, distance=nr.distance)
                 print "%s - %s" % (number, nr.participant_slug)
                 number.participant_slug = nr.participant_slug
                 number.save()
+                Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance=number.distance, slug=number.participant_slug).update(primary_number=number)
 
-        print 'XXXXXXXXXXXX'
-        # And now all others
 
-        participants = Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.BERNU_DISTANCE_ID), primary_number=None).order_by('created')
-        for participant in participants:
+        helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.BERNU_DISTANCE_ID), participant__is_participating=True, participant__primary_number=None).select_related('participant').order_by('participant__distance_id', '-calculated_total', 'participant__registration_dt')
+
+        for result in helperresults:
+            participant = result.participant
             group = self.get_group_for_number_search(participant.distance_id, participant.gender, participant.birthday)
             try:
                 number = Number.objects.get(participant_slug=participant.slug, distance=participant.distance, group=group)
@@ -505,10 +547,9 @@ class SEBCompetitionBase(CompetitionScriptBase):
                     participant.primary_number = number
                     participant.save()
             except:
-                next_numbers = Number.objects.filter(participant_slug='', distance=participant.distance, group=group).order_by('number')
-                next_number = next_numbers[0]
+                next_number = Number.objects.filter(participant_slug='', distance=participant.distance, group=group).order_by('number')[0]
                 next_number.participant_slug = participant.slug
-                next_number.number_text = str(participant.created)
+                next_number.number_text = str(participant.registration_dt)
                 print "%s - %s" % (next_number, participant.slug)
                 next_number.save()
                 participant.primary_number = next_number

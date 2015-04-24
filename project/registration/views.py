@@ -61,15 +61,13 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
 
         queryset = queryset.select_related('competition', 'distance', 'team', 'primary_number')
 
-        # Workaround to create outer join with additional ON statement workaround
         if self.competition.id in (38, 39, 40, 41, 42, 43, 44, 45):
-            queryset = queryset.annotate(Count('helperresults')).extra(
+            queryset = queryset.filter(helperresults__competition_id = self.competition.id)
+            queryset = queryset.extra(
                     select={
                         'calculated_total': 'results_helperresults.calculated_total',
                         'passage_assigned': 'results_helperresults.passage_assigned',
                         },
-                    where=["(results_helperresults.competition_id = %s)"],
-                    params=[self.competition.id, ]
                 )
 
         # if self.competition.id == 34:
