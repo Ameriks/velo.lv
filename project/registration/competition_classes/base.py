@@ -536,7 +536,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
                 Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance=number.distance, slug=number.participant_slug).update(primary_number=number)
 
 
-        helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.BERNU_DISTANCE_ID), participant__is_participating=True, participant__primary_number=None).select_related('participant').order_by('participant__distance_id', '-calculated_total', 'participant__registration_dt')
+        helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.BERNU_DISTANCE_ID), participant__is_participating=True, participant__primary_number=None).select_related('participant').order_by('participant__distance', '-calculated_total', 'participant__registration_dt')
 
         for result in helperresults:
             participant = result.participant

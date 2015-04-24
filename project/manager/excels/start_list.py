@@ -8,7 +8,7 @@ import StringIO
 from core.models import Competition
 from payment.models import Payment
 from registration.models import Participant, Number, Application
-from results.models import Result, SebStandings
+from results.models import Result, SebStandings, HelperResults
 
 riga_tz = pytz.timezone("Europe/Riga")
 
@@ -97,6 +97,7 @@ def create_start_list(competition=None, competition_id=None):
         raise Exception('Expected at least one variable')
     if not competition:
         competition = Competition.objects.get(id=competition_id)
+
     root_competition = competition.get_root()
 
     output = StringIO.StringIO()
@@ -106,54 +107,25 @@ def create_start_list(competition=None, competition_id=None):
 
     for distance in distances:
         sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
-        slugs = []
-        items = distance.participant_set.filter(competition_id__in=competition.get_ids(),
-                                                is_participating=True).select_related('competition', 'distance',
-                                                                                      'price', 'primary_number').order_by('distance', 'primary_number__group', 'primary_number__number', 'registration_dt')
-        if root_competition.id == 1: # SEB
-            prev = competition.get_previous_sibling()
-            if prev:
-                slugs = [obj.participant_slug for obj in SebStandings.objects.filter(competition=competition.parent.id, distance=distance)]
 
-                if distance.id == 27:
-                    select = 'group_place'
-                else:
-                    select = 'distance_place'
-
-                items = items.extra(
-                    select={
-                        'last_result_distance': "SELECT r."+select+" FROM results_sebstandings r WHERE r.competition_id=%s and r.participant_slug=registration_participant.slug and r.distance_id=registration_participant.distance_id",
-                    },
-                    select_params=(competition.parent.id, ),
-                )
-
-                items = items.extra(
-                    select={
-                        'comp_count': "Select count(*) from registration_participant p_count left outer join core_competition cc_count on p_count.competition_id = cc_count.id WHERE p_count.slug = registration_participant.slug and p_count.is_participating is True and (cc_count.id = %s or cc_count.parent_id = %s) AND cc_count.id <> %s"
-                    },
-                    select_params=(competition.parent.id, competition.parent.id, competition.id),
-                )
-        elif competition.id == 35:
-            items = items.extra(
-                select={
-                    'last_result_distance': "SELECT min(r.result_distance) FROM results_legacyresult r WHERE r.participant_2014_id=registration_participant.id and r.distance_id = registration_participant.distance_id order by r.result_distance LIMIT 1",
-                },
-            )
+        helperresults = HelperResults.objects.filter(competition=competition, participant__distance=distance, participant__is_participating=True).select_related('participant', 'participant__competition', 'participant__distance', 'participant__application',
+                                                                                      'participant__price', 'participant__primary_number').order_by('participant__distance', 'participant__primary_number__group', 'participant__primary_number__number', 'participant__registration_dt')
 
         row = 4
         header_row = (
             '#', 'UID', 'Numurs', 'Alias', 'Sacensības', 'Distance', 'Uzvārds', 'Vārds', 'Dzimšanas diena', 'Dzimums',
-            'Grupa', 'Dalības maksa', 'Apdrošināšanas maksa', 'Kopā samaksāts', 'Atlaižu kods', 'E-pasts', 'Telefons', 'Valsts', 'Komanda', 'Velo', 'Izveidots', 'Rezultāts', 'Pieteicies citām sacensibas')
+            'Grupa', 'Dalības maksa', 'Apdrošināšanas maksa', 'Kopā samaksāts', 'Atlaižu kods', 'E-pasts', 'Telefons', 'Valsts', 'Komanda', 'Velo', 'Izveidots', 'Punkti', 'Koridors')
         for col, value in enumerate(header_row):
             sheet.write(row, col, value)
 
         row = 5
-        for index, item in enumerate(items, start=1):
+        for index, res in enumerate(helperresults, start=1):
+            item = res.participant
             total_entry_fee = item.total_entry_fee
             total_insurance_fee = item.total_insurance_fee
             final_price = item.final_price
 
-            if item.competition.get_root().id == 1 and item.competition.level == 1:
+            if root_competition.id == 1 and item.competition.level == 1:
                 child_count = item.competition.get_children().count()
                 total_entry_fee = total_entry_fee / child_count
                 total_insurance_fee = total_insurance_fee / child_count
@@ -164,21 +136,7 @@ def create_start_list(competition=None, competition_id=None):
                 index, item.id, unicode(item.primary_number), item.slug, unicode(item.competition), unicode(item.distance), item.last_name,
                 item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, total_entry_fee, total_insurance_fee, final_price,
                 unicode(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand2) if item.bike_brand2 else '',
-                item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"))
-
-            if root_competition.id == 1:
-                if hasattr(item, 'last_result_distance') and getattr(item, 'last_result_distance', None):
-                    row_values += (item.last_result_distance, )
-                else:
-                    row_values += ('', )
-
-                if hasattr(item, 'comp_count'):
-                    row_values += (item.comp_count, )
-            elif competition.id == 35:
-                if hasattr(item, 'last_result_distance') and getattr(item, 'last_result_distance', None):
-                    row_values += (item.last_result_distance, )
-                else:
-                    row_values += ('', )
+                item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res.calculated_total, res.passage_assigned)
 
             for col, value in enumerate(row_values):
                 sheet.write(row, col, value)

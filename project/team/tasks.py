@@ -9,12 +9,16 @@ from team.models import MemberApplication
 
 
 @task
-def match_team_members_to_participants(competition_id):
+def match_team_members_to_participants(competition_id, participant_id=None, participant=None):
     competition = Competition.objects.get(id=competition_id)
 
     if MemberApplication.objects.filter(competition=competition).count() == 0:
         return False
 
+    if participant_id:
+        participant = Participant.objects.get(id=participant_id)
+
+    # Cleanup
     # If participant have been inactivated, then we should remove it from team as well
     members = MemberApplication.objects.filter(competition=competition, participant__is_participating=False)
     for member in members:
@@ -26,6 +30,9 @@ def match_team_members_to_participants(competition_id):
     slugs = None
 
     members = MemberApplication.objects.filter(competition=competition, participant=None).select_related('member', 'member__team', 'member__team__distance')
+
+    if participant:
+        members = members.filter(member__slug=participant.slug)
 
     for member in members:
         if member.participant_unpaid and member.participant_unpaid.is_participating:
@@ -74,8 +81,9 @@ def check_participant_team_is_filled(competition_id):
 
 
 @periodic_task(run_every=crontab(minute="4", ))
-def master_match_team_members_to_participants():
+def master_match_team_members_to_participants(participant_id=None):
     competitions = Competition.objects.filter(competition_date__gte=(timezone.now() - datetime.timedelta(days=1))).exclude(participant=None)
     for competition in competitions:
-        match_team_members_to_participants(competition_id=competition.id)
-        check_participant_team_is_filled(competition_id=competition.id)
+        match_team_members_to_participants(competition_id=competition.id, participant_id=participant_id)
+        if not participant_id:
+            check_participant_team_is_filled(competition_id=competition.id)
