@@ -342,9 +342,9 @@ class HelperResults(SaveTheChange, TimestampMixin, models.Model):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     result_used = generic.GenericForeignKey('content_type', 'object_id')  # Can be standing or result
 
-    calculated_total = models.FloatField(blank=True, null=True)
+    calculated_total = models.FloatField(blank=True, null=True, db_index=True)
 
-    passage_assigned = models.IntegerField(blank=True, null=True)
+    passage_assigned = models.IntegerField(blank=True, null=True, db_index=True)
 
     is_manual = models.BooleanField(default=False)  # Manually added records will not be overwritten
 
