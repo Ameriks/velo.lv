@@ -27,7 +27,7 @@ class Seb2015(SEBCompetitionBase):
         """
         return {
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
-            self.TAUTAS_DISTANCE_ID: [{'start': 500, 'end': 3500, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3500, 'group': ''}, ],
             self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
         }
 
