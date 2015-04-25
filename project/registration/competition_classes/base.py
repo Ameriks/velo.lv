@@ -464,8 +464,8 @@ SET
 FROM
 (
 Select res.id, result_distance, res.competition_id, res.time, p.is_competing,
-row_number() OVER (PARTITION BY nr.distance_id ORDER BY nr.distance_id, res.status, res.time) as distance_row_nr,
-row_number() OVER (PARTITION BY nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time) as group_row_nr
+row_number() OVER (PARTITION BY nr.distance_id ORDER BY nr.distance_id, res.status, res.time, res.id) as distance_row_nr,
+row_number() OVER (PARTITION BY nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time, res.id) as group_row_nr
 FROM results_result As res
 INNER JOIN registration_number nr ON res.number_id = nr.id
 INNER JOIN registration_participant p ON res.participant_id = p.id

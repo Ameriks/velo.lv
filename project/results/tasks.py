@@ -155,6 +155,7 @@ def fetch_results(_id):
             finally:
                 scan.save()
             process_chip_result.delay(scan.id)
+            # processing_class.process_chip_result(scan.id)
 
         url_data.current_line = len(file_lines)
         url_data.save()
