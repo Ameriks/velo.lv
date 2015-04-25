@@ -46,8 +46,8 @@ class Seb2015(SEBCompetitionBase):
                 (1,  50,  0),
                 (2,  50,  0),
                 (3,  100, 0),
-                (4,  100, 10),
-                (5,  200, 20),
+                (4,  100, 0),
+                (5,  200, 30),
                 (6,  200, 0),
                 (7,  200, 0),
                 (8,  200, 0),
@@ -79,7 +79,8 @@ class Seb2015(SEBCompetitionBase):
         """
         return {
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
-            self.TAUTAS_DISTANCE_ID: [{'start': 500, 'end': 3500, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3300, 'group': ''}, ],
+            self.VESELIBAS_DISTANCE_ID: [{'start': 4000, 'end': 4200, 'group': ''}, ],
             self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
         }
 
@@ -90,8 +91,6 @@ class Seb2015(SEBCompetitionBase):
                 return ParticipantTableWithPassage
             else:
                 return ParticipantTableWithPoints
-        elif distance.id == self.VESELIBAS_DISTANCE_ID:
-             return ParticipantTableBase
         else:
             return ParticipantTable
 

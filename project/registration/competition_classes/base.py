@@ -485,7 +485,10 @@ class SEBCompetitionBase(CompetitionScriptBase):
                 specials = [obj.participant_slug for obj in PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).filter(segment=passage_nr)]
                 # Assign passage for specials
                 HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, participant__slug__in=specials, passage_assigned=None).update(passage_assigned=passage_nr)
-                places = total - len(specials) - passage_extra + 1
+
+                specials_not_vip_count = PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).filter(segment=passage_nr).exclude(description__icontains='vip').count()
+
+                places = total - specials_not_vip_count - passage_extra
 
                 for result in helperresults[0:places]:
                     result.passage_assigned = passage_nr
@@ -536,10 +539,14 @@ class SEBCompetitionBase(CompetitionScriptBase):
                 Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance=number.distance, slug=number.participant_slug).update(primary_number=number)
 
 
-        helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.BERNU_DISTANCE_ID), participant__is_participating=True, participant__primary_number=None).select_related('participant').order_by('participant__distance', '-calculated_total', 'participant__registration_dt')
+        helperresults = HelperResults.objects.filter(competition=self.competition, participant__is_participating=True, participant__primary_number=None).select_related('participant').order_by('participant__distance', '-calculated_total', 'participant__registration_dt')
 
         for result in helperresults:
             participant = result.participant
+
+            if participant.distance_id == self.VESELIBAS_DISTANCE_ID and participant.birthday.year not in (2001, 2002, 2003):
+                continue # In Helth distance we assign only to those participants that have born on 2001, 2002, 2003
+
             group = self.get_group_for_number_search(participant.distance_id, participant.gender, participant.birthday)
             try:
                 number = Number.objects.get(participant_slug=participant.slug, distance=participant.distance, group=group)
@@ -559,7 +566,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
         if not isinstance(birthday, datetime.date):
             birthday = datetime.datetime.strptime(birthday, "%Y-%m-%d").date()
 
-        if distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+        if distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.VESELIBAS_DISTANCE_ID):
             return ''
         elif distance_id == self.BERNU_DISTANCE_ID:
             try:
