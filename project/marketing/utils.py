@@ -292,3 +292,30 @@ def send_smses():
             sms.response = resp.content
         sms.is_processed = True
         sms.save()
+
+
+def backup_sms_send():
+    participants = Participant.objects.filter(competition_id__in=(38,39), is_participating=True).exclude(phone_number='')
+    sms_txt = "Skaties video tiesraidi http://straume.lmt.lv"
+    send_out = timezone.now().replace(hour=9, minute=0) + datetime.timedelta(days=1)
+    for participant in participants:
+        number = participant.phone_number.strip().replace('+371', '').replace(' ', '').replace('00371', '').replace('+', '')
+        if len(number) == 0:
+            continue
+        if number[0:3] == '371':
+            number = number[3:]
+        if len(number) == 8 and number[0] != '2':
+            print 'Not sending to %s' % number
+            continue
+        elif len(number) == 8:
+            number = '371%s' % number
+
+        if len(number) < 8:
+            print 'TOO SHORT NUMBER'
+            continue
+
+        print 'Sending to %s' % number
+        sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=sms_txt, )
+    while SMS.objects.filter(is_processed=False).count():
+        send_smses()
+
