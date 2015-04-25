@@ -114,7 +114,7 @@ def create_start_list(competition=None, competition_id=None):
         row = 4
         header_row = (
             '#', 'UID', 'Numurs', 'Alias', 'Sacensības', 'Distance', 'Uzvārds', 'Vārds', 'Dzimšanas diena', 'Dzimums',
-            'Grupa', 'Dalības maksa', 'Apdrošināšanas maksa', 'Kopā samaksāts', 'Atlaižu kods', 'E-pasts', 'Telefons', 'Valsts', 'Komanda', 'Velo', 'Izveidots', 'Punkti', 'Koridors')
+            'Grupa', 'Pieteikuma ziedojums', 'Dalības maksa', 'Apdrošināšanas maksa', 'Kopā samaksāts', 'Atlaižu kods', 'E-pasts', 'Telefons', 'Valsts', 'Komanda', 'Velo', 'Izveidots', 'Punkti', 'Koridors')
         for col, value in enumerate(header_row):
             sheet.write(row, col, value)
 
@@ -134,7 +134,7 @@ def create_start_list(competition=None, competition_id=None):
 
             row_values = (
                 index, item.id, unicode(item.primary_number), item.slug, unicode(item.competition), unicode(item.distance), item.last_name,
-                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, total_entry_fee, total_insurance_fee, final_price,
+                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, item.application.donation, total_entry_fee, total_insurance_fee, final_price,
                 unicode(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand2) if item.bike_brand2 else '',
                 item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res.calculated_total, res.passage_assigned)
 
