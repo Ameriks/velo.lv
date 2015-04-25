@@ -21,16 +21,6 @@ class Seb2015(SEBCompetitionBase):
 
     STAGES_COUNT = 7
 
-    def number_ranges(self):
-        """
-        Returns number ranges for each distance.
-        """
-        return {
-            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
-            self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3500, 'group': ''}, ],
-            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
-        }
-
     @property
     def passages(self):
         return {
@@ -80,7 +70,7 @@ class Seb2015(SEBCompetitionBase):
         return {
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3300, 'group': ''}, ],
-            self.VESELIBAS_DISTANCE_ID: [{'start': 4000, 'end': 4200, 'group': ''}, ],
+            self.VESELIBAS_DISTANCE_ID: [{'start': 5000, 'end': 5200, 'group': ''}, ],
             self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
         }
 

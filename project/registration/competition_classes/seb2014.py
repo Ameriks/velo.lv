@@ -109,3 +109,23 @@ class Seb2014(SEBCompetitionBase):
         print 'here I shouldnt be...'
         raise Exception('Invalid group assigning.')
 
+    def _participant_standings_points(self, standing, distance=False):
+        """
+        This is private function that calculates points for participant based on distance.
+        """
+        stages = range(1, self.STAGES_COUNT+1)
+
+        if standing.distance_id == self.SPORTA_DISTANCE_ID:
+            stages.remove(4)  # 4.stage is not taken because it is UCI category
+        if distance:
+            points = sorted((getattr(standing, 'distance_points%i' % stage) for stage in stages), reverse=True)
+        else:
+            points = sorted((getattr(standing, 'group_points%i' % stage) for stage in stages), reverse=True)
+
+        if standing.distance_id == self.SPORTA_DISTANCE_ID:
+            return sum(points[0:4])
+        elif standing.distance_id == self.TAUTAS_DISTANCE_ID:
+            return sum(points[0:5])
+        elif standing.distance_id == self.BERNU_DISTANCE_ID:
+            return sum(points[0:5])
+

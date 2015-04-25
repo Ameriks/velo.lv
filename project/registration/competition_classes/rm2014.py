@@ -18,7 +18,7 @@ from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceA
 from results.tables import *
 from results.tables import ResultDistanceStandingTable, ResultRMSportsDistanceTable, ResultRMTautaDistanceTable, \
     ResultRMGroupTable
-from results.tasks import send
+from results.tasks import create_result_sms
 from results.helper import time_to_seconds
 from team.models import Team, MemberApplication
 from marketing.tasks import send_mailgun

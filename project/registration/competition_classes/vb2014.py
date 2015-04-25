@@ -19,7 +19,7 @@ from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceA
 from results.tables import *
 from results.tables import ResultDistanceStandingTable, ResultRMSportsDistanceTable, ResultRMTautaDistanceTable, \
     ResultRMGroupTable, ResultRMDistanceTable
-from results.tasks import send
+from results.tasks import create_result_sms
 from results.helper import time_to_seconds
 from team.models import Team, MemberApplication
 from marketing.tasks import send_mailgun
@@ -443,7 +443,7 @@ class VB2014(CompetitionScriptBase):
                 result.save()
 
                 if sendsms and participant[0].is_competing and self.competition.competition_date == datetime.date.today():
-                    send(result.id)
+                    create_result_sms(result.id)
 
                 chip.is_processed = True
                 chip.save()
@@ -502,7 +502,7 @@ AND r.id = res2.id
     def recalculate_standing_for_result(self, result):
         pass  # TODO: recalculate if group is changed.
 
-    def assign_distance_and_group_places(self):
+    def assign_standing_places(self):
         self.assign_result_place()
         self.reset_cache_results()
 

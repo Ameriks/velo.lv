@@ -33,9 +33,8 @@ def temp_url_sync_task(urlsync_id):
     _class = Seb2014(obj.competition.id)
 
     fetch_results(2)
-    _class.assign_distance_number()
-    _class.assign_group_number()
-    _class.recalculate_standings()
+    _class.assign_result_place()
+    _class.recalculate_all_standings()
     send_smses()
 
     temp_url_sync_task.apply_async((urlsync_id, ), countdown=10)
@@ -57,18 +56,20 @@ def send_test_sms():
 
 
 @task()
-def send(result_id):
+def create_result_sms(result_id):
     send_out = timezone.now()
-    result = Result.objects.get(id=result_id)
+    result = Result.objects.select_related('competition', 'participant').get(id=result_id)
 
-    distance_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, time__lte=result.time).exclude(time=None).exclude(participant__is_competing=False).count()
-    group_result = Result.objects.filter(competition=result.competition, participant__group=result.participant.group, time__lte=result.time).exclude(time=None).exclude(participant__is_competing=False).count()
+    #distance_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, time__lte=result.time).exclude(time=None).exclude(participant__is_competing=False).count()
+    #group_result = Result.objects.filter(competition=result.competition, participant__group=result.participant.group, time__lte=result.time).exclude(time=None).exclude(participant__is_competing=False).count()
 
-    sms_text = 'SEB MTB pagaidu rez nr. %i laiks %s, %i.vieta grupa %s, vieta kopa %i' % (result.number.number, str(result.time.replace(microsecond=0)), group_result, result.participant.group, distance_result)
-    # first_name = unicodedata.normalize('NFKD', result.participant.first_name).encode('ascii', 'ignore').decode('ascii')
-    # group = unicodedata.normalize('NFKD', result.participant.group).encode('ascii', 'ignore').decode('ascii')
-
-    # sms_text = 'Apsveicam, %s (#%i)! Tavs rezultats: %s, %i.vieta grupa %s, vieta kopa %i' % (first_name, result.number.number, str(result.time.replace(microsecond=0)), group_result, group, distance_result)
+    sms_text = result.competition.sms_text % {
+        'number': result.number.number,
+        'time': str(result.time.replace(microsecond=0)),
+        'group_result': result.result_group,
+        'group': result.participant.group,
+        'distance_result': result.result_distance,
+    }
 
     phone_numbers = result.participant.phone_number.replace('+371', '').replace(' ', '').replace('00371', '').replace('+', '')
     phone_number = phone_numbers.split(';')
@@ -88,13 +89,34 @@ def send(result_id):
         if len(number) < 8:
             print 'TOO SHORT NUMBER'
             continue
-        #number = '37126461101'
         print 'Sending to %s' % number
         print sms_text
 
-        sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=sms_text)
+        SMS.objects.create(send_out_at=send_out, phone_number=number, text=sms_text)
 
     return True
+
+
+@task()
+def process_chip_result(_id):
+    scan = ChipScan.objects.select_related('competition').get(id=_id)
+
+    class_ = load_class(scan.competition.processing_class)
+    processing_class = class_(scan.competition.id)
+
+    if not scan.is_processed:
+        if scan.competition.processing_class:
+            processing_class.process_chip_result(scan.id)
+
+@task()
+def recalculate_standing_for_result(competition_id, _id):
+    competition = Competition.objects.get(id=competition_id)
+    result = Result.objects.get(id=_id)
+
+    class_ = load_class(competition.processing_class)
+    processing_class = class_(competition.id)
+
+    processing_class.recalculate_standing_for_result(result)
 
 
 @task()
@@ -105,7 +127,6 @@ def fetch_results(_id):
 
     class_ = load_class(url_data.competition.processing_class)
     processing_class = class_(url_data.competition.id)
-
     try:
         resp = requests.get(url_data.url)
 
@@ -133,15 +154,14 @@ def fetch_results(_id):
                 continue
             finally:
                 scan.save()
-
-            if not scan.is_processed:
-                if url_data.competition.processing_class:
-                    result = processing_class.process_chip_result(scan.id)
+            process_chip_result.delay(scan.id)
 
         url_data.current_line = len(file_lines)
         url_data.save()
 
-        processing_class.process_chip_recalculation()
+        # TODO: This should be removed after process review
+        processing_class.recalculate_all_standings()
+        send_smses()
 
     except:
         error = traceback.format_exc()

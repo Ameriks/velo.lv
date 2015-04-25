@@ -32,10 +32,9 @@ def update_results_for_result(result):
     if updated:
         print 'points have been updated.'
         result.save()
-        competition_class.assign_distance_number()
-        competition_class.assign_group_number()
+        competition_class.assign_result_place()
         competition_class.recalculate_standing_for_result(result)
-        competition_class.assign_distance_and_group_places()
+        competition_class.assign_standing_places()
 
         if result.participant.team:
             competition_class.recalculate_team_result(team=result.participant.team)

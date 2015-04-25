@@ -14,6 +14,9 @@ from payment.models import DiscountCode
 from registration.models import Participant, Application
 from results.models import LegacyResult
 from premailer import transform
+import logging
+
+logger = logging.getLogger('marketing')
 
 
 # TODO: Create view, where it is possible to filter participants and send information. This is tmp solution.
@@ -271,7 +274,7 @@ def send_test():
     sms.save()
 
 def send_smses():
-    smses = SMS.objects.filter(is_processed=False)[:1000]
+    smses = SMS.objects.filter(is_processed=False)[:100]
     for sms in smses:
         # text = unicodedata.normalize('NFKD', sms.text).encode('ascii', 'ignore').decode('ascii')
         # print text
@@ -282,7 +285,10 @@ def send_smses():
             'destinationAddress': sms.phone_number,
             'text': sms.text,
         }
-        resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urllib.urlencode(sms_obj)))
-        sms.response = resp.content
+        if settings.DEBUG:
+            logger.info('Sent SMS %s to %s' % (sms.text, sms.phone_number))
+        else:
+            resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urllib.urlencode(sms_obj)))
+            sms.response = resp.content
         sms.is_processed = True
         sms.save()

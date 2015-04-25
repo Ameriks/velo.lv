@@ -16,7 +16,7 @@ from results.models import Result, DistanceAdmin, ChipScan, SebStandings, TeamRe
 from results.tables import ResultChildrenGroupTable, ResultGroupTable, ResultDistanceTable, \
     ResultChildrenGroupStandingTable, ResultGroupStandingTable, ResultDistanceStandingTable, ResultRMGroupTable, \
     ResultRMSportsDistanceTable, ResultRMTautaDistanceTable
-from results.tasks import send
+from results.tasks import create_result_sms, recalculate_standing_for_result
 from team.models import MemberApplication, Team
 from django.template.defaultfilters import slugify
 
@@ -226,12 +226,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
         else:
             points = sorted((getattr(standing, 'group_points%i' % stage) for stage in stages), reverse=True)
 
-        if standing.distance_id == self.SPORTA_DISTANCE_ID:
-            return sum(points[0:4])
-        elif standing.distance_id == self.TAUTAS_DISTANCE_ID:
-            return sum(points[0:5])
-        elif standing.distance_id == self.BERNU_DISTANCE_ID:
-            return sum(points[0:5])
+        return sum(points[0:5])
 
 
     def recalculate_standing_points(self, standing):
@@ -242,15 +237,6 @@ class SEBCompetitionBase(CompetitionScriptBase):
         if standing.distance_id != self.BERNU_DISTANCE_ID:  # Children competition doesn't have distance_total
             standing.distance_total = self._participant_standings_points(standing, distance=True)
         standing.group_total = self._participant_standings_points(standing)
-
-    def recalculate_standing(self, standing):
-        """
-        Function used to recalculate standing points, total seconds and to initialize point recalculation
-        """
-        standing.set_points()
-        if standing.distance_id != self.BERNU_DISTANCE_ID:  # Children competition doesn't have time
-            standing.set_distance_total_seconds()
-        self.recalculate_standing_points(standing)  # Recalculate total points for this standing
 
     def recalculate_standing_for_result(self, result):
         """
@@ -263,8 +249,13 @@ class SEBCompetitionBase(CompetitionScriptBase):
             result.save()
         else:
             standing = result.standings_object
-        self.recalculate_standing(standing)
+        standing.set_points()
+        self.recalculate_standing_points(standing)
         standing.save()
+
+        if result.participant.team:
+            self.recalculate_team_result(team=result.participant.team)
+
 
     def recalculate_standing_for_results(self):
         """
@@ -274,48 +265,52 @@ class SEBCompetitionBase(CompetitionScriptBase):
         for result in all_results:
             self.recalculate_standing_for_result(result)
 
-    def assign_distance_and_group_places(self):
+        self.assign_standing_places()  # Reassign places
+
+    def assign_standing_places(self):
         """
         Function iterates through all standings and assign place based on total points, total seconds and points in last stage
         """
-        for distance in self.competition.get_distances().exclude(id=self.BERNU_DISTANCE_ID):
-            all_standings = SebStandings.objects.filter(competition=self.competition.parent, distance=distance).order_by('-distance_total', '-distance_points7', 'distance_total_seconds')
-            for index, standing in enumerate(all_standings, start=1):
-                standing.distance_place = index
-                standing.save()
+        cursor = connection.cursor()
 
-        for distance in self.competition.get_distances():
-            for group in self.groups.get(distance.id, ()):
-                all_standings = SebStandings.objects.filter(competition=self.competition.parent, distance=distance, participant__group=group).order_by('-group_total', '-distance_points7', 'distance_total_seconds', )
-                for index, standing in enumerate(all_standings, start=1):
-                    standing.group_place = index
-                    standing.save()
+        # TODO: Exclude children from assigning distance place
 
-    def recalculate_standings(self):
+        # First assign distance place
+        cursor.execute("""
+        UPDATE
+            results_sebstandings r
+        SET
+            distance_place = res2.distance_row_nr,
+            group_place = res2.group_row_nr
+        FROM
+        (
+        Select res.id, res.competition_id, res.distance_id, res.group_total, res.distance_total,
+        row_number() OVER (PARTITION BY res.distance_id ORDER BY
+        res.distance_id, res.distance_total desc,
+        res.distance_points7 desc, res.distance_points6 desc, res.distance_points5 desc, res.distance_points4 desc,
+        res.distance_points3 desc, res.distance_points2 desc, res.distance_points1 desc) as distance_row_nr,
+        row_number() OVER (PARTITION BY res.distance_id, p.group ORDER BY
+        res.distance_id, p.group, res.group_total desc, res.group_points7 desc, res.group_points6 desc, res.group_points5 desc,
+        res.group_points4 desc, res.group_points3 desc, res.group_points2 desc, res.group_points1 desc
+        ) as group_row_nr
+        FROM results_sebstandings As res
+        INNER JOIN registration_participant p ON res.participant_id = p.id
+        ) res2
+        WHERE res2.competition_id = %s AND r.id = res2.id
+        """, [self.competition.parent.id, ])
+
+
+    def recalculate_all_standings(self):
         """
+        ===== MAIN FUNCTION =====
         Function recalculates all standings for current competition. Function recalculates team results also.
         """
         if self.competition.level == 2:  # if class is called with stage competition, then recalculate all results
             self.recalculate_standing_for_results()
-
-        all_standings = SebStandings.objects.filter(competition=self.competition.parent if self.competition.level == 2 else self.competition)
-        for standing in all_standings:
-            self.recalculate_standing_points(standing)  # Recalculate standing points
-            standing.save()
-        self.assign_distance_and_group_places()  # Reassign places
-
-        if self.competition.level == 2:  # if class is called with stage competition, then recalculate all team results
             self.recalculate_team_results()  # Recalculate team total points for current competition
         else:
             pass  # TODO: Create team point recalculation for all stages at the same time
 
-
-    def process_chip_recalculation(self):
-        self.assign_distance_number()
-        self.assign_group_number()
-        self.recalculate_standings()
-        from marketing.utils import send_smses
-        send_smses()
 
     def process_chip_result(self, chip_id, sendsms=True):
         """
@@ -329,21 +324,14 @@ class SEBCompetitionBase(CompetitionScriptBase):
         delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(datetime.date.today(), datetime.time(0,0,0,0))
         result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
 
-        if chip.is_blocked:  # If blocked, then remove result, recalculate standings, recalculate team results
-            results = Result.objects.filter(competition=chip.competition, number=chip.nr, time=result_time)
-            if results:
-                result = results[0]
-                participant = result.participant
-                if result.standings_object:
-                    standing = result.standings_object
-                    result.delete()
-                    self.recalculate_standing(standing)  # Recalculate standings for this participant
-                    standing.save()
-                    if participant.team:  # If blocked participant was in a team, then recalculate team results.
-                        self.recalculate_team_result(team=participant.team)
-                Log.objects.create(content_object=chip, action="Chip process", message="Processed blocked chip")
+        seconds = result_time.hour * 60 * 60 + result_time.minute * 60 + result_time.second
+
+        # Do not process if finished in 10 minutes.
+        if seconds < 10 * 60: # 10 minutes
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip result less than 10 minutes. Ignoring.")
             return None
-        elif chip.is_processed:
+
+        if chip.is_processed:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
 
@@ -356,8 +344,8 @@ class SEBCompetitionBase(CompetitionScriptBase):
                 participant_data = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_all_children_ids(), distance=chip.nr.distance, is_participating=True).order_by('-competition__id')
                 if participant_data:
                     participant_data = participant_data.values()[0]
-
-                    for pop_element in ['id', 'application_id', 'comment', 'created', 'created_by_id', 'insurance_id', 'legacy_id', 'modified', 'modified_by_id', 'price_id', 'registrant_id',]:
+                    # TODO: Refresh list
+                    for pop_element in ['id', 'application_id', 'comment', 'created', 'created_by_id', 'insurance_id', 'legacy_id', 'modified', 'modified_by_id', 'price_id', 'registrant_id', 'is_sent_number_sms', 'is_sent_number_email', ]:
                         participant_data.pop(pop_element)
 
                     participant_data.update({'is_temporary': True, 'competition_id': chip.competition.id, })
@@ -365,18 +353,21 @@ class SEBCompetitionBase(CompetitionScriptBase):
                     participant = [Participant.objects.create(**participant_data), ]
                     Log.objects.create(content_object=participant[0], action="Chip process", message="Participant was not found, so created temporary one based on previous stage data.")
                     print 'Created participant with ID %i' % participant[0].id
-
+                else:
+                    return False
             if participant:
                 result = Result.objects.create(competition=chip.competition, participant=participant[0], number=chip.nr, time=result_time, )
                 result.set_all()
                 result.save()
 
-                # Update standings...
-                self.recalculate_standing_for_result(result)
-                if participant[0].team:
-                    self.recalculate_team_result(team=participant[0].team)
+                # Update standings... Asynchronously
+                recalculate_standing_for_result.delay(self.competition_id, result.id)
+
+                # To send out SMS we need place set.
+                self.assign_result_place()
+
                 if sendsms:
-                    send(result.id)
+                    create_result_sms(result.id)
 
             else:
                 Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
@@ -385,7 +376,12 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
 
     def recalculate_all_points(self):
-        distances = [self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID]
+        """
+        MAIN FUNCTION FROM MANAGER
+        This function is called from manager view to manually recalculate points.
+        This function is called in case there are errors in given points.
+        """
+        distances = [self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.VESELIBAS_DISTANCE_ID]
         recalculate_places = False
         results = Result.objects.filter(competition=self.competition, participant__distance_id__in=distances)
         for result in results:
@@ -396,7 +392,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             self.recalculate_standing_for_result(result)
 
         if recalculate_places:
-            self.assign_distance_and_group_places()
+            self.assign_standing_places()
             self.recalculate_team_results()
 
     def calculate_points_distance(self, result):
@@ -449,27 +445,67 @@ class SEBCompetitionBase(CompetitionScriptBase):
         else:
             return ResultDistanceStandingTable
 
-    def assign_distance_number(self):
-        distances = self.competition.get_distances()
 
-        for distance in distances:
-            if distance.id == self.BERNU_DISTANCE_ID:
-                continue # TODO: implement child competition place assingation
-            results = Result.objects.filter(competition=self.competition, number__distance=distance).order_by('status', 'time')  # Status is because if something is written there, then is should be at the end.
-            for index, result in enumerate(results, start=1):
-                result.result_distance = index
-                result.save()
 
-    def assign_group_number(self):
-        distances = self.competition.get_distances()
 
-        for distance in distances:
-            for group in self.groups.get(distance.id, ()):
-                results = Result.objects.filter(competition=self.competition, number__distance=distance, participant__group=group).order_by('time')
-                for index, result in enumerate(results, start=1):
-                    result.result_group = index
-                    result.save()
+    def assign_result_place(self):
+        """
+        Assign result place based on result time. Optimized to use raw SQL.
+        """
+        cursor = connection.cursor()
 
+        # First assign distance place
+        cursor.execute("""
+UPDATE
+    results_result r
+SET
+    result_distance = res2.distance_row_nr,
+    result_group = res2.group_row_nr
+FROM
+(
+Select res.id, result_distance, res.competition_id, res.time, p.is_competing,
+row_number() OVER (PARTITION BY nr.distance_id ORDER BY nr.distance_id, res.status, res.time) as distance_row_nr,
+row_number() OVER (PARTITION BY nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time) as group_row_nr
+FROM results_result As res
+INNER JOIN registration_number nr ON res.number_id = nr.id
+INNER JOIN registration_participant p ON res.participant_id = p.id
+WHERE p.is_competing is true and res.time IS NOT NULL
+) res2
+WHERE res2.competition_id = %s and res2.time IS NOT NULL and res2.is_competing is true
+AND r.id = res2.id
+""", [self.competition_id, ])
+        # Then unset places to others
+        cursor.execute("""
+UPDATE
+    results_result r
+SET
+    result_distance = NULL
+FROM
+(
+Select res.id, result_distance, res.competition_id, res.time, p.is_competing
+FROM results_result As res
+INNER JOIN registration_number nr ON res.number_id = nr.id
+INNER JOIN registration_participant p ON res.participant_id = p.id
+) res2
+WHERE res2.competition_id = %s and (res2.time IS NULL or res2.is_competing is false)
+AND r.id = res2.id
+""", [self.competition_id, ])
+
+        cursor.execute("""
+UPDATE
+    results_result r
+SET
+    result_group = NULL
+FROM
+(
+Select res.id, result_distance, res.competition_id, res.time, p.is_competing, p.distance_id
+FROM results_result As res
+INNER JOIN registration_number nr ON res.number_id = nr.id
+INNER JOIN registration_participant p ON res.participant_id = p.id
+) res2
+WHERE res2.competition_id = %s and res2.distance_id <> %s and (res2.time IS NULL or res2.is_competing is false)
+AND r.id = res2.id
+""", [self.competition_id, self.BERNU_DISTANCE_ID])
 
 
     def assign_passage(self, reset=False):
@@ -564,7 +600,10 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
     def get_group_for_number_search(self, distance_id, gender, birthday):
         if not isinstance(birthday, datetime.date):
-            birthday = datetime.datetime.strptime(birthday, "%Y-%m-%d").date()
+            try:
+                birthday = datetime.datetime.strptime(birthday, "%Y-%m-%d").date()
+            except:
+                return 'error-no-group'
 
         if distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.VESELIBAS_DISTANCE_ID):
             return ''
@@ -572,7 +611,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             try:
                 return self.assign_group(distance_id, gender, birthday)
             except:
-                return 'xxx'
+                return 'error-no-group'
 
 
 
@@ -618,7 +657,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
                     self.recalculate_standing_for_result(result)
                 else:
                     print 'didnt participate'
-        self.assign_distance_and_group_places()
+        self.assign_standing_places()
 
 
 
@@ -860,7 +899,7 @@ class RMCompetitionBase(CompetitionScriptBase):
                         result.set_avg_speed()
                         result.save()
                         if participant.is_competing and self.competition.competition_date == datetime.date.today():
-                            send(result.id)
+                            create_result_sms(result.id)
 
         except Result.DoesNotExist:
             Log.objects.create(content_object=chip, action="Chip process", message="Lets set zero time")
@@ -922,7 +961,7 @@ AND r.id = res2.id
     def recalculate_standing_for_result(self, result):
         pass  # TODO: recalculate if group is changed.
 
-    def assign_distance_and_group_places(self):
+    def assign_standing_places(self):
         self.assign_result_place()
         self.reset_cache_results()
 
