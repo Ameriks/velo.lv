@@ -131,10 +131,13 @@ def create_start_list(competition=None, competition_id=None):
                 total_insurance_fee = total_insurance_fee / child_count
                 final_price = final_price / child_count
 
+            donation = 0.0
+            if item.application:
+                donation = item.application.donation
 
             row_values = (
                 index, item.id, unicode(item.primary_number), item.slug, unicode(item.competition), unicode(item.distance), item.last_name,
-                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, unicode(item.application.donation), total_entry_fee, total_insurance_fee, final_price,
+                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, donation, total_entry_fee, total_insurance_fee, final_price,
                 unicode(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand2) if item.bike_brand2 else '',
                 item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res.calculated_total, res.passage_assigned)
 
