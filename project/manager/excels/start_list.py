@@ -149,6 +149,52 @@ def create_start_list(competition=None, competition_id=None):
     return output
 
 
+def create_donations_list(competition=None, competition_id=None):
+    if not competition and not competition_id:
+        raise Exception('Expected at least one variable')
+    if not competition:
+        competition = Competition.objects.get(id=competition_id)
+
+    root_competition = competition.get_root()
+
+    output = StringIO.StringIO()
+
+    wbk = xlwt.Workbook()
+
+    sheet = wbk.add_sheet('donations')
+
+    applications = Application.objects.filter(competition_id__in=competition.get_ids(), payment_status=Application.PAY_STATUS_PAYED).exclude(donation=0.0).prefetch_related('participant_set').select_related('competition')
+
+    row = 1
+    header_row = (
+        '#', 'Pieteikuma ID', 'Sacensības', 'Uzvārds', 'Vārds', 'Personas kods', 'Pieteikuma ziedojums', 'Veiksmīgo maksājumu skaits', 'Veiksmiga maksajuma ziedojuma summa (check)', 'Rekina NR')
+    for col, value in enumerate(header_row):
+        sheet.write(row, col, value)
+
+    row = 2
+    for index, application in enumerate(applications, start=1):
+        participant = application.participant_set.all()[0]
+        total_payed = 0.0
+        total_count = 0
+        payments = application.payment_set.filter(status=Payment.STATUS_OK)
+
+        if payments:
+            total_count = payments.count()
+            total_payed = payments[0].donation
+
+        row_values = (
+            index, application.id, unicode(application.competition), participant.last_name,
+            participant.first_name, participant.ssn, application.donation, total_count, total_payed, application.external_invoice_nr)
+
+        for col, value in enumerate(row_values):
+            sheet.write(row, col, value)
+        row += 1
+
+    wbk.save(output)
+    return output
+
+
+
 
 def team_member_list(competition=None, competition_id=None):
     if not competition and not competition_id:
