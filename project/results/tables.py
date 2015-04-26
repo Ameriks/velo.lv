@@ -158,8 +158,8 @@ class ResultGroupTable(tables.Table):
 
 
     def render_bike_brand(self, record):
-        if record.participant.bike_brand:
-            return record.participant.bike_brand
+        if record.participant.bike_brand2:
+            return record.participant.bike_brand2
         else:
             return '-'
 
@@ -200,8 +200,8 @@ class ResultDistanceTable(tables.Table):
         return mark_safe(text)
 
     def render_bike_brand(self, record):
-        if record.participant.bike_brand:
-            return record.participant.bike_brand
+        if record.participant.bike_brand2:
+            return record.participant.bike_brand2
         else:
             return '-'
 
