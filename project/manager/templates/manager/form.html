@@ -7,7 +7,21 @@
 {% block js %}
     {{ block.super }}
     {{ form.media.js }}
-
+    <script type="text/javascript">
+        get_result_params = function(term, page, context) {
+            var field_id = $(this).data('field_id');
+            var res = {
+                'term': term,
+                'page': page,
+                'context': '',
+                'competition_id': $('#id_competition').val()
+            };
+            if (field_id !== undefined) {
+                res['field_id'] = field_id
+            }
+            return res;
+        }
+    </script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/select2.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/heavy_data.js"></script>
 {% endblock %}
