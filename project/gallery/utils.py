@@ -46,7 +46,7 @@ def sync_album(album_id):
 
 
 def import_legacy_albums():
-    for year in [2011, 2012, 2013, 2014]:
+    for year in [2015, ]:
         root = os.path.join('media', 'gallery', str(year))
         dirs = sorted(os.listdir(root))
         for d in dirs:
