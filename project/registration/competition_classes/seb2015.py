@@ -155,7 +155,7 @@ class Seb2015(SEBCompetitionBase):
                 return 'B 05-04'
 
         elif distance_id == self.VESELIBAS_DISTANCE_ID:
-            if year in ('2001', '2002', '2003'):
+            if year in (2001, 2002, 2003):
                 if gender == 'M':
                     return 'M-14'
                 else:
