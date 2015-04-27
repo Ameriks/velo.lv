@@ -6,7 +6,7 @@
 
 
 {% block main %}
-    {% cache 60 results_participant LANGUAGE_CODE distance_active competition request.GET %}
+    {% cache 60 results_participant LANGUAGE_CODE distance_active.id competition.id request.GET %}
         {% spaceless %}
     <div class="row">
         <ul class="nav nav-tabs pull-right">
