@@ -180,6 +180,9 @@ class Result(models.Model):
 
     _competition_class = None
 
+    class Meta:
+        unique_together = (('competition', 'participant', 'number', ), )
+
     # def set_loses_distance(self):
     #     r = Result.objects.filter(competition=self.competition, number__distance=self.number.distance).order_by('time')
     #     if r:

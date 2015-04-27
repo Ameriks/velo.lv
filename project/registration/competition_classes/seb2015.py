@@ -60,7 +60,7 @@ class Seb2015(SEBCompetitionBase):
         return {
             self.SPORTA_DISTANCE_ID: ('M-18', 'M', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
             self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
-            self.VESELIBAS_DISTANCE_ID: (),
+            self.VESELIBAS_DISTANCE_ID: ('M-14', 'W-14', ),
             self.BERNU_DISTANCE_ID: ('B 05-04', 'B 06', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11-', )
         }
 
@@ -90,9 +90,7 @@ class Seb2015(SEBCompetitionBase):
 
     def assign_group(self, distance_id, gender, birthday):
         year = birthday.year
-        if distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.BERNU_DISTANCE_ID):
-            return ''
-        elif distance_id == self.SPORTA_DISTANCE_ID:
+        if distance_id == self.SPORTA_DISTANCE_ID:
             if gender == 'M':
                 if year in (self._update_year(1997), self._update_year(1996)):
                     return 'M-18'
@@ -156,6 +154,14 @@ class Seb2015(SEBCompetitionBase):
             elif year in (2005, 2004):
                 return 'B 05-04'
 
+        elif distance_id == self.VESELIBAS_DISTANCE_ID:
+            if year in ('2001', '2002', '2003'):
+                if gender == 'M':
+                    return 'M-14'
+                else:
+                    return 'W-14'
+            else:
+                return ''
 
         print 'here I shouldnt be...'
         raise Exception('Invalid group assigning.')
