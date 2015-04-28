@@ -1,3 +1,4 @@
+from django.contrib.humanize.templatetags.humanize import ordinal
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 import django_tables2 as tables
@@ -145,7 +146,7 @@ class ResultGroupTable(tables.Table):
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
-    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
+    bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
     points_group = tables.Column(empty_values=(), verbose_name=_('Points Group'), accessor="points_group")
@@ -155,13 +156,6 @@ class ResultGroupTable(tables.Table):
         if record.leader:
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
         return mark_safe(text)
-
-
-    def render_bike_brand(self, record):
-        if record.participant.bike_brand2:
-            return record.participant.bike_brand2
-        else:
-            return '-'
 
     def render_team(self, record, *args, **kwargs):
         if record.participant.team:
@@ -175,7 +169,7 @@ class ResultGroupTable(tables.Table):
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
         fields = ("number", "status") # all_numbers
-        sequence = ("result_group", "number", 'first_name','last_name', 'year', 'team', 'bike_brand', 'time', 'group', 'points_group', 'status')
+        sequence = ("result_group", "number", 'first_name','last_name', 'year', 'team', 'bike_brand2', 'time', 'group', 'points_group', 'status')
         empty_text = _("There are no results")
         order_by = ("time")
         # ordering = ('created')
@@ -190,7 +184,7 @@ class ResultDistanceTable(tables.Table):
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
-    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
+    bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     points_distance = tables.Column(empty_values=(), verbose_name=_('Points Distance'), accessor="points_distance")
 
@@ -200,12 +194,6 @@ class ResultDistanceTable(tables.Table):
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
         return mark_safe(text)
 
-    def render_bike_brand(self, record):
-        if record.participant.bike_brand2:
-            return record.participant.bike_brand2
-        else:
-            return '-'
-
     def render_team(self, record, *args, **kwargs):
         if record.participant.team:
             return mark_safe('<a href="#">%s</a>' % record.participant.team)
@@ -214,11 +202,14 @@ class ResultDistanceTable(tables.Table):
         else:
             return '-'
 
+    def render_group(self, record):
+        return mark_safe('<span class="tooltips" title="%(result_group)s in the group">%(group)s</span>' % {'group': record.participant.group, 'result_group': ordinal(record.result_group)})
+
     class Meta:
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
         fields = ("number", "status") # all_numbers
-        sequence = ("result_distance", "number", 'first_name','last_name', 'year', 'group', 'team', 'bike_brand', 'time', 'points_distance', 'status')
+        sequence = ("result_distance", "number", 'first_name','last_name', 'year', 'group', 'team', 'bike_brand2', 'time', 'points_distance', 'status')
         empty_text = _("There are no results")
         order_by = ("time")
         # ordering = ('created')
@@ -232,7 +223,7 @@ class ResultRMDistanceTable(tables.Table):
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
-    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
+    bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     # points_distance = tables.Column(empty_values=(), verbose_name=_('Points Distance'), accessor="points_distance")
 
@@ -252,12 +243,6 @@ class ResultRMDistanceTable(tables.Table):
 
         return mark_safe(text)
 
-    def render_bike_brand(self, record):
-        if record.participant.bike_brand2:
-            return record.participant.bike_brand2
-        else:
-            return '-'
-
     def render_team(self, record, *args, **kwargs):
         if record.participant.team:
             return mark_safe('<a href="#">%s</a>' % record.participant.team)
@@ -274,7 +259,7 @@ class ResultRMDistanceTable(tables.Table):
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
         fields = ("number", "status") # all_numbers
-        sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand', 'time', 'status')
+        sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'time', 'status')
         empty_text = _("There are no results")
         order_by = ("time")
         # ordering = ('created')
@@ -292,7 +277,7 @@ class ResultRMTautaDistanceTable(ResultRMDistanceTable):
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
         fields = ("number", "status") # all_numbers
-        sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand', 'l1', 'time', 'status')
+        sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'l1', 'time', 'status')
         empty_text = _("There are no results")
         order_by = ("time", "l1")
         # ordering = ('created')
@@ -322,7 +307,7 @@ class ResultRMSportsDistanceTable(ResultRMDistanceTable):
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
         fields = ("number", "status") # all_numbers
-        sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand', 'l1', 'l2', 'l3', 'l4', 'time', 'status')
+        sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'l1', 'l2', 'l3', 'l4', 'time', 'status')
         empty_text = _("There are no results")
         order_by = ("time", "l4", "l3", "l2", "l1")
         # ordering = ('created')
@@ -337,7 +322,7 @@ class ResultRMGroupTable(tables.Table):
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
-    bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
+    bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
 
@@ -346,13 +331,6 @@ class ResultRMGroupTable(tables.Table):
         if record.leader:
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
         return mark_safe(text)
-
-
-    def render_bike_brand(self, record):
-        if record.participant.bike_brand2:
-            return record.participant.bike_brand2
-        else:
-            return '-'
 
     def render_team(self, record, *args, **kwargs):
         if record.participant.team:
@@ -366,7 +344,7 @@ class ResultRMGroupTable(tables.Table):
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
         fields = ("number", "status") # all_numbers
-        sequence = ("result_group", "number", 'first_name','last_name', 'year', 'team', 'bike_brand', 'time', 'group', 'status')
+        sequence = ("result_group", "number", 'first_name','last_name', 'year', 'team', 'bike_brand2', 'time', 'group', 'status')
         empty_text = _("There are no results")
         order_by = ("time")
         # ordering = ('created')
