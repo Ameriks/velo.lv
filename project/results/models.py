@@ -142,6 +142,9 @@ class DistanceAdmin(models.Model):
     distance_actual = models.IntegerField(blank=True, null=True)
     gpx = models.FileField(upload_to=_get_gpx_upload_path, blank=True, null=True)
 
+    def __unicode__(self):
+        return '%s - %s' % (self.competition.get_full_name, self.distance)
+
 
 class LapResult(models.Model):
     result = models.ForeignKey('results.Result')

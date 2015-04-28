@@ -5,6 +5,18 @@
 {% block main %}
     {% cache 60 core_maps LANGUAGE_CODE competition %}
     {% spaceless %}
+        {% if distanceadmin %}
+            <h3>GPX kartes</h3>
+        <div class="row">
+            {% for d in distanceadmin %}
+            <div class="col-sm-4">
+                <a href="{{ d.gpx.url }}">{{ d.distance }}.gpx</a>
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endif %}
+   <h3>JPG kartes</h3>
     <div class="row">
         {% for object in object_list %}
 

@@ -18,6 +18,7 @@ from core.forms import UserCreationForm, ChangeEmailForm, ChangePasswordForm, Us
     StrictAuthenticationFormCustom
 from core.models import Competition, Map, User
 from core.tasks import send_email_confirmation
+from results.models import DistanceAdmin
 from velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin, SetPleaseVerifyEmail, \
     CacheControlMixin
 from django.utils.translation import ugettext_lazy as _
@@ -41,6 +42,15 @@ class MapView(SetCompetitionContextMixin, ListView):
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(MapView, self).get_context_data(**kwargs)
+
+        distanceadmin = DistanceAdmin.objects.filter(competition=self.competition).exclude(gpx=None).select_related('competition', 'distance', 'competition__parent').order_by('distance__id')
+
+        context.update({'distanceadmin': distanceadmin})
+
+        return context
 
 class UserRegistrationView(CreateView):
     model = User
