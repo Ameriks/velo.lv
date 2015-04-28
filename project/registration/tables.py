@@ -59,13 +59,7 @@ class ParticipantTableBase(tables.Table):
 
 
 class ParticipantTable(ParticipantTableBase):
-    primary_number = tables.Column(empty_values=(), verbose_name='Starta numurs')
-
-    def render_primary_number(self, record):
-        if not record.primary_number:
-            return '-'
-        else:
-            return record.primary_number
+    primary_number = tables.Column(verbose_name=_('Primary Number'), default='-', accessor='primary_number')
 
     class Meta(ParticipantTableBase.Meta):
         fields = ("first_name", "last_name", "bike_brand2", "group", 'primary_number')

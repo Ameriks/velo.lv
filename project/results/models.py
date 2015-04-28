@@ -143,7 +143,7 @@ class LapResult(models.Model):
     time = models.TimeField(_('Time'), blank=True, null=True)
 
 
-class Result(models.Model):
+class Result(SaveTheChange, models.Model):
     STATUSES = (
         ('DSQ', 'DSQ'),
         ('DNS', 'DNS'),
