@@ -646,6 +646,7 @@ AND r.id = res2.id
                     number_group = 'B 05-04'
                 # Assign number
                 number = Number.objects.filter(competition=self.competition.parent, distance_id=self.BERNU_DISTANCE_ID, number=row[1], group=number_group).order_by('-id')
+                number.update(participant_slug=participant.slug)
                 if number:
                     participant.primary_number = number.get()
                     participant.save()

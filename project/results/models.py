@@ -23,6 +23,11 @@ def _get_upload_path(instance, filename):
     filename = str(uuid.uuid4())
     return os.path.join("competition", "leader", "%s%s" % (filename, ext))
 
+def _get_gpx_upload_path(instance, filename):
+    folder = str(uuid.uuid4())
+    return os.path.join("competition", "gpx", folder, filename)
+
+
 
 class LegacyResult(models.Model):
     competition = models.ForeignKey('core.Competition')
@@ -135,6 +140,7 @@ class DistanceAdmin(models.Model):
     distance = models.ForeignKey('core.Distance')
     zero = models.TimeField(default='00:00:00', help_text='HH:MM:SS')
     distance_actual = models.IntegerField(blank=True, null=True)
+    gpx = models.FileField(upload_to=_get_gpx_upload_path, blank=True, null=True)
 
 
 class LapResult(models.Model):
