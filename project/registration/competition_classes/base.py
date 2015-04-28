@@ -463,7 +463,7 @@ SET
     result_group = res2.group_row_nr
 FROM
 (
-Select res.id, result_distance, res.competition_id, res.time, p.is_competing,
+Select res.id, result_distance, res.competition_id, res.time, p.is_competing, p.distance_id,
 row_number() OVER (PARTITION BY nr.distance_id ORDER BY nr.distance_id, res.status, res.time, res.id) as distance_row_nr,
 row_number() OVER (PARTITION BY nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time, res.id) as group_row_nr
 FROM results_result As res
@@ -471,30 +471,15 @@ INNER JOIN registration_number nr ON res.number_id = nr.id
 INNER JOIN registration_participant p ON res.participant_id = p.id
 WHERE p.is_competing is true and res.time IS NOT NULL
 ) res2
-WHERE res2.competition_id = %s and res2.time IS NOT NULL and res2.is_competing is true
+WHERE res2.competition_id = %s and res2.distance_id <> %s and res2.time IS NOT NULL and res2.is_competing is true
 AND r.id = res2.id
-""", [self.competition_id, ])
+""", [self.competition_id, self.BERNU_DISTANCE_ID])
         # Then unset places to others
         cursor.execute("""
 UPDATE
     results_result r
 SET
-    result_distance = NULL
-FROM
-(
-Select res.id, result_distance, res.competition_id, res.time, p.is_competing
-FROM results_result As res
-INNER JOIN registration_number nr ON res.number_id = nr.id
-INNER JOIN registration_participant p ON res.participant_id = p.id
-) res2
-WHERE res2.competition_id = %s and (res2.time IS NULL or res2.is_competing is false)
-AND r.id = res2.id
-""", [self.competition_id, ])
-
-        cursor.execute("""
-UPDATE
-    results_result r
-SET
+    result_distance = NULL,
     result_group = NULL
 FROM
 (
@@ -616,11 +601,16 @@ AND r.id = res2.id
 
 
     def import_children_csv(self, filename): # berni1p14.xls
+
+        result_column = 9 + self.competition_index
+
         with open(filename, 'rb') as csvfile:
             results = csv.reader(csvfile)
             results.next()  # header line
             for row in results:
-                slug = slugify("%s-%s-%s" % (row[1].decode('utf-8'), row[2].decode('utf-8'), row[3].decode('utf-8')))
+                assign_number = False
+
+                slug = slugify("%s-%s-%s" % (row[2].decode('utf-8'), row[3].decode('utf-8'), row[4].decode('utf-8')))
                 print row
                 participant = Participant.objects.filter(slug=slug, competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=self.BERNU_DISTANCE_ID)
                 if participant:
@@ -629,31 +619,39 @@ AND r.id = res2.id
                     data = {
                         'competition_id': self.competition_id,
                         'distance_id': self.BERNU_DISTANCE_ID,
-                        'team_name': row[5].decode('utf-8'),
+                        'team_name': row[6].decode('utf-8'),
                         'is_participating': True,
-                        'first_name': row[1].decode('utf-8'),
-                        'last_name': row[2].decode('utf-8'),
-                        'birthday': datetime.date(int(row[3]), 1, 1),
+                        'first_name': row[2].decode('utf-8'),
+                        'last_name': row[3].decode('utf-8'),
+                        'birthday': datetime.date(int(row[4]), 1, 1),
                         'is_only_year': True,
-                        'phone_number': row[7],
+                        'phone_number': row[8],
                         'gender': '',
                     }
                     if row[7]:
                         try:
-                            data.update({'bike_brand2': row[6], })
+                            data.update({'bike_brand2': row[7], })
                         except:
                             pass
+
+                    if row[5] == 'B 05-04 M':
+                        data.update({'gender': 'W'})
+                    elif row[5] == 'B 05-04 Z':
+                        data.update({'gender': 'M'})
+
                     participant = Participant.objects.create(**data)
 
+                number_group = participant.group
+                if number_group in ('B 05-04 M', 'B 05-04 Z'):
+                    number_group = 'B 05-04'
                 # Assign number
-                number = Number.objects.filter(competition=self.competition.parent, distance_id=self.BERNU_DISTANCE_ID, number=row[0], group=participant.group).order_by('-id')
-                print number.update(participant_slug=participant.slug)
+                number = Number.objects.filter(competition=self.competition.parent, distance_id=self.BERNU_DISTANCE_ID, number=row[1], group=number_group).order_by('-id')
                 if number:
-                    participant.primary_number = number[0]
+                    participant.primary_number = number.get()
                     participant.save()
 
-                if row[27]:
-                    result, created = Result.objects.get_or_create(competition=self.competition, participant=participant, number=number.get(), result_group=row[27] if row[27] else None, points_group=row[28] if row[28] else 0, status=row[26])
+                if row[result_column]:
+                    result, created = Result.objects.get_or_create(competition=self.competition, participant=participant, number=number.get(), result_group=row[result_column] if row[result_column] else None, points_group=row[result_column+1] if row[result_column+1] else 0, status=row[result_column-1])
                     self.recalculate_standing_for_result(result)
                 else:
                     print 'didnt participate'
