@@ -4,7 +4,7 @@ from difflib import get_close_matches
 import datetime
 from django.utils import timezone
 from registration.competition_classes.base import SEBCompetitionBase
-from registration.models import Application, ChangedName, PreNumberAssign
+from registration.models import Application, ChangedName, PreNumberAssign, Number
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 from registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
@@ -61,7 +61,7 @@ class Seb2015(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: ('M-18', 'M', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
             self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
             self.VESELIBAS_DISTANCE_ID: ('M-14', 'W-14', ),
-            self.BERNU_DISTANCE_ID: ('B 05-04', 'B 06', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11-', )
+            self.BERNU_DISTANCE_ID: ('B 05-04 M', 'B 05-04 Z', 'B 06', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11-', )
         }
 
     def number_ranges(self):
@@ -72,7 +72,7 @@ class Seb2015(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3300, 'group': ''}, ],
             self.VESELIBAS_DISTANCE_ID: [{'start': 5000, 'end': 5200, 'group': ''}, ],
-            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
+            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in ('B 05-04', 'B 06', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11-', )],
         }
 
     def get_startlist_table_class(self, distance=None):
@@ -152,7 +152,10 @@ class Seb2015(SEBCompetitionBase):
             elif year == 2006:
                 return 'B 06'
             elif year in (2005, 2004):
-                return 'B 05-04'
+                if gender == 'M':
+                    return 'B 05-04 Z'
+                else:
+                    return 'B 05-04 M'
 
         elif distance_id == self.VESELIBAS_DISTANCE_ID:
             if year in (2001, 2002, 2003):
@@ -275,3 +278,11 @@ class Seb2015(SEBCompetitionBase):
                     helper.calculated_total = 0.0
 
             helper.save()
+
+    def get_group_for_number_search(self, distance_id, gender, birthday):
+        group = super(Seb2015, self).get_group_for_number_search(distance_id, gender, birthday)
+
+        if group in ('B 05-04 M', 'B 05-04 Z'):
+            return 'B 05-04'
+
+        return group
