@@ -188,6 +188,7 @@ class ResultDistanceTable(tables.Table):
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
+    group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
     bike_brand = tables.Column(empty_values=(), verbose_name=_('Bike Brand'), accessor="participant.bike_brand2")
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
@@ -217,7 +218,7 @@ class ResultDistanceTable(tables.Table):
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
         fields = ("number", "status") # all_numbers
-        sequence = ("result_distance", "number", 'first_name','last_name', 'year', 'team', 'bike_brand', 'time', 'points_distance', 'status')
+        sequence = ("result_distance", "number", 'first_name','last_name', 'year', 'group', 'team', 'bike_brand', 'time', 'points_distance', 'status')
         empty_text = _("There are no results")
         order_by = ("time")
         # ordering = ('created')
