@@ -203,7 +203,7 @@ class ResultDistanceTable(tables.Table):
             return '-'
 
     def render_group(self, record):
-        return mark_safe('<span class="tooltips" title="%(result_group)s in the group">%(group)s</span>' % {'group': record.participant.group, 'result_group': ordinal(record.result_group)})
+        return mark_safe('<span class="tooltips" title="%(result_group)s in the group (%(points_group)s points)">%(group)s</span>' % {'group': record.participant.group, 'result_group': ordinal(record.result_group), 'points_group': record.points_group})
 
     class Meta:
         model = Participant
