@@ -249,7 +249,7 @@ THUMBNAIL_ALIASES = {
         'agencysupporter': {'size': (240, 180), 'crop': False},
     },
     'gallery': {
-        'thumb': {'size': (200, 200), 'crop': True},
+        'thumb': {'size': (300, 300), 'crop': True},
         'img': {'size': (1000, 1000), 'crop': False},
     },
     'core': {
