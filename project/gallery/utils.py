@@ -38,6 +38,11 @@ def sync_album(album_id):
             fullpath = os.path.join(root, f)
             md5 = hashlib.md5(open(fullpath).read()).hexdigest()
             photo, created = album.photo_set.get_or_create(md5=md5, defaults={'image': fullpath[6:]})
+
+            if not album.primary_image:
+                album.primary_image = photo
+                album.save()
+
             if not created:
                 photo.image = fullpath[6:]
                 photo.save()
