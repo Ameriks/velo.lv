@@ -1,6 +1,9 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from celery import task
+from celery.schedules import crontab
+from celery.task import periodic_task
+import datetime
 from django.conf import settings
 from easy_thumbnails.files import generate_all_aliases
 
@@ -110,10 +113,16 @@ def get_video_info(_id):
 
 
 
-@task
-def refresh_view_count(_id):
+@periodic_task(run_every=crontab(minute="3", hour='4'))
+def refresh_view_count(_id=None):
     from gallery.models import Video
-    videos = Video.objects.filter(status=1)
+    videos = Video.objects.filter(status=1).order_by('-id')
+
+    if _id:
+        videos = videos.filter(id=_id)
+
+    if not datetime.date.today().day == 1:
+        videos = videos[:20]  # Daily we update only last 20 video counters, but once in month we update all.
 
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"

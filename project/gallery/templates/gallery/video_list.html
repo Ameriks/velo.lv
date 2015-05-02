@@ -70,7 +70,7 @@
             {% if object.status == 0 %}<div class="video-status" title="Somebody from agency must approve video"><span class="label label-danger">Unpublished</span></div>{% endif %}
             <div class="video-viewcount"><span class="label label-default pull-right">{{ object.view_count }}</span></div>
                 <a href="#" title="{{ object.title }}" class="gallery_album" data-url="{{ object.url_embed }}" data-kind="{{ object.kind }}">
-                    <img src="{% if forloop.counter < 20 %}{{ object.image }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" data-src="{{ object.image }}"  class="gallery-img margin-bottom-10 img-responsive center-block" alt="" />
+                    <img src="{% if forloop.counter < 20 %}{% firstof object.image '/static/img/grey_placeholder.png' %}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" data-src="{% firstof object.image '/static/img/grey_placeholder.png' %}"  class="gallery-img margin-bottom-10 img-responsive center-block" alt="" />
                     <span class="gallery_album_title">{{ object.title }}</span>
                     <img src="{{ STATIC_URL }}img/youtube_play.png" class="play-button" />
                 </a>
