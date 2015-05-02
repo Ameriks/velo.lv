@@ -93,7 +93,7 @@ class Album(TimestampMixin, models.Model):
         return self.title
 
     class Meta:
-        ordering = ('-gallery_date', 'photographer', )
+        ordering = ('-gallery_date', '-id', )
 
 
 class Photo(TimestampMixin, models.Model):
@@ -106,6 +106,7 @@ class Photo(TimestampMixin, models.Model):
     is_featured = models.BooleanField(default=False)
 
     is_numbered = models.BooleanField(default=False)  # Are numbers added to this picture?
+    is_processed = models.BooleanField(default=False)  # Are thumbnails generated?
 
     numbers = models.ManyToManyField('registration.Number', through=PhotoNumber)
 

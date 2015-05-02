@@ -14,6 +14,9 @@ class AlbumListView(ListView):
     def get_queryset(self):
         queryset = super(AlbumListView, self).get_queryset()
         queryset = queryset.select_related('primary_image')
+
+        queryset = queryset.filter(is_processed=True)
+
         return queryset
 
 

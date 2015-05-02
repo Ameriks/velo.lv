@@ -18,6 +18,19 @@ def generate_thumbnails(model, pk, field):
     fieldfile = getattr(instance, field)
     generate_all_aliases(fieldfile, include_global=True)
 
+    try:
+        if model.__name__ == 'Photo':
+            instance.is_processed = True
+            instance.save()
+
+            album = instance.album
+            if not album.photo_set.filter(is_processed=False).count():
+                album.is_processed = True
+                album.save()
+
+    except:
+        pass
+
 
 @task
 def get_video_info(_id):
