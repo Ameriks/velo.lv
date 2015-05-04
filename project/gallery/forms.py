@@ -148,6 +148,7 @@ class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
     def get_members(self, zip):
         parts = []
         for name in zip.namelist():
+            name = name.decode('utf-8')
             if name.startswith('__MACOSX'):
                 continue
             if not name.endswith('/'):
@@ -158,7 +159,7 @@ class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
             prefix = '/'.join(prefix) + '/'
         offset = len(prefix)
         for zipinfo in zip.infolist():
-            name = zipinfo.filename
+            name = zipinfo.filename.decode('utf-8')
 
             if name.startswith('__MACOSX'):
                 continue
