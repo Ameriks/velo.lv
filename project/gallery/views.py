@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView
-from gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm
+from gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm, AddPhotoAlbumForm
 from gallery.models import Photo, Album, PhotoNumber, Video
 from velo.mixins.views import RequestFormKwargsMixin
 
@@ -26,7 +26,7 @@ class PhotoListView(ListView):
 
     def get_queryset(self):
         queryset = super(PhotoListView, self).get_queryset()
-        queryset = queryset.filter(album_id=self.kwargs.get('album_pk'))
+        queryset = queryset.filter(album_id=self.kwargs.get('album_pk')).filter(is_processed=True)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -124,3 +124,15 @@ class VideoCreateView(RequestFormKwargsMixin, CreateView):
 
     def get_success_url(self):
         return reverse('gallery:video')
+
+class PhotoAlbumCreateView(RequestFormKwargsMixin, CreateView):
+    model = Album
+    form_class = AddPhotoAlbumForm
+    template_name = 'gallery/video_form.html'
+
+    def get_success_url(self):
+        return reverse('gallery:album')
+
+
+
+

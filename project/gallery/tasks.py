@@ -14,11 +14,16 @@ from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
 import httplib2
 import vimeo
+from subprocess import call
 
 @task
 def generate_thumbnails(model, pk, field):
     instance = model._default_manager.get(pk=pk)
     fieldfile = getattr(instance, field)
+
+    # optimize file
+    call(["/usr/bin/jpegoptim", fieldfile.path])
+
     generate_all_aliases(fieldfile, include_global=True)
 
     try:

@@ -6,16 +6,20 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Div, HTML
 import datetime
 from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.template.defaultfilters import slugify
 from django_select2 import AutoHeavySelect2MultipleWidget
 from django_select2.util import JSFunctionInContext
+import os
 from core.models import Competition
-from gallery.models import Video
+from gallery.models import Video, Photo, Album
 from gallery.select2_fields import PhotoNumberChoices
-from gallery.utils import youtube_video_id
+from gallery.utils import youtube_video_id, sync_album
 from velo.mixins.forms import RequestKwargModelFormMixin
 from django.utils.translation import ugettext_lazy as _
+import zipfile
 
 
 class AssignNumberForm(RequestKwargModelFormMixin, forms.Form):
@@ -96,6 +100,97 @@ class AddVideoForm(RequestKwargModelFormMixin, forms.ModelForm):
         messages.info(self.request, _('Video successfully added. Video must be approved by agency to be available to public.'))
 
         return super(AddVideoForm, self).save(commit)
+
+
+
+class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
+    zip_file = forms.FileField(label=_('Zip File'), help_text=_('ZIP File containing photos'), required=True)
+    class Meta:
+        model = Album
+        fields = ['title', 'gallery_date', 'photographer', 'competition', 'description']
+
+    def __init__(self, *args, **kwargs):
+        super(AddPhotoAlbumForm, self).__init__(*args, **kwargs)
+        competitions = Competition.objects.filter(competition_date__year=datetime.datetime.now().year)
+        self.fields['competition'].choices = ((obj.id, obj.get_full_name) for obj in competitions)
+
+        if self.request.user.is_authenticated():
+            self.fields['photographer'].initial = self.request.user.full_name
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+                    Row(
+                        Div(
+                            'title',
+                            css_class='col-sm-6'
+                        ),
+                        Div(
+                            'photographer',
+                            css_class='col-sm-6'
+                        ),
+                    ),
+                    Row(
+                        Div(
+                            'competition',
+                            css_class='col-sm-6'
+                        ),
+                        Div(
+                            'gallery_date',
+                            css_class='col-sm-6'
+                        ),
+                    ),
+                    'description',
+                    'zip_file',
+                        StrictButton('Add', css_class="btn-primary search-button-margin", type="submit"),
+        )
+
+    def get_members(self, zip):
+        parts = []
+        for name in zip.namelist():
+            if name.startswith('__MACOSX'):
+                continue
+            if not name.endswith('/'):
+                parts.append(name.split('/')[:-1])
+
+        prefix = os.path.commonprefix(parts) or ''
+        if prefix:
+            prefix = '/'.join(prefix) + '/'
+        offset = len(prefix)
+        for zipinfo in zip.infolist():
+            name = zipinfo.filename
+
+            if name.startswith('__MACOSX'):
+                continue
+
+            ext = os.path.splitext(name)[1].lower()
+            if len(name) > offset and ext in ('.jpg', '.jpeg'):
+                zipinfo.filename = "%s%s" % (slugify(name[offset:-len(ext)]), ext)
+                yield zipinfo
+
+
+    def save(self, commit=True):
+        obj = super(AddPhotoAlbumForm, self).save(commit)
+
+        year = obj.gallery_date.year
+        gallery_folder = slugify('%s-%s' % (obj.id, obj.title))
+        gallery_path = settings.MEDIA_ROOT.child('gallery').child(str(year)).child(gallery_folder)
+        if not os.path.exists(gallery_path):
+            os.makedirs(gallery_path)
+
+        obj.folder = 'media/gallery/%i/%s' % (year, gallery_folder)
+        obj.save()
+
+        zip_file = self.cleaned_data.get('zip_file')
+
+        with zipfile.ZipFile(zip_file.temporary_file_path(), "r") as z:
+            z.extractall(gallery_path, self.get_members(z))
+
+        sync_album(obj.id)
+
+        return obj
+
+
 
 
 
