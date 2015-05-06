@@ -16,7 +16,7 @@ def create_csv_seb(user=None):
     this_year = this_year_participates.union(this_year_applications)
 
 
-    this_year_not_payed = set(obj.get('email') for obj in Participant.objects.filter(is_participating=False, competition_id__in=(40, )).exclude(email='').exclude(email__in=this_year).values('email').annotate(c=Count('id')).order_by('-c'))
+    this_year_not_payed = set(obj.get('email') for obj in Participant.objects.filter(is_participating=False, competition_id__in=(40, )).exclude(email='').values('email').annotate(c=Count('id')).order_by('-c'))
 
 
 
