@@ -277,6 +277,8 @@ class Seb2015(SEBCompetitionBase):
                 else:
                     helper.calculated_total = 0.0
 
+            helper.calculated_total = round(helper.calculated_total, 2)
+
             helper.save()
 
     def get_group_for_number_search(self, distance_id, gender, birthday):
