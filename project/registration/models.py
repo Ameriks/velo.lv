@@ -8,7 +8,7 @@ from django.template.defaultfilters import slugify
 
 import uuid
 from save_the_change.mixins import SaveTheChange
-from core.models import Choices, CustomSlug
+from core.models import Choices, CustomSlug, Log
 from payment.models import Payment
 from registration.utils import recalculate_participant
 from velo.mixins.models import TimestampMixin, StatusMixin
@@ -178,7 +178,8 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
         # In case first name, last name or birthday is changed, then slug changes as well.
         old_slug = self.slug
         self.set_slug()
-        if old_slug != self.slug:
+        if old_slug != self.slug and self.is_participating:
+            Log.objects.create(content_object=self, action="Changed SLUG", message="Changing on number model", params={'old_slug':old_slug, 'new_slug': self.slug})
             self.numbers(slug=old_slug).update(participant_slug=self.slug)  # We update number slugs to match new slug
 
             if self.team:
@@ -231,7 +232,7 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
             from results.tasks import master_update_helper_result_table
             master_update_helper_result_table.delay(participant_id=self.id)
 
-        if old_slug != self.slug:
+        if old_slug != self.slug and self.is_participating:
             from team.utils import match_participant_to_applied
             match_participant_to_applied(self)
 
