@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.template.response import TemplateResponse
+from django_downloadview import ObjectDownloadView
 from core.forms import UserCreationForm, ChangeEmailForm, ChangePasswordForm, UserProfileForm, NewEmailForm, \
     StrictAuthenticationFormCustom
 from core.models import Competition, Map, User
@@ -31,6 +32,12 @@ class IndexView(TemplateView):
 
 class CompetitionDetail(DetailView):
     model = Competition
+
+
+class MapGPXDownloadView(ObjectDownloadView):
+    model = DistanceAdmin
+    file_field = 'gpx'
+    pk_url_kwarg = 'pk2'
 
 
 class MapView(SetCompetitionContextMixin, ListView):

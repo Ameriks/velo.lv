@@ -10,7 +10,7 @@
         <div class="row">
             {% for d in distanceadmin %}
             <div class="col-sm-4">
-                <a href="{{ d.gpx.url }}">{{ d.distance }}.gpx</a>
+                <a href="{% url 'competition:map_gpx' d.id %}">{{ d.distance }}.gpx</a>
             </div>
             {% endfor %}
 

@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from django.conf.urls import patterns, url
-from core.views import CompetitionDetail, MapView
+from core.views import CompetitionDetail, MapView, MapGPXDownloadView
 from flatpages.views import FlatpageView
 from registration.views import ParticipantList, TeamJsonList, ParticipantSearchView, DataForExternalTotal, \
     DataForExternalAll, BikeBrandJsonList
@@ -17,6 +17,8 @@ urlpatterns = patterns('',
                        url(_(r'^(?P<pk>\d+)/all.json$'), DataForExternalAll.as_view(), name='external_all_json'),
 
                        url(_(r'^(?P<pk>\d+)/maps/$'), MapView.as_view(), name='maps'),
+                       url(_(r'^maps/gpx/(?P<pk2>\d+)/$'), MapGPXDownloadView.as_view(), name='map_gpx'),
+
                        url(_(r'^(?P<pk>\d+)/supporters/$'), CompetitionSupporters.as_view(), name='supporters'),
 
                        url(_(r'^(?P<pk>\d+)/team/$'), TeamListView.as_view(), name='team'),
