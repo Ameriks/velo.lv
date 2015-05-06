@@ -15,17 +15,6 @@ def create_csv_seb(user=None):
     this_year_applications = set(obj.get('email') for obj in Application.objects.filter(participant__is_participating=True, competition_id__in=(38, 39, 40, 41, 42, 43, 44, 45)).exclude(email='').values('email').annotate(c=Count('id')).order_by('-c'))
     this_year = this_year_participates.union(this_year_applications)
 
-
-
-
-
-    last_year_participates = set(obj.get('email') for obj in Participant.objects.filter(competition_id__in=(25,26,27,28,29,30,31,32)).exclude(email='').exclude(email__in=this_year).exclude(email__in=this_year_not_payed).values('email').annotate(c=Count('id')).order_by('-c'))
-    last_year_applications = set(obj.get('email') for obj in Application.objects.filter(competition_id__in=(25,26,27,28,29,30,31,32)).exclude(email='').exclude(email__in=this_year).exclude(email__in=this_year_not_payed).values('email').annotate(c=Count('id')).order_by('-c'))
-    last_year = last_year_participates.union(last_year_applications)
-
-    previously = set(obj.get('participant_email') for obj in Ev68RVeloParticipations.objects.filter(competition_id__in=(12, 13,14,15,16,17,18,27,28,29,30,31,32,33,34)).exclude(participant_email='').exclude(participant_email__in=this_year).exclude(participant_email__in=this_year_not_payed).exclude(participant_email__in=last_year).values('participant_email').annotate(c=Count('id')).order_by('-c'))
-
-
     sec_stage_participates = set(obj.get('email') for obj in Participant.objects.filter(is_participating=True, competition_id__in=(40, )).exclude(email='').values('email').annotate(c=Count('id')).order_by('-c'))
     sec_stage_applications = set(obj.get('email') for obj in Application.objects.filter(participant__is_participating=True, competition_id__in=(40, )).exclude(email='').values('email').annotate(c=Count('id')).order_by('-c'))
     sec_stage = sec_stage_participates.union(sec_stage_applications)
@@ -37,6 +26,18 @@ def create_csv_seb(user=None):
 
 
     this_year_not_payed = set(obj.get('email') for obj in Participant.objects.filter(is_participating=False, competition_id__in=(40, )).exclude(email='').exclude(email__in=not_in_second_stage).values('email').annotate(c=Count('id')).order_by('-c'))
+
+
+
+
+    last_year_participates = set(obj.get('email') for obj in Participant.objects.filter(competition_id__in=(25,26,27,28,29,30,31,32)).exclude(email='').exclude(email__in=this_year).exclude(email__in=this_year_not_payed).values('email').annotate(c=Count('id')).order_by('-c'))
+    last_year_applications = set(obj.get('email') for obj in Application.objects.filter(competition_id__in=(25,26,27,28,29,30,31,32)).exclude(email='').exclude(email__in=this_year).exclude(email__in=this_year_not_payed).values('email').annotate(c=Count('id')).order_by('-c'))
+    last_year = last_year_participates.union(last_year_applications)
+
+    previously = set(obj.get('participant_email') for obj in Ev68RVeloParticipations.objects.filter(competition_id__in=(12, 13,14,15,16,17,18,27,28,29,30,31,32,33,34)).exclude(participant_email='').exclude(participant_email__in=this_year).exclude(participant_email__in=this_year_not_payed).exclude(participant_email__in=last_year).values('participant_email').annotate(c=Count('id')).order_by('-c'))
+
+
+
 
 
 
