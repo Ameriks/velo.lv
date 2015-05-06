@@ -38,6 +38,8 @@ class MapGPXDownloadView(ObjectDownloadView):
     model = DistanceAdmin
     file_field = 'gpx'
     pk_url_kwarg = 'pk2'
+    mimetype = 'application/gpx+xml'
+
 
 
 class MapView(SetCompetitionContextMixin, ListView):
