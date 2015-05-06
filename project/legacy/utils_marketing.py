@@ -36,7 +36,7 @@ def create_csv_seb(user=None):
     not_in_second_stage = first_stage_participates.union(first_stage_applications)
 
 
-    this_year_not_payed = set(obj.get('email') for obj in Participant.objects.filter(is_participating=False, competition_id__in=(40, )).exclude(email='').exclude(email=not_in_second_stage).values('email').annotate(c=Count('id')).order_by('-c'))
+    this_year_not_payed = set(obj.get('email') for obj in Participant.objects.filter(is_participating=False, competition_id__in=(40, )).exclude(email='').exclude(email__in=not_in_second_stage).values('email').annotate(c=Count('id')).order_by('-c'))
 
 
 
