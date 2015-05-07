@@ -145,6 +145,8 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
     total_insurance_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     final_price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
+    _competition_class = None
+
     class Meta:
         ordering = ('distance', 'created')
         verbose_name = _('participant')
@@ -152,6 +154,12 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
 
     def __unicode__(self):
         return '%s %s - %s %s' % (self.first_name, self.last_name, self.competition, self.distance)
+
+    def get_competition_class(self):
+        if not self._competition_class:
+            class_ = load_class(self.competition.processing_class)
+            self._competition_class = class_(self.competition.id)
+        return self._competition_class
 
     def set_slug(self):
         if self.birthday:
@@ -164,10 +172,7 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
 
     def set_group(self):
         if not self.group and self.is_participating:
-            if self.competition.processing_class:
-                class_ = load_class(self.competition.processing_class)
-                processing_class = class_(self.competition_id)
-                self.group = processing_class.assign_group(self.distance_id, self.gender, self.birthday)
+            self.group = self.get_competition_class().assign_group(self.distance_id, self.gender, self.birthday)
 
 
     def save(self, *args, **kwargs):
@@ -242,9 +247,9 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
         self.set_group()
         if not slug:
             slug = self.slug
-        number_queryset = Number.objects.filter(participant_slug=slug, competition_id__in=self.competition.get_ids(), distance=self.distance)
-        if self.group and self.group[0] == 'B':
-            number_queryset = number_queryset.filter(group=self.group)
+        group = self.get_competition_class().get_group_for_number_search(self.distance_id, self.gender, self.birthday)
+        number_queryset = Number.objects.filter(participant_slug=slug, competition_id__in=self.competition.get_ids(), distance=self.distance, group=group)
+
         return number_queryset
 
 
