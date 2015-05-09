@@ -167,7 +167,7 @@ def create_donations_list(competition=None, competition_id=None):
 
     row = 1
     header_row = (
-        '#', 'Pieteikuma ID', 'Sacensības', 'Uzvārds', 'Vārds', 'Personas kods', 'Pieteikuma ziedojums', 'Veiksmīgo maksājumu skaits', 'Veiksmiga maksajuma ziedojuma summa (check)', 'Rekina NR')
+        '#', 'Pieteikuma ID', 'Sacensības', 'Uzvārds', 'Vārds', 'Personas kods', 'E-pasts', 'Pieteikuma ziedojums', 'Veiksmīgo maksājumu skaits', 'Veiksmiga maksajuma ziedojuma summa (check)', 'Rekina NR')
     for col, value in enumerate(header_row):
         sheet.write(row, col, value)
 
@@ -184,7 +184,7 @@ def create_donations_list(competition=None, competition_id=None):
 
         row_values = (
             index, application.id, unicode(application.competition), participant.last_name,
-            participant.first_name, participant.ssn, application.donation, total_count, total_payed, application.external_invoice_nr)
+            participant.first_name, participant.ssn, application.email, application.donation, total_count, total_payed, application.external_invoice_nr)
 
         for col, value in enumerate(row_values):
             sheet.write(row, col, value)
