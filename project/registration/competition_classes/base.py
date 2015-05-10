@@ -285,11 +285,11 @@ class SEBCompetitionBase(CompetitionScriptBase):
         FROM
         (
         Select res.id, res.competition_id, res.distance_id, res.group_total, res.distance_total,
-        row_number() OVER (PARTITION BY res.distance_id ORDER BY
+        row_number() OVER (PARTITION BY res.competition_id, res.distance_id ORDER BY
         res.distance_id, res.distance_total desc,
         res.distance_points7 desc, res.distance_points6 desc, res.distance_points5 desc, res.distance_points4 desc,
         res.distance_points3 desc, res.distance_points2 desc, res.distance_points1 desc) as distance_row_nr,
-        row_number() OVER (PARTITION BY res.distance_id, p.group ORDER BY
+        row_number() OVER (PARTITION BY res.competition_id, res.distance_id, p.group ORDER BY
         res.distance_id, p.group, res.group_total desc, res.group_points7 desc, res.group_points6 desc, res.group_points5 desc,
         res.group_points4 desc, res.group_points3 desc, res.group_points2 desc, res.group_points1 desc
         ) as group_row_nr
@@ -464,8 +464,8 @@ SET
 FROM
 (
 Select res.id, result_distance, res.competition_id, res.time, p.is_competing, p.distance_id,
-row_number() OVER (PARTITION BY nr.distance_id ORDER BY nr.distance_id, res.status, res.time, res.id) as distance_row_nr,
-row_number() OVER (PARTITION BY nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time, res.id) as group_row_nr
+row_number() OVER (PARTITION BY res.competition_id, nr.distance_id ORDER BY nr.distance_id, res.status, res.time, res.id) as distance_row_nr,
+row_number() OVER (PARTITION BY res.competition_id, nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time, res.id) as group_row_nr
 FROM results_result As res
 INNER JOIN registration_number nr ON res.number_id = nr.id
 INNER JOIN registration_participant p ON res.participant_id = p.id
