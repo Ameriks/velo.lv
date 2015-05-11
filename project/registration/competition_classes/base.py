@@ -602,7 +602,7 @@ AND r.id = res2.id
 
     def import_children_csv(self, filename): # berni1p14.xls
 
-        result_column = 9 + self.competition_index
+        result_column = 7 + (self.competition_index * 3)
 
         with open(filename, 'rb') as csvfile:
             results = csv.reader(csvfile)
