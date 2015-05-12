@@ -32,7 +32,7 @@ class Brm2015(CompetitionScriptBase):
 
         group = "%i %s" % (year, children_gender_mapping.get(gender))
 
-        if group in self.groups:
+        if group in self.groups.get(self.BERNU_DISTANCE_ID):
             return group
 
         print 'here I shouldnt be...'
