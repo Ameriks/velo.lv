@@ -28,7 +28,7 @@ class Brm2015(CompetitionScriptBase):
 
     def assign_group(self, distance_id, gender, birthday):
         year = birthday.year
-        children_gender_mapping = {'W': 'M', 'M': 'Z'}
+        children_gender_mapping = {'F': 'M', 'M': 'Z'}
 
         group = "%i %s" % (year, children_gender_mapping.get(gender))
 
