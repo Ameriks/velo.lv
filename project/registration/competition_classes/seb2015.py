@@ -253,7 +253,7 @@ class Seb2015(SEBCompetitionBase):
                     matches = get_close_matches(participant.slug, prev_slugs)
                     if matches:
                         helper.matches_slug = matches[0]
-            else:
+            elif current_standing:
                 participated_count = 0
                 skipped_count = 0
                 total_points = 0
@@ -277,6 +277,9 @@ class Seb2015(SEBCompetitionBase):
                 else:
                     helper.calculated_total = 0.0
 
+            if helper.calculated_total is None:
+                helper.calculated_total = 0.0
+            
             helper.calculated_total = round(helper.calculated_total, 2)
 
             helper.save()
