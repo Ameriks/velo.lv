@@ -7,8 +7,8 @@ DATABASES = {
         'NAME': os.environ.get('PGSQL_DB', 'velolv'),
         'USER': os.environ.get('PGSQL_USER', 'velolv'),
         'PASSWORD': os.environ['PGSQL_PASS'],
-        'HOST': '192.168.110.128',
-        'PORT': 6432,
+        'HOST': '172.17.42.1',
+        'PORT': '15005',
     },
     'legacy': {
         'NAME': 'velo',

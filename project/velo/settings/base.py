@@ -288,8 +288,8 @@ ADMIN_URL = 'administrator'
 djcelery.setup_loader()
 RABBITMQ_USER = 'velolv'
 RABBITMQ_PASS = os.environ['RABBITMQ_PASS']
-RABBITMQ_HOST = '192.168.110.128'
-RABBITMQ_PORT = '5672'
+RABBITMQ_HOST = '172.17.42.1'
+RABBITMQ_PORT = '15015'
 RABBITMQ_VHOST = RABBITMQ_USER
 BROKER_URL = 'amqp://{user}:{password}@{host}:{port}/{vhost}'.format(user=RABBITMQ_USER, password=RABBITMQ_PASS,
                                                                      host=RABBITMQ_HOST, port=RABBITMQ_PORT,
