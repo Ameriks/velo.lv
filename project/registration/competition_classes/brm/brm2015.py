@@ -28,6 +28,11 @@ class Brm2015(CompetitionScriptBase):
 
     def assign_group(self, distance_id, gender, birthday):
         year = birthday.year
+
+        # If participates younger children, then assign 2012 group
+        if year > 2012:
+            year = 2012
+
         children_gender_mapping = {'F': 'M', 'M': 'Z'}
 
         group = "%i %s" % (year, children_gender_mapping.get(gender))
