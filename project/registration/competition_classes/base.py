@@ -16,7 +16,7 @@ from results.models import Result, DistanceAdmin, ChipScan, SebStandings, TeamRe
 from results.tables import ResultChildrenGroupTable, ResultGroupTable, ResultDistanceTable, \
     ResultChildrenGroupStandingTable, ResultGroupStandingTable, ResultDistanceStandingTable, ResultRMGroupTable, \
     ResultRMSportsDistanceTable, ResultRMTautaDistanceTable
-from results.tasks import create_result_sms, recalculate_standing_for_result
+from results.tasks import create_result_sms, recalculate_standing_for_result, update_helper_result_table
 from team.models import MemberApplication, Team
 from django.template.defaultfilters import slugify
 
@@ -539,6 +539,9 @@ AND r.id = res2.id
 
 
     def assign_numbers(self, reassign=False, assign_special=False):
+
+        # Update helper results before assigning
+        update_helper_result_table(self.competition_id, update=True)
 
         if self.competition.level != 2:
             return Exception('We allow assigning numbers only for stages.')

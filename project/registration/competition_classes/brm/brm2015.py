@@ -3,8 +3,11 @@ from __future__ import unicode_literals
 import datetime
 from sitetree.utils import item
 from registration.competition_classes.base import CompetitionScriptBase
+from registration.models import Number, Participant
 from registration.tables import ParticipantTable
+from results.models import HelperResults
 from results.tables import ResultChildrenGroupTable
+from results.tasks import update_helper_result_table
 
 
 class Brm2015(CompetitionScriptBase):
@@ -25,6 +28,13 @@ class Brm2015(CompetitionScriptBase):
             self.BERNU_DISTANCE_ID: tuple(sorted(ret)),
         }
 
+    def number_ranges(self):
+        """
+        Returns number ranges for each distance.
+        """
+        return {
+            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 71, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
+        }
 
     def assign_group(self, distance_id, gender, birthday):
         year = birthday.year
@@ -73,3 +83,53 @@ class Brm2015(CompetitionScriptBase):
 
     def get_group_for_number_search(self, distance_id, gender, birthday):
         return self.assign_group(distance_id, gender, birthday)
+
+
+
+    def create_helper_results(self, participants):
+        for participant in participants:
+            helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
+
+
+    def assign_numbers_continuously(self):
+        self.assign_numbers(reassign=False, assign_special=False)
+
+
+    def assign_numbers(self, reassign=False, assign_special=False):
+
+        # Update helper results before assigning
+        update_helper_result_table(self.competition_id, update=True)
+
+        if reassign:
+            Number.objects.filter(competition_id__in=self.competition.get_ids()).update(participant_slug='', number_text='')
+            Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True).update(primary_number=None)
+
+        helperresults = HelperResults.objects.filter(competition=self.competition, participant__is_participating=True, participant__primary_number=None).select_related('participant').order_by('participant__registration_dt')
+
+        for result in helperresults:
+            participant = result.participant
+
+            group = self.get_group_for_number_search(participant.distance_id, participant.gender, participant.birthday)
+            try:
+                number = Number.objects.get(participant_slug=participant.slug, distance=participant.distance, group=group)
+                if not participant.primary_number:
+                    participant.primary_number = number
+                    participant.save()
+            except:
+                next_number = Number.objects.filter(participant_slug='', distance=participant.distance, group=group)
+
+                if participant.gender == 'M':
+                    next_number = next_number.order_by('number')
+                else:
+                    next_number = next_number.order_by('-number')
+
+                if not next_number:
+                    raise Exception('No free numbers to assign')
+                else:
+                    next_number = next_number[0]
+
+                next_number.participant_slug = participant.slug
+                print "%s - %s" % (next_number, participant.slug)
+                next_number.save()
+                participant.primary_number = next_number
+                participant.save()
