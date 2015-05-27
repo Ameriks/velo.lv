@@ -172,7 +172,7 @@ class RM2015(RMCompetitionBase):
                 helper.result_used = result
             else:
                 helper.calculated_total = None
-                matches = get_close_matches(participant.slug, prev_slugs_sport if participant.distance_id == self.SPORTA_DISTANCE_ID else prev_slugs_tauta)
+                matches = get_close_matches(participant.slug, prev_slugs_sport if participant.distance_id == self.SPORTA_DISTANCE_ID else prev_slugs_tauta, 1, 0.8)
                 if matches:
                     helper.matches_slug = matches[0]
 
