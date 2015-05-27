@@ -64,19 +64,18 @@ class RM2015(RMCompetitionBase):
 
     def number_pdf(self, participant_id):
         participant = Participant.objects.get(id=participant_id)
-        styles = getSampleStyleSheet()
         output = StringIO.StringIO()
 
         c = canvas.Canvas(output, pagesize=A4)
         fill_page_with_image("media/competition/vestule/RVm_2015_vestule_ar_tekstu.jpg", c)
 
         c.setFont(_baseFontNameB, 18)
-        c.drawString(5*cm, 20*cm, participant.full_name.upper())
+        c.drawString(5*cm, 20*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
         c.drawString(5*cm, 18*cm, unicode(participant.distance))
 
         if participant.primary_number:
             c.setFont(_baseFontNameB, 35)
-            c.drawString(15*cm, 19*cm, unicode(participant.primary_number))
+            c.drawString(15*cm, 18.5*cm, unicode("1000"))
 
         c.showPage()
         c.save()
