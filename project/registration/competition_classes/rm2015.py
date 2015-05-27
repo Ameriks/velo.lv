@@ -74,11 +74,9 @@ class RM2015(RMCompetitionBase):
         c.drawString(5*cm, 20*cm, participant.full_name.upper())
         c.drawString(5*cm, 18*cm, unicode(participant.distance))
 
-        try:
+        if participant.primary_number:
             c.setFont(_baseFontNameB, 35)
             c.drawString(15*cm, 19*cm, unicode(participant.primary_number))
-        except:
-            pass
 
         c.showPage()
         c.save()
