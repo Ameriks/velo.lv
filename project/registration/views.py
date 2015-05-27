@@ -61,7 +61,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
 
         queryset = queryset.select_related('competition', 'distance', 'team', 'primary_number')
 
-        if self.competition.id in (38, 39, 40, 41, 42, 43, 44, 45):
+        if self.competition.id >= 38:
             queryset = queryset.filter(helperresults__competition_id = self.competition.id)
             queryset = queryset.extra(
                     select={

@@ -59,7 +59,7 @@ class ParticipantTableBase(tables.Table):
 
 
 class ParticipantTable(ParticipantTableBase):
-    primary_number = tables.Column(verbose_name=_('Primary Number'), default='-', accessor='primary_number')
+    primary_number = tables.Column(verbose_name=_('Number'), default='-', accessor='primary_number')
 
     class Meta(ParticipantTableBase.Meta):
         fields = ("first_name", "last_name", "bike_brand2", "group", 'primary_number')
@@ -82,6 +82,17 @@ class ParticipantTableWithPassage(ParticipantTable):
     class Meta(ParticipantTable.Meta):
         sequence = ("passage_assigned", "primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2',)
         order_by = ("passage_assigned", "primary_number")
+
+class ParticipantTableWithLastYearPlace(ParticipantTable):
+    calculated_total = tables.Column(verbose_name=_('Last Year Place'), accessor='calculated_total')
+    primary_number = tables.Column(verbose_name=_('Number'), default='-', accessor='primary_number')
+    
+    def render_calculated_total(self, value):
+        return int(value)
+
+    class Meta(ParticipantTable.Meta):
+        sequence = ("calculated_total", "primary_number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2',)
+        order_by = ("calculated_total", "primary_number")
 
 
 

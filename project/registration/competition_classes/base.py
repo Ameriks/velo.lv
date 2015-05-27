@@ -10,7 +10,7 @@ from sitetree.utils import item
 from core.models import Competition, Log, Choices
 from registration.models import Number, Participant, PreNumberAssign
 from django.core.cache import cache
-from registration.tables import ParticipantTable
+from registration.tables import ParticipantTable, ParticipantTableWithLastYearPlace
 from results.helper import time_to_seconds
 from results.models import Result, DistanceAdmin, ChipScan, SebStandings, TeamResultStandings, LapResult, HelperResults
 from results.tables import ResultChildrenGroupTable, ResultGroupTable, ResultDistanceTable, \
@@ -753,7 +753,10 @@ class RMCompetitionBase(CompetitionScriptBase):
                 return ResultRMTautaDistanceTable
 
     def get_startlist_table_class(self, distance=None):
-        return ParticipantTable
+        if distance.id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            return ParticipantTableWithLastYearPlace
+        else:
+            return ParticipantTable
 
 
     def assign_numbers_continuously(self):

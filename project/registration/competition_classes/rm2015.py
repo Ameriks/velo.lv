@@ -1,9 +1,11 @@
 # coding=utf-8
 from __future__ import unicode_literals
 import StringIO
+from difflib import get_close_matches
 from marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from registration.competition_classes.base import RMCompetitionBase
-from registration.models import Number, Participant
+from registration.models import Number, Participant, ChangedName
+from results.models import Result, HelperResults
 
 from marketing.tasks import send_mailgun
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table
@@ -133,16 +135,45 @@ class RM2015(RMCompetitionBase):
         c.drawCentredString(c._pagesize[0] / 2, 14*cm, "Laiks: %s" % result.time.replace(microsecond=0))
         c.drawCentredString(c._pagesize[0] / 2, 13*cm, "Vidējais ātrums: %s km/h" % result.avg_speed)
 
-        # if result.zero_time:
-        #     zero_time = datetime.datetime.combine(datetime.date.today(), result.zero_time)
-        #     delta = datetime.datetime.combine(datetime.date.today(), datetime.time(0, 0, 0)) - zero_time
-        #     zero_time = (datetime.datetime.combine(datetime.date.today(), result.time) + delta).time().replace(microsecond=0)
-        #     c.drawCentredString(c._pagesize[0] / 2, 12*cm, "Čipa laiks: %s" % zero_time)
-
         c.showPage()
         c.save()
         output.seek(0)
         return output
 
+
     def create_helper_results(self, participants):
-        return True
+        prev_competition = self.competition.get_previous_sibling()
+
+        prev_slugs_sport = [obj.participant.slug for obj in Result.objects.filter(competition=prev_competition, participant__distance__kind='S').select_related('participant')]
+        prev_slugs_tauta = [obj.participant.slug for obj in Result.objects.filter(competition=prev_competition, participant__distance__kind='T').select_related('participant')]
+
+        for participant in participants:
+            results = Result.objects.filter(competition=prev_competition, participant__slug=participant.slug, participant__distance__kind=participant.distance.kind).order_by('time')
+
+            if not results:
+                try:
+                    changed = ChangedName.objects.get(new_slug=participant.slug)
+                    results = Result.objects.filter(competition=prev_competition, participant__slug=changed.slug, participant__distance__kind=participant.distance.kind).order_by('time')
+                except:
+                    pass
+
+
+            helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
+
+            if participant.distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+                continue
+
+            if helper.is_manual:
+                continue # We do not want to overwrite manually created records
+
+            if results:
+                result = results[0]
+                helper.calculated_total = result.result_distance
+                helper.result_used = result
+            else:
+                helper.calculated_total = None
+                matches = get_close_matches(participant.slug, prev_slugs_sport if participant.distance_id == self.SPORTA_DISTANCE_ID else prev_slugs_tauta)
+                if matches:
+                    helper.matches_slug = matches[0]
+
+            helper.save()
