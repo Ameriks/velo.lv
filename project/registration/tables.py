@@ -84,9 +84,9 @@ class ParticipantTableWithPassage(ParticipantTable):
         order_by = ("passage_assigned", "primary_number")
 
 class ParticipantTableWithLastYearPlace(ParticipantTable):
-    calculated_total = tables.Column(verbose_name=_('Last Year Place'), accessor='calculated_total')
+    calculated_total = tables.Column(verbose_name=_("Last Year's Place"), accessor='calculated_total')
     primary_number = tables.Column(verbose_name=_('Number'), default='-', accessor='primary_number')
-    
+
     def render_calculated_total(self, value):
         return int(value)
 

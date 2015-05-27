@@ -41,7 +41,7 @@ js_info_dict = {
 }
 
 urlpatterns = i18n_patterns('',
-    url(r'^$', RedirectView.as_view(url='/lv/sacensibas/40/rezultati/'), name='index'),
+    url(r'^$', RedirectView.as_view(url='/lv/sacensibas/47/dalibnieki/'), name='index'),
 
     url(_(r'^application/$'), ApplicationCreate.as_view(), name='application'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$'), ApplicationUpdate.as_view(), name='application'),

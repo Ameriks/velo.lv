@@ -716,17 +716,17 @@ class RMCompetitionBase(CompetitionScriptBase):
         Returns number ranges for each distance.
         """
         return {
-            self.SPORTA_DISTANCE_ID: [{'start': 201, 'end': 900, 'group': ''}, ],
-            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 5000, 'group': ''}, ],
+            self.SPORTA_DISTANCE_ID: [{'start': 201, 'end': 500, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 4100, 'group': ''}, ],
         }
 
     def passages(self):
         return {
-            self.SPORTA_DISTANCE_ID: [(1, 201, 400, 0), (2, 401, 600, 0), (3, 601, 800, 0)],
+            self.SPORTA_DISTANCE_ID: [(1, 201, 400, 0), (2, 401, 500, 0)],
             self.TAUTAS_DISTANCE_ID: [
-                                    (1, 2001, 2200, 5),
+                                    (1, 2001, 2200, 10),
                                     (2, 2201, 2400, 30),
-                                    (3, 2401, 2600, 20),
+                                    (3, 2401, 2600, 30),
                                     (4, 2601, 2800, 10),
                                     (5, 2801, 3000, 10),
                                     (6, 3001, 3200, 10),
