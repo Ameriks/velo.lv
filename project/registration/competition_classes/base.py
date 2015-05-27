@@ -754,7 +754,11 @@ class RMCompetitionBase(CompetitionScriptBase):
 
     def get_startlist_table_class(self, distance=None):
         if distance.id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
-            return ParticipantTableWithLastYearPlace
+            are_numbers_assigned = Participant.objects.filter(is_participating=True, distance=distance).exclude(primary_number=None).count()
+            if not are_numbers_assigned:
+                return ParticipantTableWithLastYearPlace
+            else:
+                return ParticipantTable
         else:
             return ParticipantTable
 
