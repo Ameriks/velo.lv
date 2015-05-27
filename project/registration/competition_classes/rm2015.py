@@ -67,37 +67,22 @@ class RM2015(RMCompetitionBase):
         styles = getSampleStyleSheet()
         output = StringIO.StringIO()
 
-        doc = SimpleDocTemplate(output, pagesize=A4, showBoundary=0)
-        elements = []
-        elements.append(get_image(self.competition.logo.path, width=10*cm))
-        elements.append(Paragraph(u"Apsveicam ar sekmīgu reģistrēšanos Elkor Rīgas Velomaratonam 2015, kas notiks šo svētdien, 31.maijā 11.novembra Krastmalā!", styles['h3']))
+        c = canvas.Canvas(output, pagesize=A4)
+        fill_page_with_image("media/competition/vestule/RVm_2015_vestule_ar_tekstu.jpg", c)
 
-        data = [['Vārds, uzvārds:', participant.full_name],
-                ['Dzimšanas gads:', participant.birthday.year],
-                ['Distance:', participant.distance], ]
-        if participant.primary_number:
-            data.append(['Starta numurs', participant.primary_number.number])
+        c.setFont(_baseFontNameB, 18)
+        c.drawString(5*cm, 20*cm, participant.full_name.upper())
+        c.drawString(5*cm, 18*cm, unicode(participant.distance))
 
-        table_style = base_table_style[:]
-        table_style.append(['FONTSIZE', (0, 0), (-1, -1), 16])
-        table_style.append(['BOTTOMPADDING', (0, 0), (-1, -1), 10])
+        try:
+            c.setFont(_baseFontNameB, 35)
+            c.drawString(15*cm, 19*cm, unicode(participant.primary_number))
+        except:
+            pass
 
-
-        elements.append(Table(data, style=table_style, hAlign='LEFT'))
-
-        elements.append(Paragraph(u"Šo vēstuli, lūdzam saglabāt un izprintēt un ņemt līdzi uz Rīgas Velomaratona Expo centru, kas darbosies pie Elkor Plaza Brīvības gatvē 201 29. un 30.maijā no pkst.10:00-21:00.", styles['h3']))
-        elements.append(Paragraph(u"Uzrādot šo vēstuli, Jūs varēsiet saņemt aploksni ar savu starta numuru. Lūdzam paņemt no reģistrācijas darbiniekiem instrukciju par pareizu numura piestiprināšanu.", styles['h3']))
-        elements.append(Paragraph(u"Papildus informāciju meklējiet www.velo.lv", styles['h3']))
-        elements.append(Paragraph(u"Vēlreiz apsveicam ar reģistrēšanos Rīgas Velomaratonam un novēlam veiksmīgu startu!", styles['h3']))
-
-        elements.append(Paragraph(u"Rīga ir mūsu!", styles['title']))
-
-        elements.append(Paragraph(u"Rīgas Velomaratona organizatori", styles['h3']))
-
-        elements.append(Paragraph(u"Jautājumi?", styles['h2']))
-        elements.append(Paragraph(u"Neskaidrību gadījumā sazinieties ar mums: pieteikumi@velo.lv", styles['h3']))
-
-        doc.build(elements)
+        c.showPage()
+        c.save()
+        output.seek(0)
         return output
 
     def assign_numbers_continuously(self):
