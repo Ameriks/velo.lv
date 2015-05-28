@@ -20,7 +20,7 @@ from velo.utils import load_class
 
 
 __all__ = [
-    'ManageParticipantList', 'ManageParticipantUpdate', 'ManageParticipantCreate', 'ManageParticipantIneseCreate', 'ManageParticipantPDF',
+    'ManageParticipantList', 'ManageParticipantUpdate', 'ManageParticipantCreate', 'ManageParticipantIneseCreate', 
     'ManageApplicationList', 'ManageApplication', 'ManagePreNumberAssignList', 'ManagePreNumberAssignUpdate', 'ManagePreNumberAssignCreate',
 ]
 
@@ -206,26 +206,6 @@ class ManageParticipantIneseCreate(ManageParticipantCreate):
             return reverse('manager:participant', kwargs={'pk': self.kwargs.get('pk'), 'pk_participant': self.object.id})
         else:
             return reverse('manager:participant_list', kwargs={'pk': self.kwargs.get('pk')})
-
-
-
-class ManageParticipantPDF(ManagerPermissionMixin, DetailView):
-    pk_url_kwarg = 'pk_participant'
-    model = Participant
-
-    def get(self, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.competition.processing_class:
-            _class = load_class(self.object.competition.processing_class)
-        else:
-            raise Http404
-        processing_class = _class(self.object.competition_id)
-        file_obj = processing_class.number_pdf(participant_id=self.object.id)
-        response = HttpResponse(mimetype='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=%s.pdf' % self.object.slug
-        response.write(file_obj.getvalue())
-        file_obj.close()
-        return response
 
 
 class ManagePreNumberAssignList(ManagerPermissionMixin, SingleTableViewWithRequest):

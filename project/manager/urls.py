@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from manager.views import ManageParticipantList, ManageCompetitionList, ManageCompetitionDetail, ManageParticipantUpdate, \
     ManageAppliedTeamMembersList, ManageParticipantCreate, ManageNumberList, ManageNumberUpdate, ManageDistanceAdminList, \
     ManageDistanceAdminUpdate, ManageTeamList, ManageTeamUpdate, MultipleSameSlugView, MultipleNumbersView, \
-    ResultAssignedToInactiveParticipant, ManageParticipantPDF, ManageResultCreate, DifferNumberSlugView, \
+    ResultAssignedToInactiveParticipant, ManageResultCreate, DifferNumberSlugView, \
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
     ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView, ManagePriceList, ManagePriceCreate, ManagePriceUpdate, \
@@ -59,7 +59,6 @@ urlpatterns = patterns('',
 
 
                        url(r'^competition/(?P<pk>\d+)/participant/(?P<pk_participant>\d+)/$', ManageParticipantUpdate.as_view(), name='participant'),
-                       url(r'^competition/(?P<pk>\d+)/participant/(?P<pk_participant>\d+)/pdf/$', ManageParticipantPDF.as_view(), name='participant_pdf'),
                        url(r'^competition/(?P<pk>\d+)/participant/add/$', ManageParticipantCreate.as_view(), name='participant_create'),
                        url(r'^competition/(?P<pk>\d+)/participant/addi/$', ManageParticipantIneseCreate.as_view(), name='participant_createi'),
 

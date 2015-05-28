@@ -146,7 +146,7 @@ class ManageParticipantTable(GetRequestTableKwargs, tables.Table):
         return mark_safe('<a href="%s">%s</a>' % (url, record.last_name))
 
     def render_pdf(self, record, **kwargs):
-        url = reverse('manager:participant_pdf', kwargs={'pk': self.request_kwargs.get('pk'), 'pk_participant': record.id})
+        url = reverse('participant_number_pdf', kwargs={'slug': record.code_short})
         return mark_safe('<a href="%s">PDF</a>' % url)
 
 
