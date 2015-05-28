@@ -1009,10 +1009,10 @@ AND r.id = res2.id
         if assign_special:
             # first assign special numbers
             numbers = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None)
-            for number in numbers:
-                number = Number.objects.get(number=number.number, competition=self.competition)
-                print "%s - %s" % (number, number.participant_slug)
-                number.participant_slug = number.participant_slug
+            for pre in numbers:
+                number = Number.objects.get(number=pre.number, competition=self.competition)
+                print "%s - %s" % (number, pre.participant_slug)
+                number.participant_slug = pre.participant_slug
                 number.save()
 
                 participant = Participant.objects.filter(slug=number.participant_slug, competition=self.competition, distance=number.distance, is_participating=True)
