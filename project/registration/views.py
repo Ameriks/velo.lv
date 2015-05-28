@@ -4,7 +4,7 @@ import uuid
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Count, Sum
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 
 from django.template.defaultfilters import slugify
 from django.utils import timezone
@@ -26,6 +26,7 @@ from team.models import Team, Member
 from velo.mixins.forms import GetClassNameMixin
 from velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin
 from django.utils.translation import ugettext_lazy as _
+from velo.utils import load_class
 
 
 class ParticipantList(SetCompetitionContextMixin, SingleTableView):
@@ -552,3 +553,22 @@ class MyCompanyApplicationList(LoginRequiredMixin, SingleTableView):
 
 class CompanyApplicationParticipantAddOK(TemplateView):
     template_name = 'registration/company_application_added.html'
+
+
+class ParticipantPDF(DetailView):
+    slug_field = 'code_short'
+    model = Participant
+
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.competition.processing_class:
+            _class = load_class(self.object.competition.processing_class)
+        else:
+            raise Http404
+        processing_class = _class(self.object.competition_id)
+        file_obj = processing_class.number_pdf(participant_id=self.object.id)
+        response = HttpResponse(mimetype='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename=%s.pdf' % self.object.slug
+        response.write(file_obj.getvalue())
+        file_obj.close()
+        return response

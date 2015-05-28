@@ -13,7 +13,7 @@ from core.views import CalendarView
 from payment.views import ApplicationPayView, ApplicationOKView
 from registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
-    CompanyApplicationUpdate
+    CompanyApplicationUpdate, ParticipantPDF
 from results.views import ResultAllView
 from supporter.views import AgencySupporters
 from velo.views import CustomAutoResponseView
@@ -58,8 +58,6 @@ urlpatterns = i18n_patterns('',
     url(_(r'^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/edit/$'), CompanyApplicationUpdate.as_view(), name='companyapplication_edit'),
 
 
-
-
     url(_(r'^results/'), ResultAllView.as_view(), name="all_results"),
     url(_(r'^payment/'), include('payment.urls', namespace='payment')),
     url(_(r'^whatever/'), include('advert.urls', namespace='advert')),
@@ -78,6 +76,9 @@ urlpatterns = i18n_patterns('',
 
 urlpatterns += patterns('',
     url(r'^$', RedirectView.as_view(url='/lv/')),
+
+    url(_(r'^pdf/(?P<slug>\w+)/'), ParticipantPDF.as_view(), name="participant_number_pdf"),
+
     url(r'^admin/', include('admin_honeypot.urls')), # Honeypot for losers :)
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^%s/' % settings.ADMIN_URL, include(admin.site.urls)),  # This is real admin with hidden link in ENV

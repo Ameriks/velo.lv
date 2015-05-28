@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
+from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -14,6 +15,7 @@ from registration.utils import recalculate_participant
 from velo.mixins.models import TimestampMixin, StatusMixin
 from django_countries.fields import CountryField
 from velo.utils import load_class
+from hashids import Hashids
 
 
 class Application(TimestampMixin, models.Model):
@@ -83,6 +85,8 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance', blank=True, null=True)
     price = models.ForeignKey('payment.Price', blank=True, null=True)
+
+    code_short = models.CharField(max_length=20, blank=True, db_index=True)
 
     company_participant = models.ForeignKey('registration.CompanyParticipant', blank=True, null=True)
 
@@ -232,6 +236,11 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
             is_participating_changed = True
 
         obj = super(Participant, self).save(*args, **kwargs)
+
+        if not self.code_short and self.id:
+            hashids = Hashids(salt=settings.SECRET_KEY2, min_length=7, alphabet=settings.HASH_ALPHABET)
+            self.code_short = hashids.encode(self.id)
+            self.save()
 
         if is_participating_changed:
             from results.tasks import master_update_helper_result_table

@@ -26,6 +26,8 @@ MANAGERS = ADMINS
 SERVER_EMAIL = "webmaster@mans.velo.lv"
 
 SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY2 = os.environ['SECRET_KEY2']
+HASH_ALPHABET = 'abcdefghjkmnprstuvwxyzABCDEFGHJKMNPRSTUVWXYZ23456789'
 
 LEGACY_KEY = os.environ['LEGACY_KEY']
 
