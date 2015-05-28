@@ -1,0 +1,29 @@
+Apsveicam ar reģistrēšanos ELKOR Rīgas Velomaratonam!
+
+{% if application %}
+Dalībnieki Jūsu pieteikumā:
+{% endif %}
+
+{% for participant in participants %}
+
+Vārds, uzvārds: {{participant.first_name}} {{participant.last_name}}
+Distance: {{participant.distance}}
+{% if participant.primary_number %}Starta numurs: {{participant.primary_number}}{% endif %}
+Vēstule numura izņemšanai: http://mans.velo.lv{% url 'participant_number_pdf' participant.code_short %}
+
+
+{% endfor %}
+
+
+Katram dalībniekam nepieciešams izdrukāt viņa vēstuli un ņemt līdzi uz Elkor Rīgas velomaratona EXPO, kas notiks 29. un 30.maijā. Uzrādot dalībnieka vēstuli un apliecinošu dokumentu, varēs saņemt savu starta numuru, kā arī citu nepieciešamo informāciju.
+
+EXPO norises vieta:
+Pie universālveikala Elkor Plaza, Brīvības gatve 201, Rīga.
+Darba laiki 29. un 30. maijā no plkst 10:00 - 21:00.
+
+Papildus informāciju meklējiet www.velo.lv. Neskaidrību gadījumā sazinieties ar mums: pieteikumi@velo.lv.
+
+Vēlreiz apsveicam ar reģistrāciju Elkor Rīgas velomaratonam!
+
+Ar cieņu,
+Elkor Rīgas velomaratona organizatoru komanda

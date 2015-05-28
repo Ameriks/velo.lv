@@ -8,7 +8,8 @@ import hmac
 import logging
 from core.models import Log
 from marketing.models import SMS
-from registration.models import Participant
+from registration.models import Participant, Application
+
 
 class SMSReportView(CsrfExemptMixin, View):
     def post(self, request, *args, **kwargs):
@@ -39,15 +40,22 @@ def mailgun_webhook(request):
 
 
 class TestEmailTemplate(SuperuserRequiredMixin, TemplateView):
-    template_name = 'marketing/email/number_email.html'
+    template_name = 'registration/email/rm2015/number_email.html'
 
     def get_context_data(self, **kwargs):
         context = super(TestEmailTemplate, self).get_context_data(**kwargs)
-        participant = Participant.objects.get(competition_id=34, slug="agris-ameriks-1987", is_participating=True)
+        participants = Participant.objects.filter(competition_id=47, slug="agris-ameriks-1987")
+
+        participants = Application.objects.get(id=33728).participant_set.order_by('primary_number__number')
+
+        primary_competition = participants[0].competition
+
+
         context.update({
-            'object': participant,
-            'number': participant.primary_number,
+            'participants': participants,
             'domain': settings.MY_DEFAULT_DOMAIN,
+            'competition': primary_competition,
+            'application': True,
         })
 
         return context
