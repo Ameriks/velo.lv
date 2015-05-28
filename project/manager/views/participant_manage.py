@@ -20,7 +20,7 @@ from velo.utils import load_class
 
 
 __all__ = [
-    'ManageParticipantList', 'ManageParticipantUpdate', 'ManageParticipantCreate', 'ManageParticipantIneseCreate', 
+    'ManageParticipantList', 'ManageParticipantUpdate', 'ManageParticipantCreate', 'ManageParticipantIneseCreate',
     'ManageApplicationList', 'ManageApplication', 'ManagePreNumberAssignList', 'ManagePreNumberAssignUpdate', 'ManagePreNumberAssignCreate',
 ]
 

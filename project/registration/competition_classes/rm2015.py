@@ -75,10 +75,12 @@ class RM2015(RMCompetitionBase):
         c.drawString(5*cm, 20*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
         c.drawString(5*cm, 18*cm, unicode(participant.distance))
 
+        c.setFont(_baseFontNameB, 35)
         if participant.primary_number:
-            c.setFont(_baseFontNameB, 35)
-            c.drawString(15*cm, 18.5*cm, unicode("1000"))
-
+            c.drawString(15*cm, 18.5*cm, unicode(participant.primary_number))
+        else:
+            c.drawString(15*cm, 18.5*cm, "-")
+            
         c.showPage()
         c.save()
         output.seek(0)
