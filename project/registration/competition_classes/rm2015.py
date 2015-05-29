@@ -91,36 +91,6 @@ class RM2015(RMCompetitionBase):
         output.seek(0)
         return output
 
-    def assign_numbers_continuously(self):
-        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
-            last_number = Participant.objects.filter(distance_id=distance_id, is_participating=True).exclude(primary_number=None).order_by('-primary_number__number')[0].primary_number.number
-            if distance_id == self.TAUTAS_DISTANCE_ID:
-                last_number = 3590
-            participants = Participant.objects.filter(distance_id=distance_id, is_participating=True, primary_number=None).order_by('created')
-
-            for participant in participants:
-                next_number = Number.objects.filter(distance_id=distance_id, number__gt=last_number, participant_slug='')[0]
-                next_number.participant_slug = participant.slug
-                next_number.save()
-                participant.primary_number = next_number
-                participant.save()
-                send_sms_to_participant(participant)
-                mailgun = send_number_email(participant)
-                if mailgun:
-                    send_mailgun(mailgun.id)
-
-        participants = Participant.objects.filter(competition_id=self.competition_id, is_participating=True, is_sent_number_sms=False, distance_id=self.GIMENU_DISTANCE_ID).order_by('created')
-        for participant in participants:
-            send_sms_to_family_participant(participant)
-
-        participants = Participant.objects.filter(competition_id=self.competition_id, distance_id=self.GIMENU_DISTANCE_ID, is_participating=True, is_sent_number_email=False).order_by('created')
-        for participant in participants:
-            mailgun = send_number_email(participant)
-            if mailgun:
-                send_mailgun(mailgun.id)
-
-        send_smses()
-
 
     def generate_diploma(self, result):
         raise NotImplementedError

@@ -8,7 +8,12 @@ from django.core.cache.utils import make_template_fragment_key
 from django.db import connection
 from sitetree.utils import item
 from core.models import Competition, Log, Choices
-from registration.models import Number, Participant, PreNumberAssign
+from marketing.models import MailgunEmail
+from marketing.utils import send_sms_to_participant
+from marketing.utils import send_number_email
+from marketing.utils import send_sms_to_family_participant
+from marketing.utils import send_smses
+from registration.models import Number, Participant, PreNumberAssign, Application
 from django.core.cache import cache
 from registration.tables import ParticipantTable, ParticipantTableWithLastYearPlace
 from results.helper import time_to_seconds
@@ -763,9 +768,6 @@ class RMCompetitionBase(CompetitionScriptBase):
             return ParticipantTable
 
 
-    def assign_numbers_continuously(self):
-        return NotImplementedError
-
     def get_group_for_number_search(self, distance_id, gender, birthday):
             return ''
 
@@ -1064,4 +1066,44 @@ AND r.id = res2.id
                         participant = participant[0]
                         participant.primary_number = number
                         participant.save()
+
+    def assign_numbers_continuously(self):
+        application_ids = []
+        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            last_number = Participant.objects.filter(distance_id=distance_id, is_participating=True).exclude(primary_number=None).order_by('-primary_number__number')[0].primary_number.number
+            participants = Participant.objects.filter(distance_id=distance_id, is_participating=True, primary_number=None).order_by('registration_dt')
+
+            for participant in participants:
+                if participant.application_id and participant.application_id not in application_ids:
+                    if not MailgunEmail.objects.filter(object_id=participant.application_id, content_type_id=19):
+                        application_ids.append(participant.application_id)
+                next_number = Number.objects.filter(distance_id=distance_id, number__gt=last_number, participant_slug='')[0]
+                next_number.participant_slug = participant.slug
+                next_number.save()
+                participant.primary_number = next_number
+                participant.save()
+                if participant.phone_number:
+                    send_sms_to_participant(participant)
+                if participant.email:
+                    send_number_email(self.competition, [participant, ])
+
+        participants = Participant.objects.filter(competition_id=self.competition_id, is_participating=True, is_sent_number_sms=False, distance_id=self.GIMENU_DISTANCE_ID).order_by('created')
+        for participant in participants:
+            if participant.phone_number:
+                send_sms_to_family_participant(participant)
+
+        participants = Participant.objects.filter(competition_id=self.competition_id, distance_id=self.GIMENU_DISTANCE_ID, is_participating=True, is_sent_number_email=False).order_by('-created')
+        for participant in participants:
+            if participant.application_id and participant.application_id not in application_ids:
+                if not MailgunEmail.objects.filter(object_id=participant.application_id, content_type_id=19):
+                    application_ids.append(participant.application_id)
+            if participant.email:
+                send_number_email(self.competition, [participant, ])
+
+        applications = Application.objects.filter(id__in=application_ids)
+        for application in applications:
+            send_number_email(self.competition, application.participant_set.filter(is_participating=True), application)
+
+
+        #send_smses()
 
