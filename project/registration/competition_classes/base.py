@@ -1105,5 +1105,5 @@ AND r.id = res2.id
             send_number_email(self.competition, application.participant_set.filter(is_participating=True), application)
 
 
-        #send_smses()
+        send_smses()
 
