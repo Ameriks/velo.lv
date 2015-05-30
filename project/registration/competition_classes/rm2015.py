@@ -93,7 +93,6 @@ class RM2015(RMCompetitionBase):
 
 
     def generate_diploma(self, result):
-        raise NotImplementedError
         output = StringIO.StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
@@ -106,11 +105,13 @@ class RM2015(RMCompetitionBase):
 
         c.setFont(_baseFontNameB, 35)
         c.drawCentredString(c._pagesize[0] / 2, 16.3*cm, result.participant.full_name)
-        c.setFont(_baseFontName, 25)
-        c.drawCentredString(c._pagesize[0] / 2, 15*cm, "%i.vieta" % result.result_distance)
-        c.setFont(_baseFontName, 18)
-        c.drawCentredString(c._pagesize[0] / 2, 14*cm, "Laiks: %s" % result.time.replace(microsecond=0))
-        c.drawCentredString(c._pagesize[0] / 2, 13*cm, "Vidējais ātrums: %s km/h" % result.avg_speed)
+
+        if result.participant.distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            c.setFont(_baseFontName, 25)
+            c.drawCentredString(c._pagesize[0] / 2, 15*cm, "%i.vieta" % result.result_distance)
+            c.setFont(_baseFontName, 18)
+            c.drawCentredString(c._pagesize[0] / 2, 14*cm, "Laiks: %s" % result.time.replace(microsecond=0))
+            c.drawCentredString(c._pagesize[0] / 2, 13*cm, "Vidējais ātrums: %s km/h" % result.avg_speed)
 
         c.showPage()
         c.save()

@@ -81,8 +81,8 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
 
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
-        if self.competition.id == 34:
-            if self.distance.id == 28:
+        if self.competition.id in (34, 47):
+            if self.distance.id in (28, 40):
                 queryset = queryset.extra(
                     select={
                         'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',

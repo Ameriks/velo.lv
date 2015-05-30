@@ -698,7 +698,7 @@ class RMCompetitionBase(CompetitionScriptBase):
 
 
     def build_menu(self):
-        current_date = datetime.date.today()
+        current_date = datetime.date.today() + datetime.timedelta(days=1)
         child_items = [
             item('Atbalstītāji', 'competition:supporters %i' % self.competition.id),
             item('Komandas', 'competition:team %i' % self.competition.id, children=[
@@ -772,76 +772,6 @@ class RMCompetitionBase(CompetitionScriptBase):
             return ''
 
 
-    def recalculate_team_results(self):
-        raise NotImplementedError
-        """
-        Function to recalculate all team results for current competition.
-        """
-        teams = Team.objects.filter(member__memberapplication__competition=self.competition, member__memberapplication__kind=MemberApplication.KIND_PARTICIPANT).order_by('id').distinct('id')
-        for team in teams:
-            print team.id
-            self.recalculate_team_result(team=team)
-
-    def recalculate_team_result(self, team_id=None, team=None):
-        raise NotImplementedError
-        """
-        Function to recalculate team's result for current competition.
-        After current competition point recalculation, standing total points are recalculated as well.
-        """
-        if not team and not team_id:
-            raise Exception('Team or Team Id must be set')
-        if not team:
-            team = Team.objects.get(id=team_id)
-        else:
-            team_id = team.id
-
-        team_member_results = Team.objects.filter(
-            id=team_id,
-            member__memberapplication__competition=self.competition,
-            member__memberapplication__kind=MemberApplication.KIND_PARTICIPANT,
-            member__memberapplication__participant__result__competition=self.competition).order_by('-member__memberapplication__participant__result__points_distance').values_list('member__memberapplication__participant__result__points_distance')[:4]
-        standing, created = TeamResultStandings.objects.get_or_create(team_id=team_id)
-
-        # Set current competition points to best 4 riders sum
-        setattr(standing, 'points%i' % self.competition_index, sum([val[0] for val in team_member_results if val[0]]))
-
-        # Recalculate total sum.
-        point_list = [standing.points1, standing.points2, standing.points3, standing.points4, standing.points5, standing.points6, standing.points7]
-        if team.distance_id == self.SPORTA_DISTANCE_ID:
-            point_list.pop(3)  # 4.stage is not taken because it is UCI category
-
-        point_list = filter(None, point_list)  # remove None from list
-        setattr(standing, 'points_total', sum(point_list))
-
-        standing.save()
-
-        # Log information about calculated values
-        Log.objects.create(content_object=team, action="Recalculated team standing", params={
-            'points_total': standing.points_total,
-            'points%i' % self.competition_index: getattr(standing, 'points%i' % self.competition_index)
-        })
-
-    def _participant_standings_points(self, standing, distance=False):
-        raise NotImplementedError
-        """
-        This is private function that calculates points for participant based on distance.
-        """
-        stages = range(1, self.STAGES_COUNT+1)
-
-        if standing.distance_id == self.SPORTA_DISTANCE_ID:
-            stages.remove(4)  # 4.stage is not taken because it is UCI category
-        if distance:
-            points = sorted((getattr(standing, 'distance_points%i' % stage) for stage in stages), reverse=True)
-        else:
-            points = sorted((getattr(standing, 'group_points%i' % stage) for stage in stages), reverse=True)
-
-        if standing.distance_id == self.SPORTA_DISTANCE_ID:
-            return sum(points[0:4])
-        elif standing.distance_id == self.TAUTAS_DISTANCE_ID:
-            return sum(points[0:5])
-        elif standing.distance_id == self.BERNU_DISTANCE_ID:
-            return sum(points[0:5])
-
     def process_chip_result(self, chip_id, sendsms=True):
         """
         Function processes chip result and recalculates all standings
@@ -849,77 +779,60 @@ class RMCompetitionBase(CompetitionScriptBase):
         chip = ChipScan.objects.get(id=chip_id)
         distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
 
-
-        zero_minus_10secs = (datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.timedelta(seconds=10)).time()
-        if chip.time < zero_minus_10secs:
-            Log.objects.create(content_object=chip, action="Chip process", message="Chip scanned before start")
-            return False
-
         Log.objects.create(content_object=chip, action="Chip process", message="Started")
 
         delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(datetime.date.today(), datetime.time(0,0,0,0))
         result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
+
 
         result_time_5back = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(minutes=5)).time()
         if result_time_5back > result_time:
             result_time_5back = datetime.time(0,0,0)
         result_time_5forw = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta + datetime.timedelta(minutes=5)).time()
 
-        if chip.is_blocked:  # If blocked, then remove result, recalculate standings, recalculate team results
-            raise NotImplementedError
-            results = Result.objects.filter(competition=chip.competition, number=chip.nr, time=result_time)
-            if results:
-                result = results[0]
-                participant = result.participant
-                if result.standings_object:
-                    standing = result.standings_object
-                    result.delete()
-                    self.recalculate_standing(standing)  # Recalculate standings for this participant
-                    standing.save()
-                    if participant.team:  # If blocked participant was in a team, then recalculate team results.
-                        self.recalculate_team_result(team=participant.team)
-                Log.objects.create(content_object=chip, action="Chip process", message="Processed blocked chip")
+
+        seconds = result_time.hour * 60 * 60 + result_time.minute * 60 + result_time.second
+
+        # Do not process if finished in 10 minutes.
+        if seconds < 10 * 60 or chip.time < distance_admin.zero: # 10 minutes
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip result less than 10 minutes. Ignoring.")
             return None
-        elif chip.is_processed:
+
+        if chip.is_processed:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
 
-        try:
-            participant = Participant.objects.get(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
-        except Participant.DoesNotExist:
-            Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
-            return False
 
-        try:
-            result = Result.objects.get(competition=chip.competition, number=chip.nr)
+        participants = chip.nr.participant_set.all()
 
-            zero_time_update = Result.objects.filter(competition=chip.competition, number=chip.nr, zero_time__gte=result_time_5back, zero_time__lte=result_time_5forw)
-            if zero_time_update:
-                zero_time_update.update(zero_time=result_time)
-                Log.objects.create(content_object=chip, action="Chip process", message="Lets update zero time")
-            else:
-                already_exists_result = LapResult.objects.filter(result=result, time__gte=result_time_5back, time__lte=result_time_5forw)
-                if already_exists_result:
-                    Log.objects.create(content_object=chip, action="Chip process", message="Chip double scanned.")
-                else:
-                    laps_done = LapResult.objects.filter(result=result).count()
-                    LapResult.objects.create(result=result, index=(laps_done+1), time=result_time)
-                    if (chip.nr.distance_id == self.SPORTA_DISTANCE_ID and laps_done == 4) or (chip.nr.distance_id == self.TAUTAS_DISTANCE_ID and laps_done == 1):
-                        Log.objects.create(content_object=chip, action="Chip process", message="DONE. Lets assign avg speed.")
-                        result.time = result_time
-                        result.set_avg_speed()
-                        result.save()
-                        if participant.is_competing and self.competition.competition_date == datetime.date.today():
-                            create_result_sms(result.id)
+        if not participants:
+            Log.objects.create(content_object=chip, action="Chip process", message="Number not assigned to anybody. Ignoring.")
+            return None
+        else:
+            participant = participants[0]
 
-        except Result.DoesNotExist:
-            Log.objects.create(content_object=chip, action="Chip process", message="Lets set zero time")
-            Result.objects.create(competition=chip.competition, participant=participant, number=chip.nr, zero_time=result_time, )
+        result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant, number=chip.nr)
+
+        already_exists_result = LapResult.objects.filter(result=result, time__gte=result_time_5back, time__lte=result_time_5forw)
+        if already_exists_result:
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip double scanned.")
+        else:
+            laps_done = result.lapresult_set.count()
+            result.lapresult_set.create(index=(laps_done+1), time=result_time)
+            if (chip.nr.distance_id == self.SPORTA_DISTANCE_ID and laps_done == 4) or (chip.nr.distance_id == self.TAUTAS_DISTANCE_ID and laps_done == 1):
+                Log.objects.create(content_object=chip, action="Chip process", message="DONE. Lets assign avg speed.")
+                result.time = result_time
+                result.set_avg_speed()
+                result.save()
+
+                self.assign_standing_places()
+
+                if participant.is_competing and self.competition.competition_date == datetime.date.today() and sendsms:
+                    create_result_sms(result.id)
 
 
         chip.is_processed = True
         chip.save()
-
 
         print chip
 
@@ -968,9 +881,6 @@ WHERE res2.competition_id = %s and (res2.time IS NULL or res2.is_competing is fa
 AND r.id = res2.id
 """, [self.competition_id, ])
 
-
-    def recalculate_standing_for_result(self, result):
-        pass  # TODO: recalculate if group is changed.
 
     def assign_standing_places(self):
         self.assign_result_place()
@@ -1107,3 +1017,6 @@ AND r.id = res2.id
 
         send_smses()
 
+    def recalculate_all_standings(self):
+        # Here are no standings.
+        pass

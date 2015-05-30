@@ -269,6 +269,7 @@ class ResultRMDistanceTable(tables.Table):
 
 class ResultRMTautaDistanceTable(ResultRMDistanceTable):
     l1 = tables.Column(empty_values=(), verbose_name=_('L1'), accessor="l1")
+    result_distance= tables.Column(accessor='result_distance', default='-')
 
     def render_l1(self, value, record, *args, **kwargs):
         return self._lap_render(value)
@@ -290,6 +291,7 @@ class ResultRMSportsDistanceTable(ResultRMDistanceTable):
     l2 = tables.Column(empty_values=(), verbose_name=_('L2'), accessor="l2")
     l3 = tables.Column(empty_values=(), verbose_name=_('L3'), accessor="l3")
     l4 = tables.Column(empty_values=(), verbose_name=_('L4'), accessor="l4")
+    result_distance= tables.Column(accessor='result_distance', default='-')
 
     def render_l1(self, value, record, *args, **kwargs):
         return self._lap_render(value)
@@ -325,6 +327,7 @@ class ResultRMGroupTable(tables.Table):
     bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
     time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
+    result_group = tables.Column(accessor='result_group', default='-')
 
     def render_last_name(self, record):
         text = strip_tags(record.participant.last_name)
