@@ -275,6 +275,12 @@ def getSampleStyleSheet():
     """Returns a stylesheet object"""
     stylesheet = StyleSheet1()
 
+    stylesheet.add(ParagraphStyle(name='XSmallNormal',
+                                  fontName=_baseFontName,
+                                  fontSize=6,
+                                  leading=8)
+                   )
+
     stylesheet.add(ParagraphStyle(name='SmallNormal',
                                   fontName=_baseFontName,
                                   fontSize=8,

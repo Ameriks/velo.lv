@@ -74,33 +74,43 @@ class PDFReports(object):
 
 
     def result_table_group(self, items, point_attr='points_group'):
-        top = [['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti']]
-        data = []
-        for obj in items:
-            data.append([obj.result_group, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
-                         Paragraph(obj.participant.last_name, styles["SmallNormal"]),
-                         Paragraph(unicode(obj.participant.birthday.year), styles["SmallNormal"]),
-                         Paragraph(obj.participant.team_name, styles["SmallNormal"]),
-                         Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
-                         Paragraph(unicode(obj.avg_speed), styles["SmallNormal"]),
-                         Paragraph(unicode(obj.points_group), styles["SmallNormal"])])
+        try:
+            top = [['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti']]
+            data = []
+            for obj in items:
+                data.append([obj.result_group, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                             Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                             Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                             Paragraph(obj.participant.team_name, styles["SmallNormal"]),
+                             Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
+                             Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
+                             Paragraph(str(obj.points_group), styles["SmallNormal"])])
+        except Exception as e:
+            import pdb;
+
+            pdb.set_trace()
         return top + data
 
     def result_table_distance(self, items, point_attr='points_group'):
-        top = [
-            ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti', 'Grupa', 'Vieta grupā']]
-        data = []
-        for obj in items:
-            data.append(
-                [obj.result_distance, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
-                 Paragraph(obj.participant.last_name, styles["SmallNormal"]),
-                 Paragraph(unicode(obj.participant.birthday.year), styles["SmallNormal"]),
-                 Paragraph(obj.participant.team_name, styles["SmallNormal"]),
-                 Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
-                 Paragraph(unicode(obj.avg_speed), styles["SmallNormal"]),
-                 Paragraph(unicode(obj.points_distance), styles["SmallNormal"]),
-                 Paragraph(unicode(obj.participant.group), styles["SmallNormal"]),
-                 Paragraph(unicode(obj.result_group), styles["SmallNormal"]), ])
+        try:
+            top = [
+                ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti', 'Grupa', 'Vieta grupā']]
+            data = []
+            for obj in items:
+                data.append(
+                    [obj.result_distance, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                     Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                     Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                     Paragraph(obj.participant.team_name, styles["SmallNormal"]),
+                     Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
+                     Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
+                     Paragraph(str(obj.points_distance), styles["SmallNormal"]),
+                     Paragraph(str(obj.participant.group), styles["SmallNormal"]),
+                     Paragraph(str(obj.result_group), styles["SmallNormal"]), ])
+        except Exception as e:
+            import pdb;
+
+            pdb.set_trace()
         return top + data
 
 
@@ -330,6 +340,170 @@ class PDFReports(object):
                 data.append(data_line)
 
             self.elements.append(Table(data, style=base_table_style))
+            self.elements.append(PageBreak())
+
+
+
+
+
+
+    def RM_result_table_distance(self, items):
+        top = [
+            ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Apļi', 'Laiks', 'Vid.ātr.', 'Grupa', 'Vieta grupā' ]]
+        data = []
+        for obj in items:
+            laps = []
+            if obj.l1:
+                laps.append('%s: %s' % (1, obj.l1.strftime("%H:%M:%S")))
+            if obj.l2:
+                laps.append('%s: %s' % (2, obj.l2.strftime("%H:%M:%S")))
+            if obj.l3:
+                laps.append('%s: %s' % (3, obj.l3.strftime("%H:%M:%S")))
+            if obj.l4:
+                laps.append('%s: %s' % (4, obj.l4.strftime("%H:%M:%S")))
+            if obj.l5:
+                laps.append('%s: %s' % (5, obj.l5.strftime("%H:%M:%S")))
+
+            if obj.time and laps:
+                laps.pop()
+
+            data.append(
+                [obj.result_distance, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                 Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                 Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                 Paragraph(obj.participant.team_name, styles["SmallNormal"]),
+                 Paragraph(str("<br />\n".join(laps)), styles["XSmallNormal"]),
+                 Paragraph(obj.time.strftime("%H:%M:%S") if obj.time else "", styles["SmallNormal"]),
+                 Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
+                 Paragraph(obj.participant.group, styles["SmallNormal"]),
+                 Paragraph(str(obj.result_group) if obj.result_group else "", styles["SmallNormal"]), ])
+        return top + data
+
+    def RM_results_distance(self, top=10000):
+        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 3.5 * cm, 1.5 * cm, 1.8 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
+        distances = self.competition.get_distances().filter(have_results=True)
+        for distance in distances:
+            self.elements.append(self.header(unicode("Rezultāti pa distancēm")))
+
+            self.elements.append(Spacer(10, 10))
+            items = Result.objects.filter(participant__distance=distance, competition=self.competition,
+                                          status='').extra(
+                    select={
+                        'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+                        'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
+                        'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
+                        'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+                        'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
+                    },
+                ).order_by('time', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
+                                                                                     'participant__distance',
+                                                                                     'competition',
+                                                                                     'participant__competition')[:top]
+            header = [[Paragraph(unicode(distance), styles["Heading2"]), '', '', '', '', ''], ]
+            if items:
+                self.elements.append(
+                    Table(header + self.RM_result_table_distance(items), style=group_table_style, colWidths=col_width))
+            else:
+                self.elements.append(Table(header, style=group_table_style))
+                self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
+            self.elements.append(PageBreak())
+
+
+
+    def RM_results_gender(self, top=10):
+        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 3.5 * cm, 1.5 * cm, 1.8 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
+        distances = self.competition.get_distances().filter(have_results=True)
+        for distance in distances:
+            self.elements.append(self.header(unicode("Rezultāti pa dzimumiem")))
+            for gender, gender_name in [('M', 'Vīrieši'), ('F', 'Sievietes')]:
+                self.elements.append(Spacer(10, 10))
+                items = Result.objects.filter(participant__distance=distance, participant__gender=gender, competition=self.competition,
+                                          status='').extra(
+                    select={
+                        'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+                        'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
+                        'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
+                        'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+                        'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
+                    },
+                ).order_by('time', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
+                                                                                     'participant__distance',
+                                                                                     'competition',
+                                                                                     'participant__competition')[:top]
+
+
+
+                header = [[Paragraph(unicode(gender_name), styles["Heading2"]), '', '', unicode(distance), '', ''], ]
+                if items:
+                    self.elements.append(
+                        Table(header + self.RM_result_table_distance(items), style=group_table_style, colWidths=col_width))
+                else:
+                    self.elements.append(Table(header, style=group_table_style))
+                    self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
+            self.elements.append(PageBreak())
+
+
+    def RM_result_table_group(self, items, point_attr='points_group'):
+        top = [['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Apļi', 'Laiks', 'Vid.ātr.']]
+        data = []
+        for obj in items:
+
+            laps = []
+            if obj.l1:
+                laps.append('%s: %s' % (1, obj.l1.strftime("%H:%M:%S")))
+            if obj.l2:
+                laps.append('%s: %s' % (2, obj.l2.strftime("%H:%M:%S")))
+            if obj.l3:
+                laps.append('%s: %s' % (3, obj.l3.strftime("%H:%M:%S")))
+            if obj.l4:
+                laps.append('%s: %s' % (4, obj.l4.strftime("%H:%M:%S")))
+            if obj.l5:
+                laps.append('%s: %s' % (5, obj.l5.strftime("%H:%M:%S")))
+
+            if obj.time and laps:
+                laps.pop()
+
+
+            data.append([obj.result_group, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                         Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                         Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                         Paragraph(obj.participant.team_name, styles["SmallNormal"]),
+                         Paragraph(str("<br />\n".join(laps)), styles["XSmallNormal"]),
+                         Paragraph(obj.time.strftime("%H:%M:%S") if obj.time else "", styles["SmallNormal"]),
+                         Paragraph(str(obj.avg_speed), styles["SmallNormal"]),])
+        return top + data
+
+
+    def RM_results_groups(self, top=10000):
+        col_width = (1 * cm, 1 * cm, 3 * cm, 3 * cm, 1.5 * cm, 4 * cm, 1.5 * cm, 1.8 * cm, 1.2 * cm)
+        distances = self.competition.get_distances().filter(have_results=True)
+        for distance in distances:
+            self.elements.append(self.header(unicode("Rezultāti pa grupām")))
+
+            for group in self.processing_class.groups.get(distance.id):
+                self.elements.append(Spacer(10, 10))
+
+                items = Result.objects.filter(participant__distance=distance, competition=self.competition, participant__group=group,
+                                          status='').extra(
+                    select={
+                        'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+                        'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
+                        'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
+                        'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+                        'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
+                    },
+                ).order_by('time', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
+                                                                                     'participant__distance',
+                                                                                     'competition',
+                                                                                     'participant__competition')[:top]
+
+                header = [[Paragraph(unicode(group), styles["Heading2"]), '', '', unicode(distance), '', ''], ]
+                if items:
+                    self.elements.append(
+                        Table(header + self.RM_result_table_group(items), style=group_table_style, colWidths=col_width))
+                else:
+                    self.elements.append(Table(header, style=group_table_style))
+                    self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
 
 
