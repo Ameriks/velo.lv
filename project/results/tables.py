@@ -291,6 +291,7 @@ class ResultRMSportsDistanceTable(ResultRMDistanceTable):
     l2 = tables.Column(empty_values=(), verbose_name=_('L2'), accessor="l2")
     l3 = tables.Column(empty_values=(), verbose_name=_('L3'), accessor="l3")
     l4 = tables.Column(empty_values=(), verbose_name=_('L4'), accessor="l4")
+    l5 = tables.Column(empty_values=(), verbose_name=_('L5'), accessor="l5")
     result_distance= tables.Column(accessor='result_distance', default='-')
 
     def render_l1(self, value, record, *args, **kwargs):
@@ -305,13 +306,16 @@ class ResultRMSportsDistanceTable(ResultRMDistanceTable):
     def render_l4(self, value, record, *args, **kwargs):
         return self._lap_render(value)
 
+    def render_l5(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
     class Meta:
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
         fields = ("number", "status") # all_numbers
-        sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'l1', 'l2', 'l3', 'l4', 'time', 'status')
+        sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'l1', 'l2', 'l3', 'l4', 'l5', 'time', 'status')
         empty_text = _("There are no results")
-        order_by = ("time", "l4", "l3", "l2", "l1")
+        order_by = ("time", "l5", "l4", "l3", "l2", "l1")
         # ordering = ('created')
         per_page = 200
         template = "bootstrap/table.html"

@@ -89,6 +89,7 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
                         'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
                         'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
                         'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+                        'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l4.index=5',
                     },
                 )
             else:

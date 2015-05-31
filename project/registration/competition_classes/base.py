@@ -819,7 +819,7 @@ class RMCompetitionBase(CompetitionScriptBase):
         else:
             laps_done = result.lapresult_set.count()
             result.lapresult_set.create(index=(laps_done+1), time=result_time)
-            if (chip.nr.distance_id == self.SPORTA_DISTANCE_ID and laps_done == 4) or (chip.nr.distance_id == self.TAUTAS_DISTANCE_ID and laps_done == 1):
+            if (chip.nr.distance_id == self.SPORTA_DISTANCE_ID and laps_done == 5) or (chip.nr.distance_id == self.TAUTAS_DISTANCE_ID and laps_done == 1):
                 Log.objects.create(content_object=chip, action="Chip process", message="DONE. Lets assign avg speed.")
                 result.time = result_time
                 result.set_avg_speed()

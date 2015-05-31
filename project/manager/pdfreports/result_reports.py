@@ -493,7 +493,7 @@ class PDFReports(object):
                         'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
                         'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
                     },
-                ).order_by('time', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
+                ).order_by('time', 'l5', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
                                                                                      'participant__distance',
                                                                                      'competition',
                                                                                      'participant__competition')[:top]
