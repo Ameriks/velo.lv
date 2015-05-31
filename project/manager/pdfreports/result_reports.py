@@ -74,43 +74,33 @@ class PDFReports(object):
 
 
     def result_table_group(self, items, point_attr='points_group'):
-        try:
-            top = [['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti']]
-            data = []
-            for obj in items:
-                data.append([obj.result_group, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
-                             Paragraph(obj.participant.last_name, styles["SmallNormal"]),
-                             Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
-                             Paragraph(obj.participant.team_name, styles["SmallNormal"]),
-                             Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
-                             Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
-                             Paragraph(str(obj.points_group), styles["SmallNormal"])])
-        except Exception as e:
-            import pdb;
-
-            pdb.set_trace()
+        top = [['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti']]
+        data = []
+        for obj in items:
+            data.append([obj.result_group, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                         Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                         Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                         Paragraph(obj.participant.team_name, styles["SmallNormal"]),
+                         Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
+                         Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
+                         Paragraph(str(obj.points_group), styles["SmallNormal"])])
         return top + data
 
     def result_table_distance(self, items, point_attr='points_group'):
-        try:
-            top = [
-                ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti', 'Grupa', 'Vieta grupā']]
-            data = []
-            for obj in items:
-                data.append(
-                    [obj.result_distance, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
-                     Paragraph(obj.participant.last_name, styles["SmallNormal"]),
-                     Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
-                     Paragraph(obj.participant.team_name, styles["SmallNormal"]),
-                     Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
-                     Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
-                     Paragraph(str(obj.points_distance), styles["SmallNormal"]),
-                     Paragraph(str(obj.participant.group), styles["SmallNormal"]),
-                     Paragraph(str(obj.result_group), styles["SmallNormal"]), ])
-        except Exception as e:
-            import pdb;
-
-            pdb.set_trace()
+        top = [
+            ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti', 'Grupa', 'Vieta grupā']]
+        data = []
+        for obj in items:
+            data.append(
+                [obj.result_distance, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                 Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                 Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                 Paragraph(obj.participant.team_name, styles["SmallNormal"]),
+                 Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
+                 Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
+                 Paragraph(str(obj.points_distance), styles["SmallNormal"]),
+                 Paragraph(str(obj.participant.group), styles["SmallNormal"]),
+                 Paragraph(str(obj.result_group), styles["SmallNormal"]), ])
         return top + data
 
 

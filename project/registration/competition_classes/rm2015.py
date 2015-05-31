@@ -14,6 +14,7 @@ from reportlab.lib.units import inch, cm
 from reportlab.pdfgen import canvas
 from core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, _baseFontNameB
 import os.path
+from team.models import Member, Team
 
 
 class RM2015(RMCompetitionBase):
@@ -155,3 +156,16 @@ class RM2015(RMCompetitionBase):
                     helper.matches_slug = matches[0]
 
             helper.save()
+
+    def pre_competition_run(self):
+        t = Team.objects.filter(distance__competition=self.competition)
+        members = Member.objects.filter(team__in=t)
+        for member in members:
+            try:
+                p = Participant.objects.get(slug=member.slug, is_participating=True, distance=member.team.distance)
+                if p.team_name != member.team.title:
+                    print "%i %s %s %s" % (p.id, p.slug, p.team_name, member.team.title)
+                    p.team_name = member.team.title
+                    p.save()
+            except:
+                print 'Not %s' % member.slug
