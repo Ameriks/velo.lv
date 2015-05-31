@@ -16,17 +16,6 @@ from team.models import MemberApplication
 from velo.utils import load_class
 from PIL import Image
 from django.db import connection
-from string import Template
-
-class DeltaTemplate(Template):
-    delimiter = "%"
-
-def strfdelta(tdelta, fmt):
-    d = {"D": tdelta.days}
-    d["H"], rem = divmod(tdelta.seconds, 3600)
-    d["M"], d["S"] = divmod(rem, 60)
-    t = DeltaTemplate(fmt)
-    return t.substitute(**d)
 
 riga_tz = pytz.timezone("Europe/Riga")
 
@@ -593,7 +582,7 @@ class PDFReports(object):
                     current_team_member_index = 1
 
                     team_members = [[Paragraph(str(current_team_index), styles["Heading2"]), Paragraph(item[3], styles["Heading2"]), '', '', '', '','',
-                                     Paragraph(strfdelta(item[11], "%H:%M:%S"),
+                                     Paragraph(str(item[11]),
                                                styles["Heading2"])],
                                     ['', 'Numurs', 'Vārds', 'Uzvārds', 'Gads', 'Laiks', '', '']]
 
