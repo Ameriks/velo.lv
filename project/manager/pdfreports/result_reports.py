@@ -79,11 +79,11 @@ class PDFReports(object):
         for obj in items:
             data.append([obj.result_group, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
                          Paragraph(obj.participant.last_name, styles["SmallNormal"]),
-                         Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                         Paragraph(unicode(obj.participant.birthday.year), styles["SmallNormal"]),
                          Paragraph(obj.participant.team_name, styles["SmallNormal"]),
                          Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
-                         Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
-                         Paragraph(str(obj.points_group), styles["SmallNormal"])])
+                         Paragraph(unicode(obj.avg_speed), styles["SmallNormal"]),
+                         Paragraph(unicode(obj.points_group), styles["SmallNormal"])])
         return top + data
 
     def result_table_distance(self, items, point_attr='points_group'):
@@ -94,13 +94,13 @@ class PDFReports(object):
             data.append(
                 [obj.result_distance, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
                  Paragraph(obj.participant.last_name, styles["SmallNormal"]),
-                 Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                 Paragraph(unicode(obj.participant.birthday.year), styles["SmallNormal"]),
                  Paragraph(obj.participant.team_name, styles["SmallNormal"]),
                  Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
-                 Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
-                 Paragraph(str(obj.points_distance), styles["SmallNormal"]),
-                 Paragraph(str(obj.participant.group), styles["SmallNormal"]),
-                 Paragraph(str(obj.result_group), styles["SmallNormal"]), ])
+                 Paragraph(unicode(obj.avg_speed), styles["SmallNormal"]),
+                 Paragraph(unicode(obj.points_distance), styles["SmallNormal"]),
+                 Paragraph(unicode(obj.participant.group), styles["SmallNormal"]),
+                 Paragraph(unicode(obj.result_group), styles["SmallNormal"]), ])
         return top + data
 
 
