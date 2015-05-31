@@ -115,7 +115,7 @@ class ManageResultReports(ManagerPermissionMixin, SetCompetitionContextMixin, Te
         if action in ('results_groups', 'results_groups_top20', 'results_gender', 'results_distance',
                       'results_distance_top20', 'results_standings', 'results_standings_top20', 'results_standings_groups',
                       'results_standings_groups_top20', 'results_team', 'results_team_standings',
-                      'RM_results_distance', 'RM_results_groups', 'RM_results_distance_top20', 'RM_results_groups_top20', 'RM_results_gender'):
+                      'RM_results_distance', 'RM_results_groups', 'RM_results_distance_top20', 'RM_results_groups_top20', 'RM_results_gender', 'RM_results_team'):
             generate_pdfreport.delay(kwargs.get('pk'), action, request.user.id)
             messages.info(request, 'Report is being generated. It will be emailed to %s' % request.user.email)
         else:

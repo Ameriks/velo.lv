@@ -80,6 +80,19 @@ def generate_pdfreport(competition_id, action, user_id):
     elif action == 'results_team_standings':
         pdf_class.results_team_standings()
 
+    elif action == 'RM_results_distance':
+        pdf_class.RM_results_distance()
+    elif action == 'RM_results_groups':
+        pdf_class.RM_results_groups()
+    elif action == 'RM_results_distance_top20':
+        pdf_class.RM_results_distance(20)
+    elif action == 'RM_results_groups_top20':
+        pdf_class.RM_results_groups(20)
+    elif action == 'RM_results_gender':
+        pdf_class.RM_results_gender()
+    elif action == 'RM_results_team':
+        pdf_class.RM_results_team()
+
     file_obj = pdf_class.build()
 
     obj = TempDocument(created_by=user)

@@ -15,6 +15,18 @@ from reportlab.lib.units import inch, cm
 from team.models import MemberApplication
 from velo.utils import load_class
 from PIL import Image
+from django.db import connection
+from string import Template
+
+class DeltaTemplate(Template):
+    delimiter = "%"
+
+def strfdelta(tdelta, fmt):
+    d = {"D": tdelta.days}
+    d["H"], rem = divmod(tdelta.seconds, 3600)
+    d["M"], d["S"] = divmod(rem, 60)
+    t = DeltaTemplate(fmt)
+    return t.substitute(**d)
 
 riga_tz = pytz.timezone("Europe/Riga")
 
@@ -504,6 +516,99 @@ class PDFReports(object):
                 else:
                     self.elements.append(Table(header, style=group_table_style))
                     self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
+            self.elements.append(PageBreak())
+
+
+
+
+    def RM_results_team(self):
+        col_width = (2 * cm, 1.5 * cm, 3 * cm, 3 * cm, 1 * cm, 2 * cm, 1 * cm, 3 * cm)
+        distances = self.competition.get_distances().filter(can_have_teams=True)
+        competition_index = self.processing_class.competition_index  # Get stage index
+
+        team_table_style = base_table_style[:] + [
+            ('LINEBELOW', (0, 0), (-1, 0), 0.25, colors.black),
+            ('LINEBELOW', (1, 1), (-1, 1), 0.25, colors.black),
+            ('SPAN', (1, 0), (5, 0)),
+            ('ALIGNMENT', (3, 0), (-1, 0), 'RIGHT'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+        ]
+
+
+        for distance in distances:
+
+            cursor = connection.cursor()
+            cursor.execute("""
+    Select *, DATE_TRUNC('second', total) from (
+    Select kopa.team_name_slug, count(*) counter, sum(kopa.time) total
+    from (
+    Select p.team_name_slug, p.time from (
+    SELECT
+        a.team_name_slug,
+        r.time,
+        row_number() OVER (PARTITION BY team_name_slug ORDER BY r.time) AS row
+    FROM
+        registration_participant a
+        left outer join results_result r on r.participant_id = a.id
+        where a.team_name_slug <> '' and a.team_name_slug <> '-' and r.time is not null and a.is_competing is true and a.distance_id = %s
+        order by a.team_name_slug, r.time
+    ) p where p.row <= 4
+    ) kopa group by kopa.team_name_slug
+    having count(*)>1
+    order by total
+    ) team
+    left outer join
+    (
+    Select p.team_name, p.team_name_slug, p.time,p.first_name,p.last_name,p.birthday,p.team_name,p.number from (
+    SELECT
+        a.*,
+        r.time,
+        nr.number,
+        row_number() OVER (PARTITION BY team_name_slug ORDER BY r.time) AS row
+    FROM
+        registration_participant a
+        left outer join results_result r on r.participant_id = a.id
+        left outer join registration_number nr on nr.id = a.primary_number_id
+        where a.team_name_slug <> '' and a.team_name_slug <> '-' and r.time is not null and a.is_competing is true and a.distance_id = %s
+        order by a.team_name_slug, r.time
+    ) p where p.row <= 4
+    ) participant on team.team_name_slug = participant.team_name_slug
+    order by counter desc, total, team.team_name_slug, time
+    """, [distance.id, distance.id])
+            object_list = cursor.fetchall()
+
+
+            self.elements.append(self.header(unicode("%s komandu rezultāti" % distance)))
+            team_members = []
+            team_place = 0
+
+            current_team_name = ""
+            current_team_index = 0
+            current_team_member_index = 0
+
+            for index, item in enumerate(object_list):
+                if item[0] != current_team_name:
+                    current_team_name = item[0]
+                    current_team_index += 1
+                    current_team_member_index = 1
+
+                    team_members = [[Paragraph(str(current_team_index), styles["Heading2"]), Paragraph(item[3], styles["Heading2"]), '', '', '', '','',
+                                     Paragraph(strfdelta(item[11], "%H:%M:%S"),
+                                               styles["Heading2"])],
+                                    ['', 'Numurs', 'Vārds', 'Uzvārds', 'Gads', 'Laiks', '', '']]
+
+                else:
+                    current_team_member_index += 1
+
+                team_members.append(
+                    ['', item[10],
+                     item[6], item[7],
+                     str(item[8].year),
+                     item[5].replace(microsecond=0),
+                     '', '']
+                )
+                if len(object_list) == index + 1 or item[0] != object_list[index + 1][0]:
+                    self.elements.append(Table(team_members, style=team_table_style, colWidths=col_width))
             self.elements.append(PageBreak())
 
 
