@@ -90,7 +90,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
-    'django_auth_policy.middleware.AuthenticationPolicyMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
     'ssl_slapper.middleware.ssl_redirect',
 )
@@ -270,20 +269,6 @@ THUMBNAIL_CHECK_CACHE_MISS = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
-AUTHENTICATION_POLICIES = (
-    ('django_auth_policy.authentication.AuthenticationBasicChecks', {}),
-    # ('django_auth_policy.authentication.AuthenticationDisableExpiredUsers', {}),
-    # ('django_auth_policy.authentication.AuthenticationLockedUsername', {}),
-    # ('django_auth_policy.authentication.AuthenticationLockedRemoteAddress', {}),
-)
-PASSWORD_STRENGTH_POLICIES = (
-    ('django_auth_policy.password_strength.PasswordMinLength', {}),
-)
-
-PASSWORD_CHANGE_POLICIES = (
- #   ('django_auth_policy.password_change.PasswordChangeExpired', {}),
- #   ('django_auth_policy.password_change.PasswordChangeTemporary', {}),
-)
 
 ADMIN_URL = 'administrator'
 

@@ -1,9 +1,8 @@
 # coding=utf-8
 from __future__ import unicode_literals  # u'' strings by default # Awesome :)
 from django.conf.urls import patterns, url
-from django_auth_policy.forms import StrictAuthenticationForm
 from django.core.urlresolvers import reverse_lazy
-from core.forms import PasswordResetForm, StrictSetPasswordFormCustom, StrictAuthenticationFormCustom
+from core.forms import PasswordResetForm, SetPasswordFormCustom, AuthenticationFormCustom
 from core.views import UserRegistrationView, UserEmailConfirm, ChangeEmailView, ChangePasswordView, ProfileView, \
     ResendEmailView
 from django.utils.translation import ugettext_lazy as _
@@ -23,7 +22,7 @@ urlpatterns = patterns('',
                        url(_(r'^email/resend/$'), ResendEmailView.as_view(), name='email_resend_view'),
                        url(_(r'^password_change/$'), ChangePasswordView.as_view(), name='password_change'),
                        url(_(r'^login/$'), 'core.views.login', name='login',
-                           kwargs={'authentication_form': StrictAuthenticationFormCustom}),
+                           kwargs={'authentication_form': AuthenticationFormCustom}),
                        url(_(r'^logout/$'), 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
                        url(_(r'^profile/$'), ProfileView.as_view(), name='profile'),
 
@@ -44,7 +43,7 @@ urlpatterns = patterns('',
                            name='password_reset_confirm', kwargs={
                                'post_reset_redirect': reverse_lazy('accounts:password_reset_complete'),
                                'template_name': 'registration/password_reset_confirm_velo.html',
-                               'set_password_form': StrictSetPasswordFormCustom,
+                               'set_password_form': SetPasswordFormCustom,
                            }),
                        url(_(r'^reset/done/$'), 'django.contrib.auth.views.password_reset_complete',
                            name='password_reset_complete', kwargs={

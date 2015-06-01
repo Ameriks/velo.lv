@@ -5,26 +5,19 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Submit, Fieldset, HTML, Div, Field
 from django import forms
 from django.db.models import Count
-from django.forms import save_instance, FileField
-from django.forms.util import flatatt, ErrorDict, ErrorList
-from django.core.exceptions import ValidationError
-from django.utils.safestring import mark_safe
 from django_select2 import AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
-from django_select2.util import JSFunctionInContext
-from django_select2.widgets import Select2Mixin
 import math
 import requests
-from django.utils import timezone
 from core.models import Competition, Distance, Insurance
 from manager.select2_fields import NumberChoices, UserChoices, NumberChoice, ParticipantChoices, NumberAllChoices
-from manager.tasks import update_results_for_participant, update_results_for_result
+from manager.tasks import update_results_for_participant
 from payment.models import ActivePaymentChannel, Price
 from payment.utils import create_application_invoice
 from registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
 from results.models import DistanceAdmin, Result, LapResult, UrlSync
 from team.forms import MemberInlineForm, TeamForm
-from team.models import Member, Team, MemberApplication
-from velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin, GetClassNameMixin
+from team.models import Member, Team
+from velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin
 from django.utils.translation import ugettext as _
 from velo.utils import load_class
 
@@ -601,8 +594,8 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
         'ajax': {
             'dataType': 'json',
             'quietMillis': 100,
-            'data': JSFunctionInContext('get_participant_params'),
-            'results': JSFunctionInContext('django_select2.process_results'),
+            'data': '*START*django_select2.runInContextHelper(get_participant_params, selector)*END*',
+            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
         },
         "minimumResultsForSearch": 0,
         "minimumInputLength": 0,
@@ -736,8 +729,8 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         'ajax': {
             'dataType': 'json',
             'quietMillis': 100,
-            'data': JSFunctionInContext('get_participant_params'),
-            'results': JSFunctionInContext('django_select2.process_results'),
+            'data': '*START*django_select2.runInContextHelper(get_participant_params, selector)*END*',
+            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
         },
         "minimumResultsForSearch": 0,
         "minimumInputLength": 0,
@@ -974,8 +967,8 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
         'ajax': {
             'dataType': 'json',
             'quietMillis': 100,
-            'data': JSFunctionInContext('get_result_params'),
-            'results': JSFunctionInContext('django_select2.process_results'),
+            'data': '*START*django_select2.runInContextHelper(get_result_params, selector)*END*',
+            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
         },
         "minimumResultsForSearch": 0,
         "minimumInputLength": 0,
@@ -986,8 +979,8 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
         'ajax': {
             'dataType': 'json',
             'quietMillis': 100,
-            'data': JSFunctionInContext('get_result_params'),
-            'results': JSFunctionInContext('django_select2.process_results'),
+            'data': '*START*django_select2.runInContextHelper(get_result_params, selector)*END*',
+            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
         },
         "minimumResultsForSearch": 0,
         "minimumInputLength": 0,

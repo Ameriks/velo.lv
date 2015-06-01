@@ -8,23 +8,26 @@ import csv
 
 from django.core.files.base import ContentFile
 import hashlib
+from django.template.defaultfilters import slugify
 import pytz
 import requests
 from StringIO import StringIO
 from legacy.models import Ev68RUsers, Ev68RVeloCompetitions, Ev68RVeloDistance, Ev68RVeloPrice, Ev68RVeloInsurance, \
     Ev68RVeloApplications, Ev68RVeloParticipations, Ev68RVeloResultsSebTotal, Ev68RVeloTeams, Ev68RVeloResults, \
-    Ev68RVeloPayments, Ev68RVeloCouponCodes
+    Ev68RVeloPayments, Ev68RVeloCouponCodes, Ev68RContent
 from core.models import User, Choices, Competition, Distance, Insurance, CustomSlug
 from Crypto.Cipher import AES
 from django.conf import settings
 from social.apps.django_app.default.models import UserSocialAuth
 from manager.models import TempDocument
+from news.models import News
 
 from payment.models import Price, DiscountCode, Payment, DiscountCampaign
 from registration.models import Application, Participant
 from results.models import LegacySEBStandingsResult, LegacyResult, HelperResults
 from team.models import Team, Member, MemberApplication
 import os
+from bs4 import BeautifulSoup
 riga_tz = pytz.timezone("Europe/Riga")
 legacy_password = hashlib.md5(settings.LEGACY_KEY).hexdigest()
 legacy_encrypt = AES.new(legacy_password, AES.MODE_ECB)
@@ -829,6 +832,125 @@ def sync_teams_and_members():
                     memberc.save()
                 ids2.append(memberc.id)
             MemberApplication.objects.filter(member__team=team, competition=comp).exclude(id__in=ids2).delete()
+
+
+catmap = {
+
+    184: 38,
+    180: 36,
+    179: 35,
+    178: 34,
+    177: 34,
+    174: 25,
+    173: 25,
+    172: 25,
+    171: 25,
+    170: 25,
+    169: 25,
+    168: 25,
+    167: 25,
+    166: 25,
+    165: 25,
+    164: 25,
+    163: 25,
+    162: 25,
+    161: 25,
+    160: 25,
+    159: 25,
+    158: 24,
+    157: 24,
+    156: 11,
+    155: 11,
+    154: 17,
+    153: 17,
+    152: 17,
+    151: 17,
+    150: 17,
+    149: 17,
+    148: 17,
+    147: 17,
+    146: 17,
+    145: 17,
+    144: 17,
+    143: 17,
+    142: 17,
+    141: 17,
+
+    137: 16,
+
+
+    108: None,
+    106: 15,
+    102: 10,
+    100: 2,
+    99: 2,
+    98: 2,
+    97: 2,
+    96: 2,
+    95: 2,
+    94: 2,
+}
+
+idmap = {
+    723: 38,
+    722: 38,
+    721: 38,
+    720: 38,
+    719: 38,
+    718: 38,
+    717: 47,
+    716: 38,
+    715: 38,
+    714: 38,
+    713: 38,
+    712: 38,
+    711: 47,
+    708: 47,
+    707: 38,
+    589: 25,
+    523: None,
+    310: None,
+    308: 2,
+    153: 2,
+    156: 2,
+    163: 2,
+    171: 10,
+    176: 2,
+
+    129: None,
+    128: None,
+    127: None,
+    126: None,
+    125: None,
+    124: None,
+    123: None,
+    122: None,
+    120: None,
+    119: None,
+    118: None,
+    117: None,
+
+}
+
+def import_news():
+    all_news = Ev68RContent.objects.filter(featured=1, state=1, id__lte=723).exclude(id__in=(154, ))
+
+    for lnews in all_news:
+        competition_id =idmap.get(lnews.id, catmap.get(lnews.catid, None))
+        slug = slugify(lnews.title)[:40]
+        slug = "%s-%i-%i" % (slug, lnews.id, lnews.created.year)
+
+        soup = BeautifulSoup(lnews.introtext)
+        tmp_string = soup.find('img')
+        if tmp_string:
+            tmp_string = tmp_string.get("src")
+            tmp_string = "http://www.velo.lv/%s" % tmp_string
+        else:
+            tmp_string = ''
+
+        news, created = News.objects.get_or_create(legacy_id=lnews.id, defaults={'competition_id': competition_id, 'published_on': lnews.created, 'title': lnews.title, 'slug': slug, 'intro_content': lnews.introtext, 'content': lnews.fulltext, 'tmp_string': tmp_string, 'status': 1})
+
+
 
 
 def full_sync():

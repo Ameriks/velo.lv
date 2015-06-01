@@ -1,16 +1,12 @@
-from crispy_forms.bootstrap import StrictButton
 from django import forms
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm, PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import ugettext, ugettext_lazy as _
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
-from django_auth_policy.forms import StrictPasswordChangeForm, StrictSetPasswordForm, StrictAuthenticationForm
 from django.utils.safestring import mark_safe
 from premailer import transform
 from django.utils.encoding import force_bytes
@@ -97,10 +93,10 @@ class ChangeEmailForm(RequestKwargModelFormMixin, CleanEmailMixin, forms.ModelFo
         return user
 
 
-class StrictPasswordChangeFormCustom(StrictPasswordChangeForm):
+class PasswordChangeFormCustom(PasswordChangeForm):
     def __init__(self, *args, **kwargs):
         kwargs.pop('instance', None)
-        super(StrictPasswordChangeFormCustom, self).__init__(user=self.user, *args, **kwargs)
+        super(PasswordChangeFormCustom, self).__init__(user=self.user, *args, **kwargs)
 
     def clean_old_password(self):
         """
@@ -117,9 +113,9 @@ class StrictPasswordChangeFormCustom(StrictPasswordChangeForm):
         else:
             return self.user.password
 
-class StrictSetPasswordFormCustom(StrictSetPasswordForm):
+class SetPasswordFormCustom(SetPasswordForm):
     def __init__(self, *args, **kwargs):
-        super(StrictSetPasswordFormCustom, self).__init__(*args, **kwargs)
+        super(SetPasswordFormCustom, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -132,9 +128,9 @@ class StrictSetPasswordFormCustom(StrictSetPasswordForm):
             Submit('set_password', _('Set Password'), css_class='btn-default'),
         )
 
-class StrictAuthenticationFormCustom(AuthenticationForm): # TODO: After testing replace back StrictAuthenticationForm
+class AuthenticationFormCustom(AuthenticationForm):
     def __init__(self, *args, **kwargs):
-        super(StrictAuthenticationFormCustom, self).__init__(*args, **kwargs)
+        super(AuthenticationFormCustom, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
 
@@ -145,7 +141,7 @@ class StrictAuthenticationFormCustom(AuthenticationForm): # TODO: After testing 
         )
 
 
-class ChangePasswordForm(RequestKwargModelFormMixin, StrictPasswordChangeFormCustom):
+class ChangePasswordForm(RequestKwargModelFormMixin, PasswordChangeFormCustom):
     def __init__(self, *args, **kwargs):
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
         self.fields['new_password1'].help_text = _('Passwords must be at least 10 characters in length.')

@@ -11,7 +11,6 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import slugify
 from django_select2 import AutoHeavySelect2MultipleWidget
-from django_select2.util import JSFunctionInContext
 import os
 from core.models import Competition
 from gallery.models import Video, Photo, Album
@@ -28,8 +27,8 @@ class AssignNumberForm(RequestKwargModelFormMixin, forms.Form):
         'ajax': {
             'dataType': 'json',
             'quietMillis': 100,
-            'data': JSFunctionInContext('get_number_params'),
-            'results': JSFunctionInContext('django_select2.process_results'),
+            'data': '*START*django_select2.runInContextHelper(get_number_params, selector)*END*',
+            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
         },
         "minimumResultsForSearch": 0,
         "minimumInputLength": 0,

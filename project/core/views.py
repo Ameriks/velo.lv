@@ -16,7 +16,7 @@ from django.conf import settings
 from django.template.response import TemplateResponse
 from django_downloadview import ObjectDownloadView
 from core.forms import UserCreationForm, ChangeEmailForm, ChangePasswordForm, UserProfileForm, NewEmailForm, \
-    StrictAuthenticationFormCustom
+    AuthenticationFormCustom
 from core.models import Competition, Map, User
 from core.tasks import send_email_confirmation
 from results.models import DistanceAdmin
@@ -30,7 +30,7 @@ class IndexView(TemplateView):
     template_name = 'core/index.html'
 
 
-class CompetitionDetail(DetailView):
+class CompetitionDetail(SetCompetitionContextMixin, DetailView):
     model = Competition
 
 
@@ -157,7 +157,7 @@ class CalendarView(CacheControlMixin, TemplateView):
 @never_cache
 def login(request, template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
-          authentication_form=StrictAuthenticationFormCustom,
+          authentication_form=AuthenticationFormCustom,
           current_app=None, extra_context=None):
     """
     Displays the login form and handles the login action.

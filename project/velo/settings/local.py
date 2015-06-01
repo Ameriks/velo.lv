@@ -14,7 +14,7 @@ EMAIL_PORT = 1025
 CELERY_ALWAYS_EAGER = True
 
 INSTALLED_APPS += ('debug_toolbar', 'django_extensions', 'template_timings_panel', )
-INTERNAL_IPS = ('87.99.89.245', '87.99.89.245, 172.17.42.1', '192.168.59.3')
+# INTERNAL_IPS = ('192.168.59.3', )
 
 MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware', )
 
@@ -51,7 +51,7 @@ CACHES = {
 ALLOWED_HOSTS = ['docker.local:58000', 'docker.local',]
 
 
-LOGGING.get('loggers', {}).get('django.db.backends', {}).update({'level': 'DEBUG'})
+# LOGGING.get('loggers', {}).get('django.db.backends', {}).update({'level': 'DEBUG'})
 
 MY_DEFAULT_DOMAIN = 'http://docker.local:58000'
 
@@ -72,4 +72,12 @@ DATABASES = {
         'HOST': '91.135.19.3',
         'PORT': '3306'
     },
+    # 'legacy': {
+    #     'NAME': 'velo',
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'USER': 'root',
+    #     'PASSWORD': 'naigiN8I',
+    #     'HOST': '192.168.59.103',
+    #     'PORT': '3306'
+    # },
 }

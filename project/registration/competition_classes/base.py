@@ -163,7 +163,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
                 children.append(item('Rezultāti', 'competition:result_distance_list %i' % child.id))
                 children.append(item('Komandu rezultāti', 'competition:result_team_list %i' % child.id))
 
-            child_items.append(item(unicode(child), '#', url_as_pattern=False, children=children))
+            child_items.append(item(unicode(child), 'competition:competition %i' % child.id, url_as_pattern=True, children=children))
 
         return item(unicode(self.competition), '#', url_as_pattern=False, children=child_items, in_menu=self.competition.is_in_menu)
 

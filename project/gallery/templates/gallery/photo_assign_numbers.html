@@ -1,12 +1,11 @@
 {% extends 'public/base.html' %}
-{% load thumbnail %}
+{% load thumbnail staticfiles %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block css %}
     {{ block.super }}
-    <link href="{{ STATIC_URL }}css/select2.css" type="text/css" media="screen" rel="stylesheet" />
-    <link href="{{ STATIC_URL }}css/extra.css" type="text/css" media="screen" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/select2-bootstrap.css">
+    <link href="{% static "django_select2/css/select2.css" %}" type="text/css" media="screen" rel="stylesheet" />
+    <link href="{% static "django_select2/css/select2-bootstrap.css" %}" type="text/css" media="screen" rel="stylesheet" />
     {{ form.media.css }}
 {% endblock %}
 
@@ -27,8 +26,10 @@
             return res;
         }
     </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/select2.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/heavy_data.js"></script>
+    <script type="text/javascript" src="{% static "django_select2/js/select2.js" %}"></script>
+    <script type="text/javascript" src="{% static "django_select2/js/heavy_data.js" %}"></script>
+
+
     <script type="text/javascript" src="{{ STATIC_URL }}coffee/manager/participant.js"></script>
 {% endblock %}
 
