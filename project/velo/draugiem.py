@@ -29,7 +29,7 @@ class DraugiemPassportAPI(BaseAuth):
     def user_data(self, access_token, *args, **kwargs):
         return self.data
 
-    def extra_data(self, user, uid, response, details):
+    def extra_data(self, user, uid, response, details=None, *args, **kwargs):
         return response
 
     def auth_url(self):

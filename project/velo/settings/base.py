@@ -262,6 +262,8 @@ USE_X_FORWARDED_HOST = True
 
 ADMIN_URL = os.getenv('ADMIN_URL', 'administrator')
 
+ALWAYS_SSL_PAGES = []
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

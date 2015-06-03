@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext_lazy
+import re
 from .base import *
 
 DATABASES = {
@@ -58,3 +59,18 @@ RABBITMQ_VHOST = RABBITMQ_USER
 BROKER_URL = 'amqp://{user}:{password}@{host}:{port}/{vhost}'.format(user=RABBITMQ_USER, password=RABBITMQ_PASS,
                                                                      host=RABBITMQ_HOST, port=RABBITMQ_PORT,
                                                                      vhost=RABBITMQ_VHOST)
+
+ALWAYS_SSL_PAGES = [
+            "^%s" % ADMIN_URL,
+            "^/manager",
+            "^/admin",
+            ".*\.json$",
+            "^/lv/pieteikums",
+            "^/lv/uznemuma_pieteikums",
+            "^/lv/maksajums",
+            "^/lv/konts",
+            "^/en/application",
+            "^/en/company_application",
+            "^/en/payment",
+            "^/en/accounts",
+            ]
