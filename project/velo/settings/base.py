@@ -25,11 +25,11 @@ MANAGERS = ADMINS
 
 SERVER_EMAIL = "webmaster@mans.velo.lv"
 
-SECRET_KEY = os.environ['SECRET_KEY']
-SECRET_KEY2 = os.environ['SECRET_KEY2']
+SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY2 = os.getenv('SECRET_KEY2')
 HASH_ALPHABET = 'abcdefghjkmnprstuvwxyzABCDEFGHJKMNPRSTUVWXYZ23456789'
 
-LEGACY_KEY = os.environ['LEGACY_KEY']
+LEGACY_KEY = os.getenv('LEGACY_KEY')
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -129,14 +129,14 @@ LOGIN_VIEW_NAME = 'accounts:login'
 LOGOUT_VIEW_NAME = 'accounts:logout'
 
 SOCIAL_AUTH_FACEBOOK_KEY = '175838825855542'
-SOCIAL_AUTH_FACEBOOK_SECRET = os.environ['SOCIAL_AUTH_FACEBOOK_SECRET']
+SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv('SOCIAL_AUTH_FACEBOOK_SECRET')
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 SOCIAL_AUTH_TWITTER_KEY = 'KOd36nFdR0LSCQCm9EqOBQ'
-SOCIAL_AUTH_TWITTER_SECRET = os.environ['SOCIAL_AUTH_TWITTER_SECRET']
+SOCIAL_AUTH_TWITTER_SECRET = os.getenv('SOCIAL_AUTH_TWITTER_SECRET')
 
 SOCIAL_AUTH_DRAUGIEM_APP_ID = '15007685'
-SOCIAL_AUTH_DRAUGIEM_KEY = os.environ['SOCIAL_AUTH_DRAUGIEM_KEY']
+SOCIAL_AUTH_DRAUGIEM_KEY = os.getenv('SOCIAL_AUTH_DRAUGIEM_KEY')
 
 SOCIAL_AUTH_USER_MODEL = 'core.User'
 SOCIAL_AUTH_FORCE_EMAIL_VALIDATION = True
@@ -180,8 +180,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 AUTO_RENDER_SELECT2_STATICS = False
 
-SMS_USERNAME = os.environ['SMS_USERNAME']
-SMS_PASSWORD = os.environ['SMS_PASSWORD']
+SMS_USERNAME = os.getenv('SMS_USERNAME')
+SMS_PASSWORD = os.getenv('SMS_PASSWORD')
 SMS_GATEWAY = 'http://smsmarketing.bpo.lv'
 
 ADMIN_HONEYPOT_EMAIL_ADMINS = False
@@ -200,7 +200,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 
 MAILGUN_FROM = u'Tavs velo.lv <hi@mans.velo.lv>'
-MAILGUN_ACCESS_KEY = os.environ['MAILGUN_ACCESS_KEY']
+MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_ACCESS_KEY')
 MAILGUN_URL = 'https://api.mailgun.net/v2'
 MAILGUN_SERVER_NAME = 'mans.velo.lv'
 
@@ -268,17 +268,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
 
 ADMIN_URL = 'administrator'
-
-djcelery.setup_loader()
-RABBITMQ_USER = 'velolv'
-RABBITMQ_PASS = os.environ['RABBITMQ_PASS']
-RABBITMQ_HOST = '172.17.42.1'
-RABBITMQ_PORT = '15015'
-RABBITMQ_VHOST = RABBITMQ_USER
-BROKER_URL = 'amqp://{user}:{password}@{host}:{port}/{vhost}'.format(user=RABBITMQ_USER, password=RABBITMQ_PASS,
-                                                                     host=RABBITMQ_HOST, port=RABBITMQ_PORT,
-                                                                     vhost=RABBITMQ_VHOST)
-
 
 LOGGING = {
     'version': 1,
