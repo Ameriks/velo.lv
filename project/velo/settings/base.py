@@ -95,7 +95,7 @@ ROOT_URLCONF = 'velo.urls'
 
 WSGI_APPLICATION = 'velo.wsgi.application'
 
-#DATABASE_ROUTERS = ['legacy.router.LegacyRouter']
+DATABASE_ROUTERS = ['legacy.router.LegacyRouter']
 
 
 LANGUAGE_CODE = 'lv'
