@@ -17,7 +17,7 @@ from registration.models import Application, Participant, CompanyApplication, Co
 from registration.widgets import CompetitionWidget
 from velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin, CleanEmailMixin
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
 from django.utils.translation import ugettext
 from velo.utils import bday_from_LV_SSN
 
@@ -291,7 +291,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
 
-        if self.request and self.request.LANGUAGE_CODE == 'lv':
+        if get_language() == 'lv':
             self.fields['country'].initial = 'LV'
 
         self.fields['country'].required = True
@@ -489,7 +489,7 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
 
-        if self.request and self.request.LANGUAGE_CODE == 'lv':
+        if get_language() == 'lv':
             self.fields['country'].initial = 'LV'
 
         self.fields['country'].required = True
