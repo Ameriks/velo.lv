@@ -77,11 +77,20 @@ VIMEO_SECRET = os.getenv('VIMEO_SECRET')
 VIMEO_TOKEN = os.getenv('VIMEO_TOKEN')
 
 
-MIDDLEWARE_CLASSES = ('django.middleware.common.CommonMiddleware',
-                      'django.middleware.csrf.CsrfViewMiddleware',
-                      'velo.middleware.JoomlaSessionMiddleware',
-                      'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
-                      'impersonate.middleware.ImpersonateMiddleware',)
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'velo.middleware.JoomlaSessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
+)
+
 
 ROOT_URLCONF = 'velo.urls'
 
