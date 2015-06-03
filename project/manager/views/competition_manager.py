@@ -84,14 +84,14 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             legacy_sync.delay(request.user.email)
         elif request.POST.get('action') == 'start_list':
             file_obj = create_start_list(competition=self.competition)
-            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response = HttpResponse(content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=start_list.xls'
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
         elif request.POST.get('action') == 'donations_list':
             file_obj = create_donations_list(competition=self.competition)
-            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response = HttpResponse(content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=donations_list.xls'
             response.write(file_obj.getvalue())
             file_obj.close()
@@ -100,7 +100,7 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
 
         elif request.POST.get('action') == 'payment_list':
             file_obj = payment_list(competition=self.competition)
-            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response = HttpResponse(content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=payment_list.xls'
             response.write(file_obj.getvalue())
             file_obj.close()
@@ -108,28 +108,28 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
 
         elif request.POST.get('action') == 'create_standing_list':
             file_obj = create_standing_list(competition=self.competition)
-            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response = HttpResponse(content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=standing_list.xls'
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
         elif request.POST.get('action') == 'team_member_list':
             file_obj = team_member_list(competition=self.competition)
-            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response = HttpResponse(content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=team_member_list.xls'
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
         elif request.POST.get('action') == 'create_team_list':
             file_obj = create_team_list(competition=self.competition)
-            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response = HttpResponse(content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=applied_teams.xls'
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
         elif request.POST.get('action') == 'create_insured_list':
             file_obj = create_insured_list(competition=self.competition)
-            response = HttpResponse(mimetype='application/vnd.ms-excel')
+            response = HttpResponse(content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=insured_list.xls'
             response.write(file_obj.getvalue())
             file_obj.close()

@@ -564,7 +564,7 @@ class ParticipantPDF(DetailView):
             raise Http404
         processing_class = _class(self.object.competition_id)
         file_obj = processing_class.number_pdf(participant_id=self.object.id)
-        response = HttpResponse(mimetype='application/pdf')
+        response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename=%s.pdf' % self.object.slug
         response.write(file_obj.getvalue())
         file_obj.close()

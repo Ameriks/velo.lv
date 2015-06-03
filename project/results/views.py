@@ -304,7 +304,7 @@ class ResultDiplomaPDF(DetailView):
             file_obj = processing_class.generate_diploma(self.object)
         except:
             raise Http404
-        response = HttpResponse(mimetype='application/pdf')
+        response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename=%s.pdf' % self.object.participant.slug
         response.write(file_obj.getvalue())
         file_obj.close()
