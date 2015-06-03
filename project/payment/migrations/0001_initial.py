@@ -1,309 +1,116 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django.conf import settings
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Price'
-        db.create_table(u'payment_price', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='created_price_set', null=True, to=orm['core.User'])),
-            ('modified_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='modified_price_set', null=True, to=orm['core.User'])),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, auto_now_add=True, blank=True)),
-            ('competition', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Competition'])),
-            ('distance', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Distance'])),
-            ('from_year', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('till_year', self.gf('django.db.models.fields.IntegerField')(default=2050)),
-            ('price', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=20, decimal_places=2)),
-            ('start_registering', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('end_registering', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-        ))
-        db.send_create_signal(u'payment', ['Price'])
+    dependencies = [
+        ('contenttypes', '0002_remove_content_type_name'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('core', '0001_initial'),
+    ]
 
-        # Adding model 'DiscountCampaign'
-        db.create_table(u'payment_discountcampaign', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('competition', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Competition'])),
-        ))
-        db.send_create_signal(u'payment', ['DiscountCampaign'])
-
-        # Adding model 'DiscountCode'
-        db.create_table(u'payment_discountcode', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='created_discountcode_set', null=True, to=orm['core.User'])),
-            ('modified_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='modified_discountcode_set', null=True, to=orm['core.User'])),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, auto_now_add=True, blank=True)),
-            ('campaign', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['payment.DiscountCampaign'])),
-            ('code', self.gf('django.db.models.fields.CharField')(unique=True, max_length=20)),
-            ('usage_times', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('usage_times_left', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal(u'payment', ['DiscountCode'])
-
-        # Adding model 'PaymentChannel'
-        db.create_table(u'payment_paymentchannel', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('payment_channel', self.gf('django.db.models.fields.CharField')(default='LKDF', max_length=20)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('image_slug', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('erekins_url_prefix', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('erekins_auth_key', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('erekins_link', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('is_bill', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal(u'payment', ['PaymentChannel'])
-
-        # Adding model 'ActivePaymentChannel'
-        db.create_table(u'payment_activepaymentchannel', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('payment_channel', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['payment.PaymentChannel'])),
-            ('competition', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Competition'])),
-            ('from_date', self.gf('django.db.models.fields.DateTimeField')()),
-            ('till_date', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'payment', ['ActivePaymentChannel'])
-
-        # Adding model 'Payment'
-        db.create_table(u'payment_payment', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='created_payment_set', null=True, to=orm['core.User'])),
-            ('modified_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='modified_payment_set', null=True, to=orm['core.User'])),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, auto_now_add=True, blank=True)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'], null=True, blank=True)),
-            ('object_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('channel', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['payment.ActivePaymentChannel'])),
-            ('erekins_code', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('total', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=20, decimal_places=2)),
-            ('status', self.gf('django.db.models.fields.SmallIntegerField')(default=10)),
-        ))
-        db.send_create_signal(u'payment', ['Payment'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Price'
-        db.delete_table(u'payment_price')
-
-        # Deleting model 'DiscountCampaign'
-        db.delete_table(u'payment_discountcampaign')
-
-        # Deleting model 'DiscountCode'
-        db.delete_table(u'payment_discountcode')
-
-        # Deleting model 'PaymentChannel'
-        db.delete_table(u'payment_paymentchannel')
-
-        # Deleting model 'ActivePaymentChannel'
-        db.delete_table(u'payment_activepaymentchannel')
-
-        # Deleting model 'Payment'
-        db.delete_table(u'payment_payment')
-
-
-    models = {
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'core.choices': {
-            'Meta': {'object_name': 'Choices'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'kind': ('django.db.models.fields.SmallIntegerField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'core.competition': {
-            'Meta': {'object_name': 'Competition'},
-            'alias': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
-            'apply_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'bill_series': ('django.db.models.fields.CharField', [], {'default': "'B'", 'max_length': '20', 'blank': 'True'}),
-            'competition_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'competition_date_till': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'complex_discount': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
-            'complex_payment_enddate': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'created_competition_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_in_menu': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'kind': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
-            'legacy_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            u'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            u'lft': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'logo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'modified_competition_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'params': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
-            'parent': ('mptt.fields.TreeForeignKey', [], {'blank': 'True', 'related_name': "'children'", 'null': 'True', 'to': u"orm['core.Competition']"}),
-            'payment_channel': ('django.db.models.fields.CharField', [], {'default': "'LKDF'", 'max_length': '20'}),
-            'place_name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'processing_class': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            u'rght': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
-            'sitetree': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['sitetree.TreeItem']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
-            'skin': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            u'tree_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'})
-        },
-        u'core.distance': {
-            'Meta': {'ordering': "(u'_order',)", 'object_name': 'Distance'},
-            '_order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'can_have_teams': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'competition': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Competition']"}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'created_distance_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            'distance_m': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'distance_text': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'have_results': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'modified_distance_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'core.user': {
-            'Meta': {'object_name': 'User'},
-            'bike_brand': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'+'", 'null': 'True', 'to': u"orm['core.Choices']"}),
-            'birthday': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'city': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'+'", 'null': 'True', 'to': u"orm['core.Choices']"}),
-            'country': ('django_countries.fields.CountryField', [], {'default': "'LV'", 'max_length': '2', 'null': 'True', 'blank': 'True'}),
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '75'}),
-            'email_status': ('django.db.models.fields.SmallIntegerField', [], {'default': '10'}),
-            'email_validation_code': ('django.db.models.fields.CharField', [], {'default': "'1c039fd4-ec16-4922-869f-bbfc82aef43f'", 'max_length': '36'}),
-            'email_validation_expiry': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'full_name': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'legacy_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'send_email': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'ssn': ('django.db.models.fields.CharField', [], {'max_length': '12', 'blank': 'True'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"})
-        },
-        u'payment.activepaymentchannel': {
-            'Meta': {'object_name': 'ActivePaymentChannel'},
-            'competition': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Competition']"}),
-            'from_date': ('django.db.models.fields.DateTimeField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'payment_channel': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['payment.PaymentChannel']"}),
-            'till_date': ('django.db.models.fields.DateTimeField', [], {})
-        },
-        u'payment.discountcampaign': {
-            'Meta': {'object_name': 'DiscountCampaign'},
-            'competition': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Competition']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'payment.discountcode': {
-            'Meta': {'object_name': 'DiscountCode'},
-            'campaign': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['payment.DiscountCampaign']"}),
-            'code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'created_discountcode_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'modified_discountcode_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            'usage_times': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'usage_times_left': ('django.db.models.fields.IntegerField', [], {'default': '1'})
-        },
-        u'payment.payment': {
-            'Meta': {'object_name': 'Payment'},
-            'channel': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['payment.ActivePaymentChannel']"}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'created_payment_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            'erekins_code': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'modified_payment_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'status': ('django.db.models.fields.SmallIntegerField', [], {'default': '10'}),
-            'total': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '20', 'decimal_places': '2'})
-        },
-        u'payment.paymentchannel': {
-            'Meta': {'object_name': 'PaymentChannel'},
-            'erekins_auth_key': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'erekins_link': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'erekins_url_prefix': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image_slug': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'is_bill': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'payment_channel': ('django.db.models.fields.CharField', [], {'default': "'LKDF'", 'max_length': '20'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'payment.price': {
-            'Meta': {'ordering': "('distance', 'start_registering')", 'object_name': 'Price'},
-            'competition': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Competition']"}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'created_price_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            'distance': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['core.Distance']"}),
-            'end_registering': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'from_year': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'modified_price_set'", 'null': 'True', 'to': u"orm['core.User']"}),
-            'price': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '20', 'decimal_places': '2'}),
-            'start_registering': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'till_year': ('django.db.models.fields.IntegerField', [], {'default': '2050'})
-        },
-        u'sitetree.tree': {
-            'Meta': {'object_name': 'Tree'},
-            'alias': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80', 'db_index': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
-        },
-        u'sitetree.treeitem': {
-            'Meta': {'unique_together': "(('tree', 'alias'),)", 'object_name': 'TreeItem'},
-            'access_guest': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'access_loggedin': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'access_perm_type': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'access_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'access_restricted': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'alias': ('sitetree.models.CharFieldNullable', [], {'db_index': 'True', 'max_length': '80', 'null': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-            'hidden': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'hint': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '200', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'inbreadcrumbs': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'}),
-            'inmenu': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'}),
-            'insitetree': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'}),
-            'parent': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'treeitem_parent'", 'null': 'True', 'to': u"orm['sitetree.TreeItem']"}),
-            'sort_order': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'tree': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'treeitem_tree'", 'to': u"orm['sitetree.Tree']"}),
-            'url': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
-            'urlaspattern': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'})
-        }
-    }
-
-    complete_apps = ['payment']
+    operations = [
+        migrations.CreateModel(
+            name='ActivePaymentChannel',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('from_date', models.DateTimeField()),
+                ('till_date', models.DateTimeField()),
+                ('competition', models.ForeignKey(to='core.Competition')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='DiscountCampaign',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=50)),
+                ('discount_entry_fee_percent', models.DecimalField(default=0.0, max_digits=20, decimal_places=2)),
+                ('discount_entry_fee', models.DecimalField(default=0.0, max_digits=20, decimal_places=2)),
+                ('discount_insurance_percent', models.DecimalField(default=0.0, max_digits=20, decimal_places=2)),
+                ('discount_insurance', models.DecimalField(default=0.0, max_digits=20, decimal_places=2)),
+                ('competition', models.ForeignKey(to='core.Competition')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='DiscountCode',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
+                ('modified', models.DateTimeField(auto_now=True, verbose_name='Modified')),
+                ('code', models.CharField(unique=True, max_length=20)),
+                ('usage_times', models.IntegerField(default=1)),
+                ('usage_times_left', models.IntegerField(default=1)),
+                ('is_active', models.BooleanField(default=True)),
+                ('campaign', models.ForeignKey(to='payment.DiscountCampaign')),
+                ('created_by', models.ForeignKey(related_name='created_discountcode_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('modified_by', models.ForeignKey(related_name='modified_discountcode_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='Payment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
+                ('modified', models.DateTimeField(auto_now=True, verbose_name='Modified')),
+                ('legacy_id', models.IntegerField(null=True, blank=True)),
+                ('object_id', models.PositiveIntegerField(null=True, blank=True)),
+                ('erekins_code', models.CharField(max_length=100, blank=True)),
+                ('total', models.DecimalField(default=0.0, max_digits=20, decimal_places=2)),
+                ('donation', models.DecimalField(default=0.0, max_digits=20, decimal_places=2)),
+                ('status', models.SmallIntegerField(default=10, choices=[(-70, 'ID not found'), (-60, 'Error'), (-50, 'Failed'), (-40, 'Declined'), (-30, 'Timeout'), (-20, 'Cancelled'), (-10, 'Reversed'), (10, 'New'), (20, 'Pending'), (30, 'OK')])),
+                ('channel', models.ForeignKey(to='payment.ActivePaymentChannel')),
+                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
+                ('created_by', models.ForeignKey(related_name='created_payment_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('modified_by', models.ForeignKey(related_name='modified_payment_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='PaymentChannel',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('payment_channel', models.CharField(default='LKDF', max_length=20)),
+                ('title', models.CharField(max_length=50)),
+                ('image_slug', models.CharField(max_length=50, blank=True)),
+                ('erekins_url_prefix', models.CharField(max_length=50, blank=True)),
+                ('erekins_auth_key', models.CharField(max_length=100, blank=True)),
+                ('erekins_link', models.CharField(max_length=50, blank=True)),
+                ('is_bill', models.BooleanField(default=False)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Price',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
+                ('modified', models.DateTimeField(auto_now=True, verbose_name='Modified')),
+                ('from_year', models.IntegerField(default=0)),
+                ('till_year', models.IntegerField(default=2050)),
+                ('price', models.DecimalField(default=0.0, max_digits=20, decimal_places=2)),
+                ('start_registering', models.DateTimeField(null=True, blank=True)),
+                ('end_registering', models.DateTimeField(null=True, blank=True)),
+                ('competition', models.ForeignKey(to='core.Competition')),
+                ('created_by', models.ForeignKey(related_name='created_price_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('distance', models.ForeignKey(to='core.Distance')),
+                ('modified_by', models.ForeignKey(related_name='modified_price_set', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'ordering': ('distance', 'start_registering'),
+                'permissions': ('can_see_totals', 'Can see income totals'),
+            },
+        ),
+        migrations.AddField(
+            model_name='activepaymentchannel',
+            name='payment_channel',
+            field=models.ForeignKey(to='payment.PaymentChannel'),
+        ),
+    ]

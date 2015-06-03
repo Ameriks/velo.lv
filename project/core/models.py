@@ -11,7 +11,7 @@ import uuid
 from django.core.mail import send_mail
 from legacy.models import Ev68RSession
 from marketing.models import MailgunEmail
-from velo.mixins.models import TimestampMixin, StatusMixin, CustomTrackChanges
+from velo.mixins.models import TimestampMixin, StatusMixin
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, AbstractBaseUser, UserManager
 from django_countries.fields import CountryField
 from django.contrib.contenttypes.models import ContentType
@@ -21,7 +21,6 @@ from django.contrib.auth.signals import user_logged_in
 import requests
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
-from save_the_change.mixins import SaveTheChange, TrackChanges
 from requests.exceptions import ConnectionError
 
 
@@ -106,7 +105,7 @@ class Choices(models.Model):
         return self.title
 
 
-class User(CustomTrackChanges, SaveTheChange, AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_VALID = 50
     EMAIL_VALIDATING = 40
     EMAIL_BOUNCED = 20
@@ -124,7 +123,7 @@ class User(CustomTrackChanges, SaveTheChange, AbstractBaseUser, PermissionsMixin
 
     email = models.EmailField(_('Email Address'), unique=True)
     email_status = models.SmallIntegerField(default=10, choices=EMAIL_STATUS)
-    email_validation_code = models.CharField(max_length=36, default=lambda: str(uuid.uuid4()))
+    email_validation_code = models.CharField(max_length=36, default=uuid.uuid4)
     email_validation_expiry = models.DateTimeField(null=True, blank=True)
 
     country = CountryField(_('Country'), blank=True, null=True, default="LV")
@@ -221,7 +220,7 @@ class Competition(MPTTModel):
     created_by = models.ForeignKey('core.User', related_name='created_%(class)s_set', null=True, blank=True)
     modified_by = models.ForeignKey('core.User', related_name='modified_%(class)s_set', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True, auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     place_name = models.CharField(max_length=50, blank=True)
     competition_date = models.DateField(blank=True, null=True)
@@ -376,8 +375,8 @@ class Log(models.Model):
     message = models.CharField(max_length=255, blank=True)
     params = JSONField(blank=True, null=True)
 
-    created = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
-    modified = models.DateTimeField(auto_now=True, auto_now_add=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     @classmethod
     def from_mailgun_request(cls, request, commit=True):

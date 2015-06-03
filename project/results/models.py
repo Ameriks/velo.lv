@@ -15,7 +15,6 @@ from core.models import Log
 from results.helper import time_to_seconds
 from velo.mixins.models import TimestampMixin
 from velo.utils import load_class
-from save_the_change.mixins import SaveTheChange
 
 
 def _get_upload_path(instance, filename):
@@ -152,7 +151,7 @@ class LapResult(models.Model):
     time = models.TimeField(_('Time'), blank=True, null=True)
 
 
-class Result(SaveTheChange, models.Model):
+class Result(models.Model):
     STATUSES = (
         ('DSQ', 'DSQ'),
         ('DNS', 'DNS'),
@@ -269,7 +268,7 @@ class Leader(models.Model):
         return '%s - %s' % (self.competition, self.text)
 
 
-class SebStandings(SaveTheChange, models.Model):
+class SebStandings(models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
 
@@ -329,7 +328,7 @@ class SebStandings(SaveTheChange, models.Model):
         return sum((time_to_seconds(obj.time) for obj in self.results))
 
 
-class TeamResultStandings(SaveTheChange, models.Model):
+class TeamResultStandings(models.Model):
     team = models.OneToOneField('team.Team')
 
     points_total = models.IntegerField(_('Points Total'), default=0, db_index=True)
@@ -343,7 +342,7 @@ class TeamResultStandings(SaveTheChange, models.Model):
     points7 = models.IntegerField('7.', blank=True, null=True, db_index=True)
 
 
-class HelperResults(SaveTheChange, TimestampMixin, models.Model):
+class HelperResults(TimestampMixin, models.Model):
     """
     This is helper table to calculate number and passage assigning for participants.
     """

@@ -33,11 +33,6 @@ urlpatterns = patterns('',
                        url(_(r'^password_reset/done/$'), 'django.contrib.auth.views.password_reset_done',
                            name='password_reset_done',
                            kwargs={'template_name': 'registration/password_reset_done_velo.html'}),
-                       # Support old style base36 password reset links; remove in Django 1.7
-                       url(_(r'^reset/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$'),
-                           'django.contrib.auth.views.password_reset_confirm_uidb36', kwargs={
-                               'post_reset_redirect': reverse_lazy('accounts:password_reset_complete')
-                           }),
                        url(_(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$'),
                            'django.contrib.auth.views.password_reset_confirm',
                            name='password_reset_confirm', kwargs={

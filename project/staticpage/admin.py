@@ -1,10 +1,10 @@
 from django.contrib import admin
-from flatpages.models import FlatPage
+from staticpage.models import StaticPage
 from django.utils.translation import ugettext_lazy as _
-from flatpages.forms import FlatpageForm
+from staticpage.forms import StaticPageForm
 
-class FlatPageAdmin(admin.ModelAdmin):
-    form = FlatpageForm
+class StaticPageAdmin(admin.ModelAdmin):
+    form = StaticPageForm
     fieldsets = (
         (None, {'fields': ('url', 'title', 'content', 'is_published', 'competition')}),
         (_('Advanced options'), {'classes': ('collapse',), 'fields': ('enable_comments', 'language', 'ordering')}),
@@ -13,4 +13,4 @@ class FlatPageAdmin(admin.ModelAdmin):
     list_filter = ('enable_comments', 'competition')
     search_fields = ('url', 'title')
 
-admin.site.register(FlatPage, FlatPageAdmin)
+admin.site.register(StaticPage, StaticPageAdmin)

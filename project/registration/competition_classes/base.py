@@ -68,8 +68,8 @@ class CompetitionScriptBase(object):
         return 0
 
     def build_flat_pages(self, competition, items):
-        for page in competition.flatpage_set.filter(is_published=True):
-            items.append(item(page.title, 'competition:flatpage %i %s' % (competition.id, page.url)))
+        for page in competition.staticpage_set.filter(is_published=True):
+            items.append(item(page.title, 'competition:staticpage %i %s' % (competition.id, page.url)))
 
 
 class SEBCompetitionBase(CompetitionScriptBase):

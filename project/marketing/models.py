@@ -20,7 +20,7 @@ class MailgunEmail(models.Model):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    code = models.CharField(max_length=50, default=lambda: str(uuid.uuid4()), unique=True)
+    code = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
 
     em_from = models.CharField(max_length=85, default=settings.MAILGUN_FROM)
     em_to = models.CharField(max_length=255)

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.conf.urls import patterns, url
 from core.views import CompetitionDetail, MapView, MapGPXDownloadView
-from flatpages.views import FlatpageView
+from staticpage.views import StaticPageView
 from registration.views import ParticipantList, TeamJsonList, ParticipantSearchView, DataForExternalTotal, \
     DataForExternalAll, BikeBrandJsonList
 from django.utils.translation import ugettext_lazy as _
@@ -51,7 +51,7 @@ urlpatterns = patterns('',
                        url(_(r'^participant/search.json$'), ParticipantSearchView.as_view(), name='participant_search'),
 
 
-                       url(_(r'^(?P<pk>\d+)/(?P<slug>.*)/$'), FlatpageView.as_view(), name='flatpage'),
+                       url(_(r'^(?P<pk>\d+)/(?P<slug>.*)/$'), StaticPageView.as_view(), name='staticpage'),
 
 
 )

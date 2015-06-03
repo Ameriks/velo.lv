@@ -6,7 +6,7 @@
 
 
 {% block main %}
-    {% cache 60 flatpages_flatpage_detail LANGUAGE_CODE object.id %}
+    {% cache 60 staticpage_staticpage_detail LANGUAGE_CODE object.id %}
     {% spaceless %}
         {{ content|safe }}
     {{ block.super }}

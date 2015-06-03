@@ -3,17 +3,17 @@ from django.http import Http404
 
 from django.views.generic import DetailView
 from django.core.exceptions import ObjectDoesNotExist
-from flatpages.models import FlatPage
+from staticpage.models import StaticPage
 from velo.mixins.views import SetCompetitionContextMixin
 from django.utils.translation import ugettext as _
 
 
-class FlatpageView(SetCompetitionContextMixin, DetailView):
+class StaticPageView(SetCompetitionContextMixin, DetailView):
     slug_field = 'url'
-    model = FlatPage
+    model = StaticPage
 
     def get_queryset(self):
-        queryset = super(FlatpageView, self).get_queryset()
+        queryset = super(StaticPageView, self).get_queryset()
 
         if self.competition:
             queryset = queryset.filter(competition=self.competition)
@@ -35,7 +35,7 @@ class FlatpageView(SetCompetitionContextMixin, DetailView):
         return obj
 
     def get_context_data(self, **kwargs):
-        context = super(FlatpageView, self).get_context_data(**kwargs)
+        context = super(StaticPageView, self).get_context_data(**kwargs)
 
         content = self.object.content
         # TODO: Write regex for this

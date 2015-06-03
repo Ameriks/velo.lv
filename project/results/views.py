@@ -99,7 +99,7 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
                     },
                 )
 
-        queryset = queryset.select_related('competition', 'distance', 'participant', 'participant__bike_brand',
+        queryset = queryset.select_related('competition', 'participant__distance', 'participant', 'participant__bike_brand',
                                            'participant__team', 'number', 'leader')
 
         return queryset

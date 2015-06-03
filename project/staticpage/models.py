@@ -1,14 +1,13 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.contrib.sites.models import Site
 from django.core.urlresolvers import get_script_prefix
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import iri_to_uri, python_2_unicode_compatible
+from django.utils.encoding import iri_to_uri
 from django.conf import settings
 
 
-class FlatPage(models.Model):
+class StaticPage(models.Model):
     LANGUAGES = (('', '*'), ) + settings.LANGUAGES
     url = models.CharField(_('URL'), max_length=100, db_index=True)
     title = models.CharField(_('title'), max_length=200)

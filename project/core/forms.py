@@ -82,12 +82,13 @@ class ChangeEmailForm(RequestKwargModelFormMixin, CleanEmailMixin, forms.ModelFo
         return password1
 
     def save(self, commit=True):
+        prev_user = User.objects.get(id=self.instance.pk)
         user = super(ChangeEmailForm, self).save(commit=False)
-        if user.has_changed:
+        if prev_user.email != user.email:
             user.set_email_validation_code()
             user.email_status = User.EMAIL_NOT_VALIDATED
             if commit:
-                send_change_email_notification.delay(user.id, user.changed_values.get('email'))
+                send_change_email_notification.delay(user.id, prev_user.email)
                 user.save()
                 send_email_confirmation.delay(user.id)
         return user

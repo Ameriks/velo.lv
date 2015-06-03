@@ -10,14 +10,15 @@ DATABASES = {
         'HOST': '172.17.42.1',
         'PORT': '15005',
     },
-    'legacy': {
-        'NAME': 'velo',
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'whazaa',
-        'PASSWORD': os.environ['LEGACY_MYSQL_PASS'],
-        'HOST': '91.135.19.3',
-        'PORT': '3306'
-    },
+    # TEMPORARY disabled while migrating 1.8.2
+    # 'legacy': {
+    #     'NAME': 'velo',
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'USER': 'whazaa',
+    #     'PASSWORD': os.environ['LEGACY_MYSQL_PASS'],
+    #     'HOST': '91.135.19.3',
+    #     'PORT': '3306'
+    # },
 }
 
 EMAIL_BACKEND = 'django_mailgun.MailgunBackend'

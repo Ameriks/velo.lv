@@ -21,7 +21,7 @@ class Price(TimestampMixin, models.Model):
     class Meta:
         ordering = ('distance', 'start_registering')
         permissions = (
-            ('can_see_totals', 'Can see income totals')
+            ('can_see_totals', 'Can see income totals'),
         )
     def __unicode__(self):
         return str(self.price)

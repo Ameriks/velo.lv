@@ -45,7 +45,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',  # For wiki
     'social.apps.django_app.default',
     'raven.contrib.django.raven_compat',
-    'south',
     'mptt',
     'django_tables2',
     'django_tables2_reports',
@@ -53,7 +52,6 @@ INSTALLED_APPS = (
     'crispy_forms',
     'djcelery',
     'sitetree',
-    'admin_honeypot',
     'easy_thumbnails',
     'easy_thumbnails.optimize',
     'redactor',
@@ -69,7 +67,7 @@ INSTALLED_APPS = (
     'advert',
     'news',
     'marketing',
-    'flatpages',
+    'staticpage',
     'gallery',
    # 'legacy',
 )
@@ -98,7 +96,7 @@ ROOT_URLCONF = 'velo.urls'
 
 WSGI_APPLICATION = 'velo.wsgi.application'
 
-DATABASE_ROUTERS = ['legacy.router.LegacyRouter']
+#DATABASE_ROUTERS = ['legacy.router.LegacyRouter']
 
 
 LANGUAGE_CODE = 'lv'
@@ -165,7 +163,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "social.apps.django_app.context_processors.backends",
     "social.apps.django_app.context_processors.login_redirect",
-    "sekizai.context_processors.sekizai",
 )
 
 PASSWORD_HASHERS = (
@@ -195,12 +192,12 @@ STATICFILES_FINDERS = (
 )
 
 
-SOUTH_MIGRATION_MODULES = {
-    'easy_thumbnails': 'easy_thumbnails.south_migrations',
-}
-
-
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 
 MAILGUN_FROM = u'Tavs velo.lv <hi@mans.velo.lv>'
 MAILGUN_ACCESS_KEY = os.environ['MAILGUN_ACCESS_KEY']

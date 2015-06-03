@@ -79,7 +79,6 @@ urlpatterns += patterns('',
 
     url(_(r'^pdf/(?P<slug>\w+)/'), ParticipantPDF.as_view(), name="participant_number_pdf"),
 
-    url(r'^admin/', include('admin_honeypot.urls')), # Honeypot for losers :)
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^%s/' % settings.ADMIN_URL, include(admin.site.urls)),  # This is real admin with hidden link in ENV
 

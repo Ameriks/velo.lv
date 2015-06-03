@@ -39,7 +39,7 @@ class PaymentTypeWidget(Select):
 
         if option.payment_channel.is_bill:
             attrs.update({
-                'data-bill': True,
+                'data-bill': 'true',
             })
 
         attrs = flatatt(attrs)

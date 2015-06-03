@@ -8,7 +8,6 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 import uuid
-from save_the_change.mixins import SaveTheChange
 from core.models import Choices, CustomSlug, Log
 from payment.models import Payment
 from registration.utils import recalculate_participant
@@ -37,7 +36,7 @@ class Application(TimestampMixin, models.Model):
 
     email = models.EmailField(blank=True, help_text=_("You will receive payment confirmation and information about start numbers."))
 
-    code = models.CharField(max_length=50, default=lambda: str(uuid.uuid4()), unique=True)
+    code = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
     legacy_id = models.IntegerField(blank=True, null=True)
 
     company_name = models.CharField(_('Company name / Full Name'), max_length=100, blank=True)
@@ -76,7 +75,7 @@ class Application(TimestampMixin, models.Model):
         self.set_final_price()
         return super(Application, self).save(*args, **kwargs)
 
-class Participant(SaveTheChange, TimestampMixin, models.Model):
+class Participant(TimestampMixin, models.Model):
     GENDER_CHOICES = (
         ('M', _('Male')),
         ('F', _('Female')),
@@ -180,6 +179,11 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
 
 
     def save(self, *args, **kwargs):
+        prev_participant = None
+        if self.pk:
+            prev_participant = Participant.objects.get(id=self.pk)
+
+
         self.full_name = '%s %s' % (self.first_name, self.last_name)  # Full name always should be based on first_name and last_name fields
 
         self.team_name_slug = slugify(self.team_name.replace(' ', ''))
@@ -231,9 +235,6 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
         # Recalculate totals. # TODO: This should be done when creating payment, not on any save.
         recalculate_participant(self, commit=False)
 
-        is_participating_changed = False
-        if 'is_participating' in self._changed_fields and self.is_participating:
-            is_participating_changed = True
 
         obj = super(Participant, self).save(*args, **kwargs)
 
@@ -242,7 +243,7 @@ class Participant(SaveTheChange, TimestampMixin, models.Model):
             self.code_short = hashids.encode(self.id)
             self.save()
 
-        if is_participating_changed:
+        if self.is_participating and (not prev_participant or not prev_participant.is_participating):
             from results.tasks import master_update_helper_result_table
             master_update_helper_result_table.delay(participant_id=self.id)
 
@@ -294,7 +295,7 @@ class PreNumberAssign(models.Model):
 
 class CompanyApplication(StatusMixin, TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
-    code = models.CharField(max_length=50, default=lambda: str(uuid.uuid4()), unique=True)
+    code = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
     team_name = models.CharField(max_length=50)
 
     email = models.EmailField(help_text=_("You will receive payment confirmation and information about start numbers."))

@@ -1,5 +1,5 @@
 MySQL-python==1.2.5
-django==1.6.10  # next step - upgrade to 1.7
+django==1.8.2
 psycopg2>=2.6
 South==1.0.2
 Unipath==1.1
@@ -10,15 +10,15 @@ pyOpenSSL==0.15.1 # for requests to support SNI
 ndg-httpsclient==0.4.0 # for requests to support SNI
 pyasn1==0.1.7 # for requests to support SNI
 requests==2.7.0
-django-mptt==0.6.1
+django-mptt==0.7.4
 celery==3.1.18
 django-celery==3.1.16
 django-countries==3.3
-django_tables2==0.15.0
+django_tables2==1.0.4
 django-tables2-reports==0.0.10
 django-extra-views==0.6.5
 Django-Select2==4.3.1
-django-sitetree==1.2.1
+django-sitetree==1.4.0
 django-admin-honeypot==0.4.0
 django-rosetta==0.7.6
 fabric==1.10.1
@@ -29,9 +29,8 @@ django-jsonfield==0.9.13
 django-grappelli==2.6.5
 easy-thumbnails==2.2
 xlwt==1.00
-reportlab==3.1.44
+reportlab==3.2.0
 python-memcached==1.54
-django-save-the-change==1.1.0
 pwgen==0.4
 premailer==2.9.0
 django-redactoreditor==1.2.10
@@ -40,7 +39,6 @@ PyYAML==3.11
 django-mailgun==0.2.2
 django-ssl-slapper==1.1
 pyinotify==0.9.5
-django-sekizai==0.8.1
 raven==5.3.1
 django-filter==0.10.0
 PyVimeo==0.3.0

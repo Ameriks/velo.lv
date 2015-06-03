@@ -30,6 +30,7 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
+        fields = "__all__"
 
 class SocialInline(admin.TabularInline):
     model = UserSocialAuth
