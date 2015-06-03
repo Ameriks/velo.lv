@@ -75,9 +75,8 @@ SSL_SLAPPER_SSL_REDIRECT_ANONYMOUS=True
 SSL_SLAPPER_SSL_REDIRECT_AUTHENTICATED=True
 SSL_SLAPPER_LOGIN_PAGE=LOGIN_URL
 SSL_SLAPPER_SSL_ONLY_PAGES=("^%s$" % LOGIN_URL,
-                            "^%s$" % reverse_lazy('admin:index'),
-                            "^%s" % reverse_lazy('application'),
-                            "^%s" % reverse_lazy('manager:competition_list'),
+                            "^%s" % ADMIN_URL,
+                            "^/manager",
                             "^/admin",
                             ".*\.json$",
                             "^/lv/pieteikums",
