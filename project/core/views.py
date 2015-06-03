@@ -1,8 +1,9 @@
+import re
 from braces.views import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect, render_to_response, resolve_url
 from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
@@ -163,6 +164,10 @@ def login(request, template_name='registration/login.html',
     Displays the login form and handles the login action.
     """
     redirect_to = request.REQUEST.get(redirect_field_name, '')
+
+    if not request.is_secure() and not settings.DEBUG:
+        url = request.build_absolute_uri(request.get_full_path())
+        return HttpResponsePermanentRedirect(re.sub(r'^http', 'https', url))
 
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('accounts:profile'))

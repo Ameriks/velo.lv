@@ -34,30 +34,6 @@ CACHES = {
     }
 }
 
-
-# This is here due to issues with website speed in production.
-# INTERNAL_IPS = ('87.99.89.245', '172.17.42.1', '87.99.89.245, 172.17.42.1')
-# INSTALLED_APPS += ('debug_toolbar', 'django_extensions', 'template_timings_panel', )
-# DEBUG_TOOLBAR_CONFIG = {
-#     'INTERCEPT_REDIRECTS': False,
-# }
-# DEBUG_TOOLBAR_PANELS = [
-#     'debug_toolbar.panels.versions.VersionsPanel',
-#     'debug_toolbar.panels.timer.TimerPanel',
-#     'debug_toolbar.panels.settings.SettingsPanel',
-#     'debug_toolbar.panels.headers.HeadersPanel',
-#     'debug_toolbar.panels.request.RequestPanel',
-#     'debug_toolbar.panels.sql.SQLPanel',
-#     'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-#     'debug_toolbar.panels.templates.TemplatesPanel',
-#     'debug_toolbar.panels.cache.CachePanel',
-#     'debug_toolbar.panels.signals.SignalsPanel',
-#     'debug_toolbar.panels.logging.LoggingPanel',
-#     'debug_toolbar.panels.redirects.RedirectsPanel',
-#     'template_timings_panel.panels.TemplateTimings.TemplateTimings',
-# ]
-# MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware', 'velo.middleware.ProfileMiddleware')
-
 TEMPLATE_LOADERS = (
     ('django.template.loaders.cached.Loader', (
         'django.template.loaders.filesystem.Loader',
@@ -71,27 +47,10 @@ ADMIN_URL = os.getenv('ADMIN_URL', 'administrator')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-SSL_SLAPPER_SSL_REDIRECT_ANONYMOUS=True
-SSL_SLAPPER_SSL_REDIRECT_AUTHENTICATED=True
-SSL_SLAPPER_LOGIN_PAGE=LOGIN_URL
-SSL_SLAPPER_SSL_ONLY_PAGES=("^%s$" % LOGIN_URL,
-                            "^%s" % ADMIN_URL,
-                            "^/manager",
-                            "^/admin",
-                            ".*\.json$",
-                            "^/lv/pieteikums",
-                            "^/lv/uznemuma_pieteikums",
-                            "^/lv/maksajums",
-                            "^/lv/konts",
-                            "^/en/application",
-                            "^/en/company_application",
-                            "^/en/payment",
-                            "^/en/accounts",
-                            )
 
-RAVEN_CONFIG = {
-    'dsn': 'https://d705b5ab401a485fbf0fd2f275984224:{0}@{1}/2'.format(os.getenv('RAVEN_KEY'), os.getenv('RAVEN_HOST')),
-}
+#RAVEN_CONFIG = {
+#    'dsn': 'https://d705b5ab401a485fbf0fd2f275984224:{0}@{1}/2'.format(os.getenv('RAVEN_KEY'), os.getenv('RAVEN_HOST')),
+#}
 
 
 djcelery.setup_loader()

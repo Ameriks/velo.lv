@@ -89,7 +89,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
-    'ssl_slapper.middleware.ssl_redirect',
 )
 
 ROOT_URLCONF = 'velo.urls'
