@@ -40,9 +40,6 @@ TEMPLATE_LOADERS = (
     )),
 )
 
-
-ADMIN_URL = os.getenv('ADMIN_URL', 'administrator')
-
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 

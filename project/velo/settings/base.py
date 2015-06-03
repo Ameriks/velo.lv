@@ -77,19 +77,11 @@ VIMEO_SECRET = os.getenv('VIMEO_SECRET')
 VIMEO_TOKEN = os.getenv('VIMEO_TOKEN')
 
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'velo.middleware.JoomlaSessionMiddleware',
-    'velo.middleware.IPMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
-    'impersonate.middleware.ImpersonateMiddleware',
-)
+MIDDLEWARE_CLASSES = ('django.middleware.common.CommonMiddleware',
+                      'django.middleware.csrf.CsrfViewMiddleware',
+                      'velo.middleware.JoomlaSessionMiddleware',
+                      'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
+                      'impersonate.middleware.ImpersonateMiddleware',)
 
 ROOT_URLCONF = 'velo.urls'
 
@@ -151,29 +143,24 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    'django.core.context_processors.request',
-    "django.contrib.messages.context_processors.messages",
-    "social.apps.django_app.context_processors.backends",
-    "social.apps.django_app.context_processors.login_redirect",
-)
+TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
+                               "django.template.context_processors.debug",
+                               "django.template.context_processors.i18n",
+                               "django.template.context_processors.media",
+                               "django.template.context_processors.static",
+                               "django.template.context_processors.tz",
+                               'django.template.context_processors.request',
+                               "django.contrib.messages.context_processors.messages",
+                               "social.apps.django_app.context_processors.backends",
+                               "social.apps.django_app.context_processors.login_redirect",)
 
-PASSWORD_HASHERS = (
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.SHA1PasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
-    'velo.hashers.MD5CustomPasswordHasher',
-    'django.contrib.auth.hashers.CryptPasswordHasher',
-)
+PASSWORD_HASHERS = ('django.contrib.auth.hashers.PBKDF2PasswordHasher',
+                    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+                    'django.contrib.auth.hashers.BCryptPasswordHasher',
+                    'django.contrib.auth.hashers.SHA1PasswordHasher',
+                    'django.contrib.auth.hashers.MD5PasswordHasher',
+                    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
+                    'django.contrib.auth.hashers.CryptPasswordHasher')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
@@ -185,10 +172,8 @@ SMS_GATEWAY = 'http://smsmarketing.bpo.lv'
 
 ADMIN_HONEYPOT_EMAIL_ADMINS = False
 
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-)
+STATICFILES_FINDERS = ("django.contrib.staticfiles.finders.FileSystemFinder",
+                       "django.contrib.staticfiles.finders.AppDirectoriesFinder")
 
 
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
@@ -264,9 +249,9 @@ THUMBNAIL_BASEDIR = 'easy_thumbnails'
 THUMBNAIL_CHECK_CACHE_MISS = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+USE_X_FORWARDED_HOST = True
 
-
-ADMIN_URL = 'administrator'
+ADMIN_URL = os.getenv('ADMIN_URL', 'administrator')
 
 LOGGING = {
     'version': 1,

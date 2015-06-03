@@ -16,8 +16,5 @@ class LegacyRouter(object):
         obj2_is_legacy = (obj2._meta.app_label == 'legacy')
         return obj1_is_legacy == obj2_is_legacy
 
-    def allow_syncdb(self, db, model):
-        return db != 'legacy' and model._meta.app_label != 'legacy'
-
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         return db != 'legacy' and app_label != 'legacy'
