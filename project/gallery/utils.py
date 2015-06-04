@@ -46,5 +46,5 @@ def sync_album(album_id):
                 photo.image = fullpath[6:]
                 photo.save()
             else:
-                generate_thumbnails.delay(Photo, photo.id, 'image')
+                generate_thumbnails.delay(photo.id, 'image', model_class='gallery.models.Photo')
 

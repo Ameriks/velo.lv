@@ -15,9 +15,13 @@ from oauth2client.tools import argparser, run_flow
 import httplib2
 import vimeo
 from subprocess import call
+from velo.utils import load_class
+
 
 @task
-def generate_thumbnails(model, pk, field):
+def generate_thumbnails(pk, field, model=None, model_class=None):
+    if not model:
+        model = load_class(model_class)
     instance = model._default_manager.get(pk=pk)
     fieldfile = getattr(instance, field)
 
