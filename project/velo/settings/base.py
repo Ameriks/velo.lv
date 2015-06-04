@@ -180,8 +180,6 @@ SMS_USERNAME = os.getenv('SMS_USERNAME')
 SMS_PASSWORD = os.getenv('SMS_PASSWORD')
 SMS_GATEWAY = 'http://smsmarketing.bpo.lv'
 
-ADMIN_HONEYPOT_EMAIL_ADMINS = False
-
 STATICFILES_FINDERS = ("django.contrib.staticfiles.finders.FileSystemFinder",
                        "django.contrib.staticfiles.finders.AppDirectoriesFinder")
 

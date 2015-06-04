@@ -66,6 +66,11 @@ class UserRegistrationView(CreateView):
     model = User
     form_class = UserCreationForm
     template_name = 'core/user_registration.html'
+    success_url = reverse_lazy('accounts:login')
+
+    def form_valid(self, form):
+        messages.success(self.request, _('User created. Now you can login in your account.'))
+        return super(UserRegistrationView, self).form_valid(form)
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():

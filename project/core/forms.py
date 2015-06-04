@@ -3,6 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm, Passw
 from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import ugettext, ugettext_lazy as _
 from crispy_forms.helper import FormHelper
@@ -232,6 +233,7 @@ class UserCreationForm(CleanEmailMixin, forms.ModelForm):
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+        user.last_login = timezone.now()
         if commit:
             user.save()
         return user
