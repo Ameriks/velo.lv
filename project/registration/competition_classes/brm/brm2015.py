@@ -70,7 +70,7 @@ class Brm2015(CompetitionScriptBase):
             child_items.append(item('Kartes', 'competition:maps %i' % self.competition.id))
 
         if self.competition.competition_date <= current_date:
-            child_items.append(item('Rezultāti', 'competition:result_distance_list %i' % self.competition.id))
+            child_items.append(item('Rezultāti', '/media/results/2015_RM_bernu_rezultati.pdf', url_as_pattern=False))
         return item(unicode(self.competition), '#', url_as_pattern=False, children=child_items, in_menu=self.competition.is_in_menu)
 
 
