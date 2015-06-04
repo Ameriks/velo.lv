@@ -143,6 +143,7 @@ class Photo(TimestampMixin, models.Model):
 
 @receiver(saved_file)
 def generate_thumbnails_async(sender, fieldfile, **kwargs):
+    model_class = sender.__module__ + "." + sender.__name__
     generate_thumbnails(
-        model=sender, pk=fieldfile.instance.pk,
+        model_class=model_class, pk=fieldfile.instance.pk,
         field=fieldfile.field.name)

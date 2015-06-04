@@ -263,6 +263,8 @@ ADMIN_URL = os.getenv('ADMIN_URL', 'administrator')
 
 ALWAYS_SSL_PAGES = []
 
+djcelery.setup_loader()
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

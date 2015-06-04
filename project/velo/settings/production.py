@@ -50,7 +50,7 @@ SESSION_COOKIE_SECURE = True
 #}
 
 
-djcelery.setup_loader()
+
 RABBITMQ_USER = 'velolv'
 RABBITMQ_PASS = os.getenv('RABBITMQ_PASS')
 RABBITMQ_HOST = '172.17.42.1'
