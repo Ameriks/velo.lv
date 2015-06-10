@@ -197,7 +197,7 @@ MAILGUN_URL = 'https://api.mailgun.net/v2'
 MAILGUN_SERVER_NAME = 'mans.velo.lv'
 
 
-MY_DEFAULT_DOMAIN = 'http://mans.velo.lv'
+MY_DEFAULT_DOMAIN = 'https://mans.velo.lv'
 
 
 REPLACE_AUTH_USER_ADMIN = False
