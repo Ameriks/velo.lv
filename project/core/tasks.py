@@ -78,7 +78,6 @@ def send_email_confirmation(user_id):
         'content_object': user,
     }
     mailgun = MailgunEmail.objects.create(**email_data)
-    send_mailgun(email=mailgun)
     return mailgun
 
 @task
