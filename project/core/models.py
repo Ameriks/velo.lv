@@ -176,8 +176,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email])
 
     def save(self, *args, **kwargs):
+        if self.last_login is None:
+            self.last_login = timezone.now()  # Bug fix due to error creating user
         self.full_name = ('%s %s' % (self.first_name, self.last_name)).strip()
-        super(User, self).save(*args, **kwargs)
+
+        return super(User, self).save(*args, **kwargs)
 
     @property
     def username(self):
