@@ -176,7 +176,8 @@ class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
 
     def get_queryset(self):
         queryset = super(TeamUpdateView, self).get_queryset()
-        queryset = queryset.filter(owner=self.request.user)
+        if not self.request.user.is_superuser:
+            queryset = queryset.filter(owner=self.request.user)
         return queryset
 
     def post(self, request, *args, **kwargs):
