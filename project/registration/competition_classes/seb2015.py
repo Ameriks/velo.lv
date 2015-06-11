@@ -276,7 +276,7 @@ class Seb2015(SEBCompetitionBase):
                         helper.calculated_total = total_points / (participated_count + (skipped_count - 2))
                 else:
                     helper.calculated_total = 0.0
-            else:
+            elif not participant.primary_number:
                 matches = get_close_matches(participant.slug, prev_slugs)
                 if matches:
                     helper.matches_slug = matches[0]
