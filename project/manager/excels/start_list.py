@@ -149,6 +149,74 @@ def create_start_list(competition=None, competition_id=None):
     return output
 
 
+def start_list_have_participated_this_year(competition=None, competition_id=None):
+    if not competition and not competition_id:
+        raise Exception('Expected at least one variable')
+    if not competition:
+        competition = Competition.objects.get(id=competition_id)
+
+    root_competition = competition.get_root()
+    child_competitions = competition.get_siblings()
+
+    output = StringIO.StringIO()
+    distances = competition.get_distances()
+
+    wbk = xlwt.Workbook()
+
+    for distance in distances:
+        slugs_participates = [obj.slug for obj in distance.participant_set.filter(is_participating=True, competition=competition)]
+        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
+
+        row = 4
+        header_row = (
+            '#', 'UID', 'Numurs', 'Alias', 'Sacensības', 'Distance', 'Uzvārds', 'Vārds', 'Dzimšanas diena', 'Dzimums',
+            'Grupa', 'Pieteikuma ziedojums', 'Dalības maksa', 'Apdrošināšanas maksa', 'Kopā samaksāts', 'Atlaižu kods', 'E-pasts', 'Telefons', 'Valsts', 'Komanda', 'Velo', 'Izveidots', 'Rezultāts - Punkti')
+        for col, value in enumerate(header_row):
+            sheet.write(row, col, value)
+
+        participants = distance.participant_set.filter(is_participating=True).filter(competition__in=child_competitions).exclude(slug__in=slugs_participates).order_by('distance', 'last_name', 'first_name', '-competition')
+
+        row = 5
+        for index, item in enumerate(participants, start=1):
+            res = item.result_set.order_by('-points_distance')
+            res_points = None
+            if res:
+                res_points = res[0].points_distance
+
+
+            total_entry_fee = item.total_entry_fee
+            total_insurance_fee = item.total_insurance_fee
+            final_price = item.final_price
+
+            if root_competition.id == 1 and item.competition.level == 1:
+                child_count = item.competition.get_children().count()
+                total_entry_fee = total_entry_fee / child_count
+                total_insurance_fee = total_insurance_fee / child_count
+                final_price = final_price / child_count
+
+            donation = 0.0
+            if item.application:
+                donation = item.application.donation
+
+            row_values = (
+                index, item.id, unicode(item.primary_number), item.slug, unicode(item.competition), unicode(item.distance), item.last_name,
+                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, donation, total_entry_fee, total_insurance_fee, final_price,
+                unicode(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand2) if item.bike_brand2 else '',
+                item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res_points)
+
+            for col, value in enumerate(row_values):
+                sheet.write(row, col, value)
+            row += 1
+
+    wbk.save(output)
+    return output
+
+
+
+
+
+
+
 def create_donations_list(competition=None, competition_id=None):
     if not competition and not competition_id:
         raise Exception('Expected at least one variable')

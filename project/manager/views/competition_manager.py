@@ -10,7 +10,7 @@ from core.models import Competition
 from legacy.utils_marketing import create_csv_seb
 from manager.excels.insured import create_insured_list
 from manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
-    create_team_list, payment_list, create_donations_list
+    create_team_list, payment_list, create_donations_list, start_list_have_participated_this_year
 from manager.tables import ManageCompetitionTable
 from manager.views import ManageApplication
 from manager.views.permission_view import ManagerPermissionMixin
@@ -86,6 +86,13 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             file_obj = create_start_list(competition=self.competition)
             response = HttpResponse(content_type='application/vnd.ms-excel')
             response['Content-Disposition'] = 'attachment; filename=start_list.xls'
+            response.write(file_obj.getvalue())
+            file_obj.close()
+            return response
+        elif request.POST.get('action') == 'start_list_have_participated_this_year':
+            file_obj = start_list_have_participated_this_year(competition=self.competition)
+            response = HttpResponse(content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename=have_participated_list.xls'
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
