@@ -147,7 +147,6 @@ class ResultGroupTable(tables.Table):
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
     bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
-    time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
     points_group = tables.Column(empty_values=(), verbose_name=_('Points Group'), accessor="points_group")
 
@@ -165,10 +164,15 @@ class ResultGroupTable(tables.Table):
         else:
             return '-'
 
+    def render_time(self, record):
+        if record.time:
+            return record.time.strftime("%H:%M:%S")
+        return "-"
+
     class Meta:
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("number", "status") # all_numbers
+        fields = ("number", "status", "time") # all_numbers
         sequence = ("result_group", "number", 'first_name','last_name', 'year', 'team', 'bike_brand2', 'time', 'group', 'points_group', 'status')
         empty_text = _("There are no results")
         order_by = ("time")
@@ -185,7 +189,6 @@ class ResultDistanceTable(tables.Table):
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
     bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
-    time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     points_distance = tables.Column(empty_values=(), verbose_name=_('Points Distance'), accessor="points_distance")
 
     def render_last_name(self, record):
@@ -202,13 +205,18 @@ class ResultDistanceTable(tables.Table):
         else:
             return '-'
 
+    def render_time(self, record):
+        if record.time:
+            return record.time.strftime("%H:%M:%S")
+        return "-"
+
     def render_group(self, record):
         return mark_safe('<span class="tooltips" title="%(result_group)s in the group (%(points_group)s points)">%(group)s</span>' % {'group': record.participant.group, 'result_group': ordinal(record.result_group), 'points_group': record.points_group})
 
     class Meta:
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("number", "status") # all_numbers
+        fields = ("number", "status", "time") # all_numbers
         sequence = ("result_distance", "number", 'first_name','last_name', 'year', 'group', 'team', 'bike_brand2', 'time', 'points_distance', 'status')
         empty_text = _("There are no results")
         order_by = ("time")
@@ -224,7 +232,6 @@ class ResultRMDistanceTable(tables.Table):
     year = tables.Column(empty_values=(), verbose_name=_('Year'), accessor="participant.birthday.year", order_by="participant.birthday")
     team = tables.Column(empty_values=(), verbose_name=_('Team'), accessor="participant.team")
     bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
-    time = tables.Column(empty_values=(), verbose_name=_('Time'), accessor="time")
     # points_distance = tables.Column(empty_values=(), verbose_name=_('Points Distance'), accessor="points_distance")
 
 
@@ -254,11 +261,10 @@ class ResultRMDistanceTable(tables.Table):
     def render_time(self, value, record, *args, **kwargs):
         return self._lap_render(value)
 
-
     class Meta:
         model = Participant
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("number", "status") # all_numbers
+        fields = ("number", "status", "time") # all_numbers
         sequence = ("result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'time', 'status')
         empty_text = _("There are no results")
         order_by = ("time")
