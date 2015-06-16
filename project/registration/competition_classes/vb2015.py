@@ -12,7 +12,7 @@ from core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page
 import os.path
 
 
-class VB2014(VBCompetitionBase):
+class VB2015(VBCompetitionBase):
     SOSEJAS_DISTANCE_ID = 32
     MTB_DISTANCE_ID = 33
     TAUTAS_DISTANCE_ID = 34
@@ -29,49 +29,52 @@ class VB2014(VBCompetitionBase):
             self.TAUTAS_DISTANCE_ID: ('T M', 'T W', )
         }
 
+    def _update_year(self, year):
+        return year + 1
+
     def assign_group(self, distance_id, gender, birthday):
         year = birthday.year
         if distance_id not in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             return ''
         elif distance_id == self.SOSEJAS_DISTANCE_ID:
             if gender == 'M':
-                if 1999 >= year >= 1998:
+                if self._update_year(1999) >= year >= self._update_year(1998):
                     return 'M-16'
-                elif 1997 >= year >= 1996:
+                elif self._update_year(1997) >= year >= self._update_year(1996):
                     return 'M-18'
-                elif 1995 >= year >= 1980:
+                elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'M-Elite'
-                elif 1979 >= year >= 1970:
+                elif self._update_year(1979) >= year >= self._update_year(1970):
                     return 'M-40'
-                elif 1969 >= year >= 1960:
+                elif self._update_year(1969) >= year >= self._update_year(1960):
                     return 'M-50'
-                elif year <= 1959:
+                elif year <= self._update_year(1959):
                     return 'M-60'
             else:
-                if 1999 >= year >= 1996:
+                if self._update_year(1999) >= year >= self._update_year(1996):
                     return 'W-18'
-                elif year <= 1995:
+                elif year <= self._update_year(1995):
                     return 'W'
         elif distance_id == self.MTB_DISTANCE_ID:
             if gender == 'M':
-                if 2002 >= year >= 2000:
+                if self._update_year(2002) >= year >= self._update_year(2000):
                     return 'MTB M-14'
-                elif 1999 >= year >= 1998:
+                elif self._update_year(1999) >= year >= self._update_year(1998):
                     return 'MTB M-16'
-                elif 1997 >= year >= 1996:
+                elif self._update_year(1997) >= year >= self._update_year(1996):
                     return 'MTB M-18'
-                elif 1995 >= year >= 1980:
+                elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'MTB M-Elite'
-                elif 1979 >= year >= 1970:
+                elif self._update_year(1979) >= year >= self._update_year(1970):
                     return 'MTB M-40'
-                elif 1969 >= year >= 1960:
+                elif self._update_year(1969) >= year >= self._update_year(1960):
                     return 'MTB M-50'
-                elif year <= 1959:
+                elif year <= self._update_year(1959):
                     return 'MTB M-60'
             else:
-                if 2002 >= year >= 1996:
+                if self._update_year(2002) >= year >= self._update_year(1996):
                     return 'MTB W-18'
-                elif year <= 1995:
+                elif year <= self._update_year(1995):
                     return 'MTB W'
         elif distance_id == self.TAUTAS_DISTANCE_ID:
             if gender == 'M':
@@ -84,6 +87,7 @@ class VB2014(VBCompetitionBase):
 
 
     def number_pdf(self, participant_id):
+        raise NotImplementedError
         participant = Participant.objects.get(id=participant_id)
         styles = getSampleStyleSheet()
         output = StringIO.StringIO()
@@ -127,6 +131,7 @@ class VB2014(VBCompetitionBase):
         return output
 
     def generate_diploma(self, result):
+        raise NotImplementedError
         output = StringIO.StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
