@@ -13,9 +13,9 @@ import os.path
 
 
 class VB2015(VBCompetitionBase):
-    SOSEJAS_DISTANCE_ID = 32
-    MTB_DISTANCE_ID = 33
-    TAUTAS_DISTANCE_ID = 34
+    SOSEJAS_DISTANCE_ID = 45
+    MTB_DISTANCE_ID = 46
+    TAUTAS_DISTANCE_ID = 47
     competition_index = 1
 
     @property
