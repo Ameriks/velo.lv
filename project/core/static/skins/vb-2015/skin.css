@@ -1,10 +1,5 @@
-body {
-    background: url("bg2.jpg") repeat-y scroll LEFT top transparent;
-    background-size: 233px 375px;
-}
-
 body > div.wrapper {
-    background: url("bg2.jpg") repeat-y scroll right top transparent;
+    background: url("bg2.jpg") repeat-y scroll LEFT top transparent;
 
     background-size: 233px 375px;
     /*background-repeat: repeat-y;*/
