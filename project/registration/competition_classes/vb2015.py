@@ -1,8 +1,9 @@
 # coding=utf-8
 from __future__ import unicode_literals
 import StringIO
+from difflib import get_close_matches
 from registration.competition_classes.base_vb import VBCompetitionBase
-from registration.models import Participant
+from registration.models import Participant, ChangedName
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
@@ -10,6 +11,7 @@ from reportlab.pdfgen import canvas
 from core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, \
     _baseFontNameB
 import os.path
+from results.models import Result, HelperResults
 
 
 class VB2015(VBCompetitionBase):
@@ -161,4 +163,47 @@ class VB2015(VBCompetitionBase):
         output.seek(0)
         return output
 
+    def create_helper_results(self, participants):
+        prev_competition = self.competition.get_previous_sibling()
 
+        prev_slugs_road = [obj.participant.slug for obj in Result.objects.filter(competition=prev_competition, participant__distance__kind='V').select_related('participant')]
+        prev_slugs_mtb = [obj.participant.slug for obj in Result.objects.filter(competition=prev_competition, participant__distance__kind='S').select_related('participant')]
+        prev_slugs_tauta = [obj.participant.slug for obj in Result.objects.filter(competition=prev_competition, participant__distance__kind='T').select_related('participant')]
+
+        for participant in participants:
+            results = Result.objects.filter(competition=prev_competition, participant__slug=participant.slug, participant__distance__kind=participant.distance.kind).order_by('time')
+
+            if not results:
+                try:
+                    changed = ChangedName.objects.get(new_slug=participant.slug)
+                    results = Result.objects.filter(competition=prev_competition, participant__slug=changed.slug, participant__distance__kind=participant.distance.kind).order_by('time')
+                except:
+                    pass
+
+
+            helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
+
+            if participant.distance_id not in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+                continue
+
+            if helper.is_manual:
+                continue # We do not want to overwrite manually created records
+
+            if results:
+                result = results[0]
+                helper.calculated_total = result.result_distance
+                helper.result_used = result
+            else:
+                helper.calculated_total = None
+                matches = None
+                if participant.distance_id == self.SOSEJAS_DISTANCE_ID:
+                    matches = get_close_matches(participant.slug, prev_slugs_road, 1, 0.8)
+                elif participant.distance_id == self.MTB_DISTANCE_ID:
+                    matches = get_close_matches(participant.slug, prev_slugs_mtb, 1, 0.8)
+                elif participant.distance_id == self.TAUTAS_DISTANCE_ID:
+                    matches = get_close_matches(participant.slug, prev_slugs_tauta, 1, 0.8)
+
+                if matches:
+                    helper.matches_slug = matches[0]
+
+            helper.save()
