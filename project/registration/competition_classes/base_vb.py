@@ -13,7 +13,7 @@ from core.models import Competition, Choices, Log
 from marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from registration.competition_classes.base import CompetitionScriptBase
 from registration.models import Number, Participant, PreNumberAssign
-from registration.tables import ParticipantTable
+from registration.tables import ParticipantTable, ParticipantTableWithLastYearPlace
 from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceAdmin, SebStandings, TeamResultStandings, \
     LapResult
 from results.tables import *
@@ -112,7 +112,14 @@ class VBCompetitionBase(CompetitionScriptBase):
             return ResultRMDistanceTable
 
     def get_startlist_table_class(self, distance=None):
-        return ParticipantTable
+        if distance.id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            are_numbers_assigned = Participant.objects.filter(is_participating=True, distance=distance).exclude(primary_number=None).count()
+            if not are_numbers_assigned:
+                return ParticipantTableWithLastYearPlace
+            else:
+                return ParticipantTable
+        else:
+            return ParticipantTable
 
 
     def assign_numbers_continuously(self):
