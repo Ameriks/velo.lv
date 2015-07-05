@@ -249,6 +249,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
         Afterwards function calls recalculate_standing_points to recalculate points for standing
         """
         if not result.standings_object:
+            print result.id
             standing, created = SebStandings.objects.get_or_create(competition=result.competition.parent, participant_slug=result.participant.slug, distance=result.number.distance, defaults={'participant': result.participant})
             result.standings_object = standing
             result.save()
