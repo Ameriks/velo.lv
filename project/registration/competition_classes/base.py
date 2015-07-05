@@ -224,8 +224,8 @@ class SEBCompetitionBase(CompetitionScriptBase):
         """
         stages = range(1, self.STAGES_COUNT+1)
 
-        if standing.distance_id == self.SPORTA_DISTANCE_ID:
-            stages.remove(4)  # 4.stage is not taken because it is UCI category
+        #if standing.distance_id == self.SPORTA_DISTANCE_ID:
+        #    stages.remove(4)  # 4.stage is not taken because it is UCI category
         if distance:
             points = sorted((getattr(standing, 'distance_points%i' % stage) for stage in stages), reverse=True)
         else:
