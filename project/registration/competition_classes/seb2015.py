@@ -295,3 +295,15 @@ class Seb2015(SEBCompetitionBase):
             return 'B 05-04'
 
         return group
+
+    def recalculate_team_result(self, team_id=None, team=None):
+        """
+        4. stage should have zeros.
+        """
+        standing = super(Seb2015, self).recalculate_team_result(team_id, team)
+
+        if self.competition_index == 4:
+            standing.points4 = 0
+            standing.save()
+
+        return standing

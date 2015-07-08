@@ -220,6 +220,8 @@ class SEBCompetitionBase(CompetitionScriptBase):
             'points%i' % self.competition_index: getattr(standing, 'points%i' % self.competition_index)
         })
 
+        return standing
+
     def _participant_standings_points(self, standing, distance=False):
         """
         This is private function that calculates points for participant based on distance.
