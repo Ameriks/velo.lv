@@ -303,7 +303,8 @@ class Seb2015(SEBCompetitionBase):
         standing = super(Seb2015, self).recalculate_team_result(team_id, team)
 
         if self.competition_index == 4:
-            standing.points4 = 0
-            standing.save()
+            if standing.team.distance_id == self.SPORTA_DISTANCE_ID:
+                standing.points4 = 0
+                standing.save()
 
         return standing

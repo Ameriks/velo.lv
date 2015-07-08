@@ -161,9 +161,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
             if child.competition_date <= current_date - datetime.timedelta(days=1):
                 children.append(item('Rezultāti', 'competition:result_distance_list %i' % child.id))
-                if index != 4:
-                    # 4.stage doesn't have team results, because UCI category
-                    children.append(item('Komandu rezultāti', 'competition:result_team_list %i' % child.id))
+                children.append(item('Komandu rezultāti', 'competition:result_team_list %i' % child.id))
 
             child_items.append(item(unicode(child), 'competition:competition %i' % child.id, url_as_pattern=True, children=children))
 
