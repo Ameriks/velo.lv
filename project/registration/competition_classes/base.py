@@ -147,7 +147,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
         ]
         self.build_flat_pages(self.competition, child_items)
         last = False
-        for child in self.competition.get_children():
+        for index, child in enumerate(self.competition.get_children(), start=1):
             if last:
                 break
             if child.competition_date > current_date:
@@ -159,9 +159,9 @@ class SEBCompetitionBase(CompetitionScriptBase):
             children.append(item('Kartes', 'competition:maps %i' % child.id))
             self.build_flat_pages(child, children)
 
-            if child.competition_date <= current_date:
+            if child.competition_date <= current_date - datetime.timedelta(days=1):
                 children.append(item('Rezultāti', 'competition:result_distance_list %i' % child.id))
-                if self.competition_index != 4:
+                if index != 4
                     # 4.stage doesn't have team results, because UCI category
                     children.append(item('Komandu rezultāti', 'competition:result_team_list %i' % child.id))
 
