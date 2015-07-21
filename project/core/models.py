@@ -219,6 +219,7 @@ class Competition(MPTTModel):
 
     name = models.CharField(max_length=100)
     alias = models.SlugField()
+    short_name = models.CharField(max_length=50, blank=True)
 
     created_by = models.ForeignKey('core.User', related_name='created_%(class)s_set', null=True, blank=True)
     modified_by = models.ForeignKey('core.User', related_name='modified_%(class)s_set', null=True, blank=True)
@@ -293,6 +294,18 @@ class Competition(MPTTModel):
             return '%s - %s' % (self.parent.name, self.name)
         else:
             return self.name
+
+    def get_logo(self):
+        if self.level == 2:
+            return self.parent.logo
+        else:
+            return self.logo
+
+    @property
+    def competition_header(self):
+        if not self.skin:
+            return None
+        return "core/competition_header/%s.html" % self.skin
 
     @property
     def is_past_due(self):
