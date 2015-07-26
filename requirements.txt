@@ -1,5 +1,5 @@
 MySQL-python==1.2.5
-django==1.8.2
+django==1.8.3
 psycopg2>=2.6
 Unipath==1.1
 Pillow==2.8.1
@@ -43,6 +43,7 @@ PyVimeo==0.3.0
 django-downloadview==1.6
 beautifulsoup4==4.3.2
 hashids==1.1.0
+django-shorturls==1.1.0
 google-api-python-client
 ipython
 django-extensions

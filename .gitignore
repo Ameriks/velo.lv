@@ -47,3 +47,5 @@ project/media
 
 project/gallery/client_secrets.json
 project/gallery/youtube-oauth2.json
+other/Unify-v1.8
+velolv_env.sh

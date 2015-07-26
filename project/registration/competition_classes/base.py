@@ -146,12 +146,12 @@ class SEBCompetitionBase(CompetitionScriptBase):
             item('Komandu kopvērtējums', 'competition:team_standings_list %i' % self.competition.id)
         ]
         self.build_flat_pages(self.competition, child_items)
-        last = False
-        for index, child in enumerate(self.competition.get_children(), start=1):
-            if last:
-                break
-            if child.competition_date > current_date:
-                last = True
+
+        allchildren = list(self.competition.get_children().order_by('-competition_date'))
+
+        for index, child in enumerate(allchildren, start=1):
+            if index < len(allchildren) and allchildren[index].competition_date > current_date:
+                continue
 
             children = []
             children.append(item('Starta saraksts', 'competition:participant_list %i' % child.id))

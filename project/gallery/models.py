@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from easy_thumbnails.fields import ThumbnailerImageField
 from velo.mixins.models import TimestampMixin, StatusMixin
@@ -71,6 +72,14 @@ class Video(StatusMixin, TimestampMixin, models.Model):
 
         return obj
 
+    def __unicode__(self):
+        return self.title
+
+
+class AlbumManager(models.Manager):
+    def get_queryset(self):
+        return super(AlbumManager, self).get_queryset().select_related('primary_image')
+
 
 
 class Album(TimestampMixin, models.Model):
@@ -89,11 +98,17 @@ class Album(TimestampMixin, models.Model):
 
     primary_image = models.OneToOneField('gallery.Photo', related_name='primary_album', blank=True, null=True)
 
+    objects = AlbumManager()
+
     def __unicode__(self):
         return self.title
 
     class Meta:
         ordering = ('-gallery_date', '-id', )
+
+    def get_absolute_url(self):
+        return reverse('gallery:album', args=[self.id])
+
 
 
 class Photo(TimestampMixin, models.Model):

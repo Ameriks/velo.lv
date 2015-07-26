@@ -1,0 +1,96 @@
+{% load thumbnail cache i18n staticfiles %}
+<!--=== Slider ===-->
+    <div class="ms-layers-template">
+        <!-- masterslider -->
+        <div class="master-slider ms-skin-black-2 round-skin" id="masterslider">
+            <div class="ms-slide" style="z-index: 10">
+                <img style="opacity:0.7;" src="{% static "plugins/master-slider/masterslider/style/blank.gif" %}" data-src="https://mans.velo.lv/media/gallery/2015/204-seb-mtb-cesis-valmiera-2604/sebmtb-cesis-valmiera_kvphoto-web-100.jpg" alt="">
+                <div class="ms-layer ms-promo-info color-light" style="left:15px; top:160px"
+                    data-effect="bottom(40)"
+                    data-duration="2000"
+                    data-delay="700"
+                    data-ease="easeOutExpo"
+                >Lielākās</div>
+
+                <div class="ms-layer ms-promo-info ms-promo-info-in color-light" style="left:15px; top:210px"
+                    data-effect="bottom(40)"
+                    data-duration="2000"
+                    data-delay="1000"
+                    data-ease="easeOutExpo"
+                ><span style="color: #72c02c;">MTB</span> sacensības</div>
+
+
+                <img class="ms-layer"
+                     src="{{ competition.get_logo.url }}"
+                     width="150"
+                     style="right:0;top:20px;"
+                     data-effect="top(100)"
+                     data-duration="2000"
+                     data-delay="1300"
+                     data-ease="easeOutExpo" />
+
+                <div class="ms-layer ms-promo-sub color-light" style="left:15px; top:310px"
+                    data-effect="bottom(40)"
+                    data-duration="2000"
+                    data-delay="1300"
+                    data-ease="easeOutExpo"
+                >Pierādi sevi, pieveicot konkurentus uz meža<br />takām, dubļos un pārvarot citus šķēršļus trasē!</div>
+
+                {% if not competition.is_past_due %}
+                <a class="ms-layer btn-u" style="left:15px; top:390px" href="{% url "application" %}"
+                    data-effect="bottom(40)"
+                    data-duration="2000"
+                    data-delay="1300"
+                    data-ease="easeOutExpo"
+                >{% trans "Apply to Competition" %}</a>
+
+                <div class="ms-layer hidden-xs hidden-sm" style="bottom:30px; right:15px;">
+                    <div class="ms-promo-sub color-light">Līdz sacensību dienai atlicis:</div>
+
+                    <div class="countdown"
+                         data-countdown
+                         data-year="{{ competition.competition_date|date:"Y" }}"
+                         data-month="{{ competition.competition_date|date:"m" }}"
+                         data-day="{{ competition.competition_date|date:"d" }}"></div>
+                </div>
+                {% endif %}
+{##}
+{#                <a class="ms-layer btn-u btn-u-dark" style="left:150px; top:390px" href="#"#}
+{#                    data-effect="bottom(40)"#}
+{#                    data-duration="2000"#}
+{#                    data-delay="1300"#}
+{#                    data-ease="easeOutExpo"#}
+{#                >ABOUT US</a>#}
+
+
+            </div>
+
+            <div class="ms-slide" style="z-index: 12">
+                <div class="ms-layer video-box" style="top:15px; left:15px; right:15px; bottom:15px;" data-type="video">
+                <img class="ms-img" src="{% static "plugins/master-slider/masterslider/style/blank.gif" %}" data-src="https://i.ytimg.com/vi/AoRYpiMTH_c/hqdefault.jpg" alt="">
+                    <iframe src="https://www.youtube.com/embed/AoRYpiMTH_c" frameborder="0" allowfullscreen></iframe>
+               </div>
+
+            </div>
+        </div>
+        <!-- end of masterslider -->
+    </div>
+    <!--=== End Slider ===-->
+
+    {% if not competition.is_past_due %}
+    <!--=== Call To Action ===-->
+    <div class="call-action-v1 bg-color-light">
+        <div class="container">
+            <div class="call-action-v1-box">
+                <div class="call-action-v1-in">
+
+                    <p>Domāju, ka ir pēdējais brīdis, lai tu pieteiktos! Piesakies jau tagad!</p>
+                </div>
+                <div class="call-action-v1-in inner-btn page-scroll">
+                    <a href="{% url "application" %}" class="btn-u btn-brd btn-brd-hover btn-u-dark btn-u-block">{% trans "Apply to Competition" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--=== End Call To Action ===-->
+    {% endif %}

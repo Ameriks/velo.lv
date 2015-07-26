@@ -8,13 +8,13 @@ INSTALLED_APPS += (
     'rosetta',
 )
 
-EMAIL_HOST = '192.168.59.3'
+EMAIL_HOST = '192.168.58.2'
 EMAIL_PORT = 1025
 
 CELERY_ALWAYS_EAGER = True
 
 INSTALLED_APPS += ('debug_toolbar', 'django_extensions', 'template_timings_panel', )
-# INTERNAL_IPS = ('192.168.59.3', )
+# INTERNAL_IPS = ('192.168.58.2', )
 
 MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware', )
 
@@ -53,16 +53,16 @@ ALLOWED_HOSTS = ['docker.local:58000', 'docker.local',]
 
 # LOGGING.get('loggers', {}).get('django.db.backends', {}).update({'level': 'DEBUG'})
 
-MY_DEFAULT_DOMAIN = 'http://docker.local:58000'
-
+MY_DEFAULT_DOMAIN = 'http://192.168.58.128:58000'
+SHORT_BASE_URL = 'http://192.168.58.128:58000/s/'
 # Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'velolv',
         'USER': 'velolv',
-        'PASSWORD': os.environ['PGSQL_PASS'],
-        'HOST': '192.168.59.103',
+        'PASSWORD': os.getenv('PGSQL_PASS'),
+        'HOST': '192.168.58.128',
     },
     'legacy': {
         'NAME': 'velo',
@@ -77,7 +77,23 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'USER': 'root',
     #     'PASSWORD': 'naigiN8I',
-    #     'HOST': '192.168.59.103',
+    #     'HOST': '192.168.58.128',
     #     'PORT': '3306'
     # },
 }
+
+
+ALWAYS_SSL_PAGES = [
+            "^%s" % ADMIN_URL,
+            "^/manager",
+            "^/admin",
+            ".*\.json$",
+            "^/lv/pieteikums",
+            "^/lv/uznemuma_pieteikums",
+            "^/lv/maksajums",
+            "^/lv/konts",
+            "^/en/application",
+            "^/en/company_application",
+            "^/en/payment",
+            "^/en/accounts",
+            ]

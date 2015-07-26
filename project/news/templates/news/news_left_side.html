@@ -1,0 +1,39 @@
+{% load i18n %}
+
+                    <div class="headline-v2"><h2>{% trans "Latest Posts" %}</h2></div>
+                    <!-- Latest Links -->
+                    <ul class="list-unstyled blog-latest-posts margin-bottom-50">
+                        {% for object in latest_posts %}
+                        <li>
+                            <h3><a href="{{ object.get_absolute_url }}">{{ object }}</a></h3>
+                            <small>{{ object.published_on }}{% if object.competition %} / <a href="#">{{ object.competition }}</a>{% endif %}</small>
+                            <p>{{ object.intro_content|striptags|truncatewords:15 }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <!-- End Latest Links -->
+
+                    <div class="headline-v2"><h2>{% trans "Competitions" %}</h2></div>
+                    <!-- Tags v2 -->
+                    <ul class="list-inline tags-v2 margin-bottom-50">
+                        {% for object in competitions %}
+                        <li><a href="{% url 'news:news_list' object.id %}">{{ object.short_name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    <!-- End Tags v2 -->
+
+{#                    <div class="headline-v2"><h2>Newsletter</h2></div>#}
+{#                    <!-- Blog Newsletter -->#}
+{#                    <div class="blog-newsletter">#}
+{#                        <p>Subscribe to our newsletter for good news, sent out every month.</p>#}
+{#                        <div class="input-group">#}
+{#                            <input type="text" class="form-control" placeholder="Email">#}
+{#                            <span class="input-group-btn">#}
+{#                                <button class="btn-u" type="button">Subscribe</button>#}
+{#                            </span>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <!-- End Blog Newsletter -->#}
+{##}
+{##}
+{##}

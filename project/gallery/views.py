@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView
-from gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm, AddPhotoAlbumForm
+from gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm, AddPhotoAlbumForm, GallerySearchForm
 from gallery.models import Photo, Album, PhotoNumber, Video
 from velo.mixins.views import RequestFormKwargsMixin
 
@@ -11,11 +11,25 @@ from velo.mixins.views import RequestFormKwargsMixin
 class AlbumListView(ListView):
     model = Album
 
+    search_form = None
+    def get_search_form(self):
+        if not self.search_form:
+            self.search_form = GallerySearchForm(request=self.request)
+        return self.search_form
+
+    def get_context_data(self, **kwargs):
+        context = super(AlbumListView, self).get_context_data(**kwargs)
+        context.update({'search_form': self.get_search_form()})
+        return context
+
+
     def get_queryset(self):
         queryset = super(AlbumListView, self).get_queryset()
-        queryset = queryset.select_related('primary_image')
 
         queryset = queryset.filter(is_processed=True)
+
+        if self.get_search_form():
+            queryset = self.get_search_form().append_queryset(queryset)
 
         return queryset
 

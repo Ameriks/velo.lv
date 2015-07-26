@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'easy_thumbnails.optimize',
     'redactor',
     'impersonate',
+    'shorturls',
     'core',
     'payment',
     'team',
@@ -198,7 +199,7 @@ MAILGUN_SERVER_NAME = 'mans.velo.lv'
 
 
 MY_DEFAULT_DOMAIN = 'https://mans.velo.lv'
-
+SHORT_BASE_URL = 'http://mans.velo.lv/s/'
 
 REPLACE_AUTH_USER_ADMIN = False
 
@@ -241,10 +242,15 @@ THUMBNAIL_ALIASES = {
     'gallery': {
         'thumb': {'size': (300, 300), 'crop': True},
         'img': {'size': (1000, 1000), 'crop': False},
+        'news_thumb': {'size': (400, 250), 'crop': True},
+        'news': {'size': (850, 300), 'crop': True},
     },
     'core': {
         'email_logo': {'size': (210, 120), 'crop': False},
         'email_logo_double': {'size': (420, 240), 'crop': False},
+    },
+    'news': {
+
     }
 }
 
@@ -262,6 +268,11 @@ USE_X_FORWARDED_HOST = True
 ADMIN_URL = os.getenv('ADMIN_URL', 'administrator')
 
 ALWAYS_SSL_PAGES = []
+
+SHORTEN_MODELS = {
+    'n': 'news.news',
+}
+
 
 djcelery.setup_loader()
 

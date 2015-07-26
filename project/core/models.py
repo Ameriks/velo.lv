@@ -1,5 +1,6 @@
 import datetime
 import json
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.http import urlquote
 import time
@@ -322,6 +323,9 @@ class Competition(MPTTModel):
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('competition:competition', args=[self.id])
 
 
 class Distance(TimestampMixin, models.Model):

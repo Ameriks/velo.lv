@@ -20,6 +20,8 @@ from core.forms import UserCreationForm, ChangeEmailForm, ChangePasswordForm, Us
     AuthenticationFormCustom
 from core.models import Competition, Map, User
 from core.tasks import send_email_confirmation
+from gallery.models import Album, Video
+from news.models import News
 from results.models import DistanceAdmin
 from velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin, SetPleaseVerifyEmail, \
     CacheControlMixin
@@ -33,6 +35,25 @@ class IndexView(TemplateView):
 
 class CompetitionDetail(SetCompetitionContextMixin, DetailView):
     model = Competition
+
+    def get_context_data(self, **kwargs):
+        context = super(CompetitionDetail, self).get_context_data(**kwargs)
+        context.update({'news_list': News.objects.published(self.object.get_ids())[:3]})
+
+        if self.object.level == 2:
+            calendar = Competition.objects.filter(parent_id=self.object.parent_id)
+        else:
+            children = self.object.get_children()
+            if children:
+                calendar = children
+            else:
+                calendar = [self.object, ]
+        context.update({'calendar': calendar})
+
+        context.update({'galleries': Album.objects.filter(competition_id__in=[self.object.id, self.object.parent_id]).filter(is_processed=True).order_by('-id')[:5]})
+        context.update({'videos': Video.objects.filter(competition_id__in=[self.object.id, self.object.parent_id]).filter(status=1).order_by('-id')[:3]})
+
+        return context
 
 
 class MapGPXDownloadView(ObjectDownloadView):

@@ -1,7 +1,159 @@
 {% extends 'public/base.html' %}
-{% load thumbnail cache i18n %}
+{% load thumbnail cache i18n staticfiles %}
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block title %}{{ title }}{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "plugins/master-slider/masterslider/style/masterslider.css" %}">
+    <link rel="stylesheet" href="{% static "plugins/master-slider/masterslider/skins/black-2/style.css" %}">
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript" src="{% static "plugins/master-slider/masterslider/masterslider.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/master-slider/masterslider/jquery.easing.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/countdown/jquery.plugin.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/countdown/jquery.countdown.js" %}"></script>
+    {% if LANGUAGE_CODE == 'lv' %}
+    <script type="text/javascript" src="{% static "plugins/countdown/jquery.countdown-lv.js" %}"></script>
+    {% endif %}
+    <script type="text/javascript" src="{% static "js/plugins/masterslider.js" %}"></script>
+
+    {% if competition.competition_header %}
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                MSfullWidth.initMSfullWidth();
+
+			    $('[data-countdown]').each(function() {
+                   var $this = $(this);
+                    $this.countdown({until: new Date($this.data('year'),$this.data('month') - 1, $this.data('day'))});
+                 });
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+    {% if competition.competition_header %}
+        {% include competition.competition_header %}
+    {% endif %}
+{% endblock %}
+
 
 {% block main %}
     {{ block.super }}
+
+
+
+
+    <div class="row news-v2">
+        <div class="col-md-4 sm-margin-bottom-30">
+            <div class="headline">
+                <h2>{% trans "News" %}</h2>
+                {% if news_list %}
+                    <a href="#" class="btn-u btn-brd btn-brd-hover btn-u-xs pull-right">{% trans "View All" %}</a>
+                 {% endif %}
+            </div>
+
+
+
+            {% for news in news_list %}
+            <div class="margin-bottom-30">
+                <div class="news-v2-badge">
+                        {% if object.image %}
+                            <img class="img-responsive" src="{{ object.image.image.news_thumb.url }}" alt="">
+                        {% endif %}
+                    <p>
+                        <span>{{ news.published_on.day }}</span>
+                        <small>{{ news.published_on|date:"M" }}</small>
+                    </p>
+                </div>
+                <div class="news-v2-desc bg-color-light">
+                    <h3><a href="{{ news.get_absolute_url }}">{{ news }}</a></h3>
+                    <small>{% if news.created_by %}By {{ news.created_by }}{% endif %}</small>
+                    {{ news.intro_content|safe }}
+                </div>
+            </div>
+            {% empty %}
+                <p>{% trans "No news published" %}</p>
+            {% endfor %}
+
+        </div>
+        <div class="col-md-4 sm-margin-bottom-30">
+
+            <div class="headline">
+                <h2>{% trans "Photos" %}</h2>
+                    <a href="{% url 'gallery:album' %}?competition={{ object.parent_id }}" class="btn-u btn-brd btn-brd-hover btn-u-xs pull-right">{% trans "View All" %}</a>
+            </div>
+
+            <div>
+                {% for gallery in galleries %}
+                <a href="{{ gallery.get_absolute_url }}" class="img-hover" title="{{ gallery }}">
+                    <span class="news-v2-badge margin-bottom-30">
+                        <img class="img-responsive" src="{{ gallery.primary_image.image.thumb.url }}" alt="">
+                        <span class="info">
+                            <span>{{ gallery }}</span>
+                            <small>{{ gallery.photographer }}</small>
+                        </span>
+                    </span>
+                </a>
+                {% endfor %}
+            </div>
+
+            <div class="headline">
+                <h2>{% trans "Videos" %}</h2>
+                    <a href="{% url 'gallery:video' %}?competition={{ object.parent_id }}" class="btn-u btn-brd btn-brd-hover btn-u-xs pull-right">{% trans "View All" %}</a>
+            </div>
+
+            <div>
+                {% for gallery in videos %}
+                <a href="{{ gallery.get_absolute_url }}" class="img-hover" title="{{ gallery }}">
+                    <span class="news-v2-badge margin-bottom-30">
+                        <img class="img-responsive" src="{% firstof gallery.image '/static/img/grey_placeholder.png' %}" alt="">
+                        <span class="info" style="top:125px;">
+                            <span>{{ gallery }}</span>
+                            <small>{{ gallery.channel_title }}</small>
+                        </span>
+                    </span>
+                </a>
+                {% endfor %}
+            </div>
+
+
+
+        </div>
+        <div class="col-md-4 sm-margin-bottom-30">
+
+        <div class="event">
+            <div class="headline">
+                <h2>{% trans "Calendar" %}</h2>
+                    <a href="{% url 'calendar' %}" class="btn-u btn-brd btn-brd-hover btn-u-xs pull-right">{% trans "View All" %}</a>
+            </div>
+
+            {% for cal in calendar %}
+            <div class="profile-event">
+                <div class="date-formats">
+                    <span>{{ cal.competition_date|date:"j" }}</span>
+                    <small>{{ cal.competition_date|date:"M, Y" }}</small>
+                </div>
+                <div class="overflow-h">
+                    <h3 class="heading-xs"><a href="{{ cal.get_absolute_url }}">{{ cal }}</a></h3>
+                    <p>{{ cal.place_name }}</p>
+                </div>
+            </div>
+            {% endfor %}
+
+
+        </div>
+
+        </div>
+    </div>
+
+
+
 {% endblock %}

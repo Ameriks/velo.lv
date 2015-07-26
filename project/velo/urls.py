@@ -77,6 +77,7 @@ urlpatterns = i18n_patterns('',
 urlpatterns += patterns('',
     url(r'^$', RedirectView.as_view(url='/lv/')),
 
+    url('^s/', include('shorturls.urls')),
     url(_(r'^pdf/(?P<slug>\w+)/'), ParticipantPDF.as_view(), name="participant_number_pdf"),
 
     url(r'^i18n/', include('django.conf.urls.i18n')),

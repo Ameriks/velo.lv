@@ -933,7 +933,7 @@ idmap = {
 }
 
 def import_news():
-    all_news = Ev68RContent.objects.filter(featured=1, state=1, id__lte=723).exclude(id__in=(154, ))
+    all_news = Ev68RContent.objects.filter(featured=1, state=1, id__lte=758).exclude(id__in=(154, ))
 
     for lnews in all_news:
         competition_id =idmap.get(lnews.id, catmap.get(lnews.catid, None))

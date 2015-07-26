@@ -9,6 +9,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django_select2 import AutoHeavySelect2MultipleWidget
 import os
@@ -260,6 +261,69 @@ class VideoSearchForm(RequestKwargModelFormMixin, forms.Form):
                     Div(
                         StrictButton('<span data-icon="&#xe090;"></span>', css_class="btn-primary search-button-margin", type="submit"),
                         HTML('<a href="%s" class="btn btn-primary search-button-margin"><i class="glyphicon glyphicon-plus"></i></a>' % reverse('gallery:video_add')),
+                        css_class="buttons pull-right",
+                    ),
+                    css_class='col-sm-2',
+                ),
+        )
+
+
+
+
+class GallerySearchForm(RequestKwargModelFormMixin, forms.Form):
+    competition = forms.ChoiceField(choices=(), required=False, label=_('Competition'))
+    search = forms.CharField(required=False, label=_('Search'))
+
+    sort = forms.CharField(required=False, widget=forms.HiddenInput)
+
+    def append_queryset(self, queryset):
+        query_attrs = self.fields
+
+        if query_attrs.get('competition').initial:
+            competition = Competition.objects.get(id=query_attrs.get('competition').initial)
+            ids = competition.get_all_children_ids() + (competition.id, )
+            queryset = queryset.filter(competition_id__in=ids)
+
+        if query_attrs.get('search').initial:
+            queryset = queryset.filter(Q(title__icontains=query_attrs.get('search').initial) | Q(photographer__icontains=query_attrs.get('search').initial))
+
+        if query_attrs.get('sort').initial:
+            queryset = queryset.order_by(*query_attrs.get('sort').initial.split(','))
+
+        queryset = queryset.distinct()
+
+        return queryset
+
+    def __init__(self, *args, **kwargs):
+        super(GallerySearchForm, self).__init__(*args, **kwargs)
+
+
+        competitions = Competition.objects.exclude(album=None)
+        self.fields['competition'].choices = [('', '------')] + [(obj.id, obj.get_full_name) for obj in competitions]
+
+
+        self.fields['sort'].initial = self.request.GET.get('sort', '-id')
+
+        self.fields['search'].initial = self.request.GET.get('search', '')
+        self.fields['competition'].initial = self.request.GET.get('competition', '')
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.layout = Layout(
+                Div(
+                    'competition',
+                    css_class='col-sm-2 hidden-xs',
+                ),
+                Div(
+                    'search',
+                    'sort',
+                    css_class='col-sm-2',
+                ),
+                Div(
+                    Div(
+                        StrictButton('<span data-icon="&#xe090;"></span>', css_class="btn-primary search-button-margin", type="submit"),
+                        HTML('<a href="%s" class="btn btn-primary search-button-margin"><i class="glyphicon glyphicon-plus"></i></a>' % reverse('gallery:album_add')),
                         css_class="buttons pull-right",
                     ),
                     css_class='col-sm-2',

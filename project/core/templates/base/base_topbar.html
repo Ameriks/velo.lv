@@ -1,26 +1,44 @@
-        <!-- Topbar -->
-        <div class="topbar">
-            <div class="container">
-                <!-- Topbar Navigation -->
+{% load i18n %}
+
+
+
+        <div class="container">
+            <!-- Logo -->
+            <a class="logo" href="/">
+                <img src="{{ STATIC_URL }}img/ijsa-top.png" alt="Logo" width="125" height="85">
+            </a>
+            <!-- End Logo -->
+
+            <!-- Topbar -->
+            <div class="topbar">
                 <ul class="loginbar pull-right">
-                    <li>
-                        <i class="fa fa-globe"></i>
-                        <a>Languages</a>
-                        <ul class="lenguages">
-                            <li class="active">
-                                <a href="#">English <i class="fa fa-check"></i></a>
-                            </li>
-                            <li><a href="#">Spanish</a></li>
-                            <li><a href="#">Russian</a></li>
-                            <li><a href="#">German</a></li>
-                        </ul>
-                    </li>
-                    <li class="topbar-devider"></li>
-                    <li><a href="page_faq.html">Help</a></li>
-                    <li class="topbar-devider"></li>
-                    <li><a href="page_login.html">Login</a></li>
+
+{#                    <li class="hoverSelector">#}
+{#                        <i class="fa fa-globe"></i>#}
+{#                        <a>Languages</a>#}
+{#                        <ul class="languages hoverSelectorBlock">#}
+{#                            <li class="active">#}
+{#                                <a href="#">English <i class="fa fa-check"></i></a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Spanish</a></li>#}
+{#                            <li><a href="#">Russian</a></li>#}
+{#                            <li><a href="#">German</a></li>#}
+{#                        </ul>#}
+{#                    </li>#}
+{#                    <li class="topbar-devider"></li>#}
+{#                    <li><a href="page_faq.html">Help</a></li>#}
+{#                    <li class="topbar-devider"></li>#}
+                    {% if not request.user.is_authenticated %}<li><a href="{% url "accounts:login" %}">{% trans "Login" %}</a></li>{% endif %}
                 </ul>
-                <!-- End Topbar Navigation -->
             </div>
-        </div>
-        <!-- End Topbar -->
+            <!-- End Topbar -->
+
+            <!-- Toggle get grouped for better mobile display -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="fa fa-bars"></span>
+            </button>
+            <!-- End Toggle -->
+        </div><!--/end container-->
+
+

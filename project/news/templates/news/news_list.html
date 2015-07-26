@@ -1,0 +1,72 @@
+{% extends 'public/base.html' %}
+{% load cache i18n %}
+{% load shorturl %}
+
+{% block main %}
+
+    {{ block.super }}
+
+
+    {% for object in object_list %}
+        {% cycle 'left' 'right' as image_alignment silent %}
+                <div class="row margin-bottom-20">
+                    {% if image_alignment == 'left' %}
+                    <div class="col-sm-5 sm-margin-bottom-20">
+                        {% if object.image %}
+                            <img class="img-responsive" src="{{ object.image.image.news_thumb.url }}" alt="">
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="col-sm-7 news-v3">
+                        <div class="news-v3-in-sm no-padding">
+                            <ul class="list-inline posted-info">
+                                {% if object.created_by %}<li>By <a href="#">{{ object.created_by }}</a></li>{% endif %}
+                                {% if object.competition %}<li><a href="#">{{ object.competition }}</a></li>{% endif %}
+                                <li>{{ object.published_on }}</li>
+                                <li>URL <a href="{% shorturl object %}">{% shorturl object %}</a></li>
+
+                            </ul>
+                            <h2><a href="{{ object.get_absolute_url }}">{{ object }}</a></h2>
+                            {{ object.intro_content|safe }}
+
+                            <a href="https://twitter.com/share" class="twitter-share-button" data-url="{% shorturl object %}" data-text="{{ object|truncatechars:95 }}" data-via="velolv">Tweet</a>
+                            <div class="fb-share-button" data-href="http://{{ request.get_host }}{{ object.get_absolute_url }}" data-layout="button_count"></div>
+
+                        </div>
+                    </div>
+                    {% if image_alignment == 'right' %}
+                    <div class="col-sm-5 sm-margin-bottom-20">
+                        {% if object.image %}
+                            <img class="img-responsive" src="{{ object.image.image.news_thumb.url }}" alt="">
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div><!--/end row-->
+                <!-- End News v3 -->
+
+                <div class="clearfix margin-bottom-20"><hr></div>
+
+
+    {% endfor %}
+
+
+    {% if is_paginated %}
+        <ul class="pager pager-v2 pager-md no-margin">
+                {% if page_obj.has_previous %}
+                    <li class="previous"><a href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a></li>
+                {% endif %}
+                <li class="page-amount">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</li>
+                {% if page_obj.has_next %}
+                    <li class="next"><a href="?page={{ page_obj.next_page_number }}">Older &rarr;</a></li>
+                {% endif %}
+            </ul>
+    {% endif %}
+
+
+
+{% endblock %}
+
+
+{% block left-side %}
+    {% include "news/news_left_side.html" %}
+{% endblock %}
