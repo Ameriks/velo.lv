@@ -259,6 +259,8 @@ class Competition(MPTTModel):
 
     sms_text = models.CharField(max_length=255, blank=True)
 
+    map_url = models.URLField(blank=True)
+
     class MPTTMeta:
         order_insertion_by = ['competition_date', 'id']
 
