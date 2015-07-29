@@ -11,7 +11,7 @@
 {% block js %}
     {{ block.super }}
 
-    <script type="text/javascript" src="{% static "plugins/master-slider/masterslider/masterslider.min.js" %}"></script>
+    <script type="text/jaiascript" src="{% static "plugins/master-slider/masterslider/masterslider.min.js" %}"></script>
     <script type="text/javascript" src="{% static "plugins/master-slider/masterslider/jquery.easing.min.js" %}"></script>
     <script type="text/javascript" src="{% static "plugins/countdown/jquery.plugin.js" %}"></script>
     <script type="text/javascript" src="{% static "plugins/countdown/jquery.countdown.js" %}"></script>
@@ -144,7 +144,7 @@
     	<!-- End Service Blokcs -->
 
     	<!-- Recent Works -->
-        <div class="headline"><h2>{% trans "Latest News" %}</h2><a href="#" class="btn-u btn-brd btn-brd-hover btn-u-xs pull-right">{% trans "View All News" %}</a></div>
+        <div class="headline"><h2>{% trans "Latest News" %}</h2><a href="{% url 'news:news_list' %}" class="btn-u btn-brd btn-brd-hover btn-u-xs pull-right">{% trans "View All News" %}</a></div>
 
         <div class="row margin-bottom-20">
 
