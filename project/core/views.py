@@ -32,6 +32,21 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, logout
 class IndexView(TemplateView):
     template_name = 'core/index.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+
+
+        context.update({'competitions': Competition.objects.filter(is_in_menu=True)})
+
+
+        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[:1]
+        if not next_competition:
+            next_competition = Competition.objects.order_by('-competition_date')[:1]
+
+        context.update({'next_competition': next_competition[0]})
+
+        return context
+
 
 class CompetitionDetail(SetCompetitionContextMixin, DetailView):
     model = Competition

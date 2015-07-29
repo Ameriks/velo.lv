@@ -326,6 +326,11 @@ class Competition(MPTTModel):
     def __unicode__(self):
         return self.name
 
+    def get_random_image(self):
+        ids = self.get_all_children_ids() + (self.id, )
+        from gallery.models import Photo
+        return Photo.objects.filter(album__competition_id__in=ids, is_featured=True).order_by('?').first()
+
     def get_absolute_url(self):
         return reverse('competition:competition', args=[self.id])
 

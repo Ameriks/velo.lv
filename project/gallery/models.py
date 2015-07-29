@@ -96,6 +96,8 @@ class Album(TimestampMixin, models.Model):
     is_processed = models.BooleanField(default=False)  # Are thumbnails created?
     is_internal = models.BooleanField(default=False)  # For images to be used in news/front pages. etc.
 
+    is_agency = models.BooleanField(default=False)
+
     primary_image = models.OneToOneField('gallery.Photo', related_name='primary_album', blank=True, null=True)
 
     objects = AlbumManager()
