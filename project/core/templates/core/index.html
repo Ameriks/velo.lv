@@ -1,45 +1,96 @@
 {% extends "base/base.html" %}
-{% load i18n %}
+{% load i18n staticfiles %}
 
-{% block js %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/pages/index.js"></script>
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-      	App.init();
-        App.initSliders();
-        Index.initParallaxSlider();
-    });
-</script>
+
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "plugins/owl-carousel/owl.carousel.css" %}">
 {% endblock %}
 
-{% block content2 %}
+{% block js %}
+    {{ block.super }}
 
-    <!--=== Slider ===-->
-    <div class="slider-inner">
-        <div id="da-slider" class="da-slider">
-            <div class="da-slide">
-                <h2><i>CLEAN &amp; FRESH</i> <br /> <i>FULLY RESPONSIVE</i> <br /> <i>DESIGN</i></h2>
-                <p><i>Lorem ipsum dolor amet</i> <br /> <i>tempor incididunt ut</i> <br /> <i>veniam omnis </i></p>
-                <div class="da-img"><img src="assets/plugins/parallax-slider/img/1.png" alt="" /></div>
-            </div>
-            <div class="da-slide">
-                <h2><i>RESPONSIVE VIDEO</i> <br /> <i>SUPPORT AND</i> <br /> <i>MANY MORE</i></h2>
-                <p><i>Lorem ipsum dolor amet</i> <br /> <i>tempor incididunt ut</i></p>
-                <div class="da-img">
-    				<iframe src="http://player.vimeo.com/video/47911018" width="530" height="300" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+    <script type="text/javascript" src="{% static "plugins/master-slider/masterslider/masterslider.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/master-slider/masterslider/jquery.easing.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/countdown/jquery.plugin.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/countdown/jquery.countdown.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/owl-carousel/owl.carousel.min.js" %}"></script>
+    {% if LANGUAGE_CODE == 'lv' %}
+    <script type="text/javascript" src="{% static "plugins/countdown/jquery.countdown-lv.js" %}"></script>
+    {% endif %}
+
+
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+
+			    $('[data-countdown]').each(function() {
+                   var $this = $(this);
+                    $this.countdown({until: new Date($this.data('year'),$this.data('month') - 1, $this.data('day'))});
+                 });
+
+                $("#owl-supporters").owlCarousel({
+
+                      autoPlay: 3000, //Set AutoPlay to 3 seconds
+
+                      items : {{ supporters|length }},
+                      itemsDesktop : [1199,3],
+                      itemsDesktopSmall : [979,3]
+
+                  });
+
+
+            });
+        </script>
+{% endblock %}
+
+
+
+
+
+
+{% block content %}
+
+
+    <div class="container">
+    <div class="row">
+    <div class="col-xs-12">
+
+<div id="front-carousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+          {% for competition in competitions %}
+        <li data-target="#front-carousel" data-slide-to="{{ forloop.counter0 }}" class="{% if competition.tree_id == next_competition.tree_id %}active{% endif %}"></li>
+          {% endfor %}
+      </ol>
+      <div class="carousel-inner" role="listbox">
+            {% for competition in competitions %}
+                <div class="item {% if competition.tree_id == next_competition.tree_id %}active{% endif %}" style="background: url('{{ competition.get_random_image.image.news.url }}') no-repeat center center; background-size: cover;">
+                  <div class="container">
+                    <div class="carousel-caption">
+                       <p><a style="opacity:0.8" class="btn-u rounded-2x btn-u-blue btn-u-lg" href="{% if competition.tree_id == next_competition.tree_id %}{{ next_competition.get_absolute_url }}{% else %}{{ competition.get_absolute_url }}{% endif %}" role="button">{{ competition }}</a></p>
+                    </div>
+                  </div>
                 </div>
-            </div>
-            <div class="da-slide">
-                <h2><i>USING BEST WEB</i> <br /> <i>SOLUTIONS WITH</i> <br /> <i>HTML5/CSS3</i></h2>
-                <p><i>Lorem ipsum dolor amet</i> <br /> <i>tempor incididunt ut</i> <br /> <i>veniam omnis </i></p>
-                <div class="da-img"><img src="assets/plugins/parallax-slider/img/html5andcss3.png" alt="image01" /></div>
-            </div>
-            <div class="da-arrows">
-                <span class="da-arrows-prev"></span>
-                <span class="da-arrows-next"></span>
-            </div>
-        </div>
-    </div><!--/slider-->
+            {% endfor %}
+
+      </div>
+      <a class="left carousel-control" href="#front-carousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#front-carousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div><!-- /.carousel -->
+
+
+				</div>
+    </div></div>
+
+
+
     <!--=== End Slider ===-->
 
     <!--=== Purchase Block ===-->
@@ -47,11 +98,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-9 animated fadeInLeft">
-                    <span>Unify is a clean and fully responsive incredible Template.</span>
-                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi  vehicula sem ut volutpat. Ut non libero magna fusce condimentum eleifend enim a feugiat corrupti quos.</p>
+                    <span>Lielākās un labākās velo sacensības Latvijā!</span>
+                    <p>Igo Japiņa sporta aģentūras gadu gaitā uzkrātā pieredzeļauj organizēt valstī populārākās un apmeklētākās sacensības - kalnu divriteņu maratonus, Rīgas Velomaratonu un Vienības braucienu, pulcējot arvien vairāk sacensību dalībnieku no gada uz gadu.</p>
                 </div>
                 <div class="col-md-3 btn-buy animated fadeInRight">
-                    <a href="#" class="btn-u btn-u-lg"><i class="fa fa-cloud-download"></i> {% trans 'Apply now' %}</a>
+                    <a href="{% url 'application' %}" class="btn-u btn-u-lg"><i class="fa fa-bomb"></i> {% trans 'Apply now' %}</a>
                 </div>
             </div>
         </div>
@@ -64,28 +115,28 @@
     	<div class="row margin-bottom-30">
         	<div class="col-md-4">
         		<div class="service">
-                    <i class="fa fa-compress service-icon"></i>
+                    <i class="fa fa-bicycle service-icon"></i>
         			<div class="desc">
-        				<h4>Fully Responsive</h4>
-                        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus etiam sem...</p>
+        				<h4><a href="{% url "competition:competition" 43 %}">SEB MTB maratons 2015</a></h4>
+                        <p>Izaicinājums, adrenalīns un sportiska sacīkste!</p>
         			</div>
         		</div>
         	</div>
         	<div class="col-md-4">
         		<div class="service">
-                    <i class="fa fa-cogs service-icon"></i>
+                    <i class="fa fa-bicycle service-icon"></i>
         			<div class="desc">
-        				<h4>HTML5 + CSS3</h4>
-                        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus etiam sem...</p>
+        				<h4><a href="{% url "competition:competition" 48 %}">Latvijas Riteņbraucēju vienības brauciens 2015</a></h4>
+                        <p>Valstiski nozīmīgais riteņbrauciens - Latvijas prezidenta Kārļa Ulmaņa aizsāktais – Latvijas Riteņbraucēju Vienības brauciens.</p>
         			</div>
         		</div>
         	</div>
         	<div class="col-md-4">
         		<div class="service">
-                    <i class="fa fa-rocket service-icon"></i>
+                    <i class="fa fa-bicycle service-icon"></i>
         			<div class="desc">
-        				<h4>Launch Ready</h4>
-                        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus etiam sem...</p>
+        				<h4><a href="{% url "competition:competition" 47 %}">Elkor Rīgas Velomaratons 2015</a></h4>
+                        <p>Velosezonas lielākais izaicinājums galvaspilsētā</p>
         			</div>
         		</div>
         	</div>
@@ -93,240 +144,48 @@
     	<!-- End Service Blokcs -->
 
     	<!-- Recent Works -->
-        <div class="headline"><h2>Recent Works</h2></div>
+        <div class="headline"><h2>{% trans "Latest News" %}</h2><a href="#" class="btn-u btn-brd btn-brd-hover btn-u-xs pull-right">{% trans "View All News" %}</a></div>
+
         <div class="row margin-bottom-20">
+
+            {% for object in news_list %}
+
             <div class="col-md-3 col-sm-6">
                 <div class="thumbnails thumbnail-style thumbnail-kenburn">
+                    {% if object.image %}
                 	<div class="thumbnail-img">
                         <div class="overflow-hidden">
-                            <img class="img-responsive" src="assets/img/main/2.jpg" alt="" />
+                            <img class="img-responsive" src="{{ object.image.image.news_thumb.url }}" alt="" />
                         </div>
-                        <a class="btn-more hover-effect" href="#">read more +</a>
+                        <a class="btn-more hover-effect" href="{{ object.get_absolute_url }}">{% trans "read more" %} +</a>
                     </div>
+                    {% endif %}
                     <div class="caption">
-                        <h3><a class="hover-effect" href="#">Project One</a></h3>
-                        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem.</p>
+                        <h3><a class="hover-effect" href="{{ object.get_absolute_url }}">{{ object }}</a></h3>
+                        {{ object.intro_content|safe }}
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="thumbnails thumbnail-style thumbnail-kenburn">
-                    <div class="thumbnail-img">
-                        <div class="overflow-hidden">
-                            <img class="img-responsive" src="assets/img/main/3.jpg" alt="" />
-                        </div>
-                        <a class="btn-more hover-effect" href="#">read more +</a>
-                    </div>
-                    <div class="caption">
-                        <h3><a class="hover-effect" href="#">Project Two</a></h3>
-                        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="thumbnails thumbnail-style thumbnail-kenburn">
-                    <div class="thumbnail-img">
-                        <div class="overflow-hidden">
-                            <img class="img-responsive" src="assets/img/main/9.jpg" alt="" />
-                        </div>
-                        <a class="btn-more hover-effect" href="#">read more +</a>
-                    </div>
-                    <div class="caption">
-                        <h3><a class="hover-effect" href="#">Project Three</a></h3>
-                        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="thumbnails thumbnail-style thumbnail-kenburn">
-                    <div class="thumbnail-img">
-                        <div class="overflow-hidden">
-                            <img class="img-responsive" src="assets/img/main/10.jpg" alt="" />
-                        </div>
-                        <a class="btn-more hover-effect" href="#">read more +</a>
-                    </div>
-                    <div class="caption">
-                        <h3><a class="hover-effect" href="#">Project Four</a></h3>
-                        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, justo sit amet risus etiam porta sem.</p>
-                    </div>
-                </div>
-            </div>
+
+            {% endfor %}
+
         </div>
     	<!-- End Recent Works -->
 
-    	<!-- Info Blokcs -->
-    	<div class="row margin-bottom-30">
-        	<!-- Welcome Block -->
-    		<div class="col-md-8 md-margin-bottom-40">
-    			<div class="headline"><h2>Welcome To Unify</h2></div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <img class="img-responsive margin-bottom-20" src="assets/img/main/6.jpg" alt="" />
-                    </div>
-                    <div class="col-sm-8">
-                        <p>Unify is an incredibly beautiful responsive Bootstrap Template for corporate and creative professionals. It works on all major web browsers, tablets and phone.</p>
-                        <ul class="list-unstyled margin-bottom-20">
-                            <li><i class="fa fa-check color-green"></i> Donec id elit non mi porta gravida</li>
-                            <li><i class="fa fa-check color-green"></i> Corporate and Creative</li>
-                            <li><i class="fa fa-check color-green"></i> Responsive Bootstrap Template</li>
-                            <li><i class="fa fa-check color-green"></i> Corporate and Creative</li>
-                        </ul>
-                    </div>
-                </div>
 
-                <blockquote class="hero-unify">
-                    <p>Award winning digital agency. We bring a personal and effective approach to every project we work on, which is why. Unify is an incredibly beautiful responsive Bootstrap Template for corporate professionals.</p>
-                    <small>CEO, Jack Bour</small>
-                </blockquote>
-            </div><!--/col-md-8-->
+    <div class="headline"><h2>{% trans "Our Supporters" %}</h2></div>
 
-            <!-- Latest Shots -->
-            <div class="col-md-4">
-    			<div class="headline"><h2>Latest Shots</h2></div>
-    			<div id="myCarousel" class="carousel slide carousel-v1">
-                    <div class="carousel-inner">
-                        <div class="item active">
-                            <img src="assets/img/main/5.jpg" alt="">
-                            <div class="carousel-caption">
-                                <p>Facilisis odio, dapibus ac justo acilisis gestinas.</p>
-                            </div>
+
+        <div id="owl-supporters">
+
+                {% for supporter in supporters %}
+                        <div class="item" style="">
+                            <a href="{{ supporter.url }}" target="_blank"><img src="{{ supporter.default_logo.image.agencysupporter.url }}" alt="" /></a>
                         </div>
-                        <div class="item">
-                            <img src="assets/img/main/4.jpg" alt="">
-                            <div class="carousel-caption">
-                                <p>Cras justo odio, dapibus ac facilisis into egestas.</p>
-                            </div>
-                            </div>
-                        <div class="item">
-                            <img src="assets/img/main/3.jpg" alt="">
-                            <div class="carousel-caption">
-                                <p>Justo cras odio apibus ac afilisis lingestas de.</p>
-                            </div>
-                        </div>
-                    </div>
+                {% endfor %}
 
-                    <div class="carousel-arrow">
-                        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-                            <i class="fa fa-angle-left"></i>
-                        </a>
-                        <a class="right carousel-control" href="#myCarousel" data-slide="next">
-                            <i class="fa fa-angle-right"></i>
-                        </a>
-                    </div>
-    			</div>
-            </div><!--/col-md-4-->
-    	</div>
-    	<!-- End Info Blokcs -->
+        </div>
 
-        <!-- Our Clients -->
-        <div id="clients-flexslider" class="flexslider home clients">
-            <div class="headline"><h2>Our Clients</h2></div>
-            <ul class="slides">
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/hp_grey.png" alt="" />
-                        <img src="assets/img/clients/hp.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/igneus_grey.png" alt="" />
-                        <img src="assets/img/clients/igneus.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/vadafone_grey.png" alt="" />
-                        <img src="assets/img/clients/vadafone.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/walmart_grey.png" alt="" />
-                        <img src="assets/img/clients/walmart.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/shell_grey.png" alt="" />
-                        <img src="assets/img/clients/shell.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/natural_grey.png" alt="" />
-                        <img src="assets/img/clients/natural.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/aztec_grey.png" alt="" />
-                        <img src="assets/img/clients/aztec.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/gamescast_grey.png" alt="" />
-                        <img src="assets/img/clients/gamescast.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/cisco_grey.png" alt="" />
-                        <img src="assets/img/clients/cisco.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/everyday_grey.png" alt="" />
-                        <img src="assets/img/clients/everyday.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/cocacola_grey.png" alt="" />
-                        <img src="assets/img/clients/cocacola.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/spinworkx_grey.png" alt="" />
-                        <img src="assets/img/clients/spinworkx.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/shell_grey.png" alt="" />
-                        <img src="assets/img/clients/shell.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/natural_grey.png" alt="" />
-                        <img src="assets/img/clients/natural.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/gamescast_grey.png" alt="" />
-                        <img src="assets/img/clients/gamescast.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/everyday_grey.png" alt="" />
-                        <img src="assets/img/clients/everyday.png" class="color-img" alt="" />
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img src="assets/img/clients/spinworkx_grey.png" alt="" />
-                        <img src="assets/img/clients/spinworkx.png" class="color-img" alt="" />
-                    </a>
-                </li>
-            </ul>
-        </div><!--/flexslider-->
-        <!-- End Our Clients -->
     </div><!--/container-->
     <!-- End Content Part -->
 {% endblock %}

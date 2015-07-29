@@ -592,3 +592,76 @@ table td.is_featured {
     text-align: center;
     position: absolute;
 }
+
+
+
+#front-carousel {
+    height: 300px;
+}
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Since positioning the image, we need to help out the caption */
+#front-carousel .carousel-caption {
+  z-index: 10;
+}
+
+/* Declare heights because of positioning of img element */
+#front-carousel.carousel .item {
+  height: 300px;
+  background-color: #777;
+}
+#front-carousel .carousel-inner > .item > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 300px;
+}
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+
+  /* Bump up size of carousel content */
+  #front-carousel .carousel-caption p {
+    margin-bottom: 20px;
+    font-size: 21px;
+    line-height: 1.4;
+  }
+
+}
+
+
+
+
+
+.carousel-indicators li.active {
+        margin-right: 5px;
+}
+
+
+
+
+#owl-supporters .item{
+    margin: 3px;
+    height:200px;
+}
+
+#owl-supporters .item a{
+    height:200px;
+}
+
+
+#owl-supporters .item img{
+    margin-top:100px;
+  display: block;
+  width: 100%;
+  height: auto;
+   position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}

@@ -93,29 +93,10 @@
 
     <!--=== Footer ===-->
     {% block footer %}
-{#    {% include 'base/base_footer.html' %}#}
+    {% include 'base/base_footer.html' %}
     {% endblock %}
     <!--=== End Footer ===-->
-    {% block copyright %}
-    <!--=== Copyright ===-->
-    <div class="copyright">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <p>
-                        {% now "Y" %} &copy; Igo Japiņa sporta aģentūra. ALL Rights Reserved.
-{#                        <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>#}
-                    </p>
-                </div>
-                <div class="col-md-6">
-                    <a href="index.html">
-                        <img class="pull-right" id="logo-footer" src="{{ STATIC_URL }}img/ijsa-footer-small.png" width="50" height="30" alt="">
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div><!--/copyright-->
-{% endblock %}
+
     <!--=== End Copyright ===-->
 </div><!--/wrapper-->
 

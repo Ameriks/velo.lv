@@ -23,6 +23,7 @@ from core.tasks import send_email_confirmation
 from gallery.models import Album, Video
 from news.models import News
 from results.models import DistanceAdmin
+from supporter.models import Supporter
 from velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin, SetPleaseVerifyEmail, \
     CacheControlMixin
 from django.utils.translation import ugettext_lazy as _
@@ -44,6 +45,10 @@ class IndexView(TemplateView):
             next_competition = Competition.objects.order_by('-competition_date')[:1]
 
         context.update({'next_competition': next_competition[0]})
+
+        context.update({'news_list': News.objects.published()[:4]})
+
+        context.update({'supporters': Supporter.objects.filter(is_agency_supporter=True).order_by("?")})
 
         return context
 

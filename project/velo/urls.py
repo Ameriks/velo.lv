@@ -9,7 +9,7 @@ from django.contrib import admin
 from sitetree.sitetreeapp import register_dynamic_trees, compose_dynamic_tree
 from sitetree.sitetreeapp import register_i18n_trees
 
-from core.views import CalendarView
+from core.views import CalendarView, IndexView
 from payment.views import ApplicationPayView, ApplicationOKView
 from registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
@@ -41,7 +41,8 @@ js_info_dict = {
 }
 
 urlpatterns = i18n_patterns('',
-    url(r'^$', RedirectView.as_view(url='/lv/sacensibas/42/rezultati/'), name='index'),
+    #url(r'^$', RedirectView.as_view(url='/lv/sacensibas/42/rezultati/'), name='index'),
+    url(r'^$', IndexView.as_view(), name='index'),
 
     url(_(r'^application/$'), ApplicationCreate.as_view(), name='application'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$'), ApplicationUpdate.as_view(), name='application'),
