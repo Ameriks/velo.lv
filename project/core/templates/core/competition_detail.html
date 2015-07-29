@@ -65,8 +65,8 @@
             {% for news in news_list %}
             <div class="margin-bottom-30">
                 <div class="news-v2-badge">
-                        {% if object.image %}
-                            <img class="img-responsive" src="{{ object.image.image.news_thumb.url }}" alt="">
+                        {% if news.image %}
+                            <img class="img-responsive" src="{{ news.image.image.news_thumb.url }}" alt="">
                         {% endif %}
                     <p>
                         <span>{{ news.published_on.day }}</span>
