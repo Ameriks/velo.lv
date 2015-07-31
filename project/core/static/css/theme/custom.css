@@ -645,14 +645,17 @@ table td.is_featured {
 
 
 
+#owl-supporters {
+    background: #FFF;
+}
 
 #owl-supporters .item{
     margin: 3px;
-    height:200px;
+    height:100px;
 }
 
 #owl-supporters .item a{
-    height:200px;
+    height:100px;
 }
 
 

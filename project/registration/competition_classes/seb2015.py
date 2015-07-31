@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from difflib import get_close_matches
 import datetime
+from django.db.models import Sum
 from django.utils import timezone
 from registration.competition_classes.base import SEBCompetitionBase
 from registration.models import Application, ChangedName, PreNumberAssign, Number
@@ -208,9 +209,18 @@ class Seb2015(SEBCompetitionBase):
 
         def get_current_standing(participant):
             standings = SebStandings.objects.filter(competition=current_competition, participant_slug=participant.slug).order_by('-distance_total')
-            if standings:
-                return standings[0]
-            return None
+
+            if not standings:
+                return None
+
+            standings = standings.aggregate(distance_points1=Sum('distance_points1'),
+                                            distance_points2=Sum('distance_points2'),
+                                            distance_points3=Sum('distance_points3'),
+                                            distance_points4=Sum('distance_points4'),
+                                            distance_points5=Sum('distance_points5'),
+                                            distance_points6=Sum('distance_points6'),
+                                            distance_points7=Sum('distance_points7'))
+            return standings
 
         for participant in participants:
             helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
@@ -228,7 +238,7 @@ class Seb2015(SEBCompetitionBase):
 
             current_standing = get_current_standing(participant)
 
-            if self.competition_index == 1 or (self.competition_index == 2 and (not current_standing or current_standing.distance_points1 == 0)):
+            if self.competition_index == 1 or (self.competition_index == 2 and (not current_standing or current_standing.get('distance_points1') == 0)):
                 standing = get_prev_standing(participant)
 
                 helper.matches_slug = ''
@@ -260,7 +270,11 @@ class Seb2015(SEBCompetitionBase):
 
                 stages = range(1, self.competition_index)
                 for stage in stages:
-                    points = getattr(current_standing, 'distance_points%i' % stage)
+                    points = current_standing.get('distance_points%i' % stage)
+
+                    if points > 1000:
+                        points /= 2  # There shouldn't be such a case, but still, if so, then we divide points by 2
+
                     if points > 0:
                         participated_count += 1
                         total_points += points
