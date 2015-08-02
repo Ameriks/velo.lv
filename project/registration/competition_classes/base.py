@@ -159,7 +159,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             children.append(item('Kartes', 'competition:maps %i' % child.id))
             self.build_flat_pages(child, children)
 
-            if child.competition_date <= current_date - datetime.timedelta(days=1):
+            if child.competition_date <= current_date + datetime.timedelta(days=1):
                 children.append(item('Rezultāti', 'competition:result_distance_list %i' % child.id))
                 children.append(item('Komandu rezultāti', 'competition:result_team_list %i' % child.id))
 
