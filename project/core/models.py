@@ -261,6 +261,8 @@ class Competition(MPTTModel):
 
     map_url = models.URLField(blank=True)
 
+    frontpage_ordering = models.PositiveSmallIntegerField(default=0)
+
     class MPTTMeta:
         order_insertion_by = ['competition_date', 'id']
 
@@ -327,9 +329,8 @@ class Competition(MPTTModel):
         return self.name
 
     def get_random_image(self):
-        ids = self.get_all_children_ids() + (self.id, )
         from gallery.models import Photo
-        return Photo.objects.filter(album__competition_id__in=ids, is_featured=True).order_by('?').first()
+        return Photo.objects.filter(album__competition__tree_id=self.tree_id, is_featured=True).order_by('?').first()
 
     def get_absolute_url(self):
         return reverse('competition:competition', args=[self.id])

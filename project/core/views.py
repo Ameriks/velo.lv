@@ -37,7 +37,7 @@ class IndexView(TemplateView):
         context = super(IndexView, self).get_context_data(**kwargs)
 
 
-        context.update({'competitions': Competition.objects.filter(is_in_menu=True)})
+        context.update({'competitions': Competition.objects.filter(is_in_menu=True).order_by('frontpage_ordering')})
 
 
         next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[:1]
