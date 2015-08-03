@@ -60,12 +60,12 @@
       <!-- Indicators -->
       <ol class="carousel-indicators">
           {% for competition in competitions %}
-        <li data-target="#front-carousel" data-slide-to="{{ forloop.counter0 }}" class="{% if competition.tree_id == next_competition.tree_id %}active{% endif %}"></li>
+        <li data-target="#front-carousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %}active{% endif %}"></li>
           {% endfor %}
       </ol>
       <div class="carousel-inner" role="listbox">
             {% for competition in competitions %}
-                <div class="item {% if competition.tree_id == next_competition.tree_id %}active{% endif %}" style="background: url('{{ competition.get_random_image.image.news.url }}') no-repeat center center; background-size: cover;">
+                <div class="item {% if forloop.counter0 == 0 %}active{% endif %}" style="background: url('{{ competition.get_random_image.image.news.url }}') no-repeat center center; background-size: cover;">
                   <div class="container">
                     <div class="carousel-caption">
                        <p><a style="opacity:0.8" class="btn-u rounded-2x btn-u-blue btn-u-lg" href="{% if competition.tree_id == next_competition.tree_id %}{{ next_competition.get_absolute_url }}{% else %}{{ competition.get_absolute_url }}{% endif %}" role="button">{{ competition }}</a></p>
