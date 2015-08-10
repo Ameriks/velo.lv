@@ -281,7 +281,7 @@ class Seb2015(SEBCompetitionBase):
                     else:
                         skipped_count += 1
                 if participated_count:
-                    helper.calculated_total = total_points / participated_count
+                    helper.calculated_total = float(total_points) / float(participated_count)
                     if skipped_count == 1:
                         helper.calculated_total /= 1.15
                     elif skipped_count == 2:
