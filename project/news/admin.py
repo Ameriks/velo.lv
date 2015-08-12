@@ -6,6 +6,7 @@ from news.models import Notification, News
 
 
 class NewsAdmin(admin.ModelAdmin):
+    exclude = ('image',)
     formfield_overrides = {
             models.TextField: {'widget': AdminRedactorEditor},
     }
