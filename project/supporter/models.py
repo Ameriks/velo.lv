@@ -33,7 +33,8 @@ class Logo(models.Model):
     height = models.FloatField(blank=True, null=True)
 
     def __unicode__(self):
-        return self.image
+        return "-" if self.image is None else self.image.url
+
 
 class CompetitionSupporter(models.Model):
     SUPPORT_LEVELS = (

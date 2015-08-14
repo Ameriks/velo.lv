@@ -194,22 +194,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             return self.email
 
 
-def do_joomla_login(sender, user, request, **kwargs):
-    j_cookie = request.COOKIES.get('9321b987b127024eb07b497ca93226b0', None)
-    if j_cookie and user.legacy_id:
-        data = {
-            'user_id': user.legacy_id,
-            'pass': 'Oylp6Olv1oAs1enN3isn',
-        }
-        try:
-            resp = requests.post('https://www.velo.lv/pflug8phiD4kayB9Og1Ye/loginer.php', data=data, cookies={'9321b987b127024eb07b497ca93226b0': j_cookie})
-        except ConnectionError:
-            Log.objects.create(content_object=user, action='LOGIN', message='Error connecting to velo.lv')
-
-user_logged_in.connect(do_joomla_login)
-
-
-
 class Competition(MPTTModel):
     KIND_VELO = 0
     KIND_CROSS_COUNTRY = 1
