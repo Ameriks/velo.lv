@@ -1,0 +1,17 @@
+{% extends 'manager/form.html' %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+
+        function updateValue(id, url)
+        {
+            $("#id_image").val(id);
+            $("#id_image_img").prop("src", url);
+        }
+        function openGalleryPopup() {
+            window.open('{% url "gallery:album_pick" %}', 'gallerypopup', 'width=400,toolbar=1,resizable=1,scrollbars=yes,height=400,top=100,left=100');
+        }
+    </script>
+{% endblock %}

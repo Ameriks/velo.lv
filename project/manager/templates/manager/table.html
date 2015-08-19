@@ -7,7 +7,10 @@
 
 {% block main %}
     {% if add_link %}
-        <a href="{{ add_link }}">ADD</a>
+        <div class="row well">
+        <div class="col-sm-12">
+        <a href="{{ add_link }}" class="btn btn-primary pull-right">ADD</a>
+        </div></div>
     {% endif %}
     {% if search_form %}
     {% crispy search_form %}

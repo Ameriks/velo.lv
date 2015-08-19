@@ -54,7 +54,7 @@ INSTALLED_APPS = (
     'sitetree',
     'easy_thumbnails',
     'easy_thumbnails.optimize',
-    'redactor',
+    'ckeditor',
     'impersonate',
     'shorturls',
     'core',
@@ -72,6 +72,28 @@ INSTALLED_APPS = (
     'gallery',
    # 'legacy',
 )
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_IMAGE_BACKEND = "pillow"
+CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'toolbar_Basic': [
+            ['Source', '-', 'Bold', 'Italic']
+        ],
+        'toolbar_full': [
+            ['PasteText', 'PasteFromWord', 'RemoveFormat'],
+            ['Styles', 'Format', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight'],
+            ['NumberedList', 'BulletedList'],
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image', 'Flash', 'Table', 'HorizontalRule'],
+            ['TextColor', 'BGColor'],
+            ['SpecialChar', 'Iframe'], ['Source'],
+        ],
+    },
+}
 
 VIMEO_KEY = os.getenv('VIMEO_KEY')
 VIMEO_SECRET = os.getenv('VIMEO_SECRET')

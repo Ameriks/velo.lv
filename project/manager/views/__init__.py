@@ -8,3 +8,4 @@ from .competition_manager import *
 from .analytics_manage import *
 from .results_manage import *
 from .payment_manage import *
+from .news_manage import *

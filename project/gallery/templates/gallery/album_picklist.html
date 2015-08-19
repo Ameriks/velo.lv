@@ -1,0 +1,40 @@
+{% extends 'empty/table.html' %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        function sendValue(id, url)
+        {
+            if (window.opener === null) {
+                alert("Kļūda");
+            } else {
+                window.opener.updateValue(id, url);
+                window.close();
+            }
+        }
+
+        {% if created_instance %}
+            $(function() {
+                sendValue({{ created_instance.id }}, "{{ created_instance.image.img.url }}")
+            });
+        {% endif %}
+
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12 col-md-6 well pull-right">
+            <h4>Augšupielādēt attēlu</h4>
+            <form method="post" enctype="multipart/form-data" action="">
+                {% csrf_token %}
+
+                <button type="submit" class="btn btn-primary pull-right">Upload</button>
+                <input type="file" name="image" class="pull-right" />
+            </form>
+        </div>
+    </div>
+    {{ block.super }}
+
+{% endblock main %}

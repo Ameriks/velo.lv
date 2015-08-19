@@ -308,9 +308,10 @@ class GallerySearchForm(RequestKwargModelFormMixin, forms.Form):
         self.fields['competition'].initial = self.request.GET.get('competition', '')
 
         self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
+        self.helper.form_tag = True
+        self.helper.form_method = "GET"
         self.helper.layout = Layout(
+            Row(
                 Div(
                     'competition',
                     css_class='col-sm-2 hidden-xs',
@@ -328,4 +329,5 @@ class GallerySearchForm(RequestKwargModelFormMixin, forms.Form):
                     ),
                     css_class='col-sm-2',
                 ),
+            )
         )

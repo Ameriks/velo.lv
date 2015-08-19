@@ -6,13 +6,19 @@ from manager.views import ManageParticipantList, ManageCompetitionList, ManageCo
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
     ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView, ManagePriceList, ManagePriceCreate, ManagePriceUpdate, \
-    MatchResultParticipantView
+    MatchResultParticipantView, ManageNewsList, ManageNewsCreate, ManageNewsUpdate
 from manager.views.participant_manage import ManagePreNumberAssignList, ManagePreNumberAssignUpdate, \
     ManagePreNumberAssignCreate, ChangedNameList, ChangedNameCreate, ChangedNameUpdate
 from manager.views.results_manage import ManageResultList, ManageResultUpdate
 from team.views import TeamApply
 
 urlpatterns = patterns('',
+
+                       url(r'^news/$', ManageNewsList.as_view(), name='news_list'),
+                       url(r'^news/(?P<pk2>\d+)/$', ManageNewsUpdate.as_view(), name='news'),
+                       url(r'^news/add/$', ManageNewsCreate.as_view(), name='news'),
+
+
                        url(r'^competition/$', ManageCompetitionList.as_view(), name='competition_list'),
                        url(r'^competition/(?P<pk>\d+)/$', ManageCompetitionDetail.as_view(), name='competition'),
 

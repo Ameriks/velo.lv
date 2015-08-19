@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.conf.urls import patterns, url
 from django.utils.translation import ugettext_lazy as _
 from gallery.views import PhotoListView, AlbumListView, AlbumAssignNumberView, VideoListView, VideoCreateView, \
-    PhotoAlbumCreateView
+    PhotoAlbumCreateView, AlbumPickListView, PhotoPickListView
 
 
 urlpatterns = patterns('',
@@ -13,4 +13,8 @@ urlpatterns = patterns('',
                        url(_(r'^add/$'), PhotoAlbumCreateView.as_view(), name='album_add'),
                        url(_(r'^(?P<album_pk>\d+)/$'), PhotoListView.as_view(), name='album'),
                        url(_(r'^(?P<album_pk>\d+)/(?P<pk>\d+)/assign_numbers/$'), AlbumAssignNumberView.as_view(), name='photo_number_assign'),
+
+                       url(_(r'^pick/$'), AlbumPickListView.as_view(), name='album_pick'),
+                       url(_(r'^pick/(?P<album_pk>\d+)/$'), PhotoPickListView.as_view(), name='album_pick'),
+
 )

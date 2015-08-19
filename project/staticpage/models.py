@@ -5,13 +5,13 @@ from django.core.urlresolvers import get_script_prefix
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import iri_to_uri
 from django.conf import settings
-
+from ckeditor.fields import RichTextField
 
 class StaticPage(models.Model):
     LANGUAGES = (('', '*'), ) + settings.LANGUAGES
     url = models.CharField(_('URL'), max_length=100, db_index=True)
     title = models.CharField(_('title'), max_length=200)
-    content = models.TextField(_('content'), blank=True)
+    content = RichTextField(_('content'), blank=True)
     enable_comments = models.BooleanField(_('enable comments'), default=False)
 
     competition = models.ForeignKey('core.Competition', blank=True, null=True)

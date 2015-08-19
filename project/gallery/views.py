@@ -1,11 +1,17 @@
+from PIL import Image
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
+import datetime
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView
+import uuid
 from gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm, AddPhotoAlbumForm, GallerySearchForm
 from gallery.models import Photo, Album, PhotoNumber, Video
-from velo.mixins.views import RequestFormKwargsMixin
+from velo.mixins.views import RequestFormKwargsMixin, SearchMixin, SingleTableViewWithRequest
+from gallery.tables import AlbumTable
+from django.utils.translation import ugettext_lazy as _
 
 
 class AlbumListView(ListView):
@@ -148,5 +154,55 @@ class PhotoAlbumCreateView(RequestFormKwargsMixin, CreateView):
         return reverse('gallery:album')
 
 
+class AlbumPickListView(SearchMixin, PermissionRequiredMixin, LoginRequiredMixin, SingleTableViewWithRequest):
+    model = Album
+    table_class = AlbumTable
+    permission_required = "gallery.add_photo"
+    template_name = 'gallery/album_picklist.html'
+    created_instance = None
+
+    def get_context_data(self, **kwargs):
+        context = super(AlbumPickListView, self).get_context_data(**kwargs)
+        context.update({'created_instance': self.created_instance})
+        return context
+
+    def get_queryset(self):
+        queryset = super(AlbumPickListView, self).get_queryset()
+        queryset = queryset.filter(is_processed=True)
+        return queryset
+
+    def post(self, request, *args, **kwargs):
+
+        image = request.FILES.get('image')
+        try:
+            trial_image = Image.open(image)
+            trial_image.verify()
+        except IOError:
+            messages.error(request, _('Uploaded file is not an image.'))
+        except AttributeError:
+            messages.error(request, _('Please pick file'))
+        else:
+            album = Album.objects.filter(is_internal=True).first()
+            if not album:
+                album = Album.objects.create(title="Internal", is_internal=True, folder="media/gallery/%s" % str(uuid.uuid4()), is_processed=True, gallery_date=datetime.date.today())
+            self.created_instance = Photo.objects.create(image=image, album=album)
 
 
+        return super(AlbumPickListView, self).get(request, *args, **kwargs)
+
+
+class PhotoPickListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    model = Photo
+    allow_empty = False
+    template_name = 'gallery/photo_picklist.html'
+    permission_required = "gallery.add_photo"
+
+    def get_queryset(self):
+        queryset = super(PhotoPickListView, self).get_queryset()
+        queryset = queryset.filter(album_id=self.kwargs.get('album_pk')).filter(is_processed=True)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(PhotoPickListView, self).get_context_data(**kwargs)
+        context.update({'album': Album.objects.get(id=self.kwargs.get('album_pk'))})
+        return context

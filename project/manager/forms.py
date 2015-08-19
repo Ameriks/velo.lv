@@ -11,6 +11,8 @@ import requests
 from core.models import Competition, Distance, Insurance
 from manager.select2_fields import NumberChoices, UserChoices, NumberChoice, ParticipantChoices, NumberAllChoices
 from manager.tasks import update_results_for_participant
+from manager.widgets import PhotoPickWidget
+from news.models import News
 from payment.models import ActivePaymentChannel, Price
 from payment.utils import create_application_invoice
 from registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
@@ -1214,4 +1216,54 @@ class ChangedNameForm(RequestKwargModelFormMixin, forms.ModelForm):
             Row(
                 Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
             ),
+        )
+
+
+class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
+
+    class Meta:
+        model = News
+        fields = ('title', 'slug', 'language', 'image', 'competition', 'published_on', 'intro_content', 'content')
+        widgets = {
+            'image': PhotoPickWidget(),
+        }
+
+
+    def __init__(self, *args, **kwargs):
+        super(NewsForm, self).__init__(*args, **kwargs)
+
+        competitions = Competition.objects.filter(level__lte=1)
+        competition_choices = [('', '------'),]
+        for competition in competitions:
+            title = " -- " * competition.level + unicode(competition)
+            competition_choices.append((competition.id, title))
+
+        self.fields['competition'].choices = competition_choices
+
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.layout = Layout(
+            Row(
+                Column('title', css_class='col-sm-6'),
+                Column('slug', css_class='col-sm-6'),
+
+            ),
+            Row(
+                Column('language', css_class='col-sm-4'),
+                Column('competition', css_class='col-sm-4'),
+                Column('published_on', css_class='col-sm-4'),
+            ),
+            Row(
+                Column('intro_content', css_class='col-sm-12'),
+            ),
+            Row(
+                Column('content', css_class='col-sm-12'),
+            ),
+            Row(
+                Column('image', css_class='col-sm-12'),
+            ),
+            Row(
+                Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
+            ),
+
         )

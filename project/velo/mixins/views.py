@@ -168,3 +168,33 @@ class CreateViewWithCompetition(RequestFormKwargsMixin, SetCompetitionContextMix
 
 class UpdateViewWithCompetition(RequestFormKwargsMixin, SetCompetitionContextMixin, UpdateView):
     pass
+
+
+class SearchMixin(object):
+    add_link = None
+    _search_form = None
+    search_form = None
+    def get_context_data(self, **kwargs):
+        context = super(SearchMixin, self).get_context_data(**kwargs)
+
+        if self.add_link:
+            context.update({'add_link': self.add_link})
+
+        if self.search_form:
+            context.update({'search_form': self.get_search_form()})
+
+        return context
+
+    def get_search_form(self):
+        if not self._search_form:
+            self._search_form = self.search_form(request=self.request)
+        return self._search_form
+
+    def get_queryset(self):
+        queryset = super(SearchMixin, self).get_queryset()
+
+        if self.search_form:
+            queryset = self.get_search_form().append_queryset(queryset)
+
+        return queryset
+

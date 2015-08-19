@@ -86,6 +86,7 @@ urlpatterns += patterns('',
 
     url(r'^impersonate/search/$', 'velo.views.search_users', {'template': 'impersonate/search_users.html'}, name='impersonate-search'),
     url(r'^impersonate/', include('impersonate.urls')),
+    url(r'^ckeditor/', include('ckeditor.urls')),
 
     url(r"^json/fields/auto.json$", CustomAutoResponseView.as_view(), name="django_select2_central_json"),
     )

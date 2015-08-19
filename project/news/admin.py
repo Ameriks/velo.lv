@@ -1,17 +1,12 @@
 from django.contrib import admin
 from django.db import models
 # Register your models here.
-from redactor.widgets import AdminRedactorEditor
 from news.models import Notification, News
 
 
 class NewsAdmin(admin.ModelAdmin):
-    exclude = ('image',)
-    formfield_overrides = {
-            models.TextField: {'widget': AdminRedactorEditor},
-    }
+    exclude = ('image', 'created_by', 'modified_by')
 
 admin.site.register(Notification)
 admin.site.register(News, NewsAdmin)
-
 

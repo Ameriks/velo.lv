@@ -10,8 +10,9 @@
             <!-- Begin Sidebar Menu -->
             <div class="col-md-3">
                 {% sitetree_menu from "mainmenu" include "manager" template "bootstrap/sidemenu_bootstrap3.html"  %}
-
+                {% if competition %}
                 {% sitetree_menu from "competition_admin" include "trunk" template "bootstrap/sidemenu_bootstrap3.html"  %}
+                {% endif %}
             </div>
             <!-- End Sidebar Menu -->
 

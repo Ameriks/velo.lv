@@ -1,7 +1,6 @@
 from django import forms
 from staticpage.models import StaticPage
 from django.utils.translation import ugettext_lazy as _
-from redactor.widgets import RedactorEditor
 
 
 class StaticPageForm(forms.ModelForm):
@@ -12,11 +11,6 @@ class StaticPageForm(forms.ModelForm):
     class Meta:
         model = StaticPage
         fields = '__all__'
-        widgets = {
-            'content': RedactorEditor(redactor_settings={
-                'convertVideoLinks': True,
-            }),
-        }
 
 
     def clean(self):
