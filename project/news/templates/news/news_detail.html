@@ -11,6 +11,13 @@
     <meta property="og:description" content="{{ object.intro_content|striptags }}" />
     <meta property="og:type" content="article" />
     <meta property="og:image" content="http://{{ request.get_host }}{{ object.image.image.thumb.url }}" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@velolv" />
+    <meta name="twitter:title" content="{{ object }}" />
+    <meta name="twitter:description" content="{{ object.intro_content|striptags }}" />
+    <meta name="twitter:image" content="http://{{ request.get_host }}{{ object.image.image.thumb.url }}" />
+    
 {% endblock %}
 
 {% block main %}
