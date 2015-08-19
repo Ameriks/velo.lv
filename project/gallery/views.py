@@ -32,7 +32,7 @@ class AlbumListView(ListView):
     def get_queryset(self):
         queryset = super(AlbumListView, self).get_queryset()
 
-        queryset = queryset.filter(is_processed=True)
+        queryset = queryset.filter(is_processed=True).filter(is_internal=False)
 
         if self.get_search_form():
             queryset = self.get_search_form().append_queryset(queryset)
