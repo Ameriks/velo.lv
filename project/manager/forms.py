@@ -5,6 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Submit, Fieldset, HTML, Div, Field
 from django import forms
 from django.db.models import Count
+from django.template.defaultfilters import slugify
 from django_select2 import AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
 import math
 import requests
@@ -1228,7 +1229,6 @@ class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
             'image': PhotoPickWidget(),
         }
 
-
     def __init__(self, *args, **kwargs):
         super(NewsForm, self).__init__(*args, **kwargs)
 
@@ -1239,7 +1239,8 @@ class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
             competition_choices.append((competition.id, title))
 
         self.fields['competition'].choices = competition_choices
-
+        self.fields['slug'].required = False
+        
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.layout = Layout(
@@ -1267,3 +1268,14 @@ class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
             ),
 
         )
+
+    def save(self, commit=True):
+        if not self.instance.slug:
+            self.instance.slug = slugify(self.instance.title)
+
+        if self.request and self.request.user.is_authenticated():
+            if not self.instance.id:
+                self.instance.created_by = self.request.user
+            self.instance.modified_by = self.request.user
+
+        return super(NewsForm, self).save(commit)
