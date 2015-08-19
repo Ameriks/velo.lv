@@ -1240,7 +1240,7 @@ class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.fields['competition'].choices = competition_choices
         self.fields['slug'].required = False
-        
+
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.layout = Layout(
@@ -1271,7 +1271,7 @@ class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
 
     def save(self, commit=True):
         if not self.instance.slug:
-            self.instance.slug = slugify(self.instance.title)
+            self.instance.slug = slugify(self.instance.title)[:50]
 
         if self.request and self.request.user.is_authenticated():
             if not self.instance.id:
