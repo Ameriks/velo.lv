@@ -26,8 +26,8 @@ class VB2015(VBCompetitionBase):
         Returns defined groups for each competition type.
         """
         return {
-            self.SOSEJAS_DISTANCE_ID: ('W-18', 'M-16', 'M-18', 'M-Elite', 'W', 'M-40', 'M-50', 'M-60', 'M-70'),
-            self.MTB_DISTANCE_ID: ('MTB M-14', 'MTB W-18', 'MTB M-16', 'MTB M-18', 'MTB M-Elite', 'MTB W', 'MTB M-40', 'MTB M-50', 'MTB M-60', 'MTB M-70', ),
+            self.SOSEJAS_DISTANCE_ID: ('W-18', 'M-16', 'M-18', 'M-Elite', 'W', 'M-35', 'M-45', 'M-55', 'M-60'),
+            self.MTB_DISTANCE_ID: ('MTB M-14', 'MTB W-18', 'MTB M-16', 'MTB M-18', 'MTB M-Elite', 'MTB W', 'MTB M-35', 'MTB M-45', 'MTB M-55', 'MTB M-65', ),
             self.TAUTAS_DISTANCE_ID: ('T M', 'T W', )
         }
 
@@ -70,11 +70,13 @@ class VB2015(VBCompetitionBase):
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'MTB M-Elite'
                 elif self._update_year(1979) >= year >= self._update_year(1970):
-                    return 'MTB M-40'
+                    return 'MTB M-35'
                 elif self._update_year(1969) >= year >= self._update_year(1960):
-                    return 'MTB M-50'
-                elif year <= self._update_year(1959):
-                    return 'MTB M-60'
+                    return 'MTB M-45'
+                elif self._update_year(1959) >= year >= self._update_year(1950):
+                    return 'MTB M-55'
+                elif year <= self._update_year(1949):
+                    return 'MTB M-65'
             else:
                 if self._update_year(2002) >= year >= self._update_year(1996):
                     return 'MTB W-18'
