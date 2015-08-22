@@ -47,10 +47,12 @@ class VB2015(VBCompetitionBase):
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'M-Elite'
                 elif self._update_year(1979) >= year >= self._update_year(1970):
-                    return 'M-40'
+                    return 'M-35'
                 elif self._update_year(1969) >= year >= self._update_year(1960):
-                    return 'M-50'
-                elif year <= self._update_year(1959):
+                    return 'M-45'
+                elif self._update_year(1959) >= year >= self._update_year(1950):
+                    return 'M-55'
+                elif year <= self._update_year(1949):
                     return 'M-60'
             else:
                 if self._update_year(1999) >= year >= self._update_year(1996):
