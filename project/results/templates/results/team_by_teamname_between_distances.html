@@ -6,17 +6,8 @@
 
 
 {% block main %}
-    {% cache 60 results_team_by_teamname LANGUAGE_CODE competition distance_active %}
+    {% cache 60 results_team_by_teamname_btw_distances LANGUAGE_CODE competition %}
     {% spaceless %}
-    <div class="row">
-        <div class="col-xs-12">
-            <ul class="nav nav-tabs pull-right">
-                {% for distance in distances %}
-                    <li class="{% if distance.id == distance_active.id %}active{% endif %}"><a href="{% url 'competition:result_team_by_name' competition.id %}?distance={{ distance.id }}">{{ distance }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
 
     <div class="row margin-bottom-40">
     {% for object in object_list %}
@@ -32,7 +23,7 @@
                 <div class="row margin-bottom-40">
             {% endif %}
 
-            {% include 'results/team_by_teamname_header.html' %}
+            {% include 'results/team_by_teamname_between_distances_header.html' %}
 
         {% endifchanged %}
 
@@ -41,6 +32,7 @@
             <td>{{ object.6 }}</td>
             <td>{{ object.7 }}</td>
             <td>{{ object.8.year }}</td>
+             <td><span class="tooltips" title="{{ object.12 }}">{{ object.12|slice:"3" }}</span></td>
             <td>{{ object.5|time:"H:i:s" }}</td>
         </tr>
 

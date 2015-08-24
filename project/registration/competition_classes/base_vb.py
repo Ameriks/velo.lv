@@ -57,6 +57,8 @@ class VBCompetitionBase(CompetitionScriptBase):
         if self.competition.competition_date <= current_date:
             child_items.append(item('Rezultāti', 'competition:result_distance_list %i' % self.competition.id))
             child_items.append(item('Komandu rezultāti', 'competition:result_team_by_name %i' % self.competition.id))
+            child_items.append(item('Komandu starp dist.', 'competition:result_team_by_name_btw_distances %i' % self.competition.id))
+
         return item(unicode(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
 
 

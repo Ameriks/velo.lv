@@ -289,6 +289,148 @@ class TeamResultsByTeamName(SetCompetitionContextMixin, TemplateView):
         return context
 
 
+
+class TeamResultsByTeamNameBetweenDistances(SetCompetitionContextMixin, TemplateView):
+    """
+    This class is used to view team results for one competition/stage.
+    This is fully optimized view.
+    """
+    template_name = 'results/team_by_teamname_between_distances.html'
+
+    def get(self, *args, **kwargs):
+        self.set_competition(kwargs.get('pk'))
+
+        return super(TeamResultsByTeamNameBetweenDistances, self).get(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(TeamResultsByTeamNameBetweenDistances, self).get_context_data(**kwargs)
+
+        cache_key = 'team_results_by_name_btw_distances_%i' % self.competition.id
+
+        default_timeout = 60*30
+        if self.competition.competition_date == datetime.date.today():
+            default_timeout = 60
+        print default_timeout
+
+        object_list = cache.get(cache_key)
+        if not object_list:
+
+            distance_ids = {
+                "v": self.competition.distance_set.get(kind="V").id,
+                "s": self.competition.distance_set.get(kind="S").id,
+                "t": self.competition.distance_set.get(kind="T").id,
+            }
+
+            cursor = connection.cursor()
+            cursor.execute("""
+    Select team.*, participant.*, distance.name, DATE_TRUNC('second', total) from (
+    Select kopa.team_name_slug, count(*) counter, sum(kopa.time) total
+    from (
+
+    (Select p.team_name_slug, p.time from (
+    SELECT
+        a.team_name_slug,
+        r.time,
+        row_number() OVER (PARTITION BY team_name_slug ORDER BY r.time) AS row
+    FROM
+        registration_participant a
+        left outer join results_result r on r.participant_id = a.id
+        where a.team_name_slug <> '' and a.team_name_slug <> '-' and r.time is not null and a.is_competing is true and a.distance_id = %(v)i
+        order by a.team_name_slug, r.time
+    ) p where p.row <= 2)
+    UNION
+    (Select p.team_name_slug, p.time from (
+    SELECT
+        a.team_name_slug,
+        r.time,
+        row_number() OVER (PARTITION BY team_name_slug ORDER BY r.time) AS row
+    FROM
+        registration_participant a
+        left outer join results_result r on r.participant_id = a.id
+        where a.team_name_slug <> '' and a.team_name_slug <> '-' and r.time is not null and a.is_competing is true and a.distance_id = %(s)i
+        order by a.team_name_slug, r.time
+    ) p where p.row <= 2)
+    UNION
+    (Select p.team_name_slug, p.time from (
+    SELECT
+        a.team_name_slug,
+        r.time,
+        row_number() OVER (PARTITION BY team_name_slug ORDER BY r.time) AS row
+    FROM
+        registration_participant a
+        left outer join results_result r on r.participant_id = a.id
+        where a.team_name_slug <> '' and a.team_name_slug <> '-' and r.time is not null and a.is_competing is true and a.distance_id = %(t)i and a.gender='F'
+        order by a.team_name_slug, r.time
+    ) p where p.row <= 1)
+
+
+    ) kopa group by kopa.team_name_slug
+    having count(*)=5
+    order by total
+    ) team
+    left outer join
+    (
+    Select p.team_name, p.team_name_slug, p.time,p.first_name,p.last_name,p.birthday,p.team_name,p.number,p.distance_id from (
+
+	(SELECT * from
+	    (SELECT
+		a.*,
+		r.time,
+		nr.number,
+		row_number() OVER (PARTITION BY team_name_slug ORDER BY r.time) AS row
+	    FROM
+		registration_participant a
+		left outer join results_result r on r.participant_id = a.id
+		left outer join registration_number nr on nr.id = a.primary_number_id
+		where a.team_name_slug <> '' and a.team_name_slug <> '-' and r.time is not null and a.is_competing is true and a.distance_id = %(v)i
+		order by a.team_name_slug, r.time
+        ) x where x.row <= 2)
+		UNION
+	(SELECT * from
+	    (SELECT
+		a.*,
+		r.time,
+		nr.number,
+		row_number() OVER (PARTITION BY team_name_slug ORDER BY r.time) AS row
+	    FROM
+		registration_participant a
+		left outer join results_result r on r.participant_id = a.id
+		left outer join registration_number nr on nr.id = a.primary_number_id
+		where a.team_name_slug <> '' and a.team_name_slug <> '-' and r.time is not null and a.is_competing is true and a.distance_id = %(s)i
+		order by a.team_name_slug, r.time
+        ) x where x.row <= 2)
+		UNION
+	(SELECT * from
+	    (SELECT
+		a.*,
+		r.time,
+		nr.number,
+		row_number() OVER (PARTITION BY team_name_slug ORDER BY r.time) AS row
+	    FROM
+		registration_participant a
+		left outer join results_result r on r.participant_id = a.id
+		left outer join registration_number nr on nr.id = a.primary_number_id
+		where a.team_name_slug <> '' and a.team_name_slug <> '-' and r.time is not null and a.is_competing is true and a.distance_id = %(t)i and a.gender='F'
+		order by a.team_name_slug, r.time
+        ) x where x.row <= 1)
+
+    ) p
+    ) participant on team.team_name_slug = participant.team_name_slug
+    left outer join core_distance distance on distance.id =  participant.distance_id
+    order by counter desc, total, team.team_name_slug, participant.distance_id, time
+    """ % distance_ids)
+            object_list = cursor.fetchall()
+            cache.set(cache_key, object_list, default_timeout)
+
+        context.update({
+            'object_list': object_list,
+        })
+        return context
+
+
+
+
 class ResultDiplomaPDF(DetailView):
     pk_url_kwarg = 'pk2'
     model = Result

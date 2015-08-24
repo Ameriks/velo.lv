@@ -7,7 +7,7 @@ from registration.views import ParticipantList, TeamJsonList, ParticipantSearchV
     DataForExternalAll, BikeBrandJsonList
 from django.utils.translation import ugettext_lazy as _
 from results.views import ResultList, SebStandingResultList, SebTeamResultList, SebTeamResultStandingList, \
-    TeamResultsByTeamName, ResultDiplomaPDF
+    TeamResultsByTeamName, ResultDiplomaPDF, TeamResultsByTeamNameBetweenDistances
 from supporter.views import CompetitionSupporters, CompetitionIframeSupporters
 from team.views import TeamAppliedView, TeamListView, TeamView
 
@@ -41,6 +41,10 @@ urlpatterns = patterns('',
                        url(_(r'^(?P<pk>\d+)/results/teams/$'), SebTeamResultList.as_view(), name='result_team_list'),
                        url(_(r'^(?P<pk>\d+)/results/team_name/$'), TeamResultsByTeamName.as_view(),
                            name='result_team_by_name'),
+                       url(_(r'^(?P<pk>\d+)/results/team_name/between_distances/$'), TeamResultsByTeamNameBetweenDistances.as_view(),
+                           name='result_team_by_name_btw_distances'),
+
+
 
                        url(_(r'^(?P<pk>\d+)/teams.json$'), TeamJsonList.as_view(), name='teams_json'),
                        url(_(r'^bike_brands.json$'), BikeBrandJsonList.as_view(), name='bikebrand_json'),

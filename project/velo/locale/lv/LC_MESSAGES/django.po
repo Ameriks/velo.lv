@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-05 21:48+0300\n"
-"PO-Revision-Date: 2015-03-05 23:00+0137\n"
+"POT-Creation-Date: 2015-08-24 16:11+0000\n"
+"PO-Revision-Date: 2015-08-24 19:11+0137\n"
 "Last-Translator: Agris Ameriks <agris@pd.lv>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,106 +17,145 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
-"X-Translated-Using: django-rosetta 0.7.5\n"
+"X-Translated-Using: django-rosetta 0.7.6\n"
 
-#: hashers.py:33
-msgid "algorithm"
-msgstr "Algoritms"
+#: mixins/forms.py:67 mixins/forms.py:72 mixins/forms.py:74
+msgid "Invalid Social Security Number."
+msgstr "Kļūdains personas kods."
 
-#: hashers.py:34
-msgid "salt"
-msgstr "Salt"
+#: mixins/models.py:10
+msgid "Created"
+msgstr "Izveidots"
 
-#: hashers.py:35
-msgid "hash"
-msgstr "Hash"
+#: mixins/models.py:11
+msgid "Modified"
+msgstr "Labots"
 
-#: urls.py:46
+#: mixins/views.py:43
+#, python-brace-format
+msgid ""
+"We sent email verification to your email address: {0}. Please verify that "
+"your email address is active. <a href=\"{1}\">Resend</a> or <a "
+"href=\"{2}\">Change email</a>"
+msgstr ""
+"Mēs nosūtījām uz Jūsu kontā norādīto e-pastu {0} pārbaudes vēstuli. Lūdzu "
+"atjaunojiet e-pastu, ja šis e-pasts vairs nav aktīvs. <a "
+"href=\"{1}\">Vēlreiz atsūtīt</a> vai <a href=\"{2}\">Nomainīt e-pasta "
+"adresi</a>"
+
+#: settings/base.py:128
+msgid "Latvian"
+msgstr "Latviski"
+
+#: settings/base.py:129
+msgid "English"
+msgstr "English"
+
+#: urls.py:47
 msgid "^application/$"
 msgstr "^pieteikums/$"
 
-#: urls.py:47
-#, python-brace-format
-msgid "^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
-msgstr "^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
-
 #: urls.py:48
 #, python-brace-format
-msgid "^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pay/$"
-msgstr "^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/maksat/$"
+msgid ""
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
+msgstr ""
+"^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
 
 #: urls.py:49
 #, python-brace-format
-msgid "^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
-msgstr "^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+msgid ""
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pay/$"
+msgstr ""
+"^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/maksat/$"
 
-#: urls.py:53
+#: urls.py:50
+#, python-brace-format
+msgid ""
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+msgstr ""
+"^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+
+#: urls.py:54
 msgid "^company_application/$"
 msgstr "^uznemuma_pieteikums/$"
 
-#: urls.py:54
+#: urls.py:55
 msgid "^company_application/add/$"
 msgstr "^uznemuma_pieteikums/jauns/$"
 
-#: urls.py:55
-#, python-brace-format
-msgid "^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
-msgstr "^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
-
 #: urls.py:56
 #, python-brace-format
-msgid "^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/add/$"
-msgstr "^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pievienot/$"
+msgid ""
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
+msgstr ""
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
 
 #: urls.py:57
 #, python-brace-format
-msgid "^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
-msgstr "^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+msgid ""
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/add/$"
+msgstr ""
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pievienot/$"
 
 #: urls.py:58
 #, python-brace-format
-msgid "^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/edit/$"
-msgstr "^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/labot/$"
+msgid ""
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+msgstr ""
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
 
-#: urls.py:63
+#: urls.py:59
+#, python-brace-format
+msgid ""
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/edit/$"
+msgstr ""
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/labot/$"
+
+#: urls.py:62
 msgid "^results/"
 msgstr "^rezultati/"
 
-#: urls.py:64
+#: urls.py:63
 msgid "^payment/"
 msgstr "^maksajums/"
 
-#: urls.py:65
+#: urls.py:64
 msgid "^whatever/"
 msgstr "^kautkas/"
 
-#: urls.py:66
+#: urls.py:65
 msgid "^news/"
 msgstr "^jaunumi/"
 
-#: urls.py:67
+#: urls.py:66
 msgid "^gallery/"
 msgstr "^galerija/"
 
-#: urls.py:68
+#: urls.py:67
 msgid "^mk/"
 msgstr "^mk/"
 
-#: urls.py:70
+#: urls.py:69
 msgid "^competition/"
 msgstr "^sacensibas/"
 
-#: urls.py:71
+#: urls.py:70
 msgid "^supporters/"
 msgstr "^atbalstitaji/"
 
-#: urls.py:72
+#: urls.py:71
 msgid "^calendar/"
 msgstr "^kalendars/"
 
-#: urls.py:73 urls.py:74
+#: urls.py:72 urls.py:73
 msgid "^accounts/"
 msgstr "^konts/"
+
+#: urls.py:82
+#| msgid "^(?P<pk>\\d+)/(?P<slug>.*)/$"
+msgid "^pdf/(?P<slug>\\w+)/"
+msgstr "^pdf/(?P<slug>\\w+)/"
 
 #: urls_competition.py:16
 msgid "^(?P<pk>\\d+)/total.json$"
@@ -131,97 +170,91 @@ msgid "^(?P<pk>\\d+)/maps/$"
 msgstr "^(?P<pk>\\d+)/kartes/$"
 
 #: urls_competition.py:20
+#| msgid "^(?P<pk>\\d+)/maps/$"
+msgid "^maps/gpx/(?P<pk2>\\d+)/$"
+msgstr "^maps/gpx/(?P<pk2>\\d+)/$"
+
+#: urls_competition.py:22
 msgid "^(?P<pk>\\d+)/supporters/$"
 msgstr "^(?P<pk>\\d+)/atbalstitaji/$"
 
-#: urls_competition.py:22
+#: urls_competition.py:24
 msgid "^(?P<pk>\\d+)/team/$"
 msgstr "^(?P<pk>\\d+)/komandas/$"
 
-#: urls_competition.py:23
+#: urls_competition.py:25
 msgid "^(?P<pk>\\d+)/team/(?P<pk2>\\d+)/$"
 msgstr "^(?P<pk>\\d+)/komandas/(?P<pk2>\\d+)/$"
 
-#: urls_competition.py:25
+#: urls_competition.py:27
 msgid "^(?P<pk>\\d+)/supporters/iframe/$"
 msgstr "^(?P<pk>\\d+)/atbalstitaji/iframe/$"
 
-#: urls_competition.py:27
+#: urls_competition.py:29
 msgid "^(?P<pk>\\d+)/supporters/iframe/(?P<level>\\d+)/$"
 msgstr "^(?P<pk>\\d+)/atbalstitaji/iframe/(?P<level>\\d+)/$"
 
-#: urls_competition.py:30
+#: urls_competition.py:32
 msgid "^(?P<pk>\\d+)/standings/$"
 msgstr "^(?P<pk>\\d+)/kopvertejums/$"
 
-#: urls_competition.py:31
+#: urls_competition.py:33
 msgid "^(?P<pk>\\d+)/standings/teams/$"
 msgstr "^(?P<pk>\\d+)/kopvertejums/komandas/$"
 
-#: urls_competition.py:33
+#: urls_competition.py:35
 msgid "^(?P<pk>\\d+)/participants/$"
 msgstr "^(?P<pk>\\d+)/dalibnieki/$"
 
-#: urls_competition.py:34
+#: urls_competition.py:36
 msgid "^(?P<pk>\\d+)/applied_teams/$"
 msgstr "^(?P<pk>\\d+)/pieteiktas_komandas/$"
 
-#: urls_competition.py:35
+#: urls_competition.py:37
 msgid "^(?P<pk>\\d+)/results/$"
 msgstr "^(?P<pk>\\d+)/rezultati/$"
 
-#: urls_competition.py:36
+#: urls_competition.py:38
 msgid "^(?P<pk>\\d+)/results/(?P<pk2>\\d+)/$"
 msgstr "^(?P<pk>\\d+)/rezultati/(?P<pk2>\\d+)/$"
 
-#: urls_competition.py:39
+#: urls_competition.py:41
 msgid "^(?P<pk>\\d+)/results/teams/$"
 msgstr "^(?P<pk>\\d+)/rezultati/komandas/$"
 
-#: urls_competition.py:40
+#: urls_competition.py:42
 msgid "^(?P<pk>\\d+)/results/team_name/$"
 msgstr "^(?P<pk>\\d+)/rezultati/nkomandas/$"
 
-#: urls_competition.py:43
+#: urls_competition.py:44
+#| msgid "^(?P<pk>\\d+)/results/team_name/$"
+msgid "^(?P<pk>\\d+)/results/team_name/between_distances/$"
+msgstr "^(?P<pk>\\d+)/rezultati/nkomandas/starp_distancem/$"
+
+#: urls_competition.py:49
 msgid "^(?P<pk>\\d+)/teams.json$"
 msgstr "^(?P<pk>\\d+)/komandas.json$"
 
-#: urls_competition.py:44
+#: urls_competition.py:50
 msgid "^bike_brands.json$"
 msgstr ""
 
-#: urls_competition.py:49
+#: urls_competition.py:55
 msgid "^participant/search.json$"
 msgstr "^participant/search.json$"
 
-#: urls_competition.py:52
+#: urls_competition.py:58
 msgid "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 msgstr "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 
-#: mixins/forms.py:67 mixins/forms.py:72 mixins/forms.py:74
-msgid "Invalid Social Security Number."
-msgstr "Kļūdains personas kods."
+#~ msgid "algorithm"
+#~ msgstr "Algoritms"
 
-#: mixins/models.py:11
-msgid "Created"
-msgstr "Izveidots"
+#~ msgid "salt"
+#~ msgstr "Salt"
 
-#: mixins/models.py:12
-msgid "Modified"
-msgstr "Labots"
-
-#: mixins/views.py:43
-#, python-brace-format
-msgid "We sent email verification to your email address: {0}. Please verify that your email address is active. <a href=\"{1}\">Resend</a> or <a href=\"{2}\">Change email</a>"
-msgstr "Mēs nosūtījām uz Jūsu kontā norādīto e-pastu {0} pārbaudes vēstuli. Lūdzu atjaunojiet e-pastu, ja šis e-pasts vairs nav aktīvs. <a href=\"{1}\">Vēlreiz atsūtīt</a> vai <a href=\"{2}\">Nomainīt e-pasta adresi</a>"
-
-#: settings/base.py:101
-msgid "Latvian"
-msgstr "Latviski"
-
-#: settings/base.py:102
-msgid "English"
-msgstr "English"
+#~ msgid "hash"
+#~ msgstr "Hash"
 
 #~ msgid "^(?P<pk>\\d+)/participants/(?P<distance_pk>\\d+)/$"
 #~ msgstr "^(?P<pk>\\d+)/dalibnieki/(?P<distance_pk>\\d+)/$"
