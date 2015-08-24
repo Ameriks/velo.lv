@@ -27,7 +27,7 @@ class VB2015(VBCompetitionBase):
         """
         return {
             self.SOSEJAS_DISTANCE_ID: ('W-18', 'M-16', 'M-18', 'M-Elite', 'W', 'M-35', 'M-45', 'M-55', 'M-60'),
-            self.MTB_DISTANCE_ID: ('MTB M-14', 'MTB W-18', 'MTB M-16', 'MTB M-18', 'MTB M-Elite', 'MTB W', 'MTB M-35', 'MTB M-45', 'MTB M-55', 'MTB M-65', ),
+            self.MTB_DISTANCE_ID: ('MTB W-18', 'MTB M-16', 'MTB M-18', 'MTB M-Elite', 'MTB W', 'MTB M-35', 'MTB M-45', 'MTB M-55', 'MTB M-65', ),
             self.TAUTAS_DISTANCE_ID: ('T M', 'T W', )
         }
 
@@ -61,9 +61,7 @@ class VB2015(VBCompetitionBase):
                     return 'W'
         elif distance_id == self.MTB_DISTANCE_ID:
             if gender == 'M':
-                if self._update_year(2002) >= year >= self._update_year(2000):
-                    return 'MTB M-14'
-                elif self._update_year(1999) >= year >= self._update_year(1998):
+                if self._update_year(2001) >= year >= self._update_year(1998):
                     return 'MTB M-16'
                 elif self._update_year(1997) >= year >= self._update_year(1996):
                     return 'MTB M-18'
@@ -78,7 +76,7 @@ class VB2015(VBCompetitionBase):
                 elif year <= self._update_year(1949):
                     return 'MTB M-65'
             else:
-                if self._update_year(2002) >= year >= self._update_year(1996):
+                if self._update_year(2001) >= year >= self._update_year(1996):
                     return 'MTB W-18'
                 elif year <= self._update_year(1995):
                     return 'MTB W'
