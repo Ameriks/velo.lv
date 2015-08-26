@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+import pwgen
 
 from social.pipeline.partial import partial
 from social.pipeline.user import USER_FIELDS
@@ -35,7 +36,11 @@ def create_user(strategy, details, user=None, *args, **kwargs):
     if not fields:
         return
 
+    user = User.objects.create(password='!', **fields)
+    user.set_password(pwgen.pwgen())
+    user.save()
+
     return {
         'is_new': True,
-        'user': User.objects.create(password='!', **fields)
+        'user': user,
     }
