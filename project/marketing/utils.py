@@ -29,8 +29,8 @@ def send_number_email(competition, participants, application=None):
         'competition': competition,
         'application': True,
     }
-    template = transform(render_to_string('registration/email/rm2015/number_email.html', context))
-    template_txt = render_to_string('registration/email/rm2015/number_email.txt', context)
+    template = transform(render_to_string('registration/email/vb2015/number_email.html', context))
+    template_txt = render_to_string('registration/email/vb2015/number_email.txt', context)
 
     if len(participants) == 1:
         subject = u'Reģistrācijas apliecinājums - Latvijas Riteņbraucēju vienības brauciens 2015 - %s' % participants[0].full_name
@@ -69,7 +69,7 @@ def send_sms_to_participant(participant):
 
     full_name = unicodedata.normalize('NFKD', participant.full_name).encode('ascii', 'ignore').decode('ascii')
 
-    sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=u"{0}, Jusu starta numurs ir {1} ELKOR Rigas Velomaratona. Iznemiet to EXPO centra 29.-30.05 ELKOR PLAZA Brivibas 201 uzradot so SMS".format(full_name, unicode(participant.primary_number)))
+    sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=u"{0}, Jusu starta numurs ir {1} Vienibas brauciena. Iznemiet to EXPO centra 04.-05.09 ELKOR PLAZA Brivibas 201 uzradot so SMS".format(full_name, unicode(participant.primary_number)))
 
     Participant.objects.filter(id=participant.id).update(is_sent_number_sms=True)
 
@@ -104,20 +104,17 @@ def send_sms_to_family_participant(participant):
 
 def initial_send_numbers_to_all_participants():
     # TODO: Filter. If participant is only one in application, then send only one email.
-    competition = Competition.objects.get(id=47)
-    applications = Application.objects.filter(competition_id=47).order_by('id')
+    competition = Competition.objects.get(id=48)
+    applications = Application.objects.filter(competition_id=48).order_by('id')
 
     for application in applications:
         participants = application.participant_set.filter(is_participating=True)
         send_number_email(competition, participants, application)
 
-    participants = Participant.objects.filter(competition_id=47, is_participating=True, is_sent_number_email=False).exclude(primary_number=None).order_by('primary_number__number')
+    participants = Participant.objects.filter(competition_id=48, is_participating=True, is_sent_number_email=False).exclude(primary_number=None).order_by('primary_number__number')
     for participant in participants:
-        send_number_email(competition, [participant, ])
-
-    participants = Participant.objects.filter(competition_id=47, distance_id=42, is_participating=True, is_sent_number_email=False).order_by('created')
-    for participant in participants:
-        send_number_email(competition, [participant, ])
+        if participant.email:
+            send_number_email(competition, [participant, ])
 
 
 def send_numbers_to_all_participants_sms():
@@ -125,9 +122,9 @@ def send_numbers_to_all_participants_sms():
     for participant in participants:
         send_sms_to_participant(participant)
 
-    participants = Participant.objects.filter(competition_id=34, is_participating=True, is_sent_number_sms=False, distance_id=30).order_by('created')
-    for participant in participants:
-        send_sms_to_family_participant(participant)
+    # participants = Participant.objects.filter(competition_id=34, is_participating=True, is_sent_number_sms=False, distance_id=30).order_by('created')
+    # for participant in participants:
+    #     send_sms_to_family_participant(participant)
 
 
 def send_test():
