@@ -140,44 +140,46 @@ class VBCompetitionBase(CompetitionScriptBase):
 
 
     def assign_numbers(self, reassign=False, assign_special=False):
+        # TODO: There is not "group_together" made.
+        total_count = {}
         if reassign:
             Number.objects.filter(competition=self.competition).update(participant_slug='', number_text='')
             Participant.objects.filter(competition=self.competition, is_participating=True).update(primary_number=None)
 
         if assign_special:
             # first assign special numbers
-            pre_numbers = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None)
-            for nr in pre_numbers:
-                number = Number.objects.get(number=nr.number, competition=self.competition)
-                print "%s - %s" % (number, nr.participant_slug)
-                number.participant_slug = nr.participant_slug
+            numbers = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None)
+            for pre in numbers:
+                number = Number.objects.get(number=pre.number, competition=self.competition)
+                print "%s - %s" % (number, pre.participant_slug)
+                number.participant_slug = pre.participant_slug
                 number.save()
 
-                participant = Participant.objects.filter(slug=nr.participant_slug, competition=self.competition, distance=number.distance, is_participating=True)
+                participant = Participant.objects.filter(slug=number.participant_slug, competition=self.competition, distance=number.distance, is_participating=True)
                 if participant:
                     participant = participant[0]
                     participant.primary_number = number
                     participant.save()
 
-        for distance_id in (self.TAUTAS_DISTANCE_ID, ): #self.TAUTAS_DISTANCE_ID):
+            if hasattr(self, "assign_numbers_special_additional"):
+                total_count = self.assign_numbers_special_additional()
 
-            exclude_slugs = [obj.participant_slug for obj in PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).exclude(group_together=None)]
+        for distance_id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
 
             for passage_nr, passage_start, passage_end, passage_extra in self.passages().get(distance_id):
-                special_in_passage_count = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None).filter(number__gte=passage_start, number__lte=passage_end).count()
-                places = passage_end - passage_start - passage_extra + 1 - special_in_passage_count
+                special_in_passage = PreNumberAssign.objects.filter(competition=self.competition, number__gte=passage_start, number__lte=passage_end).count()
+                additional_places_used = total_count.get(passage_nr, 0)
 
-                pre_numbers = PreNumberAssign.objects.filter(competition=self.competition, number=None, distance_id=distance_id, segment=passage_nr)
-                slugs_in_passage = [obj.participant_slug for obj in pre_numbers]
+                places = passage_end - passage_start - passage_extra + 1 - special_in_passage - additional_places_used
 
-                # Filter those slugs that already have number:
-                final_slugs_in_passage = slugs_in_passage[:]
-                for slug in slugs_in_passage:
-                    if Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, slug=slug).exclude(primary_number=None).exclude(slug__in=exclude_slugs):
-                        print 'removing slug %s' % slug
-                        final_slugs_in_passage.remove(slug)
+                final_slugs_in_passage = []
+                participants_in_passage = PreNumberAssign.objects.filter(competition=self.competition, segment=passage_nr, distance_id=distance_id)
+                for pre in participants_in_passage:
+                    if not Participant.objects.filter(competition=self.competition, is_participating=True, distance_id=distance_id, slug=pre.participant_slug).exclude(primary_number=None):
+                        final_slugs_in_passage.append(pre.participant_slug)
 
-                participants = Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, primary_number=None).exclude(legacyresult__id=None).exclude(slug__in=exclude_slugs).order_by('legacyresult__result_distance', 'registration_dt')[:places]
+
+                participants = Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=distance_id, primary_number=None).order_by('helperresults__calculated_total', 'registration_dt')[:places]
                 participant_slugs = [obj.slug for obj in participants]
 
                 extra_count = 0
@@ -400,7 +402,7 @@ AND r.id = res2.id
         # Reset team results.
         self.reset_cache_results()
 
-        super(VB2014, self).reset_cache()
+        super(VBCompetitionBase, self).reset_cache()
 
 
     def reset_cache_results(self):

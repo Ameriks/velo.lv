@@ -91,47 +91,30 @@ class VB2015(VBCompetitionBase):
 
 
     def number_pdf(self, participant_id):
-        raise NotImplementedError
         participant = Participant.objects.get(id=participant_id)
-        styles = getSampleStyleSheet()
         output = StringIO.StringIO()
 
-        doc = SimpleDocTemplate(output, pagesize=A4, showBoundary=0)
-        elements = []
+        c = canvas.Canvas(output, pagesize=A4)
+        fill_page_with_image("media/competition/vestule/VBm_2015_vestule_ar_tekstu.jpg", c)
 
-        if self.competition.logo:
-            elements.append(get_image(self.competition.logo.path, width=10*cm))
-        elements.append(Paragraph(u"Apsveicam ar sekmīgu reģistrēšanos 24.Latvijas riteņbraucēju Vienības braucienam, kas notiks šo svētdien, 7.septembrī Siguldā!", styles['h3']))
+        c.setFont(_baseFontNameB, 18)
+        c.drawString(5.5*cm, 20.05*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
+        c.drawString(4.2*cm, 18.05*cm, unicode(participant.distance))
 
-        data = [['Vārds, uzvārds:', participant.full_name],
-                ['Dzimšanas gads:', participant.birthday.year],
-                ['Distance:', participant.distance], ]
+
         if participant.primary_number:
-            data.append(['Starta numurs', participant.primary_number.number])
+            c.setFont(_baseFontNameB, 35)
+            c.drawString(15*cm, 18.5*cm, unicode(participant.primary_number))
+        # elif participant.distance_id == self.GIMENU_DISTANCE_ID:
+        #     c.setFont(_baseFontNameB, 25)
+        #     c.drawString(15*cm, 18.5*cm, "Amway")
+        else:
+            c.setFont(_baseFontNameB, 25)
+            c.drawString(15*cm, 19*cm, "-")
 
-        table_style = base_table_style[:]
-        table_style.append(['FONTSIZE', (0, 0), (-1, -1), 16])
-        table_style.append(['BOTTOMPADDING', (0, 0), (-1, -1), 10])
-
-        elements.append(Spacer(10, 10))
-        elements.append(Table(data, style=table_style, hAlign='LEFT'))
-        elements.append(Spacer(10, 10))
-        elements.append(Paragraph(u"Šo vēstuli lūdzam saglabāt, izprintēt un uzrādīt saņemot starta numuru.", styles['h3']))
-        elements.append(Paragraph(u"Starta numurus iespējams saņemt 5. un 6.septembrī pie u/v Elkor Plaza (Brīvības gatve 201, Rīga) laikā no 10:00 līdz 20:00 vai arī 7.septembrī Siguldā, reģistrācijas teltī no 09:00.", styles['h3']))
-
-        elements.append(Paragraph(u"Lūdzam paņemt no reģistrācijas darbiniekiem instrukciju par pareizu numura piestiprināšanu.", styles['h3']))
-        elements.append(Paragraph(u"Papildus informāciju meklējiet www.velo.lv", styles['h3']))
-
-        elements.append(Paragraph(u"Vēlreiz apsveicam ar reģistrēšanos Vienības braucienam un novēlam veiksmīgu startu!", styles['h3']))
-
-        elements.append(Paragraph(u"Sajūti kopīgo spēku!", styles['title']))
-
-        elements.append(Paragraph(u"Sacensību organizatori", styles['h3']))
-
-        elements.append(Paragraph(u"Jautājumi?", styles['h2']))
-        elements.append(Paragraph(u"Neskaidrību gadījumā sazinieties ar mums: pieteikumi@velo.lv", styles['h3']))
-
-        doc.build(elements)
+        c.showPage()
+        c.save()
+        output.seek(0)
         return output
 
     def generate_diploma(self, result):
@@ -209,3 +192,46 @@ class VB2015(VBCompetitionBase):
                     helper.matches_slug = matches[0]
 
             helper.save()
+
+    def assign_numbers_special_additional(self):
+        # Assign number for women in teams.
+
+        queryset = self.competition.participant_set.filter(is_participating=True,
+                                                        distance_id=self.TAUTAS_DISTANCE_ID,
+                                                        gender='F').exclude(team_name='').extra(
+            select={
+                'shoseja_count': 'Select count(*) from registration_participant rp where rp.is_participating=True and distance_id= %s and rp.team_name_slug = registration_participant.team_name_slug',
+                'mtb_count': 'Select count(*) from registration_participant rp where rp.is_participating=True and distance_id= %s and rp.team_name_slug = registration_participant.team_name_slug'
+            },
+            select_params=(self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID),
+        )
+        queryset = queryset.filter(helperresults__competition_id = self.competition.id)
+        queryset = queryset.extra(
+                select={
+                    'calculated_total': 'results_helperresults.calculated_total',
+                    'passage_assigned': 'results_helperresults.passage_assigned',
+                    },
+            ).order_by('team_name_slug', 'calculated_total', 'last_name')
+        counter = {}
+        total_counter = 0
+        passage_info = self.passages().get(self.TAUTAS_DISTANCE_ID)[1]
+        for w in queryset:
+            if w.shoseja_count >= 2 and w.mtb_count >= 2:
+                total_in_team = counter.get(w.team_name_slug, 0)
+                if total_in_team >= 4:
+                    continue
+                counter.update({w.team_name_slug: (total_in_team + 1)})
+                total_counter += 1
+                number = self.competition.number_set.filter(distance_id=self.TAUTAS_DISTANCE_ID,
+                                                            participant_slug='',
+                                                            number__gte=passage_info[1],
+                                                            number__lte=passage_info[2])[0]
+                number.participant_slug = w.slug
+                number.save()
+
+                w.primary_number = number
+                w.save()
+
+                print "%s, %i, %s, %s, %s, %s" % (number, w.id, w.calculated_total, w.last_name, w.first_name, w.team_name)
+
+        return {2: total_counter}

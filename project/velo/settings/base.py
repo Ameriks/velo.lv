@@ -200,7 +200,7 @@ AUTO_RENDER_SELECT2_STATICS = False
 
 SMS_USERNAME = os.getenv('SMS_USERNAME')
 SMS_PASSWORD = os.getenv('SMS_PASSWORD')
-SMS_GATEWAY = 'http://smsmarketing.bpo.lv'
+SMS_GATEWAY = 'https://smsmarketing.bpo.lv'
 
 STATICFILES_FINDERS = ("django.contrib.staticfiles.finders.FileSystemFinder",
                        "django.contrib.staticfiles.finders.AppDirectoriesFinder")
