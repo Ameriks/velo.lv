@@ -68,7 +68,7 @@ class VBCompetitionBase(CompetitionScriptBase):
         """
         return {
             self.SOSEJAS_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
-            self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1200, 'group': ''}, ],
+            self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1600, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 7000, 'group': ''}, ],
         }
 
@@ -81,6 +81,8 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (2, 601, 800, 10),
                                     (3, 801, 1000, 5),
                                     (4, 1001, 1200, 0),
+                                    (5, 1201, 1400, 0),
+                                    (6, 1401, 1600, 0),
                                     ],
             self.TAUTAS_DISTANCE_ID: [
                                     (1, 2001, 2200, 10),

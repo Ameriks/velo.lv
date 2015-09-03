@@ -33,9 +33,9 @@ def send_number_email(competition, participants, application=None):
     template_txt = render_to_string('registration/email/rm2015/number_email.txt', context)
 
     if len(participants) == 1:
-        subject = u'Reģistrācijas apliecinājums - ELKOR Rīgas Velomaratons - %s' % participants[0].full_name
+        subject = u'Reģistrācijas apliecinājums - Latvijas Riteņbraucēju vienības brauciens 2015 - %s' % participants[0].full_name
     else:
-        subject = u'Reģistrācijas apliecinājums - ELKOR Rīgas Velomaratons'
+        subject = u'Reģistrācijas apliecinājums - Latvijas Riteņbraucēju vienības brauciens 2015'
 
     email_data = {
         'em_to': email,
