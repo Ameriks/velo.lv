@@ -105,6 +105,11 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (18, 5401, 5600, 0),
                                     (19, 5601, 5800, 0),
                                     (20, 5801, 6000, 0),
+                                    (21, 6001, 6200, 0),
+                                    (22, 6201, 6400, 0),
+                                    (23, 6401, 6600, 0),
+                                    (24, 6601, 6800, 0),
+                                    (25, 6801, 7000, 0),
                                     ],
         }
 
@@ -127,14 +132,13 @@ class VBCompetitionBase(CompetitionScriptBase):
 
 
     def assign_numbers_continuously(self):
-        raise NotImplementedError
         for distance_id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
-            last_number = Participant.objects.filter(distance_id=distance_id, is_participating=True).exclude(primary_number=None).order_by('-primary_number__number')[0].primary_number.number
+            last_number = self.competition.number_set.filter(distance_id=distance_id).exclude(participant_slug='').order_by('-number')
 
             participants = Participant.objects.filter(distance_id=distance_id, is_participating=True, primary_number=None).order_by('registration_dt')
 
             for participant in participants:
-                next_number = Number.objects.filter(distance_id=distance_id, number__gt=4186, participant_slug='')[0]
+                next_number = Number.objects.filter(distance_id=distance_id, participant_slug='', number_gt=last_number)[0]
                 next_number.participant_slug = participant.slug
                 next_number.save()
                 participant.primary_number = next_number
