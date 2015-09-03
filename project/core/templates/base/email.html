@@ -20,7 +20,7 @@
 					<tr>
 						<td>
                             <a href="http://www.velo.lv">
-                                {% if competition and domain %}
+                                {% if competition and domain and competition.logo %}
                                     <img src="{{ domain }}{{ competition.logo.email_logo_double.url }}" height="{{ competition.logo.email_logo.height }}" width="{{ competition.logo.email_logo.width }}" boarder="0" />
                                 {% else %}
                                     <img src="https://mans.velo.lv/static/img/ijsa-top.png" height="54" width="80" boarder="0" />

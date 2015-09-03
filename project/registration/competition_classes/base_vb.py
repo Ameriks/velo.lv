@@ -138,7 +138,13 @@ class VBCompetitionBase(CompetitionScriptBase):
             participants = Participant.objects.filter(distance_id=distance_id, is_participating=True, primary_number=None).order_by('registration_dt')
 
             for participant in participants:
-                next_number = Number.objects.filter(distance_id=distance_id, participant_slug='', number_gt=last_number)[0]
+                next_number = Number.objects.filter(distance_id=distance_id, participant_slug='')
+
+                if last_number:
+                    next_number = next_number.filter(number__gt=last_number[0].number)
+
+                next_number = next_number[0]
+
                 next_number.participant_slug = participant.slug
                 next_number.save()
                 participant.primary_number = next_number
