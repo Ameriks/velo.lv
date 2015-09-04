@@ -12,7 +12,7 @@ import StringIO
 from core.models import Competition, Choices, Log
 from marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from registration.competition_classes.base import CompetitionScriptBase
-from registration.models import Number, Participant, PreNumberAssign
+from registration.models import Number, Participant, PreNumberAssign, Application
 from registration.tables import ParticipantTable, ParticipantTableWithLastYearPlace
 from results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceAdmin, SebStandings, TeamResultStandings, \
     LapResult
@@ -132,6 +132,10 @@ class VBCompetitionBase(CompetitionScriptBase):
 
 
     def assign_numbers_continuously(self):
+
+        application_ids = []
+        participant_ids = []
+
         for distance_id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             last_number = self.competition.number_set.filter(distance_id=distance_id).exclude(participant_slug='').order_by('-number')
 
@@ -149,6 +153,28 @@ class VBCompetitionBase(CompetitionScriptBase):
                 next_number.save()
                 participant.primary_number = next_number
                 participant.save()
+
+                if participant.application and participant.application_id not in application_ids:
+                    application_ids.append(participant.application_id)
+
+                participant_ids.append(participant.id)
+
+        applications = Application.objects.filter(id__in=application_ids)
+        for application in applications:
+            send_number_email(self.competition, application=application) # SEND EMAIL
+
+        participants = Participant.objects.filter(id__in=participant_ids)
+        for participant in participants:
+            send_sms_to_participant(participant)  # SEND SMS
+            if participant.application:
+                if participant.application.participant_set.filter(is_participating=True).count() == 1:
+                    continue
+                if participant.email == participant.application.email:
+                    continue
+
+            if participant.email:
+                send_number_email(self.competition, participants=[participant, ]) # SEND EMAIL
+
 
 
     def assign_numbers(self, reassign=False, assign_special=False):

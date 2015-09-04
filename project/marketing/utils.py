@@ -6,6 +6,7 @@ from django.utils import timezone
 import requests
 import unicodedata
 import urllib
+import uuid
 from core.models import Competition
 from marketing.models import SMS, MailgunEmail
 from registration.models import Participant, Application
@@ -17,11 +18,17 @@ logger = logging.getLogger('marketing')
 
 # TODO: Rebuild this all
 
-def send_number_email(competition, participants, application=None):
+def send_number_email(competition, participants=None, application=None):
     if application:
         email = application.email
+        participants = application.participant_set.filter(is_participating=True)
     else:
         email = participants[0].email
+
+    if not participants:
+        return False
+    if not email:
+        return False
 
     context = {
         'participants': participants,
@@ -29,13 +36,13 @@ def send_number_email(competition, participants, application=None):
         'competition': competition,
         'application': True,
     }
-    template = transform(render_to_string('registration/email/vb2015/number_email.html', context))
-    template_txt = render_to_string('registration/email/vb2015/number_email.txt', context)
+    template = transform(render_to_string('registration/email/%s/number_email.html' % competition.skin, context))
+    template_txt = render_to_string('registration/email/%s/number_email.txt' % competition.skin, context)
 
     if len(participants) == 1:
-        subject = u'Reģistrācijas apliecinājums - Latvijas Riteņbraucēju vienības brauciens 2015 - %s' % participants[0].full_name
+        subject = u'Reģistrācijas apliecinājums - %s - %s' % (competition.get_full_name, participants[0].full_name)
     else:
-        subject = u'Reģistrācijas apliecinājums - Latvijas Riteņbraucēju vienības brauciens 2015'
+        subject = u'Reģistrācijas apliecinājums - %s' % competition.get_full_name
 
     email_data = {
         'em_to': email,
@@ -105,20 +112,26 @@ def send_sms_to_family_participant(participant):
 def initial_send_numbers_to_all_participants():
     # TODO: Filter. If participant is only one in application, then send only one email.
     competition = Competition.objects.get(id=48)
-    applications = Application.objects.filter(competition_id=48).order_by('id')
+    applications = Application.objects.filter(competition_id=48).filter(participant__is_participating=True).order_by('id')
+    applications = applications.distinct()
 
     for application in applications:
-        participants = application.participant_set.filter(is_participating=True)
-        send_number_email(competition, participants, application)
+            send_number_email(competition, application=application)
 
     participants = Participant.objects.filter(competition_id=48, is_participating=True, is_sent_number_email=False).exclude(primary_number=None).order_by('primary_number__number')
     for participant in participants:
+        if participant.application:
+            if participant.application.participant_set.filter(is_participating=True).count() == 1:
+                continue
+            if participant.email == participant.application.email:
+                continue
+
         if participant.email:
             send_number_email(competition, [participant, ])
 
 
 def send_numbers_to_all_participants_sms():
-    participants = Participant.objects.filter(competition_id=34, is_participating=True, is_sent_number_sms=False).exclude(primary_number=None).order_by('primary_number__number')
+    participants = Participant.objects.filter(competition_id=48, is_participating=True, is_sent_number_sms=False).exclude(primary_number=None).order_by('primary_number__number')
     for participant in participants:
         send_sms_to_participant(participant)
 
@@ -128,19 +141,14 @@ def send_numbers_to_all_participants_sms():
 
 
 def send_test():
-    sms = SMS.objects.filter(is_processed=False)[0]
-
     sms_obj = {
         'page': 'message/send',
         'username': settings.SMS_USERNAME,
         'password': settings.SMS_PASSWORD,
         'destinationAddress': '37126461101',
-        'text': sms.text,
+        'text': str(uuid.uuid4()),
     }
     resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urllib.urlencode(sms_obj)))
-    sms.response = resp.content
-    sms.is_processed = True
-    sms.save()
 
 def send_smses():
     smses = SMS.objects.filter(is_processed=False)[:100]
