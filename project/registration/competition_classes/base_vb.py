@@ -68,8 +68,8 @@ class VBCompetitionBase(CompetitionScriptBase):
         """
         return {
             self.SOSEJAS_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
-            self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1600, 'group': ''}, ],
-            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 7000, 'group': ''}, ],
+            self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1300, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 6900, 'group': ''}, ],
         }
 
 
@@ -81,8 +81,7 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (2, 601, 800, 10),
                                     (3, 801, 1000, 5),
                                     (4, 1001, 1200, 0),
-                                    (5, 1201, 1400, 0),
-                                    (6, 1401, 1600, 0),
+                                    (5, 1201, 1300, 0),
                                     ],
             self.TAUTAS_DISTANCE_ID: [
                                     (1, 2001, 2200, 10),
@@ -109,7 +108,7 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (22, 6201, 6400, 0),
                                     (23, 6401, 6600, 0),
                                     (24, 6601, 6800, 0),
-                                    (25, 6801, 7000, 0),
+                                    (25, 6801, 6900, 0),
                                     ],
         }
 
@@ -369,6 +368,8 @@ class VBCompetitionBase(CompetitionScriptBase):
                 result = Result.objects.create(competition=chip.competition, participant=participant[0], number=chip.nr, time=result_time, )
                 result.set_avg_speed()
                 result.save()
+
+                self.assign_standing_places()
 
                 if sendsms and participant[0].is_competing and self.competition.competition_date == datetime.date.today():
                     create_result_sms(result.id)
