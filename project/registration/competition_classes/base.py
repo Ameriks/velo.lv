@@ -830,7 +830,7 @@ class RMCompetitionBase(CompetitionScriptBase):
                 self.assign_standing_places()
 
                 if participant.is_competing and self.competition.competition_date == datetime.date.today() and sendsms:
-                    create_result_sms(result.id)
+                    create_result_sms.apply_async(result.id, countdown=120)
 
 
         chip.is_processed = True
