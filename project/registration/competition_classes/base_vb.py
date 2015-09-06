@@ -487,4 +487,6 @@ AND r.id = res2.id
         output.seek(0)
         return output
 
-
+    def recalculate_all_standings(self):
+        # Here are no standings.
+        pass
