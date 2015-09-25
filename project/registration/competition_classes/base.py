@@ -431,7 +431,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             return 0
 
         try:
-            top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, participant__group=result.participant.group).order_by('time')[0]
+            top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, participant__group=result.participant.group, status='').order_by('time')[0]
         except IndexError:
             return 1000
 
