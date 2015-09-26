@@ -145,7 +145,7 @@ def fetch_results(_id):
             if number == '0':
                 print 'skipping 0 number'
                 continue
-            scan, created = ChipScan.objects.get_or_create(competition=url_data.competition, nr_text=number, time_text=time_text)
+            scan, created = ChipScan.objects.get_or_create(competition=url_data.competition, nr_text=number, time_text=time_text, url_sync=url_data)
             scan.time = time_text
             try:
                 scan.nr = Number.objects.get(competition_id__in=url_data.competition.get_ids(), number=number, group='')

@@ -10,7 +10,7 @@ from django.utils.html import strip_tags
 
 
 __all__ = [
-    'ResultChildrenGroupTable', 'ResultGroupTable', 'ResultDistanceTable', 'ResultDistanceStandingTable', 'ResultGroupStandingTable', 'ResultChildrenGroupStandingTable', 'ResultTeamStandingTable'
+    'ResultChildrenGroupTable', 'ResultGroupTable', 'ResultDistanceTable', 'ResultDistanceStandingTable', 'ResultGroupStandingTable', 'ResultChildrenGroupStandingTable', 'ResultTeamStandingTable', 'ResultDistanceCheckpointTable'
 ]
 
 LEADER_TOOLTIP = ' <span class="label rounded label-%s"><span class="tooltips" data-icon="&#xe006;" data-toggle="tooltip" data-original-title="%s"></span></span>'
@@ -191,6 +191,11 @@ class ResultDistanceTable(tables.Table):
     bike_brand2 = tables.Column(verbose_name=_('Bike Brand'), accessor="participant.bike_brand2", default='-')
     points_distance = tables.Column(empty_values=(), verbose_name=_('Points Distance'), accessor="points_distance")
 
+    def _lap_render(self, value):
+        if value:
+            return mark_safe("<small>%s</small>" % str(value.strftime("%H:%M:%S")))
+        return '-'
+
     def render_last_name(self, record):
         text = strip_tags(record.participant.last_name)
         if record.leader:
@@ -223,6 +228,16 @@ class ResultDistanceTable(tables.Table):
         # ordering = ('created')
         per_page = 200
         template = "bootstrap/table.html"
+
+
+class ResultDistanceCheckpointTable(ResultDistanceTable):
+    l1 = tables.Column(empty_values=(), verbose_name=_('C1'), accessor="l1")
+
+    def render_l1(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    class Meta(ResultDistanceTable.Meta):
+        sequence = ("result_distance", "number", 'first_name','last_name', 'year', 'group', 'team', 'bike_brand2', 'l1', 'time', 'points_distance', 'status')
 
 
 class ResultRMDistanceTable(tables.Table):

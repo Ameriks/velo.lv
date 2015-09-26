@@ -99,6 +99,13 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
                     },
                 )
 
+        elif self.competition.id in (45, ):
+            queryset = queryset.extra(
+                    select={
+                        'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+                    },
+                )
+
         queryset = queryset.select_related('competition', 'participant__distance', 'participant', 'participant__bike_brand',
                                            'participant__team', 'number', 'leader')
 

@@ -106,10 +106,16 @@ class LegacySEBStandingsResult(models.Model):
 
 
 class UrlSync(PeriodicTask):
+    KINDS = (
+        ('FINISH', 'FINISH'),
+        ('MIDDLE', 'MIDDLE'),
+    )
     competition = models.ForeignKey('core.Competition')
     # expires = models.DateTimeField()
     url = models.CharField(max_length=255)
     current_line = models.IntegerField(default=0)
+    kind = models.CharField(max_length=30, default='FINISH')
+    index = models.IntegerField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.name = "Sync_%f" % time.time()
@@ -132,6 +138,8 @@ class ChipScan(models.Model):
 
     is_processed = models.BooleanField(default=False)
     is_blocked = models.BooleanField(default=False)
+
+    url_sync = models.ForeignKey(UrlSync, blank=True, null=True)
 
 
 class DistanceAdmin(models.Model):

@@ -4,12 +4,14 @@ from difflib import get_close_matches
 import datetime
 from django.db.models import Sum
 from django.utils import timezone
+from core.models import Log
 from registration.competition_classes.base import SEBCompetitionBase
 from registration.models import Application, ChangedName, PreNumberAssign, Number
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 from registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
-from results.models import SebStandings, HelperResults
+from results.models import SebStandings, HelperResults, ChipScan, DistanceAdmin, Result
+from results.tables import ResultDistanceTable, ResultDistanceCheckpointTable
 
 
 class Seb2015(SEBCompetitionBase):
@@ -322,3 +324,52 @@ class Seb2015(SEBCompetitionBase):
                 standing.save()
 
         return standing
+
+    def process_chip_result(self, chip_id, sendsms=True):
+        """
+        Function processes chip result and recalculates all standings
+        """
+
+        if self.competition_index != 7:
+            return super(Seb2015, self).process_chip_result(chip_id, sendsms)
+
+        chip = ChipScan.objects.get(id=chip_id)
+
+        if chip.is_processed:
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
+            return None
+
+
+        if chip.url_sync.kind == 'FINISH':
+            return super(Seb2015, self).process_chip_result(chip_id, sendsms)
+        else:
+            result_time, seconds = self.calculate_time(chip)
+
+            # Do not process if finished in 10 minutes.
+            if seconds < 10 * 60: # 10 minutes
+                Log.objects.create(content_object=chip, action="Chip process", message="Chip result less than 10 minutes. Ignoring.")
+                return None
+
+            participant = self.process_chip_create_participant(chip)
+
+            if not participant:
+                Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
+                return False
+
+            result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant[0], number=chip.nr, )
+            lap, created = result.lapresult_set.get_or_create(index=chip.url_sync.index)
+            if lap.time:
+                Log.objects.create(content_object=chip, action="Chip process", message="Lap time already set.")
+                return None
+
+            lap.time = result_time
+            lap.save()
+
+        print chip
+
+
+    def get_result_table_class(self, distance, group=None):
+        if distance.id != self.BERNU_DISTANCE_ID and self.competition_index == 7:
+            return ResultDistanceCheckpointTable
+
+        return super(Seb2015, self).get_result_table_class(distance, group)

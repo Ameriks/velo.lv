@@ -71,6 +71,15 @@ class CompetitionScriptBase(object):
         for page in competition.staticpage_set.filter(is_published=True):
             items.append(item(page.title, 'competition:staticpage %i %s' % (competition.id, page.url)))
 
+    def calculate_time(self, chip):
+        distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
+
+        delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(datetime.date.today(), datetime.time(0,0,0,0))
+        result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
+
+        seconds = result_time.hour * 60 * 60 + result_time.minute * 60 + result_time.second
+        return result_time, seconds
+
 
 class SEBCompetitionBase(CompetitionScriptBase):
     def __init__(self, *args, **kwargs):
@@ -320,19 +329,34 @@ class SEBCompetitionBase(CompetitionScriptBase):
             pass  # TODO: Create team point recalculation for all stages at the same time
 
 
+    def process_chip_create_participant(self, chip):
+        participant = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
+        if not participant:
+            participant_data = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_all_children_ids(), distance=chip.nr.distance, is_participating=True).order_by('-competition__id')
+            if participant_data:
+                participant_data = participant_data.values()[0]
+                # TODO: Refresh list
+                for pop_element in ['id', 'application_id', 'comment', 'created', 'created_by_id', 'insurance_id', 'legacy_id', 'modified', 'modified_by_id', 'price_id', 'registrant_id', 'is_sent_number_sms', 'is_sent_number_email', ]:
+                    participant_data.pop(pop_element)
+
+                participant_data.update({'is_temporary': True, 'competition_id': chip.competition.id, })
+
+                participant = [Participant.objects.create(**participant_data), ]
+                Log.objects.create(content_object=participant[0], action="Chip process", message="Participant was not found, so created temporary one based on previous stage data.")
+                print 'Created participant with ID %i' % participant[0].id
+            else:
+                return False
+        return participant
+
     def process_chip_result(self, chip_id, sendsms=True):
         """
         Function processes chip result and recalculates all standings
         """
         chip = ChipScan.objects.get(id=chip_id)
-        distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
 
         Log.objects.create(content_object=chip, action="Chip process", message="Started")
 
-        delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(datetime.date.today(), datetime.time(0,0,0,0))
-        result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
-
-        seconds = result_time.hour * 60 * 60 + result_time.minute * 60 + result_time.second
+        result_time, seconds = self.calculate_time(chip)
 
         # Do not process if finished in 10 minutes.
         if seconds < 10 * 60: # 10 minutes
@@ -343,28 +367,14 @@ class SEBCompetitionBase(CompetitionScriptBase):
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
 
-        results = Result.objects.filter(competition=chip.competition, number=chip.nr)
+        results = Result.objects.filter(competition=chip.competition, number=chip.nr).exclude(time=None)
         if results:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip ignored. Already have result")
         else:
-            participant = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
-            if not participant:
-                participant_data = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_all_children_ids(), distance=chip.nr.distance, is_participating=True).order_by('-competition__id')
-                if participant_data:
-                    participant_data = participant_data.values()[0]
-                    # TODO: Refresh list
-                    for pop_element in ['id', 'application_id', 'comment', 'created', 'created_by_id', 'insurance_id', 'legacy_id', 'modified', 'modified_by_id', 'price_id', 'registrant_id', 'is_sent_number_sms', 'is_sent_number_email', ]:
-                        participant_data.pop(pop_element)
-
-                    participant_data.update({'is_temporary': True, 'competition_id': chip.competition.id, })
-
-                    participant = [Participant.objects.create(**participant_data), ]
-                    Log.objects.create(content_object=participant[0], action="Chip process", message="Participant was not found, so created temporary one based on previous stage data.")
-                    print 'Created participant with ID %i' % participant[0].id
-                else:
-                    return False
+            participant = self.process_chip_create_participant(chip)
             if participant:
-                result = Result.objects.create(competition=chip.competition, participant=participant[0], number=chip.nr, time=result_time, )
+                result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant[0], number=chip.nr, )
+                result.time = result_time
                 result.set_all()
                 result.save()
 
@@ -414,7 +424,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             return 0
 
         try:
-            top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance).order_by('time')[0]
+            top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance).exclude(time=None).order_by('time')[0]
         except IndexError:
             return 1000
 
@@ -431,7 +441,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             return 0
 
         try:
-            top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, participant__group=result.participant.group, status='').order_by('time')[0]
+            top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, participant__group=result.participant.group, status='').exclude(time=None).order_by('time')[0]
         except IndexError:
             return 1000
 
