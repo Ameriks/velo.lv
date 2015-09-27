@@ -75,6 +75,8 @@ def generate_pdfreport(competition_id, action, user_id):
         pdf_class.results_standings_groups()
     elif action == 'results_standings_groups_top20':
         pdf_class.results_standings_groups(20)
+    elif action == 'results_standings_gender':
+        pdf_class.results_standings_gender()
     elif action == 'results_team':
         pdf_class.results_team()
     elif action == 'results_team_standings':

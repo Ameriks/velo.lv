@@ -158,6 +158,46 @@ class PDFReports(object):
             self.elements.append(PageBreak())
 
 
+
+    def results_standings_gender(self, top=10000):
+        col_width = (
+            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
+        distances = self.competition.get_distances().filter(have_results=True).exclude(
+            id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
+        for distance in distances:
+            self.elements.append(self.header(unicode("Kopvērtējums pa dzimumiem")))
+            for gender, gender_name in [('M', 'Vīrieši'), ('F', 'Sievietes')]:
+                self.elements.append(Spacer(10, 10))
+                data = [[Paragraph(unicode(gender_name), styles["Heading2"]), '', '', unicode(distance), '', ''], ]
+
+                items = SebStandings.objects.filter(distance=distance, participant__gender=gender, competition=self.primary_competition).order_by(
+                    '-distance_total').select_related('participant', 'competition', 'distance',
+                                                     'participant__primary_number')[:top]
+                if items:
+                    children_count = self.primary_competition.children.count()
+                    data_line = ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Grupa']
+                    for index in range(1, children_count + 1):
+                        data_line.append('%i.' % index)
+                    data_line.append('Punkti kopā')
+                    data.append(data_line)
+                    for obj in items:
+                        data_line = [str(obj.distance_place), unicode(obj.participant.primary_number),
+                                     Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                                     Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                                     Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                                     Paragraph(str(obj.participant.group), styles["SmallNormal"])]
+                        for index in range(1, children_count + 1):
+                            data_line.append(str(getattr(obj, 'distance_points%i' % index)))
+
+                        data_line.append(str(obj.distance_total))
+                        data.append(data_line)
+                    self.elements.append(Table(data, style=group_table_style, colWidths=col_width))
+                else:
+                    self.elements.append(Table(data, style=group_table_style))
+                    self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
+                self.elements.append(PageBreak())
+
+
     def results_standings_groups(self, top=10000):
         col_width = (
             1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
