@@ -280,9 +280,13 @@ class GallerySearchForm(RequestKwargModelFormMixin, forms.Form):
         query_attrs = self.fields
 
         if query_attrs.get('competition').initial:
-            competition = Competition.objects.get(id=query_attrs.get('competition').initial)
-            ids = competition.get_all_children_ids() + (competition.id, )
-            queryset = queryset.filter(competition_id__in=ids)
+            try:
+                _id = int(query_attrs.get('competition').initial)
+                competition = Competition.objects.get(id=_id)
+                ids = competition.get_all_children_ids() + (competition.id, )
+                queryset = queryset.filter(competition_id__in=ids)
+            except:
+                pass
 
         if query_attrs.get('search').initial:
             queryset = queryset.filter(Q(title__icontains=query_attrs.get('search').initial) | Q(photographer__icontains=query_attrs.get('search').initial))
