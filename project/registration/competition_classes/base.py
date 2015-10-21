@@ -430,7 +430,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
         if result.time is None:
             return 0
-        
+
         return math.trunc((float(math.trunc(time_to_seconds(top_result.time))) / float(math.trunc(time_to_seconds(result.time)))) * 1000)
 
     def calculate_points_group(self, result):
@@ -447,6 +447,9 @@ class SEBCompetitionBase(CompetitionScriptBase):
             top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, participant__group=result.participant.group, status='').exclude(time=None).order_by('time')[0]
         except IndexError:
             return 1000
+
+        if result.time is None:
+            return 0
 
         return math.trunc((float(math.trunc(time_to_seconds(top_result.time))) / float(math.trunc(time_to_seconds(result.time)))) * 1000)
 
