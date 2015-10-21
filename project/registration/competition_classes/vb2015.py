@@ -118,7 +118,6 @@ class VB2015(VBCompetitionBase):
         return output
 
     def generate_diploma(self, result):
-        raise NotImplementedError
         output = StringIO.StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
@@ -136,12 +135,6 @@ class VB2015(VBCompetitionBase):
         c.setFont(_baseFontName, 18)
         c.drawCentredString(c._pagesize[0] / 2, 14*cm, "Laiks: %s" % result.time.replace(microsecond=0))
         c.drawCentredString(c._pagesize[0] / 2, 13*cm, "Vidējais ātrums: %s km/h" % result.avg_speed)
-
-        # if result.zero_time:
-        #     zero_time = datetime.datetime.combine(datetime.date.today(), result.zero_time)
-        #     delta = datetime.datetime.combine(datetime.date.today(), datetime.time(0, 0, 0)) - zero_time
-        #     zero_time = (datetime.datetime.combine(datetime.date.today(), result.time) + delta).time().replace(microsecond=0)
-        #     c.drawCentredString(c._pagesize[0] / 2, 12*cm, "Čipa laiks: %s" % zero_time)
 
         c.showPage()
         c.save()
