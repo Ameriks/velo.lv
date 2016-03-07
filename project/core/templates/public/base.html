@@ -27,18 +27,6 @@
                             <a href="{% url 'advert:flash_redirect' banner.id %}" style="width:{{ banner.width }}px;" target="_blank"></a>
                             {% endif %}
                             <iframe src="{% url 'advert:flash' banner.id %}" width="{{ banner.width }}" height="{{ banner.height }}" frameBorder="0"></iframe></div>
-                    {% empty %}
-                        <div style="width:160px;margin:0 auto;">
-                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                        <!-- mans.velo.lv right side -->
-                        <ins class="adsbygoogle"
-                             style="display:inline-block;width:160px;height:600px"
-                             data-ad-client="ca-pub-6343308474035212"
-                             data-ad-slot="1687482088"></ins>
-                        <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
-                        </div>
                     {% endfor %}
 
                 </div>
