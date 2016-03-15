@@ -817,7 +817,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
 
     def clean_competition(self):
         instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
+        if instance and instance.pk and self.instance.primary_number_id:
             return instance.competition
         else:
             return self.cleaned_data['competition']
@@ -874,10 +874,9 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['slug'].widget.attrs['readonly'] = True
         #self.fields['legacy_id'].widget.attrs['readonly'] = True
 
-        self.fields['competition'].widget.attrs['readonly'] = True
-
         if self.instance and self.instance.pk and self.instance.primary_number_id:
             self.fields['distance'].widget.attrs['readonly'] = True
+            self.fields['competition'].widget.attrs['readonly'] = True
 
         self.fields['gender'].required = True
         self.fields['country'].required = True
