@@ -160,7 +160,7 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
         return super(BaseUpdateView, self).post(request, *args, **kwargs)
 
 
-class TeamPayView(RequestFormKwargsMixin, UpdateView):
+class TeamPayView(LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
     model = Team
     form_class = TeamPayForm
     template_name = 'team/team_pay.html'
