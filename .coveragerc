@@ -1,0 +1,3 @@
+[run]
+include = velo/*
+omit = *migrations*, *tests*

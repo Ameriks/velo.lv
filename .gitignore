@@ -1,51 +1,62 @@
-# Created by http://gitignore.io
-
 ### OSX ###
 .DS_Store
 .AppleDouble
 .LSOverride
-Icon
 
-### Django ###
-*.log
-*.pot
-*.pyc
-__pycache__/
+### SublimeText ###
+# cache files for sublime text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
 
-# C extensions
-*.so
+# workspace files are user-specific
+*.sublime-workspace
 
-# Thumbnails
-._*
+# project files should be checked into the repository, unless a significant
+# proportion of contributors will probably not be using SublimeText
+# *.sublime-project
 
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
+# sftp configuration file
+sftp-config.json
 
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-
-### Linux ###
-*~
-
-# KDE directory preferences
-.directory
-
-project/static
-project/celery.db
-install
-.idea
+# Basics
 *.py[cod]
+*.pyc
+__pycache__
 
-/.vagrant/
-project/medias
-project/media
+# Logs
+*.log
+pip-log.txt
 
-project/gallery/client_secrets.json
-project/gallery/youtube-oauth2.json
-other/Unify-v1.8
-velolv_env.sh
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+htmlcov
+
+# Translations
+*.mo
+*.pot
+
+# Pycharm
+.idea
+
+# Vim
+
+*~
+*.swp
+*.swo
+
+# npm
+node_modules/
+
+# Compass
+.sass-cache
+
+# virtual environments
+.env
+
+velo/gallery/client_secrets.json
+velo/gallery/youtube-oauth2.json
+
+velo/media

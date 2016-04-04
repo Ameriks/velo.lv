@@ -1,0 +1,8 @@
+FROM citd.pd.lv/project_velo
+
+COPY ./requirements /root/requirements
+RUN pip install -r /root/requirements/local.txt
+
+WORKDIR /app
+
+ENTRYPOINT []
