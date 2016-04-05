@@ -1,7 +1,11 @@
-from django.conf import settings
-from django.contrib.contenttypes import generic
-from django.contrib.contenttypes.models import ContentType
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.db import models
+from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
 import uuid
 
 
@@ -16,9 +20,9 @@ class SMS(models.Model):
 
 
 class MailgunEmail(models.Model):
-    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(null=True, blank=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     code = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
 
@@ -37,5 +41,5 @@ class MailgunEmail(models.Model):
         is_created = False if self.id else True
         super(MailgunEmail, self).save(*args, **kwargs)
         if is_created:
-            from marketing.tasks import send_mailgun
+            from velo.marketing.tasks import send_mailgun
             send_mailgun.delay(self.id)

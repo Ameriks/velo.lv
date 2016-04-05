@@ -1,8 +1,13 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 import os
 import uuid
-from velo.mixins.models import StatusMixin
-from django.conf import settings
+
+from velo.velo.mixins.models import StatusMixin
+
 
 def get_banner_upload(instance, filename):
     ext = os.path.splitext(filename)[1]
@@ -10,6 +15,7 @@ def get_banner_upload(instance, filename):
     return os.path.join("adverts", "banner", "%s%s" % (filename, ext))
 
 
+@python_2_unicode_compatible
 class FlashBanner(StatusMixin, models.Model):
     BANNER_LOCATIONS = (
         ('left-side', 'left-side'),
@@ -31,5 +37,5 @@ class FlashBanner(StatusMixin, models.Model):
     class Meta:
         ordering = ('ordering', )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title

@@ -1,4 +1,7 @@
-from core.models import Competition
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from velo.core.models import Competition
 
 
 def recalculate_participant(participant, children=None, commit=True):
@@ -28,9 +31,8 @@ def recalculate_participant(participant, children=None, commit=True):
     participant.final_price = participant.total_insurance_fee + participant.total_entry_fee
 
     if pre_final_price != participant.final_price and commit:
-        print 'saved %s' % participant.id
+        print('saved %s' % participant.id)
         participant.save()
-
 
 
 def recalculate_participant_final_payment(competition_id):

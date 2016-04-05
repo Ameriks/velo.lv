@@ -1,14 +1,18 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from django.contrib.contenttypes import generic
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+from builtins import str
+
 from django.db import models
-from django.utils.translation import ugettext, ugettext_lazy as _
-
-# Create your models here.
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from velo.mixins.models import TimestampMixin
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ugettext, ugettext_lazy as _
+from model_utils import Choices
+
+from velo.velo.mixins.models import TimestampMixin
 
 
+@python_2_unicode_compatible
 class Price(TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
@@ -23,10 +27,12 @@ class Price(TimestampMixin, models.Model):
         permissions = (
             ('can_see_totals', 'Can see income totals'),
         )
-    def __unicode__(self):
+
+    def __str__(self):
         return str(self.price)
 
 
+@python_2_unicode_compatible
 class DiscountCampaign(models.Model):
     title = models.CharField(max_length=50)
     competition = models.ForeignKey('core.Competition')
@@ -35,7 +41,7 @@ class DiscountCampaign(models.Model):
     discount_insurance_percent = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     discount_insurance = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
-    def __unicode__(self):
+    def __str__(self):
         name = ''
         if self.discount_entry_fee:
             name = '{0}€ '.format(self.discount_entry_fee)
@@ -47,6 +53,8 @@ class DiscountCampaign(models.Model):
             name += 'Apdr.{0}% '.format(self.discount_insurance_percent)
         return name
 
+
+@python_2_unicode_compatible
 class DiscountCode(TimestampMixin, models.Model):
     campaign = models.ForeignKey('payment.DiscountCampaign')
     code = models.CharField(max_length=20, unique=True)
@@ -54,8 +62,8 @@ class DiscountCode(TimestampMixin, models.Model):
     usage_times_left = models.IntegerField(default=1)
     is_active = models.BooleanField(default=True)
 
-    def __unicode__(self):
-        return '%s - %s' % (self.code, unicode(self.campaign))
+    def __str__(self):
+        return '%s - %s' % (self.code, str(self.campaign))
 
     def calculate_entry_fee(self, fee):
         if self.campaign.discount_entry_fee:
@@ -70,7 +78,7 @@ class DiscountCode(TimestampMixin, models.Model):
             return fee * float(100 - self.campaign.discount_insurance_percent) / 100
 
 
-
+@python_2_unicode_compatible
 class PaymentChannel(models.Model):
     payment_channel = models.CharField(max_length=20, default='LKDF')
     title = models.CharField(max_length=50)
@@ -80,52 +88,43 @@ class PaymentChannel(models.Model):
     erekins_link = models.CharField(max_length=50, blank=True)
     is_bill = models.BooleanField(default=False)
 
+    def __str__(self):
+        return ugettext(self.title)
+
     def translations(self): # This is just place holder for translation strings for unicode function
         ugettext("Receive Bill")
 
-    def __unicode__(self):
-        return ugettext(self.title)
 
+@python_2_unicode_compatible
 class ActivePaymentChannel(models.Model):
     payment_channel = models.ForeignKey('payment.PaymentChannel')
     competition = models.ForeignKey('core.Competition')
     from_date = models.DateTimeField()
     till_date = models.DateTimeField()
 
-    def __unicode__(self):
-        return unicode(self.payment_channel)
+    def __str__(self):
+        return str(self.payment_channel)
 
 
 class Payment(TimestampMixin, models.Model):
-    STATUS_ID_NOT_FOUND = -70
-    STATUS_ERROR = -60
-    STATUS_FAILED = -50
-    STATUS_DECLINED = -40
-    STATUS_TIMEOUT = -30
-    STATUS_CANCELLED = -20
-    STATUS_REVERSED = -10
-    STATUS_NEW = 10
-    STATUS_PENDING = 20
-    STATUS_OK = 30
-    STATUSES = (
-        (STATUS_ID_NOT_FOUND, _('ID not found')),
-        (STATUS_ERROR, _('Error')),
-        (STATUS_FAILED, _('Failed')),
-        (STATUS_DECLINED, _('Declined')),
-        (STATUS_TIMEOUT, _('Timeout')),
-        (STATUS_CANCELLED, _('Cancelled')),
-        (STATUS_REVERSED, _('Reversed')),
-        (STATUS_NEW, _('New')),
-        (STATUS_PENDING, _('Pending')),
-        (STATUS_OK, _('OK')),
-    )
+    STATUSES = Choices((10, 'new', _('New')),
+                       (20, 'pending', _('Pending')),
+                       (30, 'ok', _('OK')),
+                       (-10, 'reversed', _('Reversed')),
+                       (-20, 'cancelled', _('Cancelled')),
+                       (-30, 'timeout', _('Timeout')),
+                       (-40, 'declained', _('Declined')),
+                       (-50, 'failed', _('Failed')),
+                       (-60, 'error', _('Error')),
+                       (-70, 'id_not_found', _('ID not found')),
+                       )
 
     legacy_id = models.IntegerField(blank=True, null=True)
 
     # This model can have relation to either Application or Team
-    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(null=True, blank=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     channel = models.ForeignKey('payment.ActivePaymentChannel')
     erekins_code = models.CharField(max_length=100, blank=True)  # Erekins code
@@ -133,4 +132,4 @@ class Payment(TimestampMixin, models.Model):
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     donation = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
-    status = models.SmallIntegerField(choices=STATUSES, default=STATUS_NEW)
+    status = models.SmallIntegerField(choices=STATUSES, default=STATUSES.new)

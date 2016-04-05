@@ -1,20 +1,26 @@
-import datetime
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.db import models
-from django.template.defaultfilters import slugify
-from djcelery.models import PeriodicTask, PeriodicTasks, CrontabSchedule
 from django.db.models import signals
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
+
+from djcelery.models import PeriodicTask, PeriodicTasks, CrontabSchedule
 from easy_thumbnails.fields import ThumbnailerImageField
 import os
 import time
-from django.utils.translation import ugettext_lazy as _
-import math
+import datetime
 import uuid
-from core.models import Log
-from results.helper import time_to_seconds
-from velo.mixins.models import TimestampMixin
-from velo.utils import load_class
+
+from slugify import slugify
+
+from velo.core.models import Log
+from velo.results.helper import time_to_seconds
+from velo.velo.mixins.models import TimestampMixin
+from velo.velo.utils import load_class
 
 
 def _get_upload_path(instance, filename):
@@ -48,7 +54,7 @@ class LegacyResult(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             if self.year and self.first_name and self.last_name:
-                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.year))
+                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.year), only_ascii=True)
             else:
                 self.slug = ''
 
@@ -98,7 +104,7 @@ class LegacySEBStandingsResult(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             if self.year and self.first_name and self.last_name:
-                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.year))
+                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.year), only_ascii=True)
             else:
                 self.slug = ''
 
@@ -142,6 +148,7 @@ class ChipScan(models.Model):
     url_sync = models.ForeignKey(UrlSync, blank=True, null=True)
 
 
+@python_2_unicode_compatible
 class DistanceAdmin(models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
@@ -149,7 +156,7 @@ class DistanceAdmin(models.Model):
     distance_actual = models.IntegerField(blank=True, null=True)
     gpx = models.FileField(upload_to=_get_gpx_upload_path, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s - %s' % (self.competition.get_full_name, self.distance)
 
 
@@ -188,9 +195,9 @@ class Result(models.Model):
 
     status = models.CharField(_('Status'), max_length=20, choices=STATUSES, blank=True)
 
-    standings_content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    standings_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     standings_object_id = models.PositiveIntegerField(null=True, blank=True)
-    standings_object = generic.GenericForeignKey('standings_content_type', 'standings_object_id')
+    standings_object = GenericForeignKey('standings_content_type', 'standings_object_id')
 
     leader = models.ForeignKey('results.Leader', blank=True, null=True)
 
@@ -257,7 +264,7 @@ class Result(models.Model):
             return True  # if any of variables is updated, then return true
         return False
 
-
+@python_2_unicode_compatible
 class Leader(models.Model):
     COLORS = (
         ('blue', 'blue'),
@@ -272,7 +279,7 @@ class Leader(models.Model):
     text = models.CharField(max_length=50)
     image = ThumbnailerImageField(upload_to=_get_upload_path, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s - %s' % (self.competition, self.text)
 
 
@@ -323,7 +330,6 @@ class SebStandings(models.Model):
             try:
                 stages.remove(mapping.get(result.competition_id))
             except:
-                print "Multiple results in stage %s" % result.competition  # TODO: Remove print
                 Log.objects.create(content_object=self, message="Multiple results in stage %s" % result.competition)
         for stage in stages:
             setattr(self, "group_points%i" % stage, 0)
@@ -357,9 +363,9 @@ class HelperResults(TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     participant = models.ForeignKey('registration.Participant')
 
-    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(null=True, blank=True)
-    result_used = generic.GenericForeignKey('content_type', 'object_id')  # Can be standing or result
+    result_used = GenericForeignKey('content_type', 'object_id')
 
     calculated_total = models.FloatField(blank=True, null=True, db_index=True)
 

@@ -1,37 +1,35 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from django.conf import settings
-from django.contrib.contenttypes import generic
-from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+from builtins import str
+
 from django.db import models
-from django.template.defaultfilters import slugify
+from django.conf import settings
+from django.utils import timezone
+from django.contrib.contenttypes.fields import GenericRelation
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
 
 import uuid
-from core.models import Choices, CustomSlug, Log
-from payment.models import Payment
-from registration.utils import recalculate_participant
-from velo.mixins.models import TimestampMixin, StatusMixin
 from django_countries.fields import CountryField
-from velo.utils import load_class
 from hashids import Hashids
+from slugify import slugify
+from model_utils import Choices as XChoices
+
+from velo.core.models import Choices, CustomSlug, Log
+from velo.payment.models import Payment
+from velo.registration.utils import recalculate_participant
+from velo.velo.mixins.models import TimestampMixin, StatusMixin
+from velo.velo.utils import load_class
 
 
 class Application(TimestampMixin, models.Model):
-    PAY_STATUS_CANCELLED = -10
-    PAY_STATUS_NOT_PAYED = 0
-    PAY_STATUS_APPROVED = 5  # Not used.
-    PAY_STATUS_WAITING = 10
-    PAY_STATUS_PAYED = 20
-    PAY_STATUS = (
-        (PAY_STATUS_CANCELLED, _('Cancelled')),
-        (PAY_STATUS_NOT_PAYED, _("Haven't Payed")),
-        (PAY_STATUS_APPROVED, _("Approved for Payment")),
-        (PAY_STATUS_WAITING, _('Waiting for Payment')),
-        (PAY_STATUS_PAYED, _('Payed')),
-    )
+    PAY_STATUS = XChoices((0, 'not_payed', _("Haven't Payed")),
+                          (10, 'waiting', _('Waiting for Payment')),
+                          (20, 'payed', _('Payed')),
+                          (-10, 'cancelled', _('Cancelled')), )
+
     competition = models.ForeignKey('core.Competition', verbose_name=_('Competition'))
-    payment_status = models.SmallIntegerField(_('Payment Status'), default=0, choices=PAY_STATUS)
+    payment_status = models.SmallIntegerField(_('Payment Status'), default=PAY_STATUS.not_payed, choices=PAY_STATUS)
     discount_code = models.ForeignKey('payment.DiscountCode', blank=True, null=True)
 
     email = models.EmailField(blank=True, help_text=_("You will receive payment confirmation and information about start numbers."))
@@ -46,7 +44,6 @@ class Application(TimestampMixin, models.Model):
     company_juridical_address = models.CharField(_('Juridical Address'), max_length=100, blank=True)
     invoice_show_names = models.BooleanField(_('Show participant names in invoice'), default=True)
 
-
     external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
     external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
 
@@ -58,8 +55,11 @@ class Application(TimestampMixin, models.Model):
     total_insurance_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     final_price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
+    payment_set = GenericRelation(Payment)
 
-    payment_set = generic.GenericRelation(Payment) #, related_name="application")
+    def save(self, *args, **kwargs):
+        self.set_final_price()
+        return super(Application, self).save(*args, **kwargs)
 
     def set_final_price(self):
         self.final_price = float(self.total_entry_fee) + float(self.total_insurance_fee) + float(self.donation)
@@ -69,12 +69,10 @@ class Application(TimestampMixin, models.Model):
         if self.competition.level == 2:
             return '%s - %s' % (self.competition.parent, self.competition)
         else:
-            return unicode(self.competition)
+            return str(self.competition)
 
-    def save(self, *args, **kwargs):
-        self.set_final_price()
-        return super(Application, self).save(*args, **kwargs)
 
+@python_2_unicode_compatible
 class Participant(TimestampMixin, models.Model):
     GENDER_CHOICES = (
         ('M', _('Male')),
@@ -103,7 +101,7 @@ class Participant(TimestampMixin, models.Model):
 
     first_name = models.CharField(_('First Name'), max_length=60, blank=True)
     last_name = models.CharField(_('Last Name'), max_length=60, blank=True)
-    birthday = models.DateField(_('Birthday'), help_text=_('YYYY-MM-DD'), blank=True, null=True)
+    birthday = models.DateField(_('Birthday'), help_text='YYYY-MM-DD', blank=True, null=True)
     is_only_year = models.BooleanField(default=False)
     slug = models.SlugField(blank=True)
 
@@ -118,14 +116,13 @@ class Participant(TimestampMixin, models.Model):
     send_sms = models.BooleanField(_('Send SMS'), default=True)
 
     country = CountryField(_('Country'), blank=True, null=True)
-    city = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KIND_CITY}, verbose_name=_('City'), blank=True, null=True)
+    city = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.city}, verbose_name=_('City'), blank=True, null=True)
 
-    bike_brand = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KIND_BIKEBRAND}, verbose_name=_('Bike Brand'), blank=True, null=True)
+    bike_brand = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.bike_brand}, verbose_name=_('Bike Brand'), blank=True, null=True)
     bike_brand2 = models.CharField(_('Bike Brand'), max_length=20, blank=True)
 
-
-    occupation = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KIND_OCCUPATION}, verbose_name=_('Occupation'), blank=True, null=True)
-    where_heard = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KIND_HEARD}, verbose_name=_('Where Heard'), blank=True, null=True)
+    occupation = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.occupation}, verbose_name=_('Occupation'), blank=True, null=True)
+    where_heard = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.heard}, verbose_name=_('Where Heard'), blank=True, null=True)
 
     group = models.CharField(_('Group'), max_length=50, blank=True, help_text=_('Assigned automatically'))  # moved group away from results
 
@@ -155,7 +152,7 @@ class Participant(TimestampMixin, models.Model):
         verbose_name = _('participant')
         verbose_name_plural = _('participants')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s %s - %s %s' % (self.first_name, self.last_name, self.competition, self.distance)
 
     def get_competition_class(self):
@@ -169,20 +166,18 @@ class Participant(TimestampMixin, models.Model):
             try:
                 self.slug = CustomSlug.objects.get(first_name=self.first_name, last_name=self.last_name, birthday=self.birthday).slug
             except CustomSlug.DoesNotExist:
-                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year))
+                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year), only_ascii=True)
         else:
-            self.slug = slugify('%s-%s' % (self.first_name, self.last_name))
+            self.slug = slugify('%s-%s' % (self.first_name, self.last_name), only_ascii=True)
 
     def set_group(self):
         if not self.group and self.is_participating:
             self.group = self.get_competition_class().assign_group(self.distance_id, self.gender, self.birthday)
 
-
     def save(self, *args, **kwargs):
         prev_participant = None
         if self.pk:
             prev_participant = Participant.objects.get(id=self.pk)
-
 
         self.full_name = '%s %s' % (self.first_name, self.last_name)  # Full name always should be based on first_name and last_name fields
 
@@ -220,8 +215,6 @@ class Participant(TimestampMixin, models.Model):
                 seb.participant_slug = self.slug
                 seb.save()
 
-
-
         self.set_group()
 
         if not self.primary_number and self.is_participating:
@@ -235,7 +228,6 @@ class Participant(TimestampMixin, models.Model):
         # Recalculate totals. # TODO: This should be done when creating payment, not on any save.
         recalculate_participant(self, commit=False)
 
-
         obj = super(Participant, self).save(*args, **kwargs)
 
         if not self.code_short and self.id:
@@ -244,11 +236,11 @@ class Participant(TimestampMixin, models.Model):
             self.save()
 
         if self.is_participating and (not prev_participant or not prev_participant.is_participating):
-            from results.tasks import master_update_helper_result_table
+            from velo.results.tasks import master_update_helper_result_table
             master_update_helper_result_table.delay(participant_id=self.id)
 
         if old_slug != self.slug and self.is_participating:
-            from team.utils import match_participant_to_applied
+            from velo.team.utils import match_participant_to_applied
             match_participant_to_applied(self)
 
         return obj
@@ -263,6 +255,7 @@ class Participant(TimestampMixin, models.Model):
         return number_queryset
 
 
+@python_2_unicode_compatible
 class Number(StatusMixin, TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
@@ -271,7 +264,7 @@ class Number(StatusMixin, TimestampMixin, models.Model):
     participant_slug = models.SlugField(blank=True)
     group = models.CharField(_('Group'), max_length=50, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if not self.group:
             return str(self.number)
         else:
@@ -329,18 +322,19 @@ class CompanyParticipant(TimestampMixin, models.Model):
             try:
                 self.slug = CustomSlug.objects.get(first_name=self.first_name, last_name=self.last_name, birthday=self.birthday).slug
             except CustomSlug.DoesNotExist:
-                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year))
+                self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year), only_ascii=True)
         else:
-            self.slug = slugify('%s-%s' % (self.first_name, self.last_name))
+            self.slug = slugify('%s-%s' % (self.first_name, self.last_name), only_ascii=True)
 
     def save(self, *args, **kwargs):
         self.set_slug()
         return super(CompanyParticipant, self).save(*args, **kwargs)
 
 
+@python_2_unicode_compatible
 class ChangedName(models.Model):
     slug = models.SlugField()
     new_slug = models.SlugField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.new_slug

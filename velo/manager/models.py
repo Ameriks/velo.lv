@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.db import models
 
-# Create your models here.
-from velo.mixins.models import TimestampMixin
 import os
 import uuid
+
+from velo.velo.mixins.models import TimestampMixin
 
 
 def _get_document_upload_path(instance, filename):

@@ -1,20 +1,18 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.db import models
-from django.template.defaultfilters import slugify
-import hmac
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
+
 import os
 import uuid
-from core.models import CustomSlug
-from velo.mixins.models import StatusMixin, TimestampMixin
+from autoslug import AutoSlugField
 from django_countries.fields import CountryField
-from django.utils.translation import ugettext_lazy as _
+from slugify import slugify
 
-try:
-    from hashlib import sha1
-except ImportError:
-    import sha
-    sha1 = sha.sha
+from velo.core.models import CustomSlug
+from velo.velo.mixins.models import StatusMixin, TimestampMixin
 
 
 def get_team_upload(instance, filename):
@@ -23,10 +21,11 @@ def get_team_upload(instance, filename):
     return os.path.join("teams", "%s%s" % (filename, ext))
 
 
+@python_2_unicode_compatible
 class Team(StatusMixin, TimestampMixin, models.Model):
     distance = models.ForeignKey('core.Distance')
     title = models.CharField(_('Title'), max_length=100)
-    slug = models.SlugField()
+    slug = AutoSlugField(populate_from='title')
 
     description = models.TextField(_('Description'), blank=True)
     img = models.ImageField(_('Image'), upload_to=get_team_upload, blank=True)
@@ -45,7 +44,6 @@ class Team(StatusMixin, TimestampMixin, models.Model):
 
     legacy_id = models.IntegerField(blank=True, null=True)
 
-
     # This is for invoice
     final_price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     company_name = models.CharField(_('Company name / Full Name'), max_length=100, blank=True)
@@ -56,18 +54,14 @@ class Team(StatusMixin, TimestampMixin, models.Model):
     external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
     external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
 
-
     class Meta:
         ordering = ('distance', '-is_featured', 'title')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        return super(Team, self).save(*args, **kwargs)
 
-
+@python_2_unicode_compatible
 class Member(StatusMixin, models.Model):
     GENDER_CHOICES = (
         ('M', _('Male')),
@@ -87,19 +81,20 @@ class Member(StatusMixin, models.Model):
 
     legacy_id = models.IntegerField(blank=True, null=True)
 
-    @property
-    def full_name(self):
-        return '%s %s' % (self.first_name, self.last_name)
-
-    def __unicode__(self):
+    def __str__(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.birthday)
 
     def save(self, *args, **kwargs):
         try:
-            self.slug = CustomSlug.objects.get(first_name=self.first_name, last_name=self.last_name, birthday=self.birthday).slug
+            self.slug = CustomSlug.objects.get(first_name=self.first_name, last_name=self.last_name,
+                                               birthday=self.birthday).slug
         except CustomSlug.DoesNotExist:
-            self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year))
+            self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year), only_ascii=True)
         return super(Member, self).save(*args, **kwargs)
+
+    @property
+    def full_name(self):
+        return '%s %s' % (self.first_name, self.last_name)
 
 
 class MemberApplication(models.Model):

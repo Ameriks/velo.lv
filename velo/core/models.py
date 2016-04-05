@@ -19,7 +19,7 @@ import json
 import os
 import uuid
 from easy_thumbnails.fields import ThumbnailerImageField
-from model_utils import Choices
+from model_utils import Choices as XChoices
 from mptt.models import MPTTModel, TreeForeignKey
 from django_countries.fields import CountryField
 from autoslug import AutoSlugField
@@ -91,8 +91,8 @@ class FailedTask(models.Model):
 
 
 @python_2_unicode_compatible
-class Choices(models.Model):
-    KINDS = Choices((10, 'bike_brand', _('Bike Brand')),
+class Choices(models.Model):  # TODO: Rename model
+    KINDS = XChoices((10, 'bike_brand', _('Bike Brand')),
                     (20, 'occupation', _('Occupation')),
                     (30, 'heard', _('Where Heard')),
                     (40, 'city', _('City')),)
@@ -107,7 +107,7 @@ class Choices(models.Model):
 
 @python_2_unicode_compatible
 class User(AbstractBaseUser, PermissionsMixin):
-    EMAIL_STATUS = Choices((10, 'not_validated', _('Not yet validated')),
+    EMAIL_STATUS = XChoices((10, 'not_validated', _('Not yet validated')),
                            (20, 'bounced', _('Bounced')),
                            (40, 'validating', _('Validating')),
                            (50, 'valid', _('Valid')),
@@ -194,7 +194,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 @python_2_unicode_compatible
 class Competition(MPTTModel):
-    KINDS = Choices((0, 'velo', _('Velo')),
+    KINDS = XChoices((0, 'velo', _('Velo')),
                     (1, 'cross_country', _('Cross Country')), )
 
     name = models.CharField(max_length=100)
@@ -374,7 +374,6 @@ class CustomSlug(models.Model):
         return self.slug
 
 
-@python_2_unicode_compatible
 class Log(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(null=True, blank=True)
