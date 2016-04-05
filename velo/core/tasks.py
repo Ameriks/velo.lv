@@ -1,17 +1,26 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+from builtins import str
+
+from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
+from django.template.loader import render_to_string
+
 from celery.task import task
 from celery import Task
-from django.template.loader import render_to_string
 from django.utils import timezone
 from premailer import transform
-from django.conf import settings
-from core.models import User, FailedTask
-from marketing.models import MailgunEmail
-from django.utils.translation import ugettext_lazy as _
-from marketing.tasks import send_mailgun
 import json
+
+from velo.core.models import User, FailedTask
+from velo.marketing.models import MailgunEmail
+from velo.marketing.tasks import send_mailgun
 
 
 class LogErrorsTask(Task):
+    def run(self, *args, **kwargs):
+        pass
+
     abstract = True
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
@@ -22,29 +31,29 @@ class LogErrorsTask(Task):
         """
         :type exc: Exception
         """
-        task = FailedTask()
-        task.celery_task_id = task_id
-        task.full_name = self.name
-        task.name = self.name.split('.')[-1]
-        task.exception_class = exc.__class__.__name__
-        task.exception_msg = unicode(exc).strip()
-        task.traceback = unicode(traceback).strip()
-        task.updated_at = timezone.now()
+        failed_task = FailedTask()
+        failed_task.celery_task_id = task_id
+        failed_task.full_name = self.name
+        failed_task.name = self.name.split('.')[-1]
+        failed_task.exception_class = exc.__class__.__name__
+        failed_task.exception_msg = str(exc).strip()
+        failed_task.traceback = str(traceback).strip()
+        failed_task.updated_at = timezone.now()
 
         if args:
-            task.args = json.dumps(list(args))
+            failed_task.args = json.dumps(list(args))
         if kwargs:
-            task.kwargs = json.dumps(kwargs)
+            failed_task.kwargs = json.dumps(kwargs)
 
         # Find if task with same args, name and exception already exists
         # If it do, update failures count and last updated_at
         #: :type: FailedTask
         existing_task = FailedTask.objects.filter(
-            args=task.args,
-            kwargs=task.kwargs,
-            full_name=task.full_name,
-            exception_class=task.exception_class,
-            exception_msg=task.exception_msg,
+            args=failed_task.args,
+            kwargs=failed_task.kwargs,
+            full_name=failed_task.full_name,
+            exception_class=failed_task.exception_class,
+            exception_msg=failed_task.exception_msg,
         )
 
         if len(existing_task):
@@ -54,9 +63,7 @@ class LogErrorsTask(Task):
             existing_task.save(force_update=True,
                                update_fields=('updated_at', 'failures'))
         else:
-            task.save(force_insert=True)
-
-
+            failed_task.save(force_insert=True)
 
 
 @task
@@ -79,6 +86,7 @@ def send_email_confirmation(user_id):
     }
     mailgun = MailgunEmail.objects.create(**email_data)
     return mailgun
+
 
 @task
 def send_change_email_notification(user_id, old_email):

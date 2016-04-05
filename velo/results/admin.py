@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import admin
 
-# Register your models here.
-from results.models import DistanceAdmin
+from velo.results.models import DistanceAdmin
+
 
 class DistanceModelAdmin(admin.ModelAdmin):
     list_filter = ('competition', )

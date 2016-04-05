@@ -1,24 +1,26 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from celery import task
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django.conf import settings
+
+from celery.task import task
 from celery.schedules import crontab
 from celery.task import periodic_task
-import datetime
-from django.conf import settings
 from easy_thumbnails.files import generate_all_aliases
-
-
 from apiclient.discovery import build
 from oauth2client.client import flow_from_clientsecrets, OAuth2Credentials
 from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
+from subprocess import call
 import httplib2
 import vimeo
-from subprocess import call
-from velo.utils import load_class
+import datetime
+
+from velo.core.tasks import LogErrorsTask
+from velo.velo.utils import load_class
 
 
-@task
+@task(base=LogErrorsTask)
 def generate_thumbnails(pk, field, model_class=None):
     model = load_class(model_class)
     instance = model._default_manager.get(pk=pk)
@@ -43,9 +45,9 @@ def generate_thumbnails(pk, field, model_class=None):
         pass
 
 
-@task
+@task(base=LogErrorsTask)
 def get_video_info(_id):
-    from gallery.models import Video
+    from velo.gallery.models import Video
     video = Video.objects.get(id=_id)
 
     new_video =  not video.title
@@ -120,10 +122,9 @@ def get_video_info(_id):
     video.save()
 
 
-
 @periodic_task(run_every=crontab(minute="3", hour='4'))
 def refresh_view_count(_id=None):
-    from gallery.models import Video
+    from velo.gallery.models import Video
     videos = Video.objects.filter(status=1).order_by('-id')
 
     if _id:

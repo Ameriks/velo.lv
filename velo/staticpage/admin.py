@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import admin
-from staticpage.models import StaticPage
 from django.utils.translation import ugettext_lazy as _
-from staticpage.forms import StaticPageForm
+
+from velo.staticpage.models import StaticPage
+from velo.staticpage.forms import StaticPageForm
+
 
 class StaticPageAdmin(admin.ModelAdmin):
     form = StaticPageForm

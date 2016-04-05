@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+
 import re
 from braces.views import LoginRequiredMixin
 from django.contrib import messages

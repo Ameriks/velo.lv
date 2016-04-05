@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.db.utils import ProgrammingError
 from django.conf import settings
 from django.conf.urls import patterns, include, url
@@ -9,14 +12,14 @@ from django.contrib import admin
 from sitetree.sitetreeapp import register_dynamic_trees, compose_dynamic_tree
 from sitetree.sitetreeapp import register_i18n_trees
 
-from core.views import CalendarView, IndexView
-from payment.views import ApplicationPayView, ApplicationOKView
-from registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
+from velo.core.views import CalendarView, IndexView
+from velo.payment.views import ApplicationPayView, ApplicationOKView
+from velo.registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
     CompanyApplicationUpdate, ParticipantPDF
-from results.views import ResultAllView
-from supporter.views import AgencySupporters
-from velo.views import CustomAutoResponseView
+from velo.results.views import ResultAllView
+from velo.supporter.views import AgencySupporters
+from velo.velo.views import CustomAutoResponseView
 
 
 admin.autodiscover()
@@ -32,7 +35,7 @@ try:
         compose_dynamic_tree('manager', target_tree_alias='mainmenu_lv', parent_tree_item_alias='manager'),
     ))
 except ProgrammingError:
-    print 'Seems that migrations should be run.'
+    print('Seems that migrations should be run.')
 
 
 

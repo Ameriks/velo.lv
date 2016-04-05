@@ -1,13 +1,18 @@
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.db import models
-from easy_thumbnails.fields import ThumbnailerImageField
-from velo.mixins.models import TimestampMixin, StatusMixin
-from django.dispatch import receiver
-from easy_thumbnails.signals import saved_file
-from gallery.tasks import generate_thumbnails, get_video_info
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
 
+from django.db import models
+from django.core.urlresolvers import reverse
+from django.dispatch import receiver
+from django.utils.encoding import python_2_unicode_compatible
+
+from easy_thumbnails.fields import ThumbnailerImageField
+from easy_thumbnails.signals import saved_file
 import os
+
+from velo.velo.mixins.models import TimestampMixin, StatusMixin
+from velo.gallery.tasks import generate_thumbnails, get_video_info
+
 
 # Todo: Finish gallery. Currently - in progress.
 
@@ -25,6 +30,7 @@ class PhotoNumber(TimestampMixin, models.Model):
     y2 = models.FloatField(blank=True, null=True)
 
 
+@python_2_unicode_compatible
 class Video(StatusMixin, TimestampMixin, models.Model):
     VIDEO_KIND = (
         (1, 'YouTube'),
@@ -56,6 +62,9 @@ class Video(StatusMixin, TimestampMixin, models.Model):
             ("can_see_unpublished_video", "Can see unpublished video"),
         )
 
+    def __str__(self):
+        return self.title
+
     @property
     def url_embed(self):
         if self.kind == 1:
@@ -72,16 +81,13 @@ class Video(StatusMixin, TimestampMixin, models.Model):
 
         return obj
 
-    def __unicode__(self):
-        return self.title
-
 
 class AlbumManager(models.Manager):
     def get_queryset(self):
         return super(AlbumManager, self).get_queryset().select_related('primary_image')
 
 
-
+@python_2_unicode_compatible
 class Album(TimestampMixin, models.Model):
     title = models.CharField(max_length=255)
 
@@ -102,7 +108,7 @@ class Album(TimestampMixin, models.Model):
 
     objects = AlbumManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -110,7 +116,6 @@ class Album(TimestampMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse('gallery:album', args=[self.id])
-
 
 
 class Photo(TimestampMixin, models.Model):
@@ -157,6 +162,7 @@ class Photo(TimestampMixin, models.Model):
         permissions = (
             ("can_assign_numbers", "Can assign numbers"),
         )
+
 
 @receiver(saved_file)
 def generate_thumbnails_async(sender, fieldfile, **kwargs):

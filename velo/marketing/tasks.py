@@ -1,8 +1,13 @@
-from celery.task import task
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
+
+from celery.task import task
 import requests
-from marketing.models import MailgunEmail
+
+from velo.marketing.models import MailgunEmail
 
 
 @task(max_retries=5)
@@ -11,7 +16,7 @@ def send_mailgun(_id=None, email=None):
         email = MailgunEmail.objects.get(id=_id)
 
     if email.is_sent:
-        print 'Already sent'
+        print('Already sent')
         return False
 
     if settings.DEBUG:

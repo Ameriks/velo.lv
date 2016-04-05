@@ -1,42 +1,41 @@
-from django.db import models, ProgrammingError
-from django.template.defaultfilters import slugify
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django.db import models
 from django.utils import timezone
-from velo.mixins.models import StatusMixin, TimestampMixin
+from django.core.urlresolvers import reverse
+from django.utils.encoding import python_2_unicode_compatible
+
 from base64 import b32encode
 from hashlib import sha1
 from random import random
-from django.core.urlresolvers import reverse
 from ckeditor.fields import RichTextField
+
+from velo.velo.mixins.models import StatusMixin, TimestampMixin
 
 
 def notification_slug():
     pk = None
-    rude = ('lol',)
     bad_pk = True
     while bad_pk:
         pk = b32encode(sha1(str(random())).digest()).lower()[:6]
         bad_pk = False
-        for rw in rude:
-            if pk.find(rw) >= 0: bad_pk = True
-
         if not bad_pk:
             try:
                 Notification.objects.get(slug=pk)
                 bad_pk = True
             except Notification.DoesNotExist:
                 bad_pk = False
-            except ProgrammingError:
-                print 'Migrations should be run'
-                bad_pk = False
     return pk
 
 
+@python_2_unicode_compatible
 class Notification(StatusMixin, models.Model):
     slug = models.CharField(max_length=6, default=notification_slug)
     title = models.CharField(max_length=255)
     body = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
@@ -48,6 +47,7 @@ class NewsManagerPublished(models.Manager):
         return queryset
 
 
+@python_2_unicode_compatible
 class News(StatusMixin, TimestampMixin, models.Model):
 
     LANGUAGE_CHOICES = (("lv", "Latviski"), ("en", "English"))
@@ -69,7 +69,7 @@ class News(StatusMixin, TimestampMixin, models.Model):
 
     objects = NewsManagerPublished()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self):

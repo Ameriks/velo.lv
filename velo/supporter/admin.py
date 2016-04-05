@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import admin
-from results.models import Leader
-from supporter.models import Supporter, CompetitionSupporter, Logo
+
+from velo.results.models import Leader
+from velo.supporter.models import Supporter, CompetitionSupporter, Logo
 
 
 class LogoInline(admin.TabularInline):

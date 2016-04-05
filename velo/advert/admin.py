@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import admin
 
-# Register your models here.
-from advert.models import FlashBanner
+from velo.advert.models import FlashBanner
+
 
 class FlashBannerAdmin(admin.ModelAdmin):
     list_filter = ('competition', 'status')
