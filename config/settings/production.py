@@ -12,7 +12,6 @@ Production Configurations
 '''
 from __future__ import absolute_import, unicode_literals
 
-import os
 
 from boto.s3.connection import OrdinaryCallingFormat
 from django.utils import six
@@ -26,7 +25,7 @@ from .common import *  # noqa
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Raises ImproperlyConfigured exception if DJANGO_SECRET_KEY not in os.environ
-SECRET_KEY = env("DJANGO_SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY")
 
 # This ensures that Django will be able to detect a secure connection
 # properly on Heroku.
@@ -174,7 +173,7 @@ SESSION_COOKIE_SECURE = True
 
 
 RABBITMQ_USER = 'velolv'
-RABBITMQ_PASS = os.getenv('RABBITMQ_PASS')
+RABBITMQ_PASS = env('RABBITMQ_PASS')
 RABBITMQ_HOST = '172.17.42.1'
 RABBITMQ_PORT = '15015'
 RABBITMQ_VHOST = RABBITMQ_USER

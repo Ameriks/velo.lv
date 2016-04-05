@@ -109,6 +109,20 @@ module.exports = function (grunt) {
       }
     },
 
+    docker_io: {
+      dist: {
+        options: {
+          dockerFileLocation: '.',
+          buildName: 'project_velo',
+          tag: 'latest',
+          pushLocation: 'citd.pd.lv',
+          username: 'docker',
+          push: false,
+          force: true
+        }
+      }
+    },
+
     // see: https://npmjs.org/package/grunt-bg-shell
     bgShell: {
       _defaults: {

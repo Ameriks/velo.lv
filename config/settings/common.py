@@ -266,7 +266,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
 
 ########## CELERY
-INSTALLED_APPS += ('ameri.taskapp.celery.CeleryConfig',)
+# INSTALLED_APPS += ('ameri.taskapp.celery.CeleryConfig',)
 # if you are not using the django database broker (e.g. rabbitmq, redis, memcached), you can remove the next line.
 INSTALLED_APPS += ('kombu.transport.django',)
 BROKER_URL = env("CELERY_BROKER_URL", default='django://')
@@ -306,15 +306,13 @@ CKEDITOR_CONFIGS = {
     },
 }
 
+SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY2 = env('SECRET_KEY2')  # For short URLS
+LEGACY_KEY = env('LEGACY_KEY')  # TODO: Remove this variable
 
-
-SECRET_KEY = os.getenv('SECRET_KEY')
-SECRET_KEY2 = os.getenv('SECRET_KEY2')  # For short URLS
-LEGACY_KEY = os.getenv('LEGACY_KEY')  # TODO: Remove this variable
-
-VIMEO_KEY = os.getenv('VIMEO_KEY')
-VIMEO_SECRET = os.getenv('VIMEO_SECRET')
-VIMEO_TOKEN = os.getenv('VIMEO_TOKEN')
+VIMEO_KEY = env('VIMEO_KEY')
+VIMEO_SECRET = env('VIMEO_SECRET')
+VIMEO_TOKEN = env('VIMEO_TOKEN')
 
 
 
@@ -323,26 +321,26 @@ LOGIN_VIEW_NAME = 'accounts:login'
 LOGOUT_VIEW_NAME = 'accounts:logout'
 
 SOCIAL_AUTH_FACEBOOK_KEY = '175838825855542'
-SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv('SOCIAL_AUTH_FACEBOOK_SECRET')
+SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET')
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 SOCIAL_AUTH_TWITTER_KEY = 'KOd36nFdR0LSCQCm9EqOBQ'
-SOCIAL_AUTH_TWITTER_SECRET = os.getenv('SOCIAL_AUTH_TWITTER_SECRET')
+SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET')
 
 SOCIAL_AUTH_DRAUGIEM_APP_ID = '15007685'
-SOCIAL_AUTH_DRAUGIEM_KEY = os.getenv('SOCIAL_AUTH_DRAUGIEM_KEY')
+SOCIAL_AUTH_DRAUGIEM_KEY = env('SOCIAL_AUTH_DRAUGIEM_KEY')
 
 SOCIAL_AUTH_USER_MODEL = 'core.User'
 SOCIAL_AUTH_FORCE_EMAIL_VALIDATION = True
 
-SOCIAL_AUTH_LOGIN_ERROR_URL = reverse_lazy('accounts:login')
+SOCIAL_AUTH_LOGIN_ERROR_URL = 'accounts:login'
 
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 AUTO_RENDER_SELECT2_STATICS = False
 
-SMS_USERNAME = os.getenv('SMS_USERNAME')
-SMS_PASSWORD = os.getenv('SMS_PASSWORD')
+SMS_USERNAME = env('SMS_USERNAME')
+SMS_PASSWORD = env('SMS_PASSWORD')
 SMS_GATEWAY = 'https://smsmarketing.bpo.lv'
 
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
@@ -354,7 +352,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 SERVER_EMAIL = "webmaster@mans.velo.lv"
 
 MAILGUN_FROM = u'Tavs velo.lv <hi@mans.velo.lv>'
-MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_ACCESS_KEY')
+MAILGUN_ACCESS_KEY = env('MAILGUN_ACCESS_KEY')
 MAILGUN_URL = 'https://api.mailgun.net/v2'
 MAILGUN_SERVER_NAME = 'mans.velo.lv'
 
