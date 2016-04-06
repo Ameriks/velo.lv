@@ -1,7 +1,13 @@
-from gallery.models import Album
-from velo.mixins.table import GetRequestTableKwargs
-from django_tables2 import tables, A, LinkColumn, Column
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.utils.translation import ugettext_lazy as _
+from django_tables2 import tables, A, LinkColumn, Column
+
+from velo.gallery.models import Album
+from velo.velo.mixins.table import GetRequestTableKwargs
+
+
 
 
 __all__ = ['AlbumTable', ]

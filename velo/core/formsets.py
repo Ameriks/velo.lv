@@ -1,13 +1,14 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import BaseInlineFormSet
-from velo.mixins.forms import GetClassNameMixin
-from django import forms
+
+from velo.velo.mixins.forms import GetClassNameMixin
 
 
 class CustomBaseInlineFormSet(GetClassNameMixin, BaseInlineFormSet):
-
     empty_form_class = None
     application = None
     required = 0
@@ -42,7 +43,7 @@ class CustomBaseInlineFormSet(GetClassNameMixin, BaseInlineFormSet):
             'empty_permitted': True,
         }
         if self.application:
-            data.update({'application': self.application, })
+            data.update({'application': self.application,})
 
         form = self.empty_form_class(**data)
         form.helper.template = None
@@ -59,5 +60,6 @@ class CustomBaseInlineFormSet(GetClassNameMixin, BaseInlineFormSet):
 class OnlyAddBaseInlineFormSet(CustomBaseInlineFormSet):
     def save_existing_objects(self, commit=True):
         return []
+
     def get_queryset(self):
         return []

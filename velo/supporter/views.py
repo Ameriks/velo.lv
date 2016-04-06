@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import ListView
-from supporter.models import Supporter, CompetitionSupporter
-from velo.mixins.views import SetCompetitionContextMixin
+
+from velo.supporter.models import Supporter, CompetitionSupporter
+from velo.velo.mixins.views import SetCompetitionContextMixin
 
 
 class AgencySupporters(ListView):

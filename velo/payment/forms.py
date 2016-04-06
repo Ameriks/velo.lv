@@ -1,27 +1,32 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django import forms
-from crispy_forms.helper import FormHelper
 from django.contrib import messages
 from django.template.defaultfilters import floatformat
 from django.utils import timezone
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.utils.safestring import mark_safe
-from payment.models import ActivePaymentChannel
-from payment.utils import create_application_invoice, create_application_bank_transaction, create_team_invoice, \
+from django.utils.translation import ugettext_lazy as _
+
+from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML
+from crispy_forms.helper import FormHelper
+
+from velo.payment.models import ActivePaymentChannel
+from velo.payment.utils import create_application_invoice, create_application_bank_transaction, create_team_invoice, \
     create_team_bank_transaction
-from payment.widgets import PaymentTypeWidget, DoNotRenderWidget
-from registration.models import Application
-from velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
-from django.utils.translation import ugettext, ugettext_lazy as _
-from velo.utils import load_class
+from velo.payment.widgets import PaymentTypeWidget, DoNotRenderWidget
+from velo.registration.models import Application
+from velo.velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
+from velo.velo.utils import load_class
 
 
 class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm):
-    accept_terms = forms.BooleanField(label=_("I confirm that my health condition allows me to take part in competition in my chosen distance. I promise to keep regulations, traffic rules and use safety helmet."), required=True)
-    accept_inform_participants = forms.BooleanField(label=_("I will inform all registered participants about rules."), required=True)
+    accept_terms = forms.BooleanField(label=_(
+        "I confirm that my health condition allows me to take part in competition in my chosen distance. I promise to keep regulations, traffic rules and use safety helmet."),
+                                      required=True)
+    accept_inform_participants = forms.BooleanField(label=_("I will inform all registered participants about rules."),
+                                                    required=True)
     accept_insurance = forms.BooleanField(label="", required=False)
 
     payment_type = forms.ChoiceField(choices=(), label=_("Payment Type"), widget=PaymentTypeWidget)
@@ -32,9 +37,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
     class Meta:
         model = Application
-        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address', 'invoice_show_names', 'donation')
+        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address',
+                  'invoice_show_names', 'donation')
         widgets = {
-            'donation': DoNotRenderWidget, # We will add field manually
+            'donation': DoNotRenderWidget,  # We will add field manually
         }
 
     def _post_clean(self):
@@ -42,22 +48,23 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         if not bool(self.errors):
             try:
                 instance = self.instance
-                instance.set_final_price() # if donation have changed, then we need to recalculate,
-                                           # because instance is not yet saved and it means,
-                                           # that this function on model is not yet run.
+                instance.set_final_price()  # if donation have changed, then we need to recalculate,
+                # because instance is not yet saved and it means,
+                # that this function on model is not yet run.
                 active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
 
                 if active_payment_type.payment_channel.is_bill:
-                    instance.external_invoice_code, instance.external_invoice_nr = create_application_invoice(instance, active_payment_type)
+                    instance.external_invoice_code, instance.external_invoice_nr = create_application_invoice(instance,
+                                                                                                              active_payment_type)
                     self.success_url = reverse('application_ok', kwargs={'slug': instance.code})
-                    messages.info(self.request, _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
+                    messages.info(self.request,
+                                  _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
                 else:
                     self.success_url = create_application_bank_transaction(instance, active_payment_type)
 
             except:
                 # TODO We need to catch exception and log it to sentry
                 self._errors['payment_type'] = self.error_class([_("Error in connection with bank. Try again later.")])
-
 
     def save(self, commit=True):
         instance = super(ApplicationPayUpdateForm, self).save(commit=False)
@@ -79,7 +86,6 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         else:
             return donation
 
-
     def clean(self):
         if not self.cleaned_data.get('donation', ''):
             self.cleaned_data.update({'donation': 0.00})
@@ -100,7 +106,6 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
         return self.cleaned_data
 
-
     def __init__(self, *args, **kwargs):
         self.participants = kwargs.pop('participants', None)
 
@@ -120,10 +125,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
         competition = self.instance.competition
         checkboxes = (
-                'accept_terms',
-                'accept_inform_participants',
-                'accept_insurance',
-                )
+            'accept_terms',
+            'accept_inform_participants',
+            'accept_insurance',
+        )
 
         if competition.processing_class:
             _class = load_class(competition.processing_class)
@@ -131,10 +136,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             if hasattr(processing, 'payment_additional_checkboxes'):
                 for key, field in processing.payment_additional_checkboxes(application=self.instance):
                     self.fields[key] = field
-                    checkboxes += (key, )
+                    checkboxes += (key,)
 
-
-        payments = competition.activepaymentchannel_set.filter(from_date__lte=now, till_date__gte=now).select_related('payment_channel')
+        payments = competition.activepaymentchannel_set.filter(from_date__lte=now, till_date__gte=now).select_related(
+            'payment_channel')
         # If user have already requested bill, then we are not showing possibility to request one more.
         if self.instance.external_invoice_code:
             payments = payments.filter(payment_channel__is_bill=False)
@@ -154,7 +159,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                 Column(
                     Div(
                         HTML(
-                            "<h4>%s: <span id='final_price' data-amount='%s'>%s</span> €</h4>" % (_('Final Price'), self.instance.total_entry_fee + self.instance.total_insurance_fee, floatformat(self.instance.final_price, -2)),
+                            "<h4>%s: <span id='final_price' data-amount='%s'>%s</span> €</h4>" % (
+                            _('Final Price'), self.instance.total_entry_fee + self.instance.total_insurance_fee,
+                            floatformat(self.instance.final_price, -2)),
                         ),
                         css_class='margin-bottom-40'
                     ),
@@ -175,9 +182,6 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         )
 
 
-
-
-
 class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm):
     payment_type = forms.ChoiceField(choices=(), label=_("Payment Type"), widget=PaymentTypeWidget)
 
@@ -186,7 +190,7 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
 
     class Meta:
         model = Application
-        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address', )
+        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address',)
 
     def _post_clean(self):
         super(TeamPayForm, self)._post_clean()
@@ -196,17 +200,17 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
                 active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
 
                 if active_payment_type.payment_channel.is_bill:
-                    instance.external_invoice_code, instance.external_invoice_nr = create_team_invoice(instance, active_payment_type)
+                    instance.external_invoice_code, instance.external_invoice_nr = create_team_invoice(instance,
+                                                                                                       active_payment_type)
                     self.success_url = reverse('accounts:team', kwargs={'pk2': instance.id})
-                    messages.info(self.request, _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
+                    messages.info(self.request,
+                                  _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
                 else:
                     self.success_url = create_team_bank_transaction(instance, active_payment_type)
 
             except:
-            #     TODO We need to catch exception and log it to sentry
+                #     TODO We need to catch exception and log it to sentry
                 self._errors['payment_type'] = self.error_class([_("Error in connection with bank. Try again later.")])
-
-
 
     def clean(self):
         super(TeamPayForm, self).clean()
@@ -226,7 +230,6 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
 
         return self.cleaned_data
 
-
     def __init__(self, *args, **kwargs):
 
         super(TeamPayForm, self).__init__(*args, **kwargs)
@@ -235,7 +238,8 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
 
         competition = self.instance.distance.competition
 
-        payments = competition.activepaymentchannel_set.filter(from_date__lte=now, till_date__gte=now).select_related('payment_channel')
+        payments = competition.activepaymentchannel_set.filter(from_date__lte=now, till_date__gte=now).select_related(
+            'payment_channel')
         # If user have already requested bill, then we are not showing possibility to request one more.
         if self.instance.external_invoice_code:
             payments = payments.filter(payment_channel__is_bill=False)
@@ -252,7 +256,8 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
                 Column(
                     Div(
                         HTML(
-                            "<h4>%s: <span id='final_price' data-amount='%s'>%s</span> €</h4>" % (_('Final Price'), self.instance.final_price, floatformat(self.instance.final_price, -2)),
+                            "<h4>%s: <span id='final_price' data-amount='%s'>%s</span> €</h4>" % (
+                            _('Final Price'), self.instance.final_price, floatformat(self.instance.final_price, -2)),
                         ),
                         css_class='margin-bottom-40'
                     ),

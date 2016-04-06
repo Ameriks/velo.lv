@@ -1,40 +1,45 @@
-# coding=utf-8
-from __future__ import unicode_literals
-import re
-from crispy_forms.bootstrap import StrictButton, Tab, TabHolder
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Div, HTML
-import datetime
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.template.defaultfilters import slugify
-from django_select2 import AutoHeavySelect2MultipleWidget
-import os
-from core.models import Competition
-from gallery.models import Video, Photo, Album
-from gallery.select2_fields import PhotoNumberChoices
-from gallery.utils import youtube_video_id, sync_album
-from velo.mixins.forms import RequestKwargModelFormMixin
 from django.utils.translation import ugettext_lazy as _
+
+from crispy_forms.bootstrap import StrictButton, Tab, TabHolder
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Div, HTML
+import datetime
+import re
 import zipfile
+import os
+
+#from django_select2 import AutoHeavySelect2MultipleWidget
+
+from velo.core.models import Competition
+from velo.gallery.models import Video, Photo, Album
+# from velo.gallery.select2_fields import PhotoNumberChoices
+from velo.gallery.utils import youtube_video_id, sync_album
+from velo.velo.mixins.forms import RequestKwargModelFormMixin
+
 
 
 class AssignNumberForm(RequestKwargModelFormMixin, forms.Form):
-
-    numbers = PhotoNumberChoices(required=False, widget=AutoHeavySelect2MultipleWidget(select2_options={
-        'ajax': {
-            'dataType': 'json',
-            'quietMillis': 100,
-            'data': '*START*django_select2.runInContextHelper(get_number_params, selector)*END*',
-            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
-        },
-        "minimumResultsForSearch": 0,
-        "minimumInputLength": 0,
-        "closeOnSelect": True
-    }))
+    # TODO: Restore field
+    # numbers = PhotoNumberChoices(required=False, widget=AutoHeavySelect2MultipleWidget(select2_options={
+    #     'ajax': {
+    #         'dataType': 'json',
+    #         'quietMillis': 100,
+    #         'data': '*START*django_select2.runInContextHelper(get_number_params, selector)*END*',
+    #         'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
+    #     },
+    #     "minimumResultsForSearch": 0,
+    #     "minimumInputLength": 0,
+    #     "closeOnSelect": True
+    # }))
 
     def __init__(self, *args, **kwargs):
 

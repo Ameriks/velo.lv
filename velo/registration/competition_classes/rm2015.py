@@ -2,19 +2,19 @@
 from __future__ import unicode_literals
 import StringIO
 from difflib import get_close_matches
-from marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
-from registration.competition_classes.base import RMCompetitionBase
-from registration.models import Number, Participant, ChangedName
-from results.models import Result, HelperResults
+from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
+from velo.registration.competition_classes.base import RMCompetitionBase
+from velo.registration.models import Number, Participant, ChangedName
+from velo.results.models import Result, HelperResults
 
-from marketing.tasks import send_mailgun
+from velo.marketing.tasks import send_mailgun
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm
 from reportlab.pdfgen import canvas
-from core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, _baseFontNameB
+from velo.core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, _baseFontNameB
 import os.path
-from team.models import Member, Team
+from velo.team.models import Member, Team
 
 
 class RM2015(RMCompetitionBase):

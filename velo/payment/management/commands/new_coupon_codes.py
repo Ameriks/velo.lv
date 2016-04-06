@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
 from pwgen import pwgen
-from payment.models import DiscountCode
+from velo.payment.models import DiscountCode
 
 
 class Command(BaseCommand):

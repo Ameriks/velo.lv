@@ -1,10 +1,14 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.core.urlresolvers import reverse
 from django.views.generic import UpdateView
-from manager.forms import DistanceAdminForm
-from manager.tables import ManageDistanceAdminTable
-from manager.views.permission_view import ManagerPermissionMixin
-from results.models import DistanceAdmin
-from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
+
+from velo.manager.forms import DistanceAdminForm
+from velo.manager.tables import ManageDistanceAdminTable
+from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.results.models import DistanceAdmin
+from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
 
 __all__ = [
     'ManageDistanceAdminList', 'ManageDistanceAdminUpdate',

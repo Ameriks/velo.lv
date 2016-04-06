@@ -1,19 +1,23 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.utils.text import slugify
 from django.views.generic import UpdateView, TemplateView
+
 from extra_views import NamedFormsetsMixin, UpdateWithInlinesView, InlineFormSet, CreateWithInlinesView
-from core.formsets import CustomBaseInlineFormSet
-from manager.forms import ResultListSearchForm, ResultForm, ManageLapResultForm, UrlSyncForm
-from manager.pdfreports import PDFReports
-from manager.tables import ManageResultTable
-from manager.tables.tables import UrlSyncTable
-from manager.views.participant_manage import ManagerPermissionMixin
-from results.models import Result, LapResult, UrlSync
-from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
-from manager.tasks import generate_pdfreport
+
+from velo.core.formsets import CustomBaseInlineFormSet
+from velo.manager.forms import ResultListSearchForm, ResultForm, ManageLapResultForm, UrlSyncForm
+from velo.manager.tables import ManageResultTable
+from velo.manager.tables.tables import UrlSyncTable
+from velo.manager.views.participant_manage import ManagerPermissionMixin
+from velo.results.models import Result, LapResult, UrlSync
+from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
+from velo.manager.tasks import generate_pdfreport
 
 __all__ = ['ManageResultList', 'ManageResultUpdate', 'ManageResultCreate', 'ManageResultReports', 'ManageUrlSyncList', 'ManageUrlSyncUpdate']
 

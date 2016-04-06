@@ -1,5 +1,5 @@
 from sitetree.utils import tree, item
-from core.models import Competition
+from velo.core.models import Competition
 from velo.utils import load_class
 
 

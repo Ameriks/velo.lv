@@ -1,14 +1,14 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy, reverse
-from django.views.generic import CreateView, UpdateView
-from manager.forms import PriceForm
-from manager.tables import ManagePriceTable
-from manager.views.permission_view import ManagerPermissionMixin
-from payment.models import Payment, Price
-from registration.models import Application
-from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, CreateViewWithCompetition, \
+
+from velo.manager.forms import PriceForm
+from velo.manager.tables import ManagePriceTable
+from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.payment.models import Price
+from velo.velo.mixins.views import SingleTableViewWithRequest, CreateViewWithCompetition, \
     UpdateViewWithCompetition
 
 

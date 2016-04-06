@@ -1,30 +1,29 @@
-# coding=utf-8
-from __future__ import unicode_literals
-import uuid
-from crispy_forms.bootstrap import FieldWithButtons, StrictButton
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Fieldset, HTML, Column, Submit, Div, Field
-from django.core.exceptions import ValidationError
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django import forms
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.utils import timezone
-from django.utils.safestring import mark_safe
-import requests
-import math
-from core.models import Competition, Distance, Insurance
-from payment.utils import get_form_message, get_total
-from registration.models import Application, Participant, CompanyApplication, CompanyParticipant
-from registration.widgets import CompetitionWidget
-from velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin, CleanEmailMixin
-from django import forms
 from django.utils.translation import ugettext_lazy as _, get_language
-from django.utils.translation import ugettext
-from velo.utils import bday_from_LV_SSN
 
+from crispy_forms.bootstrap import FieldWithButtons, StrictButton
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Fieldset, HTML, Column, Submit, Div, Field
+import math
+import uuid
+
+from velo.core.models import Competition, Insurance
+from velo.payment.utils import get_total
+from velo.registration.models import Application, Participant, CompanyApplication, CompanyParticipant
+from velo.registration.widgets import CompetitionWidget
+from velo.velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin, CleanEmailMixin
+from velo.velo.utils import bday_from_LV_SSN
 
 
 class CompanyApplicationCreateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
-    change_public_url = forms.BooleanField(label=_("Reset public URL?"), help_text=_('If you reset URL, then nobody will be able to access using previous URL.'), required=False)
+    change_public_url = forms.BooleanField(label=_("Reset public URL?"), help_text=_(
+        'If you reset URL, then nobody will be able to access using previous URL.'), required=False)
 
     class Meta:
         model = CompanyApplication
@@ -70,22 +69,21 @@ class CompanyApplicationCreateForm(GetClassNameMixin, CleanEmailMixin, RequestKw
         self.helper.layout = Layout(
             Row(
                 Column(
-                'competition',
-                'email',
-                'team_name',
-                'description',
-                css_class='col-sm-6'
+                    'competition',
+                    'email',
+                    'team_name',
+                    'description',
+                    css_class='col-sm-6'
                 ),
                 Column(
-                'change_public_url',
-                css_class='col-sm-6'
+                    'change_public_url',
+                    css_class='col-sm-6'
                 ),
             ),
             Row(
                 Column(Submit('submit', _('Save')), css_class='col-sm-2'),
             ),
         )
-
 
 
 class ApplicationCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
@@ -100,7 +98,9 @@ class ApplicationCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
         super(ApplicationCreateForm, self).__init__(*args, **kwargs)
 
         now = timezone.now()
-        competitions = Competition.objects.filter(Q(complex_payment_enddate__gt=now) | Q(price__end_registering__gt=now, price__start_registering__lte=now)).distinct().order_by('complex_payment_enddate', 'competition_date')
+        competitions = Competition.objects.filter(Q(complex_payment_enddate__gt=now) | Q(price__end_registering__gt=now,
+                                                                                         price__start_registering__lte=now)).distinct().order_by(
+            'complex_payment_enddate', 'competition_date')
 
         if not self.request.GET.get('all', None):
             competitions = competitions.exclude(complex_payment_hideon__lt=now)
@@ -120,10 +120,12 @@ class ApplicationCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
 class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
     team_search = forms.CharField(widget=forms.HiddenInput)
     team_search_term = forms.CharField(widget=forms.HiddenInput)
-    email2 = forms.EmailField(label=_('E-mail confirmation'), help_text=_("Enter the same e-mail as above, for verification."))
+    email2 = forms.EmailField(label=_('E-mail confirmation'),
+                              help_text=_("Enter the same e-mail as above, for verification."))
+
     class Meta:
         model = Application
-        fields = ('email', )
+        fields = ('email',)
 
     class Media:
         js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
@@ -131,7 +133,7 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
               'plugins/typeahead.js/typeahead.bundle.min.js',
               'plugins/handlebars-v3.0.1.js',)
         css = {
-            'all': ('plugins/datepicker/datepicker.css', )
+            'all': ('plugins/datepicker/datepicker.css',)
         }
 
     def clean_email2(self):
@@ -144,13 +146,14 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
             )
         return email2
 
-
     def __init__(self, *args, **kwargs):
         super(ApplicationUpdateForm, self).__init__(*args, **kwargs)
         self.fields['email'].required = True
 
-        self.fields['team_search'].initial = reverse('competition:teams_json', kwargs={'pk': self.instance.competition_id})
-        self.fields['team_search_term'].initial = "{0}?search=%QUERY".format(reverse('competition:teams_json', kwargs={'pk': self.instance.competition_id}))
+        self.fields['team_search'].initial = reverse('competition:teams_json',
+                                                     kwargs={'pk': self.instance.competition_id})
+        self.fields['team_search_term'].initial = "{0}?search=%QUERY".format(
+            reverse('competition:teams_json', kwargs={'pk': self.instance.competition_id}))
 
         self.fields['email2'].initial = self.instance.email
 
@@ -159,14 +162,14 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
         self.helper.layout = Layout(
             Row(
                 Column(
-                'email',
-                'team_search',
-                'team_search_term',
-                css_class='col-sm-6'
+                    'email',
+                    'team_search',
+                    'team_search_term',
+                    css_class='col-sm-6'
                 ),
                 Column(
-                'email2',
-                css_class='col-sm-6'
+                    'email2',
+                    css_class='col-sm-6'
                 ),
             ),
             Row(
@@ -179,8 +182,10 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
                 )
             ),
             Row(
-                Column(Submit('submit_draft', _('Save')), css_class='col-sm-2') if not self.instance.competition.is_past_due else Column(),
-                Column(Submit('submit_pay', _('Save & Pay')), css_class='col-sm-2 pull-right') if self.instance.payment_status != Application.PAY_STATUS_PAYED and not self.instance.competition.is_past_due else Column(),
+                Column(Submit('submit_draft', _('Save')),
+                       css_class='col-sm-2') if not self.instance.competition.is_past_due else Column(),
+                Column(Submit('submit_pay', _('Save & Pay')),
+                       css_class='col-sm-2 pull-right') if self.instance.payment_status != Application.PAY_STATUS_PAYED and not self.instance.competition.is_past_due else Column(),
             ),
         )
 
@@ -188,9 +193,12 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
 class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     insurance = forms.ChoiceField(required=False, choices=(), label=_('Insurance'))
     application = None
+
     class Meta:
         model = Participant
-        fields = ('distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand2', 'team_name', 'email')
+        fields = (
+        'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand2',
+        'team_name', 'email')
 
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
@@ -249,7 +257,6 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             if not total:
                 self._errors.update({'distance': [_("This distance not available for this participant."), ]})
 
-
         return cleaned_data
 
     def save(self, commit=True):
@@ -280,7 +287,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         insurances = competition.get_insurances().filter(status=Insurance.STATUS_ACTIVE)
 
         if insurances:
-            self.fields['insurance'].choices = [('', '------')] + [(insurance.id, insurance.__unicode__()) for insurance in insurances]
+            self.fields['insurance'].choices = [('', '------')] + [(insurance.id, insurance.__unicode__()) for insurance
+                                                                   in insurances]
 
             if self.instance.insurance_id:
                 self.fields['insurance'].initial = self.instance.insurance_id
@@ -289,7 +297,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         else:
             pass
 
-        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
+        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in
+                                                              distances]
 
         if get_language() == 'lv':
             self.fields['country'].initial = 'LV'
@@ -302,7 +311,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['team_name'].initial = competition.params.get('default_team', "")
         self.fields['team_name'].help_text = competition.params.get('default_team_help', "")
 
-        self.fields['distance'].widget.attrs.update({'data-url': str(reverse('payment:check_price', kwargs={'pk': self.application.competition_id}))})
+        self.fields['distance'].widget.attrs.update(
+            {'data-url': str(reverse('payment:check_price', kwargs={'pk': self.application.competition_id}))})
 
         if self.data.get('submit_draft'):
             self.fields['distance'].required = False
@@ -325,33 +335,38 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column(
-                Row(
-                    Column('distance', css_class='col-xs-6 col-sm-4'),
-                    Column('country', css_class='col-xs-6 col-sm-4'),
-                    Column('gender', css_class='col-xs-6 col-sm-4'),
-                ),
-                Row(
-                    Column('first_name', css_class='col-xs-6 col-sm-4'),
-                    Column('last_name', css_class='col-xs-6 col-sm-4'),
-                    Column('ssn', css_class='col-xs-6 col-sm-4'),
-                    Column(Field('birthday', css_class='dateinput'), css_class='col-xs-6 col-sm-4'),
-                ),
-                Row(
-                    Column('team_name', css_class='col-xs-6 col-sm-4'),
-                    Column('phone_number', css_class='col-xs-6 col-sm-4'),
-                    Column('email', css_class='col-xs-6 col-sm-4'),
-                ),
-                Row(
-                    Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>', css_class='btn-default bike-brand-dropdown')), css_class='col-xs-6 col-sm-4'),
-                    Column('insurance', css_class='col-xs-6 col-sm-4 pull-right'),
+                    Row(
+                        Column('distance', css_class='col-xs-6 col-sm-4'),
+                        Column('country', css_class='col-xs-6 col-sm-4'),
+                        Column('gender', css_class='col-xs-6 col-sm-4'),
+                    ),
+                    Row(
+                        Column('first_name', css_class='col-xs-6 col-sm-4'),
+                        Column('last_name', css_class='col-xs-6 col-sm-4'),
+                        Column('ssn', css_class='col-xs-6 col-sm-4'),
+                        Column(Field('birthday', css_class='dateinput'), css_class='col-xs-6 col-sm-4'),
+                    ),
+                    Row(
+                        Column('team_name', css_class='col-xs-6 col-sm-4'),
+                        Column('phone_number', css_class='col-xs-6 col-sm-4'),
+                        Column('email', css_class='col-xs-6 col-sm-4'),
+                    ),
+                    Row(
+                        Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>',
+                                                                            css_class='btn-default bike-brand-dropdown')),
+                               css_class='col-xs-6 col-sm-4'),
+                        Column('insurance', css_class='col-xs-6 col-sm-4 pull-right'),
 
-                ) if insurances else Row(Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>', css_class='btn-default bike-brand-dropdown')), css_class='col-xs-6 col-sm-4'),),
-                'id',
-                Div(
-                    Field('DELETE',),
-                    css_class='hidden',
-                ),
-                css_class='col-sm-9'
+                    ) if insurances else Row(Column(FieldWithButtons('bike_brand2',
+                                                                     StrictButton('<span class="caret"></span>',
+                                                                                  css_class='btn-default bike-brand-dropdown')),
+                                                    css_class='col-xs-6 col-sm-4'), ),
+                    'id',
+                    Div(
+                        Field('DELETE', ),
+                        css_class='hidden',
+                    ),
+                    css_class='col-sm-9'
                 ),
                 Column(
                     Div(css_class='participant_calculation'),
@@ -405,27 +420,29 @@ class ParticipantInlineFullyRestrictedForm(ParticipantInlineRestrictedForm):
                 self.fields[field].widget.attrs['readonly'] = True
 
     def clean_gender(self):
-            return self.instance.gender
+        return self.instance.gender
 
     def clean_team_name(self):
-            return self.instance.team_name
+        return self.instance.team_name
 
     def clean_phone_number(self):
-            return self.instance.phone_number
+        return self.instance.phone_number
 
     def clean_email(self):
-            return self.instance.email
+        return self.instance.email
 
     def clean_bike_brand2(self):
-            return self.instance.bike_brand2
-
+        return self.instance.bike_brand2
 
 
 class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     application = None
+
     class Meta:
         model = CompanyParticipant
-        fields = ('distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand2', 'email')
+        fields = (
+        'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand2',
+        'email')
 
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
@@ -487,7 +504,8 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         distances = competition.get_distances()
 
-        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
+        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in
+                                                              distances]
 
         if get_language() == 'lv':
             self.fields['country'].initial = 'LV'
@@ -507,32 +525,33 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column(
-                Row(
-                    Column('distance', css_class='col-xs-6 col-sm-4'),
-                    Column('country', css_class='col-xs-6 col-sm-4'),
-                    Column('gender', css_class='col-xs-6 col-sm-4'),
-                ),
-                Row(
-                    Column('first_name', css_class='col-xs-6 col-sm-4'),
-                    Column('last_name', css_class='col-xs-6 col-sm-4'),
-                    Column('ssn', css_class='col-xs-6 col-sm-4'),
-                    Column(Field('birthday', css_class='dateinput'), css_class='col-xs-6 col-sm-4'),
-                ),
-                Row(
-                    Column('phone_number', css_class='col-xs-6 col-sm-4'),
-                    Column('email', css_class='col-xs-6 col-sm-4'),
-                    Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>', css_class='btn-default bike-brand-dropdown')), css_class='col-xs-6 col-sm-4'),
-                ),
-                'id',
-                Div(
-                    Field('DELETE',),
-                    css_class='hidden',
-                ),
-                css_class='col-sm-9'
+                    Row(
+                        Column('distance', css_class='col-xs-6 col-sm-4'),
+                        Column('country', css_class='col-xs-6 col-sm-4'),
+                        Column('gender', css_class='col-xs-6 col-sm-4'),
+                    ),
+                    Row(
+                        Column('first_name', css_class='col-xs-6 col-sm-4'),
+                        Column('last_name', css_class='col-xs-6 col-sm-4'),
+                        Column('ssn', css_class='col-xs-6 col-sm-4'),
+                        Column(Field('birthday', css_class='dateinput'), css_class='col-xs-6 col-sm-4'),
+                    ),
+                    Row(
+                        Column('phone_number', css_class='col-xs-6 col-sm-4'),
+                        Column('email', css_class='col-xs-6 col-sm-4'),
+                        Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>',
+                                                                            css_class='btn-default bike-brand-dropdown')),
+                               css_class='col-xs-6 col-sm-4'),
+                    ),
+                    'id',
+                    Div(
+                        Field('DELETE', ),
+                        css_class='hidden',
+                    ),
+                    css_class='col-sm-9'
                 ),
             ),
         )
-
 
 
 class CompanyApplicationEmptyForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
@@ -546,9 +565,8 @@ class CompanyApplicationEmptyForm(GetClassNameMixin, CleanEmailMixin, RequestKwa
               'plugins/typeahead.js/typeahead.bundle.min.js',
               'plugins/handlebars-v3.0.1.js',)
         css = {
-            'all': ('plugins/datepicker/datepicker.css', )
+            'all': ('plugins/datepicker/datepicker.css',)
         }
-
 
     def __init__(self, *args, **kwargs):
         super(CompanyApplicationEmptyForm, self).__init__(*args, **kwargs)

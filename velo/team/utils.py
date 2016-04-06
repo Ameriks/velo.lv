@@ -1,7 +1,7 @@
 from difflib import get_close_matches
-from core.models import Competition
-from registration.models import Participant
-from team.models import MemberApplication
+from velo.core.models import Competition
+from velo.registration.models import Participant
+from velo.team.models import MemberApplication
 from velo.utils import load_class
 
 

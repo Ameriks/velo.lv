@@ -1,25 +1,26 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import messages
 from django.db.models import Sum, Count
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DetailView, TemplateView
-from core.models import Competition
-from legacy.utils_marketing import create_csv_seb
-from manager.excels.insured import create_insured_list
-from manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
-    create_team_list, payment_list, create_donations_list, start_list_have_participated_this_year
-from manager.tables import ManageCompetitionTable
-from manager.views import ManageApplication
-from manager.views.permission_view import ManagerPermissionMixin
-from registration.models import Participant, Application
-from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
-from velo.utils import load_class
-from manager.tasks import *
-from team.tasks import match_team_members_to_participants
 
+from velo.core.models import Competition
+from velo.legacy.utils_marketing import create_csv_seb
+from velo.manager.excels.insured import create_insured_list
+from velo.manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
+    create_team_list, payment_list, create_donations_list, start_list_have_participated_this_year
+from velo.manager.tables import ManageCompetitionTable
+from velo.manager.views import ManageApplication
+from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.registration.models import Participant, Application
+from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
+from velo.velo.utils import load_class
+from velo.manager.tasks import *
+from velo.team.tasks import match_team_members_to_participants
 
 __all__ = [
     'ManageCompetitionList', 'ManageCompetitionDetail', 'ManageApplicationExternalPay'
@@ -63,7 +64,6 @@ class ManageApplicationExternalPay(ManageApplication):
         return super(ManageApplicationExternalPay, self).get(request, *args, **kwargs)
 
 
-
 class ManageCompetitionList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Competition
     table_class = ManageCompetitionTable
@@ -73,6 +73,7 @@ class ManageCompetitionList(ManagerPermissionMixin, SingleTableViewWithRequest):
 class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin, DetailView):
     model = Competition
     template_name = 'manager/competition_detail.html'
+
     def post(self, request, *args, **kwargs):
         self.competition = Competition.objects.get(id=kwargs.get('pk'))
         class_ = load_class(self.competition.processing_class)
@@ -80,7 +81,8 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         if request.POST.get('action') == 'assign_numbers_continuously':
             self._competition_class.assign_numbers_continuously()
         elif request.POST.get('action') == 'legacy_sync':
-            messages.add_message(request, messages.INFO, 'Sinhronizācija sākta. Gaidiet e-pastu uz %s ar paziņojumu par beigām.' % request.user.email)
+            messages.add_message(request, messages.INFO,
+                                 'Sinhronizācija sākta. Gaidiet e-pastu uz %s ar paziņojumu par beigām.' % request.user.email)
             legacy_sync.delay(request.user.email)
         elif request.POST.get('action') == 'start_list':
             file_obj = create_start_list(competition=self.competition)
@@ -154,8 +156,6 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             else:
                 messages.info(request, 'Nav tiesību.')
 
-
-
         return super(ManageCompetitionDetail, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -165,7 +165,8 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
 
         distances_w_counter = []
         for distance in distances:
-            distances_w_counter.append((distance, distance.get_participants(self.competition.get_ids()).filter(is_participating=True).count()))
+            distances_w_counter.append(
+                (distance, distance.get_participants(self.competition.get_ids()).filter(is_participating=True).count()))
 
         distances_teams_w_counter = []
         team_count = 0
@@ -182,18 +183,24 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             parent_income = None
             parent_count = None
             if self.object.level == 2:
-                parent_dict = Participant.objects.filter(is_participating=True, competition=self.competition.parent, distance=distance).exclude(price=None).aggregate(Sum('price__price'), Count('id'))
+                parent_dict = Participant.objects.filter(is_participating=True, competition=self.competition.parent,
+                                                         distance=distance).exclude(price=None).aggregate(
+                    Sum('price__price'), Count('id'))
                 parent_count = parent_dict.get('id__count')
                 try:
-                    parent_income = parent_dict.get('price__price__sum', 0) * (100 - self.competition.parent.complex_discount) / 100
+                    parent_income = parent_dict.get('price__price__sum', 0) * (
+                    100 - self.competition.parent.complex_discount) / 100
                 except TypeError:
                     parent_income = None
 
-            income_dict = Participant.objects.filter(is_participating=True, competition=self.competition, distance=distance).exclude(price=None).aggregate(Sum('price__price'), Sum('discount_amount'), Count('id'))
+            income_dict = Participant.objects.filter(is_participating=True, competition=self.competition,
+                                                     distance=distance).exclude(price=None).aggregate(
+                Sum('price__price'), Sum('discount_amount'), Count('id'))
             income = (income_dict.get('price__price__sum') or 0) - (income_dict.get('discount_amount__sum') or 0)
             incomes.append(IncomeObject(distance, parent_income, income, parent_count, income_dict.get('id__count')))
 
-        context.update({'participant_count': Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True).count()})
+        context.update({'participant_count': Participant.objects.filter(competition_id__in=self.competition.get_ids(),
+                                                                        is_participating=True).count()})
         context.update({'team_count': team_count})
         context.update({'distances_w_counter': distances_w_counter})
         context.update({'distances_teams_w_counter': distances_teams_w_counter})

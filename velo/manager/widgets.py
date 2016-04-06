@@ -1,12 +1,14 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from django.forms.util import flatatt
-from django.forms.widgets import Select, TextInput
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django.forms.utils import flatatt
+from django.forms.widgets import TextInput
 from django.utils.encoding import force_text
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
-from gallery.models import Photo
+
 from easy_thumbnails.templatetags.thumbnail import thumbnail_url
+
+from velo.gallery.models import Photo
 
 
 class PhotoPickWidget(TextInput):

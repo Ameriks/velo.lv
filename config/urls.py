@@ -63,33 +63,33 @@ urlpatterns = i18n_patterns('',
 
 
     url(_(r'^results/'), ResultAllView.as_view(), name="all_results"),
-    url(_(r'^payment/'), include('payment.urls', namespace='payment')),
-    url(_(r'^whatever/'), include('advert.urls', namespace='advert')),
-    url(_(r'^news/'), include('news.urls', namespace='news')),
-    url(_(r'^gallery/'), include('gallery.urls', namespace='gallery')),
-    url(_(r'^mk/'), include('marketing.urls', namespace='marketing')),
-    url(r'^manager/', include('manager.urls', namespace='manager')),
-    url(_(r'^competition/'), include('velo.urls_competition', namespace='competition')),
+    url(_(r'^payment/'), include('velo.payment.urls', namespace='payment')),
+    url(_(r'^whatever/'), include('velo.advert.urls', namespace='advert')),
+    url(_(r'^news/'), include('velo.news.urls', namespace='news')),
+    url(_(r'^gallery/'), include('velo.gallery.urls', namespace='gallery')),
+    url(_(r'^mk/'), include('velo.marketing.urls', namespace='marketing')),
+    url(r'^manager/', include('velo.manager.urls', namespace='manager')),
+    url(_(r'^competition/'), include('velo.velo.urls_competition', namespace='competition')),
     url(_(r'^supporters/'), AgencySupporters.as_view(), name="agency_supporters"),
     url(_(r'^calendar/'), CalendarView.as_view(), name="calendar"),
-    url(_(r'^accounts/'), include('core.urls', namespace='accounts')),
+    url(_(r'^accounts/'), include('velo.core.urls', namespace='accounts')),
     url(_(r'^accounts/'), include('social.apps.django_app.urls', namespace='social')),
-    url(r'^jsi18n/$', 'velo.views.cached_javascript_catalog', js_info_dict),
+    url(r'^jsi18n/$', 'velo.velo.views.cached_javascript_catalog', js_info_dict),
 )
 
 
 urlpatterns += patterns('',
     url(r'^$', RedirectView.as_view(url='/lv/')),
 
-    url('^s/', include('shorturls.urls')),
+    # url('^s/', include('shorturls.urls')),
     url(_(r'^pdf/(?P<slug>\w+)/'), ParticipantPDF.as_view(), name="participant_number_pdf"),
 
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^%s/' % settings.ADMIN_URL, include(admin.site.urls)),  # This is real admin with hidden link in ENV
 
-    url(r'^impersonate/search/$', 'velo.views.search_users', {'template': 'impersonate/search_users.html'}, name='impersonate-search'),
+    url(r'^impersonate/search/$', 'velo.velo.views.search_users', {'template': 'impersonate/search_users.html'}, name='impersonate-search'),
     url(r'^impersonate/', include('impersonate.urls')),
-    url(r'^ckeditor/', include('ckeditor.urls')),
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 
     url(r"^json/fields/auto.json$", CustomAutoResponseView.as_view(), name="django_select2_central_json"),
     )

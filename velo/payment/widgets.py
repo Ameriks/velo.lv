@@ -1,11 +1,11 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from django.forms.util import flatatt
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django.forms.utils import flatatt
 from django.forms.widgets import Select, Widget
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.conf import settings
 
 
 class PaymentTypeWidget(Select):
@@ -43,16 +43,17 @@ class PaymentTypeWidget(Select):
             })
 
         attrs = flatatt(attrs)
-        return format_html('<label class="btn btn-default btn-block banks_all {0}"><input type="radio" name="{1}" value="{2}" {3} /><span>{4}</span></label>',
-                           active,
-                           name,
-                           option_value,
-                           attrs,
-                           force_text(unicode(option.payment_channel)))
-
+        return format_html(
+            '<label class="btn btn-default btn-block banks_all {0}"><input type="radio" name="{1}" value="{2}" {3} /><span>{4}</span></label>',
+            active,
+            name,
+            option_value,
+            attrs,
+            force_text(unicode(option.payment_channel)))
 
 
 class DoNotRenderWidget(Widget):
     is_hidden = True
+
     def render(self, name, value, attrs=None):
         return ''

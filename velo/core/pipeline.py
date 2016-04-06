@@ -3,7 +3,7 @@ import pwgen
 
 from social.pipeline.partial import partial
 from social.pipeline.user import USER_FIELDS
-from core.models import User
+from velo.core.models import User
 
 
 @partial

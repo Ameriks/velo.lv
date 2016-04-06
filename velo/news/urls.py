@@ -1,9 +1,11 @@
-# coding=utf-8
-from __future__ import unicode_literals  # u'' strings by default # Awesome :)
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf.urls import patterns, url
-from manager.views import ManageTeamApplyList
-from news.views import NotificationView, NewsListView, NewsDetailView
 from django.utils.translation import ugettext_lazy as _
+
+from velo.news.views import NotificationView, NewsListView, NewsDetailView
+
 
 urlpatterns = patterns('',
                        url(_(r'^notification/(?P<slug>.+)/$'), NotificationView.as_view(), name='notification'),

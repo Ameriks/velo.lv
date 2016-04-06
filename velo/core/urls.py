@@ -1,14 +1,16 @@
-# coding=utf-8
-from __future__ import unicode_literals  # u'' strings by default # Awesome :)
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf.urls import patterns, url
 from django.core.urlresolvers import reverse_lazy
-from core.forms import PasswordResetForm, SetPasswordFormCustom, AuthenticationFormCustom
-from core.views import UserRegistrationView, UserEmailConfirm, ChangeEmailView, ChangePasswordView, ProfileView, \
-    ResendEmailView
 from django.utils.translation import ugettext_lazy as _
-from payment.views import TeamPayView
-from registration.views import MyApplicationList
-from team.views import MyTeamList, TeamCreateView, TeamUpdateView, TeamApplyList, TeamApply
+
+from velo.core.forms import PasswordResetForm, SetPasswordFormCustom, AuthenticationFormCustom
+from velo.core.views import UserRegistrationView, UserEmailConfirm, ChangeEmailView, ChangePasswordView, ProfileView, \
+    ResendEmailView
+from velo.payment.views import TeamPayView
+from velo.registration.views import MyApplicationList
+from velo.team.views import MyTeamList, TeamCreateView, TeamUpdateView, TeamApplyList, TeamApply
 
 urlpatterns = patterns('',
                        url(_(r'^register/$'), UserRegistrationView.as_view(), name="register"),

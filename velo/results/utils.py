@@ -1,6 +1,6 @@
 from difflib import get_close_matches
-from registration.models import Participant
-from results.models import LegacyResult
+from velo.registration.models import Participant
+from velo.results.models import LegacyResult
 
 
 def map_participants_with_legacy_results():

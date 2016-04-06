@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import django.utils.timezone
 from django.conf import settings
-import news.models
+import velo.news.models
 
 
 class Migration(migrations.Migration):
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('status', models.SmallIntegerField(default=0, choices=[(0, b'Inactive'), (1, b'Active'), (-1, b'Deleted')])),
-                ('slug', models.CharField(default=news.models.notification_slug, max_length=6)),
+                ('slug', models.CharField(default=velo.news.models.notification_slug, max_length=6)),
                 ('title', models.CharField(max_length=255)),
                 ('body', models.TextField()),
             ],

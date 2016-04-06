@@ -1,8 +1,9 @@
-# coding=utf-8
-from __future__ import unicode_literals  # u'' strings by default # Awesome :)
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf.urls import patterns, url
-from django.utils.translation import ugettext_lazy as _
-from marketing.views import SMSReportView, TestEmailTemplate
+
+from velo.marketing.views import SMSReportView, TestEmailTemplate
 
 
 urlpatterns = patterns('',

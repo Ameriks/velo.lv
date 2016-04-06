@@ -1,24 +1,27 @@
-# coding=utf-8
-from __future__ import unicode_literals
-import celery
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django.core.mail import send_mail
 from django.conf import settings
 from django.core.files.base import ContentFile
-from django.core.mail import send_mail
-from core.models import User
-from core.tasks import LogErrorsTask
-from legacy.utils import full_sync
-from manager.models import TempDocument
-from manager.pdfreports import PDFReports
-from marketing.models import MailgunEmail
-from registration.models import Participant
-from velo.utils import load_class
+
+import celery
+
+from velo.core.models import User
+from velo.core.tasks import LogErrorsTask
+# from velo.legacy.utils import full_sync
+from velo.manager.models import TempDocument
+from velo.manager.pdfreports import PDFReports
+from velo.marketing.models import MailgunEmail
+from velo.registration.models import Participant
+from velo.velo.utils import load_class
 
 
-@celery.task
-def legacy_sync(email):
-    full_sync()
-    send_mail("Finished sync", "Finished synchronisation", settings.SERVER_EMAIL, [email,],)
-
+# @celery.task
+# def legacy_sync(email):
+#     full_sync()
+#     send_mail("Finished sync", "Finished synchronisation", settings.SERVER_EMAIL, [email,],)
+#
 
 
 @celery.task
@@ -30,7 +33,7 @@ def update_results_for_result(result):
     competition_class = class_(competition=result.competition)
     updated = result.set_all()
     if updated:
-        print 'points have been updated.'
+        print('points have been updated.')
         result.save()
         competition_class.assign_result_place()
         competition_class.recalculate_standing_for_result(result)

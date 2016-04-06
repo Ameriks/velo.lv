@@ -15,12 +15,12 @@ import StringIO
 import unicodedata
 import urllib
 import uuid
-from core.models import Log, Competition
-from marketing.models import SMS
-from marketing.utils import send_smses
+from velo.core.models import Log, Competition
+from velo.marketing.models import SMS
+from velo.marketing.utils import send_smses
 
-from registration.models import Number, Participant, ChangedName
-from results.models import Result, UrlSync, ChipScan, SebStandings, HelperResults
+from velo.registration.models import Number, Participant, ChangedName
+from velo.results.models import Result, UrlSync, ChipScan, SebStandings, HelperResults
 from velo.utils import load_class
 import traceback
 from django.utils import timezone
@@ -28,7 +28,7 @@ from django.utils import timezone
 
 @task
 def temp_url_sync_task(urlsync_id):
-    from registration.competition_classes import Seb2014
+    from velo.registration.competition_classes import Seb2014
     obj = UrlSync.objects.get(id=urlsync_id)
     _class = Seb2014(obj.competition.id)
 

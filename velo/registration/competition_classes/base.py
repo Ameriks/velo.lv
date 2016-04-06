@@ -7,22 +7,22 @@ from django.conf import settings
 from django.core.cache.utils import make_template_fragment_key
 from django.db import connection
 from sitetree.utils import item
-from core.models import Competition, Log, Choices
-from marketing.models import MailgunEmail
-from marketing.utils import send_sms_to_participant
-from marketing.utils import send_number_email
-from marketing.utils import send_sms_to_family_participant
-from marketing.utils import send_smses
-from registration.models import Number, Participant, PreNumberAssign, Application
+from velo.core.models import Competition, Log, Choices
+from velo.marketing.models import MailgunEmail
+from velo.marketing.utils import send_sms_to_participant
+from velo.marketing.utils import send_number_email
+from velo.marketing.utils import send_sms_to_family_participant
+from velo.marketing.utils import send_smses
+from velo.registration.models import Number, Participant, PreNumberAssign, Application
 from django.core.cache import cache
-from registration.tables import ParticipantTable, ParticipantTableWithLastYearPlace
-from results.helper import time_to_seconds
-from results.models import Result, DistanceAdmin, ChipScan, SebStandings, TeamResultStandings, LapResult, HelperResults
-from results.tables import ResultChildrenGroupTable, ResultGroupTable, ResultDistanceTable, \
+from velo.registration.tables import ParticipantTable, ParticipantTableWithLastYearPlace
+from velo.results.helper import time_to_seconds
+from velo.results.models import Result, DistanceAdmin, ChipScan, SebStandings, TeamResultStandings, LapResult, HelperResults
+from velo.results.tables import ResultChildrenGroupTable, ResultGroupTable, ResultDistanceTable, \
     ResultChildrenGroupStandingTable, ResultGroupStandingTable, ResultDistanceStandingTable, ResultRMGroupTable, \
     ResultRMSportsDistanceTable, ResultRMTautaDistanceTable
-from results.tasks import create_result_sms, recalculate_standing_for_result, update_helper_result_table
-from team.models import MemberApplication, Team
+from velo.results.tasks import create_result_sms, recalculate_standing_for_result, update_helper_result_table
+from velo.team.models import MemberApplication, Team
 from django.template.defaultfilters import slugify
 
 

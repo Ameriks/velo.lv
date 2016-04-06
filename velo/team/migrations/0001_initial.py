@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import team.models
+import velo.team.models
 import django_countries.fields
 from django.conf import settings
 
@@ -58,8 +58,8 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=100, verbose_name='Title')),
                 ('slug', models.SlugField()),
                 ('description', models.TextField(verbose_name='Description', blank=True)),
-                ('img', models.ImageField(upload_to=team.models.get_team_upload, verbose_name='Image', blank=True)),
-                ('shirt_image', models.ImageField(upload_to=team.models.get_team_upload, verbose_name='Shirt Image', blank=True)),
+                ('img', models.ImageField(upload_to=velo.team.models.get_team_upload, verbose_name='Image', blank=True)),
+                ('shirt_image', models.ImageField(upload_to=velo.team.models.get_team_upload, verbose_name='Shirt Image', blank=True)),
                 ('country', django_countries.fields.CountryField(max_length=2, verbose_name='Country')),
                 ('contact_person', models.CharField(max_length=100, verbose_name='Contact Person', blank=True)),
                 ('email', models.EmailField(max_length=254, verbose_name='Email', blank=True)),

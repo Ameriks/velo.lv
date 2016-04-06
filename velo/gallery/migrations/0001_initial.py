@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import easy_thumbnails.fields
 from django.conf import settings
-import gallery.models
+import velo.gallery.models
 
 
 class Migration(migrations.Migration):
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
                 ('modified', models.DateTimeField(auto_now=True, verbose_name='Modified')),
                 ('description', models.TextField(blank=True)),
-                ('image', easy_thumbnails.fields.ThumbnailerImageField(max_length=255, upload_to=gallery.models._get_image_upload_path, blank=True)),
+                ('image', easy_thumbnails.fields.ThumbnailerImageField(max_length=255, upload_to=velo.gallery.models._get_image_upload_path, blank=True)),
                 ('md5', models.CharField(max_length=32, blank=True)),
                 ('is_featured', models.BooleanField(default=False)),
                 ('is_numbered', models.BooleanField(default=False)),

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.db.models.deletion
-import supporter.models
+import velo.supporter.models
 import easy_thumbnails.fields
 
 
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             name='Logo',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('image', easy_thumbnails.fields.ThumbnailerImageField(height_field=b'height', width_field=b'width', upload_to=supporter.models._get_logo_upload_path, blank=True)),
+                ('image', easy_thumbnails.fields.ThumbnailerImageField(height_field=b'height', width_field=b'width', upload_to=velo.supporter.models._get_logo_upload_path, blank=True)),
                 ('width', models.FloatField(null=True, blank=True)),
                 ('height', models.FloatField(null=True, blank=True)),
             ],

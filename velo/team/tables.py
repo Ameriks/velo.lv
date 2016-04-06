@@ -1,9 +1,14 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-import django_tables2 as tables
-from team.models import Team
 from django.utils.translation import ugettext, ugettext_lazy as _
+
+import django_tables2 as tables
 from django_tables2.utils import A
+
+from velo.team.models import Team
 
 
 class TeamTable(tables.Table):

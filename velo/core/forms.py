@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm, PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
@@ -6,17 +9,19 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.safestring import mark_safe
+from django.conf import settings
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
-from django.utils.safestring import mark_safe
 from premailer import transform
 from django.utils.encoding import force_bytes
-from django.conf import settings
-from core.models import User
-from core.widgets import ButtonWidget
-from marketing.models import MailgunEmail
-from velo.mixins.forms import CleanEmailMixin, RequestKwargModelFormMixin
-from core.tasks import send_email_confirmation, send_change_email_notification
+
+from velo.core.models import User
+from velo.core.widgets import ButtonWidget
+from velo.marketing.models import MailgunEmail
+from velo.velo.mixins.forms import CleanEmailMixin, RequestKwargModelFormMixin
+from velo.core.tasks import send_email_confirmation, send_change_email_notification
 
 
 class NewEmailForm(CleanEmailMixin, forms.Form):
@@ -115,6 +120,7 @@ class PasswordChangeFormCustom(PasswordChangeForm):
         else:
             return self.user.password
 
+
 class SetPasswordFormCustom(SetPasswordForm):
     def __init__(self, *args, **kwargs):
         super(SetPasswordFormCustom, self).__init__(*args, **kwargs)
@@ -129,6 +135,7 @@ class SetPasswordFormCustom(SetPasswordForm):
             'new_password2',
             Submit('set_password', _('Set Password'), css_class='btn-default'),
         )
+
 
 class AuthenticationFormCustom(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -175,16 +182,15 @@ class UserCreationForm(CleanEmailMixin, forms.ModelForm):
     }
 
     password1 = forms.CharField(label=_("Password"),
-        widget=forms.PasswordInput)
+                                widget=forms.PasswordInput)
     password2 = forms.CharField(label=_("Password confirmation"),
-        widget=forms.PasswordInput,
-        help_text=_("Enter the same password as above, for verification."))
-
-
+                                widget=forms.PasswordInput,
+                                help_text=_("Enter the same password as above, for verification."))
 
     class Meta:
         model = User
-        fields = ("email","first_name", "last_name", "country", "birthday", "city", "bike_brand", "phone_number", "send_email")
+        fields = (
+        "email", "first_name", "last_name", "country", "birthday", "city", "bike_brand", "phone_number", "send_email")
 
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
@@ -239,10 +245,10 @@ class UserCreationForm(CleanEmailMixin, forms.ModelForm):
         return user
 
 
-
 class UserProfileForm(forms.ModelForm):
     email = forms.CharField(required=False, widget=ButtonWidget())
     password = forms.CharField(required=False, widget=ButtonWidget())
+
     class Meta:
         model = User
         fields = ("first_name", "last_name", "country", "birthday", "city", "bike_brand", "phone_number", "send_email")
@@ -250,12 +256,14 @@ class UserProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
 
-        self.fields['email'].widget.attrs.update({'href': reverse('accounts:email_change_view'), 'class': 'btn btn-primary'})
-        self.fields['email'].widget.text = mark_safe("%s <small>%s</small>" % (self.instance.email, ugettext('Change Email')))
+        self.fields['email'].widget.attrs.update(
+            {'href': reverse('accounts:email_change_view'), 'class': 'btn btn-primary'})
+        self.fields['email'].widget.text = mark_safe(
+            "%s <small>%s</small>" % (self.instance.email, ugettext('Change Email')))
 
-        self.fields['password'].widget.attrs.update({'href': reverse('accounts:password_change'), 'class': 'btn btn-primary'})
+        self.fields['password'].widget.attrs.update(
+            {'href': reverse('accounts:password_change'), 'class': 'btn btn-primary'})
         self.fields['password'].widget.text = mark_safe("****** <small>%s</small>" % ugettext('Change Password'))
-
 
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -264,7 +272,6 @@ class UserProfileForm(forms.ModelForm):
         self.helper.layout = Layout(
             'email',
             'password',
-
 
             'first_name',
             'last_name',
@@ -325,4 +332,3 @@ class PasswordResetForm(forms.Form):
             'content_object': user,
         }
         mailgun = MailgunEmail.objects.create(**email_data)
-

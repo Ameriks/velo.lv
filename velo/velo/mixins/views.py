@@ -1,21 +1,26 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.cache import patch_response_headers
 from django.views.generic import ListView, CreateView, UpdateView
-from django_tables2 import SingleTableView
 from django.utils.safestring import mark_safe
 from django.utils import timezone
-import datetime
-from advert.models import FlashBanner
-from core.models import Competition, Distance
 from django.core.cache import cache
-from velo.utils import load_class
-from core.tasks import send_email_confirmation
 from django.utils.translation import ugettext_lazy as _
+
+from django_tables2 import SingleTableView
+import datetime
+
+from velo.advert.models import FlashBanner
+from velo.core.models import Competition, Distance
+from velo.velo.utils import load_class
+from velo.core.tasks import send_email_confirmation
 
 
 class CacheControlMixin(object):
-    cache_timeout = 60*5
+    cache_timeout = 60 * 5
 
     def get_cache_timeout(self):
         return self.cache_timeout
@@ -40,7 +45,8 @@ class SetPleaseVerifyEmail(object):
                     request.user.save()
                     send_email_confirmation.delay(request.user.id)
                 messages.info(request, mark_safe(_(
-                    'We sent email verification to your email address: {0}. Please verify that your email address is active. <a href="{1}">Resend</a> or <a href="{2}">Change email</a>'.format(request.user.email, resend_email_url, change_email_url))))
+                    'We sent email verification to your email address: {0}. Please verify that your email address is active. <a href="{1}">Resend</a> or <a href="{2}">Change email</a>'.format(
+                        request.user.email, resend_email_url, change_email_url))))
         return super(SetPleaseVerifyEmail, self).get(request, *args, **kwargs)
 
 
@@ -65,12 +71,10 @@ class SetCompetitionContextMixin(object):
             self.competition_class = class_(competition=self.competition)
         return self.competition_class
 
-
     def get_banners(self):
         if not self.competition:
             return None
         return FlashBanner.objects.filter(status=1).filter(competition__in=self.competition.get_ids())
-
 
     def set_competition(self, pk):
         if self.competition:
@@ -166,6 +170,7 @@ class SingleTableViewWithRequest(SetCompetitionContextMixin, SingleTableView):
 class CreateViewWithCompetition(RequestFormKwargsMixin, SetCompetitionContextMixin, CreateView):
     pass
 
+
 class UpdateViewWithCompetition(RequestFormKwargsMixin, SetCompetitionContextMixin, UpdateView):
     pass
 
@@ -174,6 +179,7 @@ class SearchMixin(object):
     add_link = None
     _search_form = None
     search_form = None
+
     def get_context_data(self, **kwargs):
         context = super(SearchMixin, self).get_context_data(**kwargs)
 
@@ -197,4 +203,3 @@ class SearchMixin(object):
             queryset = self.get_search_form().append_queryset(queryset)
 
         return queryset
-

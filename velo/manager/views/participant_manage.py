@@ -1,27 +1,27 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
-from django.http import Http404, HttpResponse
 from django.template.defaultfilters import slugify
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.generic import ListView, UpdateView, CreateView, DetailView
-from manager.forms import ParticipantListSearchForm, ParticipantForm, ParticipantCreateForm, ParticipantIneseCreateForm, \
-    ApplicationListSearchForm, InvoiceCreateForm, PreNumberAssignForm, ChangedNameForm
-from manager.tables import ManageParticipantTable, ManageApplicationTable
-from manager.tables.tables import PreNumberAssignTable, ChangedNameTable
-from manager.views.permission_view import ManagerPermissionMixin
-from payment.models import Payment
-from registration.models import Participant, Application, PreNumberAssign, ChangedName
-from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin, \
-    CreateViewWithCompetition, UpdateViewWithCompetition
-from velo.utils import load_class
+from django.views.generic import DetailView
 
+from velo.manager.forms import ParticipantListSearchForm, ParticipantForm, ParticipantCreateForm, \
+    ParticipantIneseCreateForm, \
+    ApplicationListSearchForm, InvoiceCreateForm, PreNumberAssignForm, ChangedNameForm
+from velo.manager.tables import ManageParticipantTable, ManageApplicationTable
+from velo.manager.tables.tables import PreNumberAssignTable, ChangedNameTable
+from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.registration.models import Participant, Application, PreNumberAssign, ChangedName
+from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, \
+    CreateViewWithCompetition, UpdateViewWithCompetition
 
 __all__ = [
     'ManageParticipantList', 'ManageParticipantUpdate', 'ManageParticipantCreate', 'ManageParticipantIneseCreate',
-    'ManageApplicationList', 'ManageApplication', 'ManagePreNumberAssignList', 'ManagePreNumberAssignUpdate', 'ManagePreNumberAssignCreate',
+    'ManageApplicationList', 'ManageApplication', 'ManagePreNumberAssignList', 'ManagePreNumberAssignUpdate',
+    'ManagePreNumberAssignCreate',
 ]
 
 
@@ -71,14 +71,13 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
         return super(ManageApplication, self).get(request, *args, **kwargs)
 
 
-
 class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Application
     table_class = ManageApplicationTable
     template_name = 'manager/table.html'
 
-
     search_form = None
+
     def get_search_form(self):
         if not self.search_form:
             self.search_form = ApplicationListSearchForm(request=self.request, competition=self.competition)
@@ -111,13 +110,13 @@ class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
         return queryset
 
 
-
 class ManageParticipantList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Participant
     table_class = ManageParticipantTable
     template_name = 'manager/table.html'
 
     search_form = None
+
     def get_search_form(self):
         if not self.search_form:
             self.search_form = ParticipantListSearchForm(request=self.request, competition=self.competition)
@@ -173,6 +172,7 @@ class ManageParticipantUpdate(ManagerPermissionMixin, UpdateViewWithCompetition)
         else:
             return reverse('manager:participant_list', kwargs={'pk': self.kwargs.get('pk')})
 
+
 class ManageParticipantCreate(ManagerPermissionMixin, CreateViewWithCompetition):
     pk_url_kwarg = 'pk_participant'
     model = Participant
@@ -183,7 +183,8 @@ class ManageParticipantCreate(ManagerPermissionMixin, CreateViewWithCompetition)
         if self.request.POST.get('submit_and_next', None):
             return reverse('manager:participant_create', kwargs={'pk': self.kwargs.get('pk')})
         elif self.request.POST.get('submit_and_continue', None):
-            return reverse('manager:participant', kwargs={'pk': self.kwargs.get('pk'), 'pk_participant': self.object.id})
+            return reverse('manager:participant',
+                           kwargs={'pk': self.kwargs.get('pk'), 'pk_participant': self.object.id})
         else:
             return reverse('manager:participant_list', kwargs={'pk': self.kwargs.get('pk')})
 
@@ -203,7 +204,8 @@ class ManageParticipantIneseCreate(ManageParticipantCreate):
         if self.request.POST.get('submit_and_next', None):
             return reverse('manager:participant_createi', kwargs={'pk': self.kwargs.get('pk')})
         elif self.request.POST.get('submit_and_continue', None):
-            return reverse('manager:participant', kwargs={'pk': self.kwargs.get('pk'), 'pk_participant': self.object.id})
+            return reverse('manager:participant',
+                           kwargs={'pk': self.kwargs.get('pk'), 'pk_participant': self.object.id})
         else:
             return reverse('manager:participant_list', kwargs={'pk': self.kwargs.get('pk')})
 
@@ -212,7 +214,7 @@ class ManagePreNumberAssignList(ManagerPermissionMixin, SingleTableViewWithReque
     model = PreNumberAssign
     table_class = PreNumberAssignTable
     template_name = 'manager/table.html'
-    
+
     @property
     def add_link(self):
         return reverse_lazy('manager:prenumber', kwargs={'pk': self.competition.id})
@@ -234,6 +236,7 @@ class ManagePreNumberAssignUpdate(ManagerPermissionMixin, UpdateViewWithCompetit
     def get_success_url(self):
         return reverse('manager:prenumber_list', kwargs={'pk': self.kwargs.get('pk')})
 
+
 class ManagePreNumberAssignCreate(ManagerPermissionMixin, CreateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = PreNumberAssign
@@ -254,7 +257,6 @@ class ChangedNameList(ManagerPermissionMixin, SingleTableViewWithRequest):
         return reverse_lazy('manager:changedname')
 
 
-
 class ChangedNameUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = ChangedName
@@ -264,6 +266,7 @@ class ChangedNameUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
     def get_success_url(self):
         return reverse('manager:changedname_list')
 
+
 class ChangedNameCreate(ManagerPermissionMixin, CreateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = ChangedName
@@ -272,8 +275,3 @@ class ChangedNameCreate(ManagerPermissionMixin, CreateViewWithCompetition):
 
     def get_success_url(self):
         return reverse('manager:changedname_list')
-
-
-
-
-

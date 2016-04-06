@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-
-# Create your views here.
 from django.views.generic import DetailView
-from advert.models import FlashBanner
-from velo.mixins.views import CacheControlMixin
+
+from velo.advert.models import FlashBanner
+from velo.velo.mixins.views import CacheControlMixin
 
 
 class FlashBannerView(CacheControlMixin, DetailView):

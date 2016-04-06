@@ -1,22 +1,28 @@
-from difflib import get_close_matches
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, TemplateView
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
+
+from difflib import get_close_matches
 from django_tables2 import SingleTableView
 from braces.views import LoginRequiredMixin
 from extra_views import NamedFormsetsMixin, CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
-from django.core.urlresolvers import reverse
 import datetime
-from core.formsets import CustomBaseInlineFormSet
-from core.models import Competition
-from registration.models import Participant, Application
-from team.forms import MemberInlineForm, TeamForm
-from team.models import Team, Member, MemberApplication
-from team.tables import TeamTable, TeamMyTable
-from velo.mixins.forms import GetClassNameMixin
-from velo.mixins.views import SetCompetitionContextMixin, SingleTableViewWithRequest, RequestFormKwargsMixin
-from django.utils.translation import ugettext_lazy as _
+
+from velo.core.formsets import CustomBaseInlineFormSet
+from velo.core.models import Competition
+from velo.registration.models import Participant, Application
+from velo.team.forms import MemberInlineForm, TeamForm
+from velo.team.models import Team, Member, MemberApplication
+from velo.team.tables import TeamTable, TeamMyTable
+from velo.velo.mixins.forms import GetClassNameMixin
+from velo.velo.mixins.views import SetCompetitionContextMixin, SingleTableViewWithRequest, RequestFormKwargsMixin
+
 
 
 class TeamAppliedView(SetCompetitionContextMixin, ListView):
@@ -122,10 +128,10 @@ class MemberInline(GetClassNameMixin, InlineFormSet):
                 delete_date_obj = datetime.datetime.strptime(delete_date, '%Y-%m-%d').date()
 
         if datetime.date.today() <= delete_date_obj:
-            print 'CAN DELETE'
+            print('CAN DELETE')
             return True
         else:
-            print 'CANNOT DELETE'
+            print('CANNOT DELETE')
             return False
 
 

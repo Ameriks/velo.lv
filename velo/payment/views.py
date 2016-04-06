@@ -1,28 +1,29 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from braces.views import CsrfExemptMixin, JsonRequestResponseMixin, LoginRequiredMixin
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
 from django.views.generic import DetailView, UpdateView
 from django.views.generic.edit import BaseUpdateView
 from django.core.urlresolvers import reverse
-from django_tables2 import SingleTableView
-import urllib
-from core.models import Competition, Log
 from django.utils.translation import ugettext as _
-from payment.forms import ApplicationPayUpdateForm, TeamPayForm
-from payment.models import Payment
-from payment.utils import get_price, get_form_message, approve_payment, validate_payment, get_total, \
+
+from braces.views import JsonRequestResponseMixin, LoginRequiredMixin
+
+from velo.core.models import Competition
+from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
+from velo.payment.models import Payment
+from velo.payment.utils import get_form_message, validate_payment, \
     get_participant_fee_from_price, get_insurance_fee_from_insurance
-from registration.models import Application
-from team.models import Team
-from velo.mixins.views import RequestFormKwargsMixin
-from velo.utils import SessionWHeaders
+from velo.registration.models import Application
+from velo.team.models import Team
+from velo.velo.mixins.views import RequestFormKwargsMixin
 
 
 class CheckPriceView(JsonRequestResponseMixin, DetailView):
     model = Competition
+
     def post(self, request, *args, **kwargs):
         try:
             year = int(request.POST.get('birthday')[0:4])
@@ -66,8 +67,6 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
         self.object = form.save()
         return HttpResponseRedirect(self.get_form_success_url(form))
 
-
-
     def get_form_kwargs(self):
         kwargs = super(ApplicationPayView, self).get_form_kwargs()
         kwargs.update({"participants": self.participants})
@@ -100,13 +99,15 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
                         participant.price = None
                         participant.save()
                         if valid:
-                            messages.error(self.request, _('Price expired. Start registering participants from step 1.'))
+                            messages.error(self.request,
+                                           _('Price expired. Start registering participants from step 1.'))
                         valid = False
-                # check if prices are still valid
+                        # check if prices are still valid
             if valid:
                 self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
                 if participant.insurance:
-                    self.total_insurance_fee += get_insurance_fee_from_insurance(self.object.competition, participant.insurance)
+                    self.total_insurance_fee += get_insurance_fee_from_insurance(self.object.competition,
+                                                                                 participant.insurance)
 
         if valid:
             if self.object.total_entry_fee != self.total_entry_fee or self.object.total_insurance_fee != self.total_insurance_fee:
@@ -118,7 +119,6 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
             return None
         else:
             return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
-
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationPayView, self).get_context_data(**kwargs)
@@ -170,7 +170,8 @@ class TeamPayView(LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
 
     def get_queryset(self):
         queryset = super(TeamPayView, self).get_queryset()
-        queryset = queryset.filter(owner=self.request.user).select_related('distance', 'distance__competition', 'distance__competition__parent')
+        queryset = queryset.filter(owner=self.request.user).select_related('distance', 'distance__competition',
+                                                                           'distance__competition__parent')
         return queryset
 
     def get_form_success_url(self, form):
@@ -221,11 +222,6 @@ class TeamPayView(LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
         return super(BaseUpdateView, self).post(request, *args, **kwargs)
 
 
-
-
-
-
-
 class PaymentReturnView(DetailView):
     model = Payment
     slug_field = 'erekins_code'
@@ -239,4 +235,3 @@ class PaymentReturnView(DetailView):
             elif self.object.content_type.model == 'team':
                 return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.content_object.id}))
         return validate_payment(self.object, user=True, request=request)
-

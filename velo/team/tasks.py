@@ -1,11 +1,16 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django.utils import timezone
+
 from difflib import get_close_matches
 from celery.schedules import crontab
 from celery.task import periodic_task, task
 import datetime
-from django.utils import timezone
-from core.models import Competition
-from registration.models import Participant
-from team.models import MemberApplication
+
+from velo.core.models import Competition
+from velo.registration.models import Participant
+from velo.team.models import MemberApplication
 
 
 @task

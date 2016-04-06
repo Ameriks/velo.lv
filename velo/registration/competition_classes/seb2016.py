@@ -4,14 +4,14 @@ from difflib import get_close_matches
 import datetime
 from django.db.models import Sum
 from django.utils import timezone
-from core.models import Log
-from registration.competition_classes.base import SEBCompetitionBase
-from registration.models import Application, ChangedName, PreNumberAssign, Number
+from velo.core.models import Log
+from velo.registration.competition_classes.base import SEBCompetitionBase
+from velo.registration.models import Application, ChangedName, PreNumberAssign, Number
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
-from registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
-from results.models import SebStandings, HelperResults, ChipScan, DistanceAdmin, Result
-from results.tables import ResultDistanceTable, ResultDistanceCheckpointTable
+from velo.registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
+from velo.results.models import SebStandings, HelperResults, ChipScan, DistanceAdmin, Result
+from velo.results.tables import ResultDistanceTable, ResultDistanceCheckpointTable
 
 
 class Seb2016(SEBCompetitionBase):

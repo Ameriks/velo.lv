@@ -1,14 +1,17 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from difflib import get_close_matches
-from django.template.defaultfilters import slugify
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+
 import pytz
 import xlwt
-import StringIO
-from core.models import Competition
-from payment.models import Payment
-from registration.models import Participant, Number, Application
-from results.models import Result, SebStandings, HelperResults
+from io import StringIO
+
+from slugify import slugify
+
+from velo.core.models import Competition
+from velo.payment.models import Payment
+from velo.registration.models import Participant, Number, Application
+from velo.results.models import Result, SebStandings, HelperResults
 
 riga_tz = pytz.timezone("Europe/Riga")
 
@@ -18,7 +21,7 @@ def create_standing_list(competition=None, competition_id=None):
         raise Exception('Expected at least one variable')
     if not competition:
         competition = Competition.objects.get(id=competition_id)
-    output = StringIO.StringIO()
+    output = StringIO()
     distances = competition.get_distances()
 
     wbk = xlwt.Workbook()
@@ -100,7 +103,7 @@ def create_start_list(competition=None, competition_id=None):
 
     root_competition = competition.get_root()
 
-    output = StringIO.StringIO()
+    output = StringIO()
     distances = competition.get_distances()
 
     wbk = xlwt.Workbook()

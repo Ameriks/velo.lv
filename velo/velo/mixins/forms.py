@@ -1,9 +1,14 @@
-import requests
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django import forms
+from django.utils.translation import ugettext as _
+
+import requests
 from requests.exceptions import ConnectionError
 import math
-from core.models import Log
-from django.utils.translation import ugettext as _
+
+from velo.core.models import Log
 
 
 class RequestKwargModelFormMixin(object):

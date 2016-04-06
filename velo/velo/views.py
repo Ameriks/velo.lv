@@ -1,41 +1,61 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
-from django_select2.util import get_field
-from django_select2.views import AutoResponseView, NO_ERR_RESP
 from django.utils import timezone
 from django.views.decorators.http import last_modified
 from django.views.i18n import javascript_catalog
+
+from django_select2.views import AutoResponseView
 from impersonate.decorators import allowed_user_required
 from impersonate.helpers import users_impersonable, get_paginator, get_redir_arg, get_redir_field
 
 
 class CustomAutoResponseView(AutoResponseView):
+
+    def get_queryset(self):
+        """Get queryset from cached widget."""
+        try:
+            return self.widget.filter_queryset(self.term, self.queryset, context=self.request.GET.get('context'))
+        except:
+            return self.widget.filter_queryset(self.term, self.queryset)
+
     def get(self, request, *args, **kwargs):
-        if request.method == 'GET':
-            term = request.GET.get('term', None)
-            field = get_field(request.GET.get('field_id'))
-            if term is None:
-                return self.render_to_response(self._results_to_context(('missing term', False, [], )))
-            if not term and not getattr(field, 'get_empty_results', False):
-                return self.render_to_response(self._results_to_context((NO_ERR_RESP, False, [], )))
+        """
+        Return a :class:`.django.http.JsonResponse`.
 
-            try:
-                page = int(request.GET.get('page', None))
-                if page <= 0:
-                    page = -1
-            except ValueError:
-                page = -1
-            if page == -1:
-                return self.render_to_response(self._results_to_context(('bad page no.', False, [], )))
-            context = request.GET.get('context', None)
-        else:
-            return self.render_to_response(self._results_to_context(('not a get request', False, [], )))
+        Example::
 
-        return self.render_to_response(
-            self._results_to_context(
-                self.get_results(request, term, page, context)
-                )
-            )
+            {
+                'results': [
+                    {
+                        'text': "foo",
+                        'id': 123
+                    }
+                ],
+                'more': true
+            }
+
+        """
+        self.widget = self.get_widget_or_404()
+        self.term = kwargs.get('term', request.GET.get('term', ''))
+        self.object_list = self.get_queryset()
+        context = self.get_context_data()
+
+        ret = []
+        for obj in context['object_list']:
+            ret2 = { 'text': self.widget.label_from_instance(obj), 'id': obj.pk, }
+            if hasattr(self.widget, 'extra_data_from_instance'):
+                ret2.update(self.widget.extra_data_from_instance(obj, self.request.GET.get('context')))
+            ret.append(ret2)
+
+        return JsonResponse({
+            'results': ret,
+            'more': context['page_obj'].has_next()
+        })
+
 
 last_modified_date = timezone.now()
 @last_modified(lambda req, **kw: last_modified_date)

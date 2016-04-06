@@ -1,17 +1,20 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import UpdateView
-from manager.forms import NumberForm, NumberListSearchForm
-from manager.tables import ManageNumberTable
-from manager.views.permission_view import ManagerPermissionMixin
-from registration.models import Number
-from velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
+
+from velo.manager.forms import NumberForm, NumberListSearchForm
+from velo.manager.tables import ManageNumberTable
+from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.registration.models import Number
+from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
 
 __all__ = [
     'ManageNumberList', 'ManageNumberUpdate',
 ]
+
 
 class ManageNumberList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Number
@@ -19,11 +22,11 @@ class ManageNumberList(ManagerPermissionMixin, SingleTableViewWithRequest):
     template_name = 'manager/table.html'
 
     search_form = None
+
     def get_search_form(self):
         if not self.search_form:
             self.search_form = NumberListSearchForm(request=self.request, competition=self.competition)
         return self.search_form
-
 
     def get_context_data(self, **kwargs):
         context = super(ManageNumberList, self).get_context_data(**kwargs)
@@ -33,10 +36,10 @@ class ManageNumberList(ManagerPermissionMixin, SingleTableViewWithRequest):
     def get_queryset(self):
         queryset = super(ManageNumberList, self).get_queryset()
         queryset = queryset.extra(
-                select={
-                    'participant_id': 'SELECT rp.id FROM registration_participant rp WHERE registration_number.participant_slug = rp.slug and rp.is_participating is True and rp.distance_id = registration_number.distance_id and rp.competition_id in %s LIMIT 1',
-                },
-                select_params = (self.competition.get_ids(), ),
+            select={
+                'participant_id': 'SELECT rp.id FROM registration_participant rp WHERE registration_number.participant_slug = rp.slug and rp.is_participating is True and rp.distance_id = registration_number.distance_id and rp.competition_id in %s LIMIT 1',
+            },
+            select_params=(self.competition.get_ids(),),
         ).select_related('distance')
 
         query_attrs = self.get_search_form().fields
@@ -70,4 +73,3 @@ class ManageNumberUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, Req
 
     def get_success_url(self):
         return reverse('manager:number_list', kwargs={'pk': self.kwargs.get('pk')})
-

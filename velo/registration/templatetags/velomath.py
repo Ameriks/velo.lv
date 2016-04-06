@@ -1,5 +1,5 @@
 from django import template
-from payment.utils import get_participant_fee_from_price, get_insurance_fee_from_insurance
+from velo.payment.utils import get_participant_fee_from_price, get_insurance_fee_from_insurance
 
 register = template.Library()
 

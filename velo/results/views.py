@@ -1,19 +1,23 @@
-# coding=utf-8
-from __future__ import unicode_literals
-import datetime
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.db.models import Q, Min
 from django.http import Http404, HttpResponse
 from django.template.defaultfilters import slugify
 from django.views.generic import ListView, TemplateView, DetailView
-from django_tables2 import SingleTableView
-from core.models import Competition, Distance
-from results.models import Result, SebStandings, TeamResultStandings
-from results.tables import ResultTeamStandingTable
-from team.models import MemberApplication
-from velo.mixins.views import SetCompetitionContextMixin
-from velo.utils import load_class
 from django.db import connection
 from django.core.cache import cache
+
+import datetime
+from django_tables2 import SingleTableView
+
+from velo.core.models import Competition
+from velo.results.models import Result, SebStandings, TeamResultStandings
+from velo.results.tables import ResultTeamStandingTable
+from velo.team.models import MemberApplication
+from velo.velo.mixins.views import SetCompetitionContextMixin
+from velo.velo.utils import load_class
+
 
 
 class ResultAllView(TemplateView):
@@ -245,7 +249,7 @@ class TeamResultsByTeamName(SetCompetitionContextMixin, TemplateView):
         default_timeout = 60*30
         if self.competition.competition_date == datetime.date.today():
             default_timeout = 60
-        print default_timeout
+        print(default_timeout)
 
         object_list = cache.get(cache_key)
         if not object_list:
@@ -318,7 +322,7 @@ class TeamResultsByTeamNameBetweenDistances(SetCompetitionContextMixin, Template
         default_timeout = 60*30
         if self.competition.competition_date == datetime.date.today():
             default_timeout = 60
-        print default_timeout
+        print(default_timeout)
 
         object_list = cache.get(cache_key)
         if not object_list:

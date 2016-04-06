@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 import datetime
 from django.utils.safestring import mark_safe
-from core.tasks import send_email_confirmation
+from velo.core.tasks import send_email_confirmation
 
 class UserEmailValidMiddleware(object):
     def process_request(self, request):

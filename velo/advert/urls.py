@@ -1,7 +1,9 @@
-# coding=utf-8
-from __future__ import unicode_literals  # u'' strings by default # Awesome :)
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf.urls import patterns, url
-from advert.views import FlashBannerView, FlashBannerRedirectView
+
+from velo.advert.views import FlashBannerView, FlashBannerRedirectView
 
 
 urlpatterns = patterns('',

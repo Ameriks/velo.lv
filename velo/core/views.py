@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
-
-import re
-from braces.views import LoginRequiredMixin
 from django.contrib import messages
-from django.contrib.sites.models import get_current_site
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.shortcuts import render, redirect, render_to_response, resolve_url
+from django.shortcuts import redirect, render_to_response, resolve_url
 from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
@@ -19,19 +16,23 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.template.response import TemplateResponse
-from django_downloadview import ObjectDownloadView
-from core.forms import UserCreationForm, ChangeEmailForm, ChangePasswordForm, UserProfileForm, NewEmailForm, \
-    AuthenticationFormCustom
-from core.models import Competition, Map, User
-from core.tasks import send_email_confirmation
-from gallery.models import Album, Video
-from news.models import News
-from results.models import DistanceAdmin
-from supporter.models import Supporter
-from velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin, SetPleaseVerifyEmail, \
-    CacheControlMixin
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout, get_user_model
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+
+from django_downloadview import ObjectDownloadView
+from braces.views import LoginRequiredMixin
+import re
+
+from velo.core.forms import UserCreationForm, ChangeEmailForm, ChangePasswordForm, UserProfileForm, NewEmailForm, \
+    AuthenticationFormCustom
+from velo.core.models import Competition, Map, User
+from velo.core.tasks import send_email_confirmation
+from velo.gallery.models import Album, Video
+from velo.news.models import News
+from velo.results.models import DistanceAdmin
+from velo.supporter.models import Supporter
+from velo.velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin, SetPleaseVerifyEmail, \
+    CacheControlMixin
 
 
 class IndexView(TemplateView):
@@ -40,11 +41,10 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-
         context.update({'competitions': Competition.objects.filter(is_in_menu=True).order_by('frontpage_ordering')})
 
-
-        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[:1]
+        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[
+                           :1]
         if not next_competition:
             next_competition = Competition.objects.order_by('-competition_date')[:1]
 
@@ -74,8 +74,10 @@ class CompetitionDetail(SetCompetitionContextMixin, DetailView):
                 calendar = [self.object, ]
         context.update({'calendar': calendar})
 
-        context.update({'galleries': Album.objects.filter(competition_id__in=[self.object.id, self.object.parent_id]).filter(is_processed=True).order_by('-id')[:5]})
-        context.update({'videos': Video.objects.filter(competition_id__in=[self.object.id, self.object.parent_id]).filter(status=1).order_by('-id')[:3]})
+        context.update({'galleries': Album.objects.filter(
+            competition_id__in=[self.object.id, self.object.parent_id]).filter(is_processed=True).order_by('-id')[:5]})
+        context.update({'videos': Video.objects.filter(
+            competition_id__in=[self.object.id, self.object.parent_id]).filter(status=1).order_by('-id')[:3]})
 
         return context
 
@@ -85,7 +87,6 @@ class MapGPXDownloadView(ObjectDownloadView):
     file_field = 'gpx'
     pk_url_kwarg = 'pk2'
     mimetype = 'application/gpx+xml'
-
 
 
 class MapView(SetCompetitionContextMixin, ListView):
@@ -101,11 +102,13 @@ class MapView(SetCompetitionContextMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
 
-        distanceadmin = DistanceAdmin.objects.filter(competition=self.competition).exclude(gpx=None).select_related('competition', 'distance', 'competition__parent').order_by('distance__id')
+        distanceadmin = DistanceAdmin.objects.filter(competition=self.competition).exclude(gpx=None).select_related(
+            'competition', 'distance', 'competition__parent').order_by('distance__id')
 
         context.update({'distanceadmin': distanceadmin})
 
         return context
+
 
 class UserRegistrationView(CreateView):
     model = User
@@ -121,6 +124,7 @@ class UserRegistrationView(CreateView):
         if request.user.is_authenticated():
             logout(request)
         return super(UserRegistrationView, self).get(request, *args, **kwargs)
+
 
 class UserEmailConfirm(DetailView):
     model = User
@@ -173,7 +177,6 @@ class ResendEmailView(LoginRequiredMixin, TemplateView):
         return HttpResponseRedirect(reverse('accounts:profile'))
 
 
-
 def new_user_email_view(request):
     form = NewEmailForm
     if request.method == 'POST' and request.POST.get('email'):
@@ -187,13 +190,15 @@ def new_user_email_view(request):
 
 class CalendarView(CacheControlMixin, TemplateView):
     template_name = 'core/calendar_view.html'
+
     def get_context_data(self, **kwargs):
         context = super(CalendarView, self).get_context_data(**kwargs)
 
         now = timezone.now()
 
-        this_year = Competition.objects.filter(competition_date__year=now.year).order_by('competition_date').select_related('parent')
-        next_year = Competition.objects.filter(competition_date__year=(now.year+1)).order_by('competition_date')
+        this_year = Competition.objects.filter(competition_date__year=now.year).order_by(
+            'competition_date').select_related('parent')
+        next_year = Competition.objects.filter(competition_date__year=(now.year + 1)).order_by('competition_date')
 
         context.update({
             'this_year': this_year,

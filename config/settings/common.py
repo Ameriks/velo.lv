@@ -46,7 +46,7 @@ THIRD_PARTY_APPS = (
     'djcelery',
     'ckeditor',
     'impersonate',
-    'shorturls',
+    # 'shorturls',  # NOT READY FOR Python 3
 )
 
 LOCAL_APPS = (
@@ -75,7 +75,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',  # CUSTOM
-    'velo.middleware.SSLRedirectMiddleware',
+    'velo.velo.middleware.SSLRedirectMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -123,7 +123,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default="postgis://velo:velo@dev.docker.local/velo"),
+    'default': env.db("DATABASE_URL", default="postgis://velolv:velolv@dev.docker.local/velolv"),
 }
 
 DATABASES['default']['ATOMIC_REQUESTS'] = True

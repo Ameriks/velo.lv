@@ -1,11 +1,17 @@
-from braces.views import PermissionRequiredMixin, LoginRequiredMixin
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.core.urlresolvers import reverse, reverse_lazy
-from manager.forms import NewsForm
-from manager.tables import ManageNewsTable
-from news.models import News
-from velo.mixins.views import SingleTableViewWithRequest, CreateViewWithCompetition, UpdateViewWithCompetition
+
+from braces.views import PermissionRequiredMixin, LoginRequiredMixin
+
+from velo.manager.forms import NewsForm
+from velo.manager.tables import ManageNewsTable
+from velo.news.models import News
+from velo.velo.mixins.views import SingleTableViewWithRequest, CreateViewWithCompetition, UpdateViewWithCompetition
 
 __all__ = ['ManageNewsList', 'ManageNewsUpdate', 'ManageNewsCreate']
+
 
 class ManageNewsList(PermissionRequiredMixin, LoginRequiredMixin, SingleTableViewWithRequest):
     permission_required = "news.add_news"
@@ -28,6 +34,7 @@ class ManageNewsUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateViewWi
     def get_success_url(self):
         return reverse('manager:news_list')
 
+
 class ManageNewsCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateViewWithCompetition):
     permission_required = "news.add_news"
     pk_url_kwarg = 'pk2'
@@ -37,7 +44,3 @@ class ManageNewsCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateViewWi
 
     def get_success_url(self):
         return reverse('manager:news_list')
-
-
-
-

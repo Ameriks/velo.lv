@@ -7,9 +7,9 @@ import requests
 import unicodedata
 import urllib
 import uuid
-from core.models import Competition
-from marketing.models import SMS, MailgunEmail
-from registration.models import Participant, Application
+from velo.core.models import Competition
+from velo.marketing.models import SMS, MailgunEmail
+from velo.registration.models import Participant, Application
 from premailer import transform
 import logging
 

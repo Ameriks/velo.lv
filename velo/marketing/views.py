@@ -1,14 +1,18 @@
-from braces.views import CsrfExemptMixin, SuperuserRequiredMixin
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View, TemplateView
+
+from braces.views import CsrfExemptMixin, SuperuserRequiredMixin
 import hashlib
 import hmac
-import logging
-from core.models import Log
-from marketing.models import SMS
-from registration.models import Participant, Application
+
+from velo.core.models import Log
+from velo.marketing.models import SMS
+from velo.registration.models import Participant, Application
 
 
 class SMSReportView(CsrfExemptMixin, View):
@@ -32,11 +36,11 @@ def mailgun_verify(api_key, token, timestamp, signature):
 
 @csrf_exempt
 def mailgun_webhook(request):
-    if not mailgun_verify(settings.MAILGUN_ACCESS_KEY, request.POST.get('token'), request.POST.get('timestamp'), request.POST.get('signature')):
+    if not mailgun_verify(settings.MAILGUN_ACCESS_KEY, request.POST.get('token'), request.POST.get('timestamp'),
+                          request.POST.get('signature')):
         return HttpResponse()
     event = Log.from_mailgun_request(request)
     return HttpResponse()
-
 
 
 class TestEmailTemplate(SuperuserRequiredMixin, TemplateView):
@@ -49,7 +53,6 @@ class TestEmailTemplate(SuperuserRequiredMixin, TemplateView):
         participants = Application.objects.get(id=33728).participant_set.order_by('primary_number__number')
 
         primary_competition = participants[0].competition
-
 
         context.update({
             'participants': participants,

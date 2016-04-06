@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 import re
 from django.core.management.base import BaseCommand
 import csv
-from gallery.models import Video
-from gallery.utils import youtube_video_id
+from velo.gallery.models import Video
+from velo.gallery.utils import youtube_video_id
 
 
 class Command(BaseCommand):

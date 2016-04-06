@@ -1,21 +1,21 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from difflib import get_close_matches
-import pytz
-import xlwt
-import StringIO
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django.db import connection
+
 from reportlab.lib import colors
-from core.models import Competition
-from core.pdf import getSampleStyleSheet, ParagraphStyle, PageNumCanvas, base_table_style
-from registration.models import Participant
-from results.models import Result, SebStandings, TeamResultStandings
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer, PageBreak, Image as pdfImage
 from reportlab.lib.units import inch, cm
-from team.models import MemberApplication
-from velo.utils import load_class
 from PIL import Image
-from django.db import connection
+from io import StringIO
+import pytz
+
+from velo.core.models import Competition
+from velo.core.pdf import getSampleStyleSheet, PageNumCanvas, base_table_style
+from velo.results.models import Result, SebStandings, TeamResultStandings
+from velo.team.models import MemberApplication
+from velo.velo.utils import load_class
 
 riga_tz = pytz.timezone("Europe/Riga")
 
@@ -73,7 +73,6 @@ class PDFReports(object):
         ]
         return Table(data, style=base_table_style)
 
-
     def result_table_group(self, items, point_attr='points_group'):
         try:
             top = [['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Laiks', 'Vid.ātr.', 'Punkti']]
@@ -114,7 +113,6 @@ class PDFReports(object):
             pdb.set_trace()
         return top + data
 
-
     @property
     def title(self):
         return "%s - %s" % (self.competition.parent, self.competition) if self.competition.level == 2 else unicode(
@@ -122,7 +120,8 @@ class PDFReports(object):
 
     def results_standings(self, top=10000):
         col_width = (
-            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
+            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm,
+            1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -131,7 +130,7 @@ class PDFReports(object):
             self.elements.append(Spacer(10, 10))
             items = SebStandings.objects.filter(distance=distance, competition=self.primary_competition).order_by(
                 '-distance_total').select_related('participant', 'competition', 'distance',
-                                                 'participant__primary_number')[:top]
+                                                  'participant__primary_number')[:top]
             data = [[Paragraph(unicode(distance), styles["Heading2"]), '', '', '', '', ''], ]
             if items:
                 children_count = self.primary_competition.children.count()
@@ -157,11 +156,10 @@ class PDFReports(object):
                 self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
 
-
-
     def results_standings_gender(self, top=10000):
         col_width = (
-            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
+            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm,
+            1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -170,9 +168,10 @@ class PDFReports(object):
                 self.elements.append(Spacer(10, 10))
                 data = [[Paragraph(unicode(gender_name), styles["Heading2"]), '', '', unicode(distance), '', ''], ]
 
-                items = SebStandings.objects.filter(distance=distance, participant__gender=gender, competition=self.primary_competition).order_by(
+                items = SebStandings.objects.filter(distance=distance, participant__gender=gender,
+                                                    competition=self.primary_competition).order_by(
                     '-distance_total').select_related('participant', 'competition', 'distance',
-                                                     'participant__primary_number')[:top]
+                                                      'participant__primary_number')[:top]
                 if items:
                     children_count = self.primary_competition.children.count()
                     data_line = ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Grupa']
@@ -197,10 +196,10 @@ class PDFReports(object):
                     self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
                 self.elements.append(PageBreak())
 
-
     def results_standings_groups(self, top=10000):
         col_width = (
-            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm)
+            1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm,
+            1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
 
@@ -238,9 +237,9 @@ class PDFReports(object):
                     self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
 
-
     def results_distance(self, top=10000):
-        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
+        col_width = (
+        1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -260,7 +259,6 @@ class PDFReports(object):
                 self.elements.append(Table(header, style=group_table_style))
                 self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
-
 
     def results_groups(self, top=10000):
         col_width = (1 * cm, 1 * cm, 3 * cm, 3 * cm, 1.5 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm)
@@ -284,7 +282,8 @@ class PDFReports(object):
             self.elements.append(PageBreak())
 
     def results_gender(self, top=10):
-        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
+        col_width = (
+        1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 4 * cm, 2 * cm, 1.2 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -303,7 +302,6 @@ class PDFReports(object):
                     self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
 
-
     def results_team(self):
         col_width = (2 * cm, 1.5 * cm, 3 * cm, 3 * cm, 1 * cm, 2 * cm, 1 * cm, 2 * cm)
         distances = self.competition.get_distances().filter(can_have_teams=True)
@@ -316,7 +314,6 @@ class PDFReports(object):
             ('ALIGNMENT', (3, 0), (-1, 0), 'RIGHT'),
             ('FONTSIZE', (0, 0), (-1, -1), 8),
         ]
-
 
         for distance in distances:
             items = TeamResultStandings.objects.filter(team__distance=distance).filter(
@@ -336,14 +333,15 @@ class PDFReports(object):
                         'team__member__memberapplication__participant__primary_number__number',
                         'team__member__memberapplication__participant__result__points_distance',
                         'team__member__memberapplication__participant__result__result_distance',
-                        'team__member__memberapplication__participant__result__time',)
+                        'team__member__memberapplication__participant__result__time', )
             self.elements.append(self.header(unicode("%s komandu rezultāti" % distance)))
             team_members = []
             team_place = 0
             for index, item in enumerate(items):
                 if index == 0 or item.get('team__id') != items[index - 1].get('team__id'):
                     team_place += 1
-                    team_members = [[Paragraph(str(team_place), styles["Heading2"]), Paragraph(item.get('team__title'), styles["Heading2"]), '', '', '', '','',
+                    team_members = [[Paragraph(str(team_place), styles["Heading2"]),
+                                     Paragraph(item.get('team__title'), styles["Heading2"]), '', '', '', '', '',
                                      Paragraph(str(item.get('team__teamresultstandings__points%i' % competition_index)),
                                                styles["Heading2"])],
                                     ['', 'Numurs', 'Vārds', 'Uzvārds', 'Gads', 'Laiks', 'Vieta', 'Punkti']]
@@ -364,18 +362,21 @@ class PDFReports(object):
         distances = self.competition.get_distances().filter(can_have_teams=True)
         children_count = self.primary_competition.children.count()
         for distance in distances:
-            items = TeamResultStandings.objects.filter(team__distance=distance).order_by('-points_total', '-team__is_featured', 'team__title').select_related('team')
+            items = TeamResultStandings.objects.filter(team__distance=distance).order_by('-points_total',
+                                                                                         '-team__is_featured',
+                                                                                         'team__title').select_related(
+                'team')
             self.elements.append(self.header(unicode("%s komandu rezultāti" % distance)))
             data = []
             data_line = ['Vieta', 'Nosaukums', ]
-            for i in range(1, children_count+1):
+            for i in range(1, children_count + 1):
                 data_line.append('%i.' % i)
             data_line.append('Kopā')
             data.append(data_line)
 
             for index, item in enumerate(items, start=1):
                 data_line = [str(index), item.team.title, ]
-                for i in range(1, children_count+1):
+                for i in range(1, children_count + 1):
                     data_line.append(str(getattr(item, 'points%i' % i, '') or ''))
                 data_line.append(str(item.points_total))
                 data.append(data_line)
@@ -383,14 +384,9 @@ class PDFReports(object):
             self.elements.append(Table(data, style=base_table_style))
             self.elements.append(PageBreak())
 
-
-
-
-
-
     def RM_result_table_distance(self, items):
         top = [
-            ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Apļi', 'Laiks', 'Vid.ātr.', 'Grupa', 'Vieta grupā' ]]
+            ['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Apļi', 'Laiks', 'Vid.ātr.', 'Grupa', 'Vieta grupā']]
         data = []
         for obj in items:
             laps = []
@@ -421,7 +417,8 @@ class PDFReports(object):
         return top + data
 
     def RM_results_distance(self, top=10000):
-        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 3.5 * cm, 1.5 * cm, 1.8 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
+        col_width = (
+        1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 3.5 * cm, 1.5 * cm, 1.8 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
         distances = self.competition.get_distances().filter(have_results=True)
         for distance in distances:
             self.elements.append(self.header(unicode("Rezultāti pa distancēm")))
@@ -429,17 +426,17 @@ class PDFReports(object):
             self.elements.append(Spacer(10, 10))
             items = Result.objects.filter(participant__distance=distance, competition=self.competition,
                                           status='').extra(
-                    select={
-                        'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
-                        'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
-                        'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
-                        'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
-                        'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
-                    },
-                ).order_by('time', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
-                                                                                     'participant__distance',
-                                                                                     'competition',
-                                                                                     'participant__competition')[:top]
+                select={
+                    'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+                    'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
+                    'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
+                    'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+                    'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
+                },
+            ).order_by('time', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
+                                                                      'participant__distance',
+                                                                      'competition',
+                                                                      'participant__competition')[:top]
             header = [[Paragraph(unicode(distance), styles["Heading2"]), '', '', '', '', ''], ]
             if items:
                 self.elements.append(
@@ -449,17 +446,17 @@ class PDFReports(object):
                 self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
 
-
-
     def RM_results_gender(self, top=10):
-        col_width = (1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 3.5 * cm, 1.5 * cm, 1.8 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
+        col_width = (
+        1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 3.5 * cm, 1.5 * cm, 1.8 * cm, 1.2 * cm, 1.4 * cm, 1.2 * cm)
         distances = self.competition.get_distances().filter(have_results=True)
         for distance in distances:
             self.elements.append(self.header(unicode("Rezultāti pa dzimumiem")))
             for gender, gender_name in [('M', 'Vīrieši'), ('F', 'Sievietes')]:
                 self.elements.append(Spacer(10, 10))
-                items = Result.objects.filter(participant__distance=distance, participant__gender=gender, competition=self.competition,
-                                          status='').extra(
+                items = Result.objects.filter(participant__distance=distance, participant__gender=gender,
+                                              competition=self.competition,
+                                              status='').extra(
                     select={
                         'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
                         'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
@@ -468,21 +465,19 @@ class PDFReports(object):
                         'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
                     },
                 ).order_by('time', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
-                                                                                     'participant__distance',
-                                                                                     'competition',
-                                                                                     'participant__competition')[:top]
-
-
+                                                                          'participant__distance',
+                                                                          'competition',
+                                                                          'participant__competition')[:top]
 
                 header = [[Paragraph(unicode(gender_name), styles["Heading2"]), '', '', unicode(distance), '', ''], ]
                 if items:
                     self.elements.append(
-                        Table(header + self.RM_result_table_distance(items), style=group_table_style, colWidths=col_width))
+                        Table(header + self.RM_result_table_distance(items), style=group_table_style,
+                              colWidths=col_width))
                 else:
                     self.elements.append(Table(header, style=group_table_style))
                     self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
-
 
     def RM_result_table_group(self, items, point_attr='points_group'):
         top = [['', '#', 'Vārds', 'Uzvārds', 'Gads', 'Komanda', 'Apļi', 'Laiks', 'Vid.ātr.']]
@@ -504,16 +499,14 @@ class PDFReports(object):
             if obj.time and laps:
                 laps.pop()
 
-
             data.append([obj.result_group, obj.number, Paragraph(obj.participant.first_name, styles["SmallNormal"]),
                          Paragraph(obj.participant.last_name, styles["SmallNormal"]),
                          Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
                          Paragraph(obj.participant.team_name, styles["SmallNormal"]),
                          Paragraph(str("<br />\n".join(laps)), styles["XSmallNormal"]),
                          Paragraph(obj.time.strftime("%H:%M:%S") if obj.time else "", styles["SmallNormal"]),
-                         Paragraph(str(obj.avg_speed), styles["SmallNormal"]),])
+                         Paragraph(str(obj.avg_speed), styles["SmallNormal"]), ])
         return top + data
-
 
     def RM_results_groups(self, top=10000):
         col_width = (1 * cm, 1 * cm, 3 * cm, 3 * cm, 1.5 * cm, 4 * cm, 1.5 * cm, 1.8 * cm, 1.2 * cm)
@@ -524,8 +517,9 @@ class PDFReports(object):
             for group in self.processing_class.groups.get(distance.id):
                 self.elements.append(Spacer(10, 10))
 
-                items = Result.objects.filter(participant__distance=distance, competition=self.competition, participant__group=group,
-                                          status='').extra(
+                items = Result.objects.filter(participant__distance=distance, competition=self.competition,
+                                              participant__group=group,
+                                              status='').extra(
                     select={
                         'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
                         'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
@@ -534,9 +528,9 @@ class PDFReports(object):
                         'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
                     },
                 ).order_by('time', 'l5', 'l4', 'l3', 'l2', 'l1').select_related('participant', 'number',
-                                                                                     'participant__distance',
-                                                                                     'competition',
-                                                                                     'participant__competition')[:top]
+                                                                                'participant__distance',
+                                                                                'competition',
+                                                                                'participant__competition')[:top]
 
                 header = [[Paragraph(unicode(group), styles["Heading2"]), '', '', unicode(distance), '', ''], ]
                 if items:
@@ -546,9 +540,6 @@ class PDFReports(object):
                     self.elements.append(Table(header, style=group_table_style))
                     self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
-
-
-
 
     def RM_results_team(self):
         col_width = (2 * cm, 1.5 * cm, 3 * cm, 3 * cm, 1 * cm, 2 * cm, 1 * cm, 3 * cm)
@@ -562,7 +553,6 @@ class PDFReports(object):
             ('ALIGNMENT', (3, 0), (-1, 0), 'RIGHT'),
             ('FONTSIZE', (0, 0), (-1, -1), 8),
         ]
-
 
         for distance in distances:
 
@@ -606,7 +596,6 @@ class PDFReports(object):
     """, [distance.id, distance.id])
             object_list = cursor.fetchall()
 
-
             self.elements.append(self.header(unicode("%s komandu rezultāti" % distance)))
             team_members = []
             team_place = 0
@@ -621,10 +610,12 @@ class PDFReports(object):
                     current_team_index += 1
                     current_team_member_index = 1
 
-                    team_members = [[Paragraph(str(current_team_index), styles["Heading2"]), Paragraph(item[3], styles["Heading2"]), '', '', '', '','',
-                                     Paragraph(str(item[11]),
-                                               styles["Heading2"])],
-                                    ['', 'Numurs', 'Vārds', 'Uzvārds', 'Gads', 'Laiks', '', '']]
+                    team_members = [
+                        [Paragraph(str(current_team_index), styles["Heading2"]), Paragraph(item[3], styles["Heading2"]),
+                         '', '', '', '', '',
+                         Paragraph(str(item[11]),
+                                   styles["Heading2"])],
+                        ['', 'Numurs', 'Vārds', 'Uzvārds', 'Gads', 'Laiks', '', '']]
 
                 else:
                     current_team_member_index += 1
@@ -639,8 +630,6 @@ class PDFReports(object):
                 if len(object_list) == index + 1 or item[0] != object_list[index + 1][0]:
                     self.elements.append(Table(team_members, style=team_table_style, colWidths=col_width))
             self.elements.append(PageBreak())
-
-
 
     def build(self):
         self.doc.build(self.elements, canvasmaker=PageNumCanvas)

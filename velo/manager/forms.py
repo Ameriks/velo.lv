@@ -1,28 +1,31 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from crispy_forms.bootstrap import StrictButton, FieldWithButtons
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Submit, Fieldset, HTML, Div, Field
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django import forms
 from django.db.models import Count
 from django.template.defaultfilters import slugify
-from django_select2 import AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
+from django.utils.translation import ugettext as _
+
+from crispy_forms.bootstrap import StrictButton, FieldWithButtons
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column, Submit, Fieldset, HTML, Div, Field
+# from django_select2 import AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
 import math
 import requests
-from core.models import Competition, Distance, Insurance
-from manager.select2_fields import NumberChoices, UserChoices, NumberChoice, ParticipantChoices, NumberAllChoices
-from manager.tasks import update_results_for_participant
-from manager.widgets import PhotoPickWidget
-from news.models import News
-from payment.models import ActivePaymentChannel, Price
-from payment.utils import create_application_invoice
-from registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
-from results.models import DistanceAdmin, Result, LapResult, UrlSync
-from team.forms import MemberInlineForm, TeamForm
-from team.models import Member, Team
-from velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin
-from django.utils.translation import ugettext as _
-from velo.utils import load_class
+
+from velo.core.models import Competition, Distance, Insurance
+# from velo.manager.select2_fields import NumberChoices, UserChoices, NumberChoice, ParticipantChoices, NumberAllChoices
+from velo.manager.tasks import update_results_for_participant
+from velo.manager.widgets import PhotoPickWidget
+from velo.news.models import News
+from velo.payment.models import ActivePaymentChannel, Price
+from velo.payment.utils import create_application_invoice
+from velo.registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
+from velo.results.models import DistanceAdmin, Result, LapResult, UrlSync
+from velo.team.forms import MemberInlineForm, TeamForm
+from velo.team.models import Member, Team
+from velo.velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin
+from velo.velo.utils import load_class
 
 
 class InvoiceCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
@@ -593,17 +596,17 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
 
 
 class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmailMixin, forms.ModelForm):
-    primary_number = NumberChoice(required=False, widget=AutoHeavySelect2Widget(select2_options={
-        'ajax': {
-            'dataType': 'json',
-            'quietMillis': 100,
-            'data': '*START*django_select2.runInContextHelper(get_participant_params, selector)*END*',
-            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
-        },
-        "minimumResultsForSearch": 0,
-        "minimumInputLength": 0,
-        "closeOnSelect": True
-    }))
+    # primary_number = NumberChoice(required=False, widget=AutoHeavySelect2Widget(select2_options={
+    #     'ajax': {
+    #         'dataType': 'json',
+    #         'quietMillis': 100,
+    #         'data': '*START*django_select2.runInContextHelper(get_participant_params, selector)*END*',
+    #         'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
+    #     },
+    #     "minimumResultsForSearch": 0,
+    #     "minimumInputLength": 0,
+    #     "closeOnSelect": True
+    # }))
     class Meta:
         model = Participant
         widgets = {
@@ -727,18 +730,18 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
 
 
 class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
-    registrant = UserChoices(required=False)
-    numbers = NumberChoices(required=False, widget=AutoHeavySelect2MultipleWidget(select2_options={
-        'ajax': {
-            'dataType': 'json',
-            'quietMillis': 100,
-            'data': '*START*django_select2.runInContextHelper(get_participant_params, selector)*END*',
-            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
-        },
-        "minimumResultsForSearch": 0,
-        "minimumInputLength": 0,
-        "closeOnSelect": True
-    }))
+    # registrant = UserChoices(required=False)
+    # numbers = NumberChoices(required=False, widget=AutoHeavySelect2MultipleWidget(select2_options={
+    #     'ajax': {
+    #         'dataType': 'json',
+    #         'quietMillis': 100,
+    #         'data': '*START*django_select2.runInContextHelper(get_participant_params, selector)*END*',
+    #         'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
+    #     },
+    #     "minimumResultsForSearch": 0,
+    #     "minimumInputLength": 0,
+    #     "closeOnSelect": True
+    # }))
 
     reset_group = False
     class Meta:
@@ -802,7 +805,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         obj = super(ParticipantForm, self).save(commit)
 
         # create result update task for participant
-        print 'recalculate?'
+        print('recalculate?')
         # TODO: Need to optimize place and point recalculation.
         update_results_for_participant(obj.id)
 
@@ -965,29 +968,29 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
 
 class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
     calculate_time_field = forms.CharField(required=False)
-    participant = ParticipantChoices(required=True, widget=AutoHeavySelect2Widget(select2_options={
-        'ajax': {
-            'dataType': 'json',
-            'quietMillis': 100,
-            'data': '*START*django_select2.runInContextHelper(get_result_params, selector)*END*',
-            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
-        },
-        "minimumResultsForSearch": 0,
-        "minimumInputLength": 0,
-        "closeOnSelect": True
-    }))
+    # participant = ParticipantChoices(required=True, widget=AutoHeavySelect2Widget(select2_options={
+    #     'ajax': {
+    #         'dataType': 'json',
+    #         'quietMillis': 100,
+    #         'data': '*START*django_select2.runInContextHelper(get_result_params, selector)*END*',
+    #         'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
+    #     },
+    #     "minimumResultsForSearch": 0,
+    #     "minimumInputLength": 0,
+    #     "closeOnSelect": True
+    # }))
     zero_time = forms.TimeField(label="Zero Time", required=False, widget=forms.TimeInput(format='%H:%M:%S.%f'))
-    number = NumberAllChoices(required=False, widget=AutoHeavySelect2Widget(select2_options={
-        'ajax': {
-            'dataType': 'json',
-            'quietMillis': 100,
-            'data': '*START*django_select2.runInContextHelper(get_result_params, selector)*END*',
-            'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
-        },
-        "minimumResultsForSearch": 0,
-        "minimumInputLength": 0,
-        "closeOnSelect": True
-    }))
+    # number = NumberAllChoices(required=False, widget=AutoHeavySelect2Widget(select2_options={
+    #     'ajax': {
+    #         'dataType': 'json',
+    #         'quietMillis': 100,
+    #         'data': '*START*django_select2.runInContextHelper(get_result_params, selector)*END*',
+    #         'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
+    #     },
+    #     "minimumResultsForSearch": 0,
+    #     "minimumInputLength": 0,
+    #     "closeOnSelect": True
+    # }))
     class Meta:
         model = Result
         fields = ('competition', 'participant', 'time', 'status', 'leader', 'zero_time', 'number')  # 'number',
@@ -1065,7 +1068,7 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
         obj = super(ResultForm, self).save(commit)
 
         # create result update task for participant
-        print 'recalculate?'
+        print('recalculate?')
         # TODO: Need to optimize place and point recalculation.
         # update_results_for_result(obj)
 

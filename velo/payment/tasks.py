@@ -7,8 +7,8 @@ from celery.task import periodic_task
 
 from django.utils import timezone
 
-from payment.models import Payment
-from payment.utils import validate_payment
+from velo.payment.models import Payment
+from velo.payment.utils import validate_payment
 
 
 @periodic_task(run_every=crontab(minute="*/10", ))

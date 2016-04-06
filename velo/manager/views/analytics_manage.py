@@ -1,18 +1,21 @@
-from django.db.models import Count, F
-from django_tables2 import SingleTableView
-from manager.tables import ManageParticipantTable, ManageResultNonParticipantTable, ManageFindNumberViewTable, \
-    ManageApplicationTable, HelperResultsMatchViewTable
-from manager.tables.tables import ManageParticipantDifferSlugTable, ManageParticipantToNumberTable
-from manager.views.permission_view import ManagerPermissionMixin
-from payment.models import Payment
-from registration.models import Participant, Number, Application
-from results.models import Result, HelperResults
-from velo.mixins.views import SingleTableViewWithRequest
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
 
+from django.db.models import Count, F
+
+from velo.manager.tables import ManageParticipantTable, ManageResultNonParticipantTable, ManageFindNumberViewTable, \
+    ManageApplicationTable, HelperResultsMatchViewTable
+from velo.manager.tables.tables import ManageParticipantDifferSlugTable, ManageParticipantToNumberTable
+from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.registration.models import Participant, Number, Application
+from velo.results.models import Result, HelperResults
+from velo.velo.mixins.views import SingleTableViewWithRequest
 
 __all__ = [
-    'MultipleSameSlugView', 'MultipleNumbersView', 'ResultAssignedToInactiveParticipant', 'DifferNumberSlugView', 'MatchParticipantToNumberView', 'FindNumberView', 'PayedAmountNotEqualView', 'MatchResultParticipantView'
+    'MultipleSameSlugView', 'MultipleNumbersView', 'ResultAssignedToInactiveParticipant', 'DifferNumberSlugView',
+    'MatchParticipantToNumberView', 'FindNumberView', 'PayedAmountNotEqualView', 'MatchResultParticipantView'
 ]
+
 
 class PayedAmountNotEqualView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Application
@@ -28,13 +31,13 @@ class PayedAmountNotEqualView(ManagerPermissionMixin, SingleTableViewWithRequest
             # select={
             #     'participant_payment_sum': "Select sum(pp.final_price) from registration_participant pp where pp.application_id = registration_application.id",
             #     'payment_amount': 'Select ppp2.total from payment_payment ppp2 where ppp2.object_id=registration_application.id and ppp2.content_type_id=19 and ppp2.status=30 Limit 1'},
-            where=["(Select sum(pp.final_price) from registration_participant pp where pp.application_id = registration_application.id) != (Select max(ppp2.total) from payment_payment ppp2 where ppp2.object_id=registration_application.id and ppp2.content_type_id=19 and ppp2.status=30 Limit 1)"],
+            where=[
+                "(Select sum(pp.final_price) from registration_participant pp where pp.application_id = registration_application.id) != (Select max(ppp2.total) from payment_payment ppp2 where ppp2.object_id=registration_application.id and ppp2.content_type_id=19 and ppp2.status=30 Limit 1)"],
         )
 
         # queryset = queryset.values("competition", "payment_status", "discount_code", "email", "external_invoice_nr", "participant_payment_sum", "payment_amount")
 
         return queryset
-
 
 
 class MultipleSameSlugView(ManagerPermissionMixin, SingleTableViewWithRequest):
@@ -43,7 +46,10 @@ class MultipleSameSlugView(ManagerPermissionMixin, SingleTableViewWithRequest):
     template_name = 'manager/table.html'
 
     def get_queryset(self):
-        double_participants = Participant.objects.filter(is_participating=True, competition_id__in=self.competition.get_ids()).order_by('slug', 'distance').values('slug').annotate(c=Count('id')).filter(c__gt=1).values('slug')
+        double_participants = Participant.objects.filter(is_participating=True,
+                                                         competition_id__in=self.competition.get_ids()).order_by('slug',
+                                                                                                                 'distance').values(
+            'slug').annotate(c=Count('id')).filter(c__gt=1).values('slug')
         slugs = [slug.get('slug') for slug in double_participants]
 
         queryset = super(MultipleSameSlugView, self).get_queryset()
@@ -59,7 +65,8 @@ class DifferNumberSlugView(ManagerPermissionMixin, SingleTableViewWithRequest):
     template_name = 'manager/table.html'
 
     def get_queryset(self):
-        child_ids = [competition.id for competition in self.competition.parent.get_children()] + [self.competition.parent.id, ]
+        child_ids = [competition.id for competition in self.competition.parent.get_children()] + [
+            self.competition.parent.id, ]
 
         queryset = super(DifferNumberSlugView, self).get_queryset()
         queryset = queryset.filter(competition_id__in=child_ids, is_participating=True)
@@ -80,7 +87,8 @@ class MatchParticipantToNumberView(ManagerPermissionMixin, SingleTableViewWithRe
         queryset = queryset.exclude(participant_slug='')
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
         queryset = queryset.exclude(participant_slug=F('participant__slug'))
-        queryset = queryset.values('id', 'number', 'participant_slug', 'group', 'participant__slug', 'participant__first_name', 'participant__last_name', 'participant__id')
+        queryset = queryset.values('id', 'number', 'participant_slug', 'group', 'participant__slug',
+                                   'participant__first_name', 'participant__last_name', 'participant__id')
         return queryset
 
 
@@ -90,7 +98,9 @@ class MultipleNumbersView(ManagerPermissionMixin, SingleTableViewWithRequest):
     template_name = 'manager/table.html'
 
     def get_queryset(self):
-        multiple_numbers = Number.objects.filter(competition_id__in=self.competition.get_ids()).exclude(participant_slug='').order_by('distance', 'group', 'participant_slug').values('participant_slug').annotate(c=Count('id')).filter(c__gt=1)
+        multiple_numbers = Number.objects.filter(competition_id__in=self.competition.get_ids()).exclude(
+            participant_slug='').order_by('distance', 'group', 'participant_slug').values('participant_slug').annotate(
+            c=Count('id')).filter(c__gt=1)
 
         slugs = [slug.get('participant_slug') for slug in multiple_numbers]
 
@@ -120,7 +130,8 @@ class FindNumberView(ManagerPermissionMixin, SingleTableViewWithRequest):
 
     def get_queryset(self):
         queryset = super(FindNumberView, self).get_queryset()
-        queryset = queryset.filter(competition_id__in=self.competition.get_ids(), is_participating=True, primary_number=None)
+        queryset = queryset.filter(competition_id__in=self.competition.get_ids(), is_participating=True,
+                                   primary_number=None)
         queryset = queryset.select_related('distance', 'competition')
         return queryset
 
@@ -136,4 +147,3 @@ class MatchResultParticipantView(ManagerPermissionMixin, SingleTableViewWithRequ
 
         queryset = queryset.select_related('competition', 'participant')
         return queryset
-

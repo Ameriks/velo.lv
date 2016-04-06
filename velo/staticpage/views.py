@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
 
 from django.http import Http404
-
 from django.views.generic import DetailView
 from django.core.exceptions import ObjectDoesNotExist
-from staticpage.models import StaticPage
-from velo.mixins.views import SetCompetitionContextMixin
 from django.utils.translation import ugettext as _
+
+from velo.staticpage.models import StaticPage
+from velo.velo.mixins.views import SetCompetitionContextMixin
 
 
 class StaticPageView(SetCompetitionContextMixin, DetailView):

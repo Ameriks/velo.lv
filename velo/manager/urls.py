@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf.urls import patterns, url
-from manager.views import ManageParticipantList, ManageCompetitionList, ManageCompetitionDetail, ManageParticipantUpdate, \
+from velo.manager.views import ManageParticipantList, ManageCompetitionList, ManageCompetitionDetail, ManageParticipantUpdate, \
     ManageAppliedTeamMembersList, ManageParticipantCreate, ManageNumberList, ManageNumberUpdate, ManageDistanceAdminList, \
     ManageDistanceAdminUpdate, ManageTeamList, ManageTeamUpdate, MultipleSameSlugView, MultipleNumbersView, \
     ResultAssignedToInactiveParticipant, ManageResultCreate, DifferNumberSlugView, \
@@ -7,10 +10,10 @@ from manager.views import ManageParticipantList, ManageCompetitionList, ManageCo
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
     ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView, ManagePriceList, ManagePriceCreate, ManagePriceUpdate, \
     MatchResultParticipantView, ManageNewsList, ManageNewsCreate, ManageNewsUpdate
-from manager.views.participant_manage import ManagePreNumberAssignList, ManagePreNumberAssignUpdate, \
+from velo.manager.views.participant_manage import ManagePreNumberAssignList, ManagePreNumberAssignUpdate, \
     ManagePreNumberAssignCreate, ChangedNameList, ChangedNameCreate, ChangedNameUpdate
-from manager.views.results_manage import ManageResultList, ManageResultUpdate
-from team.views import TeamApply
+from velo.manager.views.results_manage import ManageResultList, ManageResultUpdate
+from velo.team.views import TeamApply
 
 urlpatterns = patterns('',
 

@@ -1,15 +1,17 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.conf.urls import patterns, url
-from core.views import CompetitionDetail, MapView, MapGPXDownloadView
-from staticpage.views import StaticPageView
-from registration.views import ParticipantList, TeamJsonList, ParticipantSearchView, DataForExternalTotal, \
-    DataForExternalAll, BikeBrandJsonList
 from django.utils.translation import ugettext_lazy as _
-from results.views import ResultList, SebStandingResultList, SebTeamResultList, SebTeamResultStandingList, \
+
+from velo.core.views import CompetitionDetail, MapView, MapGPXDownloadView
+from velo.staticpage.views import StaticPageView
+from velo.registration.views import ParticipantList, TeamJsonList, ParticipantSearchView, DataForExternalTotal, \
+    DataForExternalAll, BikeBrandJsonList
+from velo.results.views import ResultList, SebStandingResultList, SebTeamResultList, SebTeamResultStandingList, \
     TeamResultsByTeamName, ResultDiplomaPDF, TeamResultsByTeamNameBetweenDistances
-from supporter.views import CompetitionSupporters, CompetitionIframeSupporters
-from team.views import TeamAppliedView, TeamListView, TeamView
+from velo.supporter.views import CompetitionSupporters, CompetitionIframeSupporters
+from velo.team.views import TeamAppliedView, TeamListView, TeamView
 
 urlpatterns = patterns('',
                        url(r'^(?P<pk>\d+)/$', CompetitionDetail.as_view(), name='competition'),

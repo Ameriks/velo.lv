@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import core.models
+import velo.core.models
 import django_countries.fields
 import mptt.fields
 import jsonfield.fields
@@ -85,8 +85,8 @@ class Migration(migrations.Migration):
                 ('legacy_id', models.IntegerField(null=True, blank=True)),
                 ('is_in_menu', models.BooleanField(default=False)),
                 ('skin', models.CharField(max_length=50, blank=True)),
-                ('logo', easy_thumbnails.fields.ThumbnailerImageField(upload_to=core.models._get_logo_upload_path, blank=True)),
-                ('apply_image', easy_thumbnails.fields.ThumbnailerImageField(upload_to=core.models._get_logo_upload_path, blank=True)),
+                ('logo', easy_thumbnails.fields.ThumbnailerImageField(upload_to=velo.core.models._get_logo_upload_path, blank=True)),
+                ('apply_image', easy_thumbnails.fields.ThumbnailerImageField(upload_to=velo.core.models._get_logo_upload_path, blank=True)),
                 ('params', jsonfield.fields.JSONField(null=True, blank=True)),
                 ('sms_text', models.CharField(max_length=255, blank=True)),
                 ('lft', models.PositiveIntegerField(editable=False, db_index=True)),
@@ -171,7 +171,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=50)),
                 ('term', models.TextField(blank=True)),
-                ('terms_doc', models.FileField(upload_to=core.models._get_insurance_term_upload_path, blank=True)),
+                ('terms_doc', models.FileField(upload_to=velo.core.models._get_insurance_term_upload_path, blank=True)),
             ],
         ),
         migrations.CreateModel(
@@ -193,7 +193,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=255)),
-                ('image', easy_thumbnails.fields.ThumbnailerImageField(upload_to=core.models._get_map_upload_path)),
+                ('image', easy_thumbnails.fields.ThumbnailerImageField(upload_to=velo.core.models._get_map_upload_path)),
                 ('ordering', models.IntegerField(default=0)),
                 ('competition', models.ForeignKey(to='core.Competition')),
             ],

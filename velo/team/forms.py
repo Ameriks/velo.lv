@@ -1,24 +1,27 @@
-# coding=utf-8
-from __future__ import unicode_literals
-from crispy_forms.layout import Layout, Row, Column, Field, Fieldset, HTML, Submit, Div
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
 
 from django import forms
-import math
-from crispy_forms.helper import FormHelper
 from django.utils import timezone
-from django.template.defaultfilters import slugify
-import datetime
-from core.models import Distance, CustomSlug
-from team.models import Member, Team
-from velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin, CleanEmailMixin
 from django.utils.translation import ugettext_lazy as _
-from velo.utils import bday_from_LV_SSN
+
+from crispy_forms.layout import Layout, Row, Column, Field, Fieldset, HTML, Submit, Div
+from crispy_forms.helper import FormHelper
+import math
+import datetime
+
+from slugify import slugify
+
+from velo.core.models import Distance, CustomSlug
+from velo.team.models import Member, Team
+from velo.velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin, CleanEmailMixin
+from velo.velo.utils import bday_from_LV_SSN
 
 
 class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     class Meta:
         model = Member
-        fields = ('country', 'ssn', 'first_name', 'last_name', 'id', 'birthday', 'gender' )
+        fields = ('country', 'ssn', 'first_name', 'last_name', 'id', 'birthday', 'gender')
 
     def save(self, commit=True):
         obj = super(MemberInlineForm, self).save(commit=False)
@@ -45,7 +48,6 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                 return bday_from_LV_SSN(ssn)
             else:
                 return self.cleaned_data.get('birthday')
-
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -75,7 +77,8 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                     member = Member.objects.exclude(id=self.instance.id).filter(status=Member.STATUS_ACTIVE).get(
                         team__distance__competition_id=self.instance.team.distance.competition_id, ssn=ssn)
                     self._errors.update({
-                    'ssn': [_("Member with his SSN is already registered in other team - {0}.").format(member.team), ]})
+                        'ssn': [
+                            _("Member with his SSN is already registered in other team - {0}.").format(member.team), ]})
                 except:
                     pass
         else:
@@ -85,7 +88,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                                               birthday=cleaned_data.get('birthday', '')).slug
             except CustomSlug.DoesNotExist:
                 slug = slugify('%s-%s-%i' % (cleaned_data.get('first_name', ''), cleaned_data.get('last_name', ''),
-                                             cleaned_data.get('birthday', '').year))
+                                             cleaned_data.get('birthday', '').year), only_ascii=True)
 
             try:
                 member = Member.objects.exclude(id=self.instance.id).filter(status=Member.STATUS_ACTIVE).get(
@@ -110,7 +113,6 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         else:
             return self.cleaned_data.get('gender')
 
-
     def clean_last_name(self):
         if self.instance.id and not self.request.user.has_perm('team.change_member'):
             return self.instance.last_name
@@ -122,7 +124,6 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             return self.instance.country
         else:
             return self.cleaned_data.get('country')
-
 
     def __init__(self, *args, **kwargs):
         super(MemberInlineForm, self).__init__(*args, **kwargs)
@@ -160,7 +161,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                     ),
                     'id',
                     Div(
-                        Field('DELETE',),
+                        Field('DELETE', ),
                         css_class='hidden',
                     ),
                     css_class='col-sm-12'
@@ -173,14 +174,16 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
     class Meta:
         model = Team
         fields = (
-        'distance', 'title', 'description', 'img', 'shirt_image', 'country', 'contact_person', 'email', 'phone_number',
-        'management_info', )
+            'distance', 'title', 'description', 'img', 'shirt_image', 'country', 'contact_person', 'email',
+            'phone_number',
+            'management_info',)
 
     class Media:
         js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
-              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js', 'plugins/typeahead.js/typeahead.bundle.min.js')
+              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js',
+              'plugins/typeahead.js/typeahead.bundle.min.js')
         css = {
-            'all': ('plugins/datepicker/datepicker.css', )
+            'all': ('plugins/datepicker/datepicker.css',)
         }
 
     def clean_distance(self):
@@ -231,7 +234,8 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
             if self.instance.distance not in distances:
                 distance = self.instance.distance
                 self.fields['distance'].choices.append((
-                unicode(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())))
+                    unicode(distance.id),
+                    "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())))
         except Distance.DoesNotExist:
             pass
 

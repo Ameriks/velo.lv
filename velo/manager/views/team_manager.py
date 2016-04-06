@@ -1,21 +1,21 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.core.urlresolvers import reverse
 from django.forms.models import BaseInlineFormSet
 from django.views.generic import DetailView
-from django_tables2_reports.views import ReportTableView
+
 from extra_views import InlineFormSet, NamedFormsetsMixin, UpdateWithInlinesView
 import datetime
-from core.models import Competition
-from manager.forms import ManageTeamMemberForm, ManageTeamForm
-from manager.tables import ManageMemberApplicationTable, ManageTeamTable
-from manager.tables.tables import ManageTeamApplyTable
-from manager.views.permission_view import ManagerPermissionMixin
-from team.forms import TeamForm, MemberInlineForm
-from team.models import MemberApplication, Team, Member
-from velo.mixins.views import SetCompetitionContextMixin, SingleTableViewWithRequest, RequestFormKwargsMixin
-from velo.utils import load_class
 
+from velo.core.models import Competition
+from velo.manager.forms import ManageTeamMemberForm, ManageTeamForm
+from velo.manager.tables import ManageMemberApplicationTable, ManageTeamTable
+from velo.manager.tables.tables import ManageTeamApplyTable
+from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.team.models import MemberApplication, Team, Member
+from velo.velo.mixins.views import SetCompetitionContextMixin, SingleTableViewWithRequest, RequestFormKwargsMixin
+from velo.velo.utils import load_class
 
 __all__ = [
     'ManageAppliedTeamMembersList', 'ManageTeamList', 'ManageTeamUpdate', 'ManageTeams', 'ManageTeamApplyList'
@@ -36,11 +36,12 @@ class ManageTeamApplyList(ManagerPermissionMixin, SetCompetitionContextMixin, De
         if child_competitions:
             competitions = child_competitions
         else:
-            competitions = (competition, )
+            competitions = (competition,)
 
         final_competitions = []
         for competition in competitions:
-            members = MemberApplication.objects.filter(competition=competition, member__team=self.object).order_by('kind')
+            members = MemberApplication.objects.filter(competition=competition, member__team=self.object).order_by(
+                'kind')
             final_competitions.append((competition, members))
             if competition.competition_date > datetime.date.today():
                 break
@@ -48,7 +49,6 @@ class ManageTeamApplyList(ManagerPermissionMixin, SetCompetitionContextMixin, De
         context.update({'competitions': final_competitions})
 
         return context
-
 
 
 class ManageTeams(ManagerPermissionMixin, SingleTableViewWithRequest):
@@ -82,8 +82,10 @@ class ManageAppliedTeamMembersList(ManagerPermissionMixin, SingleTableViewWithRe
         distances = competition.get_distances().filter(can_have_teams=True)
 
         queryset = queryset.filter(member__team__distance__in=distances)
-        queryset = queryset.select_related('member', 'member__team', 'participant', 'participant_unpaid', 'participant_potential')
+        queryset = queryset.select_related('member', 'member__team', 'participant', 'participant_unpaid',
+                                           'participant_potential')
         return queryset
+
 
 class ManageTeamList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Team
@@ -103,11 +105,11 @@ class TeamMemberBaseInlineFormSet(BaseInlineFormSet):
         self.request_kwargs = kwargs.pop('request_kwargs', None)
         super(TeamMemberBaseInlineFormSet, self).__init__(*args, **kwargs)
 
-    # def get_queryset(self):
-    #     queryset = super(TeamMemberBaseInlineFormSet, self).get_queryset()
-    #     queryset = queryset.filter(memberapplication__competition_id=self.request_kwargs.get('pk'))
-    #     queryset = queryset.order_by('memberapplication__kind').distinct()
-    #     return queryset
+        # def get_queryset(self):
+        #     queryset = super(TeamMemberBaseInlineFormSet, self).get_queryset()
+        #     queryset = queryset.filter(memberapplication__competition_id=self.request_kwargs.get('pk'))
+        #     queryset = queryset.order_by('memberapplication__kind').distinct()
+        #     return queryset
 
 
 class ManageTeamMemberInline(InlineFormSet):
@@ -131,8 +133,8 @@ class ManageTeamMemberInline(InlineFormSet):
         return kwargs
 
 
-
-class ManageTeamUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
+class ManageTeamUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, NamedFormsetsMixin,
+                       UpdateWithInlinesView):
     pk_url_kwarg = 'pk2'
     model = Team
     inlines = [ManageTeamMemberInline, ]
@@ -142,7 +144,6 @@ class ManageTeamUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, Reque
 
     def get_success_url(self):
         return reverse('manager:applied_team_list', kwargs={'pk': self.kwargs.get('pk')})
-
 
     def forms_valid(self, form, inlines):
         ret = super(ManageTeamUpdate, self).forms_valid(form, inlines)

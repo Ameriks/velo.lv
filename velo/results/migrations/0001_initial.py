@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import easy_thumbnails.fields
 from django.conf import settings
-import results.models
+import velo.results.models
 
 
 class Migration(migrations.Migration):
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('zero', models.TimeField(default=b'00:00:00', help_text=b'HH:MM:SS')),
                 ('distance_actual', models.IntegerField(null=True, blank=True)),
-                ('gpx', models.FileField(null=True, upload_to=results.models._get_gpx_upload_path, blank=True)),
+                ('gpx', models.FileField(null=True, upload_to=velo.results.models._get_gpx_upload_path, blank=True)),
                 ('competition', models.ForeignKey(to='core.Competition')),
                 ('distance', models.ForeignKey(to='core.Distance')),
             ],
@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('color', models.CharField(max_length=50, choices=[(b'blue', b'blue'), (b'red', b'red'), (b'green', b'green'), (b'sea', b'sea'), (b'orange', b'orange'), (b'yellow', b'yellow')])),
                 ('text', models.CharField(max_length=50)),
-                ('image', easy_thumbnails.fields.ThumbnailerImageField(upload_to=results.models._get_upload_path, blank=True)),
+                ('image', easy_thumbnails.fields.ThumbnailerImageField(upload_to=velo.results.models._get_upload_path, blank=True)),
                 ('competition', models.ForeignKey(to='core.Competition')),
             ],
         ),

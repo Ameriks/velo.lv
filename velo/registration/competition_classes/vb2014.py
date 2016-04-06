@@ -1,13 +1,13 @@
 # coding=utf-8
 from __future__ import unicode_literals
 import StringIO
-from registration.competition_classes.base_vb import VBCompetitionBase
-from registration.models import Participant
+from velo.registration.competition_classes.base_vb import VBCompetitionBase
+from velo.registration.models import Participant
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
-from core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, \
+from velo.core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, \
     _baseFontNameB
 import os.path
 

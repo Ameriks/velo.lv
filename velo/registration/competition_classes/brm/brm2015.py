@@ -2,12 +2,12 @@
 from __future__ import unicode_literals
 import datetime
 from sitetree.utils import item
-from registration.competition_classes.base import CompetitionScriptBase
-from registration.models import Number, Participant
-from registration.tables import ParticipantTable
-from results.models import HelperResults
-from results.tables import ResultChildrenGroupTable
-from results.tasks import update_helper_result_table
+from velo.registration.competition_classes.base import CompetitionScriptBase
+from velo.registration.models import Number, Participant
+from velo.registration.tables import ParticipantTable
+from velo.results.models import HelperResults
+from velo.results.tables import ResultChildrenGroupTable
+from velo.results.tasks import update_helper_result_table
 
 
 class Brm2015(CompetitionScriptBase):

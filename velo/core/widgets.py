@@ -1,12 +1,15 @@
-from django.forms.util import flatatt
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
+from django.forms.utils import flatatt
 from django.forms.widgets import Input
-from django.utils.encoding import force_text
 from django.utils.html import format_html
 
 
 class ButtonWidget(Input):
     input_type = 'button'
     text = ''
+
     def __init__(self, attrs=None):
         if attrs is not None:
             self.text = attrs.pop('text', self.text)

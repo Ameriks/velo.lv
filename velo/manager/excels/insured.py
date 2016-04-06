@@ -1,10 +1,12 @@
-# coding=utf-8
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
+
 from django.template.defaultfilters import slugify
+from io import StringIO
 import xlwt
-import StringIO
-from core.models import Competition
-from registration.models import Participant
+
+from velo.core.models import Competition
+from velo.registration.models import Participant
 
 
 def create_insured_list(competition=None, competition_id=None):
@@ -14,7 +16,7 @@ def create_insured_list(competition=None, competition_id=None):
         competition = Competition.objects.get(id=competition_id)
 
     root_competition = competition.get_root()
-    output = StringIO.StringIO()
+    output = StringIO()
     distances = competition.get_distances()
 
     wbk = xlwt.Workbook()
