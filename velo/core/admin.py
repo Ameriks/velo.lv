@@ -11,7 +11,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django import forms
 
 from mptt.admin import MPTTModelAdmin
-from social.apps.django_app.default.models import UserSocialAuth
+# from social.apps.django_app.default.models import UserSocialAuth
 
 from velo.core.models import User, Choices, Competition, Distance, InsuranceCompany, Insurance, CustomSlug, Log, Map
 
@@ -37,14 +37,14 @@ class CustomUserChangeForm(UserChangeForm):
         model = User
         fields = "__all__"
 
-
-class SocialInline(admin.TabularInline):
-    model = UserSocialAuth
-    extra = 0
+#
+# class SocialInline(admin.TabularInline):
+#     model = UserSocialAuth
+#     extra = 0
 
 
 class CustomUserAdmin(UserAdmin):
-    inlines = (SocialInline,)
+    # inlines = (SocialInline,)
     filter_horizontal = ('groups', 'user_permissions',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),

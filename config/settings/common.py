@@ -30,6 +30,7 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.admin',
+    'django.contrib.gis',
 )
 THIRD_PARTY_APPS = (
     'crispy_forms',  # Form layouts
@@ -41,11 +42,18 @@ THIRD_PARTY_APPS = (
     'django_filters',
     'django_select2',
 
-    'social.apps.django_app.default',
+    # 'social.apps.django_app.default',
     'mptt',
     'djcelery',
     'ckeditor',
     'impersonate',
+
+    'allauth',  # registration
+    'allauth.account',  # registration
+    'allauth.socialaccount',  # registration
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.twitter',
+    'allauth.socialaccount.providers.draugiem',
     # 'shorturls',  # NOT READY FOR Python 3
 )
 
@@ -74,13 +82,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',  # CUSTOM
-    'velo.velo.middleware.SSLRedirectMiddleware',
+    'velo.velo.middleware.SSLRedirectMiddleware', # CUSTOM
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',  # CUSTOM
-    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',  # CUSTOM
     'impersonate.middleware.ImpersonateMiddleware',  # CUSTOM
 )
 
@@ -233,15 +239,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # AUTHENTICATION CONFIGURATION
 # ------------------------------------------------------------------------------
-# AUTHENTICATION_BACKENDS = (
-#     'django.contrib.auth.backends.ModelBackend',
-#     'allauth.account.auth_backends.AuthenticationBackend',
-# )
-AUTHENTICATION_BACKENDS = (  # LEGACY
-    'social.backends.facebook.FacebookOAuth2',
-    'social.backends.twitter.TwitterOAuth',
-    'velo.velo.draugiem.DraugiemPassportAPI',
+AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 # Some really nice defaults
@@ -256,10 +256,9 @@ SOCIALACCOUNT_ADAPTER = 'velo.core.adapters.SocialAccountAdapter'
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'core.User'
-LOGIN_REDIRECT_URL = 'accounts:profile'
-LOGIN_URL = 'accounts:login'
-# LOGIN_REDIRECT_URL = 'users:redirect'
-# LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'users:redirect'
+LOGIN_URL = 'account_login'
+
 
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
@@ -319,23 +318,23 @@ VIMEO_TOKEN = env('VIMEO_TOKEN')
 ENFORCED_PASSWORD_CHANGE_VIEW_NAME = 'accounts:password_change'
 LOGIN_VIEW_NAME = 'accounts:login'
 LOGOUT_VIEW_NAME = 'accounts:logout'
-
-SOCIAL_AUTH_FACEBOOK_KEY = '175838825855542'
-SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET')
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-
-SOCIAL_AUTH_TWITTER_KEY = 'KOd36nFdR0LSCQCm9EqOBQ'
-SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET')
-
-SOCIAL_AUTH_DRAUGIEM_APP_ID = '15007685'
-SOCIAL_AUTH_DRAUGIEM_KEY = env('SOCIAL_AUTH_DRAUGIEM_KEY')
-
-SOCIAL_AUTH_USER_MODEL = 'core.User'
-SOCIAL_AUTH_FORCE_EMAIL_VALIDATION = True
-
-SOCIAL_AUTH_LOGIN_ERROR_URL = 'accounts:login'
-
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+#
+# SOCIAL_AUTH_FACEBOOK_KEY = '175838825855542'
+# SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET')
+# SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+#
+# SOCIAL_AUTH_TWITTER_KEY = 'KOd36nFdR0LSCQCm9EqOBQ'
+# SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET')
+#
+# SOCIAL_AUTH_DRAUGIEM_APP_ID = '15007685'
+# SOCIAL_AUTH_DRAUGIEM_KEY = env('SOCIAL_AUTH_DRAUGIEM_KEY')
+#
+# SOCIAL_AUTH_USER_MODEL = 'core.User'
+# SOCIAL_AUTH_FORCE_EMAIL_VALIDATION = True
+#
+# SOCIAL_AUTH_LOGIN_ERROR_URL = 'accounts:login'
+#
+# SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 AUTO_RENDER_SELECT2_STATICS = False
 
@@ -362,23 +361,23 @@ SHORT_BASE_URL = 'http://mans.velo.lv/s/'
 
 REPLACE_AUTH_USER_ADMIN = False
 
-SOCIAL_AUTH_PIPELINE = (
-    'social.pipeline.social_auth.social_details',
-    'social.pipeline.social_auth.social_uid',
-    'social.pipeline.social_auth.auth_allowed',
-    'social.pipeline.social_auth.social_user',
-    'social.pipeline.user.get_username',
-    'social.pipeline.partial.save_status_to_session',
-    'core.pipeline.require_email',
-    # 'social.pipeline.mail.mail_validation',
-    # 'social.pipeline.social_auth.associate_by_email',
-    'core.pipeline.create_user',
-    # 'social.pipeline.user.create_user',
-    'social.pipeline.social_auth.associate_user',
-    'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details',
-
-)
+# SOCIAL_AUTH_PIPELINE = (
+#     'social.pipeline.social_auth.social_details',
+#     'social.pipeline.social_auth.social_uid',
+#     'social.pipeline.social_auth.auth_allowed',
+#     'social.pipeline.social_auth.social_user',
+#     'social.pipeline.user.get_username',
+#     'social.pipeline.partial.save_status_to_session',
+#     'core.pipeline.require_email',
+#     # 'social.pipeline.mail.mail_validation',
+#     # 'social.pipeline.social_auth.associate_by_email',
+#     'core.pipeline.create_user',
+#     # 'social.pipeline.user.create_user',
+#     'social.pipeline.social_auth.associate_user',
+#     'social.pipeline.social_auth.load_extra_data',
+#     'social.pipeline.user.user_details',
+#
+# )
 
 USER_FIELDS = ['email', ]
 PROTECTED_USER_FIELDS = ['email', ]

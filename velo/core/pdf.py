@@ -39,10 +39,10 @@ _baseFontNameB = "UbuntuB"
 _baseFontNameI = "Ubuntu"
 _baseFontNameBI = "Ubuntu"
 
-if not pdfmetrics._fonts.has_key('Ubuntu'):
+if not 'Ubuntu' in pdfmetrics._fonts:
     pdfmetrics.registerFont(TTFont('Ubuntu', os.path.join(str(settings.APPS_DIR), 'static', 'assets', 'Ubuntu-R.ttf')))
 
-if not pdfmetrics._fonts.has_key('UbuntuB'):
+if not 'UbuntuB' in pdfmetrics._fonts:
     pdfmetrics.registerFont(TTFont('UbuntuB', os.path.join(str(settings.APPS_DIR), 'static', 'assets', 'Ubuntu-B.ttf')))
 
 from reportlab.lib import utils

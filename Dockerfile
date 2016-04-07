@@ -1,16 +1,16 @@
-FROM ameriks/django_webapp:latest
+FROM ameriks/django_webapp:alpine
 
-COPY ./requirements /root/requirements
-RUN pip install -r /root/requirements/production.txt
-
-RUN groupadd -r django && useradd -r -g django django
+COPY ./requirements /tmp/requirements
+RUN pip3 install -r /tmp/requirements/production.txt
 
 COPY ./compose/django/gunicorn.sh /gunicorn.sh
 COPY ./compose/django/entrypoint.sh /entrypoint.sh
 RUN sed -i 's/\r//' /entrypoint.sh
 RUN sed -i 's/\r//' /gunicorn.sh
-RUN chmod +x /entrypoint.sh && chown django /entrypoint.sh
-RUN chmod +x /gunicorn.sh && chown django /gunicorn.sh
+RUN chmod +x /entrypoint.sh
+RUN chmod +x /gunicorn.sh
+
+RUN rm -fr /tmp/*
 
 WORKDIR /app
 

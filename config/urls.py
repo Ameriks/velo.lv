@@ -73,7 +73,7 @@ urlpatterns = i18n_patterns('',
     url(_(r'^supporters/'), AgencySupporters.as_view(), name="agency_supporters"),
     url(_(r'^calendar/'), CalendarView.as_view(), name="calendar"),
     url(_(r'^accounts/'), include('velo.core.urls', namespace='accounts')),
-    url(_(r'^accounts/'), include('social.apps.django_app.urls', namespace='social')),
+    # url(_(r'^accounts/'), include('social.apps.django_app.urls', namespace='social')),
     url(r'^jsi18n/$', 'velo.velo.views.cached_javascript_catalog', js_info_dict),
 )
 

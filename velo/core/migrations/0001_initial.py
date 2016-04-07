@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models, migrations
 import velo.core.models
 import django_countries.fields
 import mptt.fields
-import jsonfield.fields
 import django.contrib.auth.models
 import django.db.models.deletion
 import easy_thumbnails.fields
@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
                 ('skin', models.CharField(max_length=50, blank=True)),
                 ('logo', easy_thumbnails.fields.ThumbnailerImageField(upload_to=velo.core.models._get_logo_upload_path, blank=True)),
                 ('apply_image', easy_thumbnails.fields.ThumbnailerImageField(upload_to=velo.core.models._get_logo_upload_path, blank=True)),
-                ('params', jsonfield.fields.JSONField(null=True, blank=True)),
+                ('params', JSONField(null=True, blank=True)),
                 ('sms_text', models.CharField(max_length=255, blank=True)),
                 ('lft', models.PositiveIntegerField(editable=False, db_index=True)),
                 ('rght', models.PositiveIntegerField(editable=False, db_index=True)),
@@ -181,7 +181,7 @@ class Migration(migrations.Migration):
                 ('object_id', models.PositiveIntegerField(null=True, blank=True)),
                 ('action', models.CharField(max_length=50, blank=True)),
                 ('message', models.CharField(max_length=255, blank=True)),
-                ('params', jsonfield.fields.JSONField(null=True, blank=True)),
+                ('params', JSONField(null=True, blank=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
                 ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),

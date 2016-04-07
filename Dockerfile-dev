@@ -1,7 +1,7 @@
 FROM citd.pd.lv/project_velo
 
-COPY ./requirements /root/requirements
-RUN pip install -r /root/requirements/local.txt
+COPY ./requirements /tmp/requirements
+RUN pip3 install -r /tmp/requirements/local.txt
 
 WORKDIR /app
 

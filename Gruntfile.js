@@ -129,10 +129,11 @@ module.exports = function (grunt) {
         bg: true
       },
       runDjango: {
+        bg: false,
         cmd: 'python <%= paths.manageScript %> runserver'
       },
       devDocker: {
-        cmd: '<%= paths.dockerCompose %> -f dev.yml build django'
+        cmd: 'docker-compose -f dev.yml build django'
       }
     }
   });
