@@ -21,7 +21,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY", default='CHANGEME!!!7z0c)k$qd19(@)@_qmg(dg
 
 # Mail settings
 # ------------------------------------------------------------------------------
-EMAIL_HOST = '192.168.58.1'
+EMAIL_HOST = '192.168.199.1'
 EMAIL_PORT = 1025
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
                     default='django.core.mail.backends.smtp.EmailBackend')
@@ -85,3 +85,5 @@ ALWAYS_SSL_PAGES = [
             "^/en/payment",
             "^/en/accounts",
             ]
+
+SITETREE_RAISE_ITEMS_ERRORS_ON_DEBUG = False

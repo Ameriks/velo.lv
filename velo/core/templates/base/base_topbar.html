@@ -28,7 +28,7 @@
 {#                    <li class="topbar-devider"></li>#}
 {#                    <li><a href="page_faq.html">Help</a></li>#}
 {#                    <li class="topbar-devider"></li>#}
-                    {% if not request.user.is_authenticated %}<li><a href="{% url "accounts:login" %}">{% trans "Login" %}</a></li>{% endif %}
+                    {% if not request.user.is_authenticated %}<li><a href="{% url "account_login" %}">{% trans "Login" %}</a></li>{% endif %}
                 </ul>
             </div>
             <!-- End Topbar -->

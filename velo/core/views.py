@@ -9,7 +9,7 @@ from django.shortcuts import redirect, render_to_response, resolve_url
 from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import TemplateView, DetailView, ListView, CreateView, UpdateView
+from django.views.generic import TemplateView, DetailView, ListView, CreateView, UpdateView, RedirectView
 from django.contrib.auth import logout
 from django.template.context import RequestContext
 from django.utils import timezone
@@ -33,6 +33,13 @@ from velo.results.models import DistanceAdmin
 from velo.supporter.models import Supporter
 from velo.velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin, SetPleaseVerifyEmail, \
     CacheControlMixin
+
+
+class UserRedirectView(LoginRequiredMixin, RedirectView):
+    permanent = False
+
+    def get_redirect_url(self):
+        return reverse("users:applications")
 
 
 class IndexView(TemplateView):

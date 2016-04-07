@@ -72,8 +72,8 @@ urlpatterns = i18n_patterns('',
     url(_(r'^competition/'), include('velo.velo.urls_competition', namespace='competition')),
     url(_(r'^supporters/'), AgencySupporters.as_view(), name="agency_supporters"),
     url(_(r'^calendar/'), CalendarView.as_view(), name="calendar"),
-    url(_(r'^accounts/'), include('velo.core.urls', namespace='accounts')),
-    # url(_(r'^accounts/'), include('social.apps.django_app.urls', namespace='social')),
+    url(_(r'^users/'), include('velo.core.urls', namespace='users')),
+    url(r'^accounts/', include('allauth.urls')),
     url(r'^jsi18n/$', 'velo.velo.views.cached_javascript_catalog', js_info_dict),
 )
 
@@ -85,7 +85,7 @@ urlpatterns += patterns('',
     url(_(r'^pdf/(?P<slug>\w+)/'), ParticipantPDF.as_view(), name="participant_number_pdf"),
 
     url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^%s/' % settings.ADMIN_URL, include(admin.site.urls)),  # This is real admin with hidden link in ENV
+    url(r'^%s' % settings.ADMIN_URL, include(admin.site.urls)),  # This is real admin with hidden link in ENV
 
     url(r'^impersonate/search/$', 'velo.velo.views.search_users', {'template': 'impersonate/search_users.html'}, name='impersonate-search'),
     url(r'^impersonate/', include('impersonate.urls')),
