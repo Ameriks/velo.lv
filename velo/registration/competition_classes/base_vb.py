@@ -188,7 +188,7 @@ class VBCompetitionBase(CompetitionScriptBase):
             numbers = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None)
             for pre in numbers:
                 number = Number.objects.get(number=pre.number, competition=self.competition)
-                print "%s - %s" % (number, pre.participant_slug)
+                print("%s - %s" % (number, pre.participant_slug))
                 number.participant_slug = pre.participant_slug
                 number.save()
 
@@ -223,10 +223,10 @@ class VBCompetitionBase(CompetitionScriptBase):
                 slugs_in_passage = final_slugs_in_passage[:]
                 for slug in slugs_in_passage:
                     if slug in participant_slugs:
-                        print 'FOUND %s' % slug
+                        print('FOUND %s' % slug)
                         final_slugs_in_passage.remove(slug)
                     else:
-                        print 'not in'
+                        print('not in')
                         extra_count += 1
 
 
@@ -236,7 +236,7 @@ class VBCompetitionBase(CompetitionScriptBase):
 
 
                 for nr, slug in zip(final_numbers, final_slugs):
-                    print '%i - %s' % (nr, slug)
+                    print('%i - %s' % (nr, slug))
                     number = Number.objects.get(number=nr, competition=self.competition, participant_slug='')
                     number.participant_slug = slug
                     number.save()
@@ -258,7 +258,7 @@ class VBCompetitionBase(CompetitionScriptBase):
         """
         teams = Team.objects.filter(member__memberapplication__competition=self.competition, member__memberapplication__kind=MemberApplication.KIND_PARTICIPANT).order_by('id').distinct('id')
         for team in teams:
-            print team.id
+            print(team.id)
             self.recalculate_team_result(team=team)
 
     def recalculate_team_result(self, team_id=None, team=None):
@@ -380,7 +380,7 @@ class VBCompetitionBase(CompetitionScriptBase):
             else:
                 Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
 
-        print chip
+        print(chip)
 
 
     def assign_result_place(self):

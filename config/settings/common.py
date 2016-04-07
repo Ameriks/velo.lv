@@ -240,7 +240,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 AUTHENTICATION_BACKENDS = (  # LEGACY
     'social.backends.facebook.FacebookOAuth2',
     'social.backends.twitter.TwitterOAuth',
-    'velo.draugiem.DraugiemPassportAPI',
+    'velo.velo.draugiem.DraugiemPassportAPI',
     'django.contrib.auth.backends.ModelBackend',
 )
 

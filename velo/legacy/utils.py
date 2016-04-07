@@ -431,7 +431,7 @@
 #                 application.discount_code = dc
 #
 #
-#             print legacy_payment.id
+#             print(legacy_payment.id)
 #             payment_defaults = {
 #                 'content_object': application,
 #                 'channel_id': payment_channel_mapping.get('%s%s' % (legacy_payment.paymentchannelbig, legacy_payment.payment_channel)),
@@ -440,7 +440,7 @@
 #                 'status': legacy_payment.erekins_status or Payment.STATUS_NEW,
 #             }
 #            # application.payment_status = legacy_payment.erekins_status
-#             print payment_defaults
+#             print(payment_defaults)
 #             application.save()
 #             payment, created = Payment.objects.get_or_create(legacy_id=legacy_payment.id, defaults=payment_defaults)
 #
@@ -449,7 +449,7 @@
 #     participants = Ev68RVeloParticipations.objects.filter(competition_id__in=(37, 41, ), distance_id__gt=0)  # 40,  removed complex
 #
 #     for obj in participants:
-#         print obj.id
+#         print(obj.id)
 #         data = {
 #             'competition': Competition.objects.get(legacy_id=obj.competition_id),
 #             'distance': Distance.objects.get(id=obj.distance_id),
@@ -473,14 +473,14 @@
 #         try:
 #             data.update({'ssn': legacy_encrypt.decrypt(obj.participant_ssn).strip('\0').replace('-', '')})
 #         except:
-#             print 'SSSSSSSSSSSN ERRROR'
+#             print('SSSSSSSSSSSN ERRROR')
 #
 #         if obj.application_id > 0:
 #             try:
 #                 data.update({'application': Application.objects.get(legacy_id=obj.application_id)})
 #             except:
 #                 pass
-#                 # print 'application id doesnt exist'
+#                 # print('application id doesnt exist')
 #
 #         if obj.participant_city:
 #             if obj.participant_city == 'Riga':
@@ -502,7 +502,7 @@
 #         participant, created = Participant.objects.get_or_create(legacy_id=obj.id, defaults=data)
 #         if not created:
 #             if participant.distance != data.get('distance'):
-#                 print 'participant id %i changed distance to %s' % (participant.id, data.get('distance'))
+#                 print('participant id %i changed distance to %s' % (participant.id, data.get('distance')))
 #             for d in data:
 #                 setattr(participant, d, data.get(d))
 #             participant.save()
@@ -619,7 +619,7 @@
 #                     setattr(standing, d, data.get(d))
 #                 standing.save()
 #         except:
-#             print 'exception-%i' % obj.id
+#             print('exception-%i' % obj.id)
 #
 #
 # def sync_legacy_seb_standings():
@@ -733,8 +733,8 @@
 #             try:
 #                 data2.update({'ssn': legacy_encrypt.decrypt(obj2.participant_ssn).strip('\0').replace('-', '')})
 #             except:
-#                 print 'SSSSSSSSSSSN ERRROR'
-#             print data2
+#                 print('SSSSSSSSSSSN ERRROR')
+#             print(data2)
 #             member, created = Member.objects.get_or_create(legacy_id=obj2.id, defaults=data2)
 #             if not created:
 #                 for d in data2:
@@ -805,8 +805,8 @@
 #             try:
 #                 data2.update({'ssn': legacy_encrypt.decrypt(obj2.participant_ssn).strip('\0').replace('-', '')})
 #             except:
-#                 print 'SSSSSSSSSSSN ERRROR'
-#             print data2
+#                 print('SSSSSSSSSSSN ERRROR')
+#             print(data2)
 #             member, created = Member.objects.get_or_create(legacy_id=obj2.id, defaults=data2)
 #             if not created:
 #                 for d in data2:
@@ -820,7 +820,7 @@
 #             comp = Competition.objects.get(legacy_id=comp_id)
 #             ids2 = []
 #             for obj3 in obj.ev68rveloteamscompetitions_set.filter(competition_id=comp_id):
-#                 print obj3.member_id
+#                 print(obj3.member_id)
 #                 data3 = {
 #                     'member': Member.objects.get(legacy_id=obj3.member_id),
 #                     'competition': Competition.objects.get(legacy_id=obj3.competition_id),

@@ -76,21 +76,21 @@ def create_result_sms(result_id):
 
     for number in phone_number:
         if len(number) == 0:
-            print 'NO NUMBER'
+            print('NO NUMBER')
             continue
         if number[0:3] == '371':
             number = number[3:]
         if len(number) == 8 and number[0] != '2':
-            print 'Not sending to %s' % number
+            print('Not sending to %s' % number)
             continue
         elif len(number) == 8:
             number = '371%s' % number
 
         if len(number) < 8:
-            print 'TOO SHORT NUMBER'
+            print('TOO SHORT NUMBER')
             continue
-        print 'Sending to %s' % number
-        print sms_text
+        print('Sending to %s' % number)
+        print(sms_text)
 
         SMS.objects.create(send_out_at=send_out, phone_number=number, text=sms_text)
 
@@ -137,20 +137,20 @@ def fetch_results(_id):
         file_lines = tuple(buf.readlines())
         lines_to_process = file_lines[processed_line:]
         for line in lines_to_process:
-            print line
+            print(line)
             if len(line.strip()) == 0:
-                print 'empty line'
+                print('empty line')
                 continue
             number, time_text = line.strip().split(',')
             if number == '0':
-                print 'skipping 0 number'
+                print('skipping 0 number')
                 continue
             scan, created = ChipScan.objects.get_or_create(competition=url_data.competition, nr_text=number, time_text=time_text, url_sync=url_data)
             scan.time = time_text
             try:
                 scan.nr = Number.objects.get(competition_id__in=url_data.competition.get_ids(), number=number, group='')
             except:
-                print 'number not found'
+                print('number not found')
                 continue
             finally:
                 scan.save()

@@ -21,7 +21,7 @@ ORDER BY S.relname;
         for row in cursor:
             try:
                 cursor2.execute(row[0])
-                print row[0]
+                print(row[0])
             except:
                 pass
 

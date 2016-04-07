@@ -14,7 +14,7 @@ from velo.team.views import MyTeamList, TeamCreateView, TeamUpdateView, TeamAppl
 
 urlpatterns = patterns('',
                        url(_(r'^register/$'), UserRegistrationView.as_view(), name="register"),
-                       url(_(r'^register/email/$'), 'core.views.new_user_email_view', name="register_user_email"),
+                       url(_(r'^register/email/$'), 'velo.core.views.new_user_email_view', name="register_user_email"),
 
 
                        url(_(
@@ -23,7 +23,7 @@ urlpatterns = patterns('',
                        url(_(r'^email/$'), ChangeEmailView.as_view(), name='email_change_view'),
                        url(_(r'^email/resend/$'), ResendEmailView.as_view(), name='email_resend_view'),
                        url(_(r'^password_change/$'), ChangePasswordView.as_view(), name='password_change'),
-                       url(_(r'^login/$'), 'core.views.login', name='login',
+                       url(_(r'^login/$'), 'velo.core.views.login', name='login',
                            kwargs={'authentication_form': AuthenticationFormCustom}),
                        url(_(r'^logout/$'), 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
                        url(_(r'^profile/$'), ProfileView.as_view(), name='profile'),

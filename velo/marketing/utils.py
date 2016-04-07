@@ -63,16 +63,16 @@ def send_sms_to_participant(participant):
     if number[0:3] == '371':
         number = number[3:]
     if len(number) == 8 and number[0] != '2':
-        print 'Not sending to %s' % number
+        print('Not sending to %s' % number)
         return False
     elif len(number) == 8:
         number = '371%s' % number
 
     if len(number) < 8:
-        print 'TOO SHORT NUMBER'
+        print('TOO SHORT NUMBER')
         return False
 
-    print 'Sending to %s' % number
+    print('Sending to %s' % number)
 
     full_name = unicodedata.normalize('NFKD', participant.full_name).encode('ascii', 'ignore').decode('ascii')
 
@@ -90,16 +90,16 @@ def send_sms_to_family_participant(participant):
     if number[0:3] == '371':
         number = number[3:]
     if len(number) == 8 and number[0] != '2':
-        print 'Not sending to %s' % number
+        print('Not sending to %s' % number)
         return False
     elif len(number) == 8:
         number = '371%s' % number
 
     if len(number) < 8:
-        print 'TOO SHORT NUMBER'
+        print('TOO SHORT NUMBER')
         return False
 
-    print 'Sending to %s' % number
+    print('Sending to %s' % number)
 
     full_name = unicodedata.normalize('NFKD', participant.full_name).encode('ascii', 'ignore').decode('ascii')
     sms_txt = u"Sveiki, {0}! Jums ir pieskirts starta numurs AMWAY Gimenes brauciena. Iznemiet to EXPO centra 29.-30.05 ELKOR PLAZA Brivibas 201 uzradot so SMS".format(full_name)[:160]
@@ -154,7 +154,7 @@ def send_smses():
     smses = SMS.objects.filter(is_processed=False)[:100]
     for sms in smses:
         # text = unicodedata.normalize('NFKD', sms.text).encode('ascii', 'ignore').decode('ascii')
-        # print text
+        # print(text)
         sms_obj = {
             'page': 'message/send',
             'username': settings.SMS_USERNAME,

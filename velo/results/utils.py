@@ -32,7 +32,7 @@ def map_participants_with_legacy_results_potential():
         global_slugs = [obj.slug for obj in LegacyResult.objects.filter(competition_id=old_competition_id, distance_id=old_distance_id, participant_2014=None)]
         for participant in participants:
             slugs = [obj.slug for obj in LegacyResult.objects.filter(competition_id=old_competition_id, distance_id=old_distance_id, participant_2014=None, year=participant.birthday.year)]
-            print participant.slug
+            print(participant.slug)
             matches = get_close_matches(participant.slug, slugs)
             matches2 = get_close_matches(participant.slug, global_slugs)
             if matches:

@@ -53,7 +53,7 @@ class CompetitionScriptBase(object):
             numbers = ranges.get(distance_id)
             for number_dict in numbers:
                 for number in range(number_dict.get('start'), number_dict.get('end')):
-                    print Number.objects.get_or_create(competition_id=self.competition_id, group=number_dict.get('group', ''), distance_id=distance_id, number=number, defaults={'status': 1})
+                    print(Number.objects.get_or_create(competition_id=self.competition_id, group=number_dict.get('group', ''), distance_id=distance_id, number=number, defaults={'status': 1}))
 
 
     def reset_cache(self):
@@ -186,7 +186,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
         """
         teams = Team.objects.filter(member__memberapplication__competition=self.competition, member__memberapplication__kind=MemberApplication.KIND_PARTICIPANT).order_by('id').distinct('id')
         for team in teams:
-            print team.id
+            print(team.id)
             self.recalculate_team_result(team=team)
 
     def recalculate_team_result(self, team_id=None, team=None):
@@ -260,7 +260,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
         Afterwards function calls recalculate_standing_points to recalculate points for standing
         """
         if not result.standings_object:
-            print result.id
+            print(result.id)
             standing, created = SebStandings.objects.get_or_create(competition=result.competition.parent, participant_slug=result.participant.slug, distance=result.number.distance, defaults={'participant': result.participant})
             result.standings_object = standing
             result.save()
@@ -343,7 +343,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
                 participant = [Participant.objects.create(**participant_data), ]
                 Log.objects.create(content_object=participant[0], action="Chip process", message="Participant was not found, so created temporary one based on previous stage data.")
-                print 'Created participant with ID %i' % participant[0].id
+                print('Created participant with ID %i' % participant[0].id)
             else:
                 return False
         return participant
@@ -390,7 +390,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             else:
                 Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
 
-        print chip
+        print(chip)
 
 
     def recalculate_all_points(self):
@@ -403,7 +403,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
         recalculate_places = False
         results = Result.objects.filter(competition=self.competition, participant__distance_id__in=distances)
         for result in results:
-            print result.id
+            print(result.id)
             if result.set_all():
                 recalculate_places = True
                 result.save()
@@ -581,7 +581,7 @@ AND r.id = res2.id
             pre_numbers = PreNumberAssign.objects.filter(competition_id__in=self.competition.get_ids()).exclude(number=None)
             for nr in pre_numbers:
                 number = Number.objects.get(number=nr.number, competition=parent_competition, distance=nr.distance)
-                print "%s - %s" % (number, nr.participant_slug)
+                print("%s - %s" % (number, nr.participant_slug))
                 number.participant_slug = nr.participant_slug
                 number.save()
                 Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, distance=number.distance, slug=number.participant_slug).update(primary_number=number)
@@ -605,7 +605,7 @@ AND r.id = res2.id
                 next_number = Number.objects.filter(participant_slug='', distance=participant.distance, group=group).order_by('number')[0]
                 next_number.participant_slug = participant.slug
                 next_number.number_text = str(participant.registration_dt)
-                print "%s - %s" % (next_number, participant.slug)
+                print("%s - %s" % (next_number, participant.slug))
                 next_number.save()
                 participant.primary_number = next_number
                 participant.save()
@@ -638,7 +638,7 @@ AND r.id = res2.id
                 assign_number = False
 
                 slug = slugify("%s-%s-%s" % (row[2].decode('utf-8'), row[3].decode('utf-8'), row[4].decode('utf-8')))
-                print row
+                print(row)
                 participant = Participant.objects.filter(slug=slug, competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=self.BERNU_DISTANCE_ID)
                 if participant:
                     participant = participant.get()
@@ -682,7 +682,7 @@ AND r.id = res2.id
                     result, created = Result.objects.get_or_create(competition=self.competition, participant=participant, number=number.get(), result_group=row[result_column] if row[result_column] else None, points_group=row[result_column+1] if row[result_column+1] else 0, status=row[result_column-1])
                     self.recalculate_standing_for_result(result)
                 else:
-                    print 'didnt participate'
+                    print('didnt participate')
         self.assign_standing_places()
 
 
@@ -852,7 +852,7 @@ class RMCompetitionBase(CompetitionScriptBase):
         chip.is_processed = True
         chip.save()
 
-        print chip
+        print(chip)
 
 
     def assign_result_place(self):
@@ -941,7 +941,7 @@ AND r.id = res2.id
             numbers = PreNumberAssign.objects.filter(competition=self.competition).exclude(number=None)
             for pre in numbers:
                 number = Number.objects.get(number=pre.number, competition=self.competition)
-                print "%s - %s" % (number, pre.participant_slug)
+                print("%s - %s" % (number, pre.participant_slug))
                 number.participant_slug = pre.participant_slug
                 number.save()
 
@@ -972,10 +972,10 @@ AND r.id = res2.id
                 slugs_in_passage = final_slugs_in_passage[:]
                 for slug in slugs_in_passage:
                     if slug in participant_slugs:
-                        print 'FOUND %s' % slug
+                        print('FOUND %s' % slug)
                         final_slugs_in_passage.remove(slug)
                     else:
-                        print 'not in'
+                        print('not in')
                         extra_count += 1
 
 
@@ -985,7 +985,7 @@ AND r.id = res2.id
 
 
                 for nr, slug in zip(final_numbers, final_slugs):
-                    print '%i - %s' % (nr, slug)
+                    print('%i - %s' % (nr, slug))
                     number = Number.objects.get(number=nr, competition=self.competition, participant_slug='')
                     number.participant_slug = slug
                     number.save()

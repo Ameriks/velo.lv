@@ -20,4 +20,4 @@ class Command(BaseCommand):
             try:
                 DiscountCode.objects.create(campaign_id=campaign_id, code=code)
             except:
-                print 'Error creating discount code - %s' % code
+                print('Error creating discount code - %s' % code)

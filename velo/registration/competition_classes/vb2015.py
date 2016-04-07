@@ -86,7 +86,7 @@ class VB2015(VBCompetitionBase):
             else:
                 return 'T W'
 
-        print 'here I shouldnt be...'
+        print('here I shouldnt be...')
         raise Exception('Invalid group assigning. {0} {1} {2}'.format(gender, distance_id, birthday))
 
 
@@ -225,6 +225,6 @@ class VB2015(VBCompetitionBase):
                 w.primary_number = number
                 w.save()
 
-                print "%s, %i, %s, %s, %s, %s" % (number, w.id, w.calculated_total, w.last_name, w.first_name, w.team_name)
+                print("%s, %i, %s, %s, %s, %s" % (number, w.id, w.calculated_total, w.last_name, w.first_name, w.team_name))
 
         return {2: total_counter}

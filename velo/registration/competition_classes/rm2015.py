@@ -61,7 +61,7 @@ class RM2015(RMCompetitionBase):
             else:
                 return 'T W'
 
-        print 'here I shouldnt be...'
+        print('here I shouldnt be...')
         raise Exception('Invalid group assigning. {0} {1} {2}'.format(gender, distance_id, birthday))
 
 
@@ -164,8 +164,8 @@ class RM2015(RMCompetitionBase):
             try:
                 p = Participant.objects.get(slug=member.slug, is_participating=True, distance=member.team.distance)
                 if p.team_name != member.team.title:
-                    print "%i %s %s %s" % (p.id, p.slug, p.team_name, member.team.title)
+                    print("%i %s %s %s" % (p.id, p.slug, p.team_name, member.team.title))
                     p.team_name = member.team.title
                     p.save()
             except:
-                print 'Not %s' % member.slug
+                print('Not %s' % member.slug)

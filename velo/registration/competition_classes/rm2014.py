@@ -75,7 +75,7 @@ class RM2014(RMCompetitionBase):
             else:
                 return 'T W'
 
-        print 'here I shouldnt be...'
+        print('here I shouldnt be...')
         raise Exception('Invalid group assigning. {0} {1} {2}'.format(gender, distance_id, birthday))
 
 
@@ -245,4 +245,4 @@ class RM2014(RMCompetitionBase):
         chip.save()
 
 
-        print chip
+        print(chip)

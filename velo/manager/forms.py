@@ -871,7 +871,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['competition'].initial = self.request_kwargs.get('pk')
             self.fields['country'].initial = 'LV'
             self.fields['is_participating'].initial = True
-            # print 'initial values here'
+            # print('initial values here')
 
 
         self.fields['slug'].widget.attrs['readonly'] = True

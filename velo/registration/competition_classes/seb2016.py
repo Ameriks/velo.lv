@@ -169,7 +169,7 @@ class Seb2016(SEBCompetitionBase):
             else:
                 return ''
 
-        print 'here I shouldnt be...'
+        print('here I shouldnt be...')
         raise Exception('Invalid group assigning.')
 
 
@@ -365,7 +365,7 @@ class Seb2016(SEBCompetitionBase):
             lap.time = result_time
             lap.save()
 
-        print chip
+        print(chip)
 
 
     def get_result_table_class(self, distance, group=None):

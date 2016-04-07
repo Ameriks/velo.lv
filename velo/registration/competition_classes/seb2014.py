@@ -106,7 +106,7 @@ class Seb2014(SEBCompetitionBase):
             elif year in (2003, 2002):
                 return 'B 03-02'
 
-        print 'here I shouldnt be...'
+        print('here I shouldnt be...')
         raise Exception('Invalid group assigning.')
 
     def _participant_standings_points(self, standing, distance=False):

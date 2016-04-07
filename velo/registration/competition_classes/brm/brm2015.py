@@ -50,7 +50,7 @@ class Brm2015(CompetitionScriptBase):
         if group in self.groups.get(self.BERNU_DISTANCE_ID):
             return group
 
-        print 'here I shouldnt be...'
+        print('here I shouldnt be...')
         raise Exception('Invalid group assigning. {0} {1} {2}'.format(gender, distance_id, birthday))
 
 
@@ -129,7 +129,7 @@ class Brm2015(CompetitionScriptBase):
                     next_number = next_number[0]
 
                 next_number.participant_slug = participant.slug
-                print "%s - %s" % (next_number, participant.slug)
+                print("%s - %s" % (next_number, participant.slug))
                 next_number.save()
                 participant.primary_number = next_number
                 participant.save()
