@@ -1,4 +1,4 @@
-FROM citd.pd.lv/project_velo
+FROM ameriks/project_velo:latest
 
 COPY ./requirements /tmp/requirements
 RUN pip3 install -r /tmp/requirements/local.txt

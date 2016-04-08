@@ -115,8 +115,7 @@ module.exports = function (grunt) {
           dockerFileLocation: '.',
           buildName: 'project_velo',
           tag: 'latest',
-          pushLocation: 'citd.pd.lv',
-          username: 'docker',
+          username: 'ameriks',
           push: false,
           force: true
         }
@@ -126,10 +125,9 @@ module.exports = function (grunt) {
     // see: https://npmjs.org/package/grunt-bg-shell
     bgShell: {
       _defaults: {
-        bg: true
+        bg: false
       },
       runDjango: {
-        bg: false,
         cmd: 'python <%= paths.manageScript %> runserver'
       },
       devDocker: {

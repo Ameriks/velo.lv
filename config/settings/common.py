@@ -42,7 +42,6 @@ THIRD_PARTY_APPS = (
     'django_filters',
     'django_select2',
 
-    # 'social.apps.django_app.default',
     'mptt',
     'djcelery',
     'ckeditor',
@@ -270,8 +269,8 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 ########## CELERY
 # INSTALLED_APPS += ('ameri.taskapp.celery.CeleryConfig',)
 # if you are not using the django database broker (e.g. rabbitmq, redis, memcached), you can remove the next line.
-INSTALLED_APPS += ('kombu.transport.django',)
-BROKER_URL = env("CELERY_BROKER_URL", default='django://')
+#INSTALLED_APPS += ('kombu.transport.django',)
+#BROKER_URL = env("CELERY_BROKER_URL", default='django://')
 ########## END CELERY
 
 
@@ -317,28 +316,6 @@ VIMEO_SECRET = env('VIMEO_SECRET')
 VIMEO_TOKEN = env('VIMEO_TOKEN')
 
 
-
-# ENFORCED_PASSWORD_CHANGE_VIEW_NAME = 'accounts:password_change'
-# LOGIN_VIEW_NAME = 'accounts:login'
-# LOGOUT_VIEW_NAME = 'accounts:logout'
-#
-# SOCIAL_AUTH_FACEBOOK_KEY = '175838825855542'
-# SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET')
-# SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-#
-# SOCIAL_AUTH_TWITTER_KEY = 'KOd36nFdR0LSCQCm9EqOBQ'
-# SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET')
-#
-# SOCIAL_AUTH_DRAUGIEM_APP_ID = '15007685'
-# SOCIAL_AUTH_DRAUGIEM_KEY = env('SOCIAL_AUTH_DRAUGIEM_KEY')
-#
-# SOCIAL_AUTH_USER_MODEL = 'core.User'
-# SOCIAL_AUTH_FORCE_EMAIL_VALIDATION = True
-#
-# SOCIAL_AUTH_LOGIN_ERROR_URL = 'accounts:login'
-#
-# SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-
 AUTO_RENDER_SELECT2_STATICS = False
 
 SMS_USERNAME = env('SMS_USERNAME')
@@ -363,24 +340,6 @@ MY_DEFAULT_DOMAIN = 'https://mans.velo.lv'
 SHORT_BASE_URL = 'http://mans.velo.lv/s/'
 
 REPLACE_AUTH_USER_ADMIN = False
-
-# SOCIAL_AUTH_PIPELINE = (
-#     'social.pipeline.social_auth.social_details',
-#     'social.pipeline.social_auth.social_uid',
-#     'social.pipeline.social_auth.auth_allowed',
-#     'social.pipeline.social_auth.social_user',
-#     'social.pipeline.user.get_username',
-#     'social.pipeline.partial.save_status_to_session',
-#     'core.pipeline.require_email',
-#     # 'social.pipeline.mail.mail_validation',
-#     # 'social.pipeline.social_auth.associate_by_email',
-#     'core.pipeline.create_user',
-#     # 'social.pipeline.user.create_user',
-#     'social.pipeline.social_auth.associate_user',
-#     'social.pipeline.social_auth.load_extra_data',
-#     'social.pipeline.user.user_details',
-#
-# )
 
 USER_FIELDS = ['email', ]
 PROTECTED_USER_FIELDS = ['email', ]
