@@ -1,33 +1,289 @@
 {% extends "account/base.html" %}
 
-{% load i18n %}
+{% load i18n staticfiles %}
 {% load crispy_forms_tags %}
 
 {% block title %}{% trans "Signup" %}{% endblock title %}
 
-{% block content %}
-
-<div class="container">
-  <div class="row">
-    <div class="col-md-5">
-      <h1>{% trans "Sign Up" %}</h1>
-
-      <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
-
-      <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-        {% csrf_token %}
-        {{ form|crispy }}
-        {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
-        <button id="sign-up-button" class="btn btn-primary" type="submit">{% trans "Sign Up" %} &raquo;</button>
-      </form>
-    </div>
-  </div>
-</div>
 
 
-{% endblock content %}
+
+{% block content2 %}
 
 
+                            <h1 class="ti fs30 fw700 uppercase w100 bottom-margin--15">{% trans "Sign Up" %}</h1>
+
+                              <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+
+                                <form class="w100 js-form" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                                    {% csrf_token %}
+
+                                    {% if redirect_field_value %}
+                                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                                    {% endif %}
+
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <label
+                                                for="id_email"
+                                                class="input-field-label  js-placeholder"
+                                            >{% trans "E-mail address" %} *</label>
+                                            <input
+                                                type="email"
+                                                class="input-field if--50 if--dark  js-placeholder-up {% if form.email.errors %}error{% endif %}"
+                                                id="id_email"
+                                                name="email"
+                                                value="{{ form.email.value|default_if_none:"" }}"
+                                                data-rule-required="true"
+                                                data-rule-email="true"
+                                                data-msg-required="{% trans "This field is mandatory" %}"
+                                                data-msg-email="{% trans "Please enter valid e-mail address!" %}"
+                                            >
+                                            {% if form.email.errors %}
+                                                <p id="id_email-error" class="error">{{ form.email.errors.0 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <label
+                                                for="id_password1"
+                                                class="input-field-label  js-placeholder"
+                                            >{% trans "Password" %} *</label>
+                                            <input
+                                                type="password"
+                                                class="input-field if--50 if--dark  js-placeholder-up {% if form.password1.errors %}error{% endif %}"
+                                                id="id_password1"
+                                                name="password1"
+                                                value="{{ form.password1.value|default_if_none:"" }}"
+                                                data-rule-required="true"
+                                                data-msg-required="{% trans "This field is mandatory" %}"
+                                            >
+                                            {% if form.password1.errors %}
+                                                <p id="id_email-error" class="error">{{ form.password1.errors.0 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <label
+                                                for="password_confirm"
+                                                class="input-field-label  js-placeholder"
+                                            >{% trans "Password (again)" %} *</label>
+                                            <input
+                                                type="password"
+                                                class="input-field if--50 if--dark  js-placeholder-up {% if form.password2.errors %}error{% endif %}"
+                                                id="id_password2"
+                                                name="password2"
+                                                value="{{ form.password2.value|default_if_none:"" }}"
+                                                data-rule-required="true"
+                                                data-rule-equalto="#id_password1"
+                                                data-msg-required="{% trans "This field is mandatory" %}"
+                                                data-msg-equalto="{% trans "The two password fields didn't match." %}"
+                                            >
+                                            {% if form.password2.errors %}
+                                                <p id="id_password2-error" class="error">{{ form.password2.errors.0 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <div class="checkbox w100 bottom-margin--15">
+                                                <input class="checkbox__input  js-filter-news" type="checkbox" id="id_send_email" name="send_email" value="" checked="">
+                                                <label for="id_send_email" class="checkbox__label">
+                                                    <div class="flex wrap--nowrap direction--row justify--start align-items--center">
+                                                        <svg class="checkbox__graphic checkbox__graphic--default icon">
+                                                            <use
+                                                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#checkbox--default"></use>
+                                                        </svg>
+                                                        <svg class="checkbox__graphic checkbox__graphic--checked icon">
+                                                            <use
+                                                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#checkbox--checked"></use>
+                                                        </svg>
+                                                        <span class="checkbox__text">{% trans "I want to receive velo.lv news in email" %}</span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-24 border-top bottom-margin--15"></div>
+                                </div>
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <label
+                                                for="input-2"
+                                                class="input-field-label  js-placeholder"
+                                            >{% trans "First Name" %}</label>
+                                            <input
+                                                type="text"
+                                                class="input-field if--50 if--dark  js-placeholder-up {% if form.first_name.errors %}error{% endif %}"
+                                                id="id_first_name"
+                                                name="first_name"
+                                                value="{{ form.first_name.value|default_if_none:"" }}"
+                                            >
+                                            {% if form.first_name.errors %}
+                                                <p id="id_first_name-error" class="error">{{ form.first_name.errors.0 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <label
+                                                for="input-3"
+                                                class="input-field-label  js-placeholder"
+                                            >{% trans "Last Name" %}</label>
+                                            <input
+                                                type="text"
+                                                class="input-field if--50 if--dark  js-placeholder-up {% if form.last_name.errors %}error{% endif %}"
+                                                id="id_last_name"
+                                                name="last_name"
+                                                value="{{ form.last_name.value|default_if_none:"" }}"
+                                            >
+                                           {% if form.last_name.errors %}
+                                                <p id="id_last_name-error" class="error">{{ form.last_name.errors.0 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--20">
+                                            <label for="input-4" class="w100 fs13 bottom-margin--10">{% trans "Birthday" %}</label>
+                                            <div class="w100">
+                                                <div class="row row--gutters-20">
+                                                    <div class="col-xl-8">
+                                                        <input
+                                                            type="text"
+                                                            class="input-field if--50 if--dark if--center js-placeholder-up {% if form.birthday_day.errors %}error{% endif %}"
+                                                            id="id_birthday_day"
+                                                            name="birthday_day"
+                                                            value="{{ form.birthday_day.value|default_if_none:"" }}"
+                                                            placeholder="DD"
+                                                            data-rule-maxlength="2"
+                                                            data-rule-range="1,31"
+                                                            data-msg-maxlength="{% trans "Please enter correct day number" %}"
+                                                            data-msg-range="{% trans "Please enter correct day number" %}"
+                                                        >
+                                                    </div>
+                                                    <div class="col-xl-8">
+                                                        <input
+                                                            type="text"
+                                                            class="input-field if--50 if--dark if--center  js-placeholder-up {% if form.birthday_month.errors %}error{% endif %}"
+                                                            id="id_birthday_month"
+                                                            name="birthday_month"
+                                                            value="{{ form.birthday_month.value|default_if_none:"" }}"
+                                                            placeholder="MM"
+                                                            data-rule-maxlength="2"
+                                                            data-rule-range="1,12"
+                                                            data-msg-maxlength="{% trans "Please enter correct month number" %}"
+                                                            data-msg-range="{% trans "Please enter correct month number" %}"
+                                                        >
+                                                    </div>
+                                                    <div class="col-xl-8">
+                                                        <input
+                                                            type="text"
+                                                            class="input-field if--50 if--dark if--center  js-placeholder-up {% if form.birthday_year.errors %}error{% endif %}"
+                                                            id="id_birthday_year"
+                                                            name="birthday_year"
+                                                            value="{{ form.birthday_year.value|default_if_none:"" }}"
+                                                            placeholder="{% trans "YYYY" %}"
+                                                            data-rule-minlength="4"
+                                                            data-rule-maxlength="4"
+                                                            data-msg-minlength="{% trans "Please enter correct year number" %}"
+                                                            data-msg-maxlength="{% trans "Please enter correct year number" %}"
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--20">
+                                            <select
+                                                class="select-hide js-select"
+                                                name="country"
+                                                id="id_country"
+                                            >
+                                                <option value="" {% if not form.country.value %}selected{% endif %}>{% trans "Country" %}</option>
+                                                {% for value, text in form.country.field.choices %}
+                                                    <option value="{{ value }}" {% if form.country.value == value %}selected{% endif %}>{{ text }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--20">
+                                            <select
+                                                class="select-hide js-select"
+                                                id="id_city"
+                                                name="city"
+                                            >
+                                                {% for value, text in form.city.field.choices %}
+                                                    <option value="{{ value }}" {% if form.city.value == value|stringformat:"i" %}selected{% endif %}>{{ text }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <select
+                                                class="select-hide js-select"
+                                                id="id_bike_brand"
+                                                name="bike_brand"
+                                            >
+
+                                                {% for value, text in form.bike_brand.field.choices %}
+                                                    <option value="{{ value }}" {% if form.bike_brand.value == value|stringformat:"i" %}selected{% endif %}>{{ text }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--30">
+                                            <label
+                                                for="id_phone_number"
+                                                class="input-field-label  js-placeholder {% if form.phone_number.errors %}error{% endif %}"
+                                            >{% trans "Phone Number" %}</label>
+                                            <input
+                                                type="text"
+                                                class="input-field if--50 if--dark  js-placeholder-up"
+                                                id="id_phone_number"
+                                                name="phone_number"
+                                                value="{{ form.phone_number.value|default_if_none:"" }}"
+                                            >
+                                            {% if form.phone_number.errors %}
+                                                <p id="id_phone_number-error" class="error">{{ form.phone_number.errors.0 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <button class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w100">
+                                            {% trans "Sign Up" %}
+                                            <svg class="icon">
+                                                <use
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                    xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+{% endblock content2 %}
 

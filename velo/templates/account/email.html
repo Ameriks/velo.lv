@@ -1,64 +1,119 @@
 {% extends "account/base.html" %}
 
-{% load i18n %}
+{% load i18n staticfiles %}
 {% load crispy_forms_tags %}
 
 {% block head_title %}{% trans "Account" %}{% endblock %}
 
-{% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-5">
-      <h2>{% trans "E-mail Addresses" %}</h2>
-      {% if user.emailaddress_set.all %}
-      <p>{% trans 'The following e-mail addresses are associated with your account:' %}</p>
+{% block content2 %}
+    <h1 class="ti fs30 fw700 uppercase w100 bottom-margin--30">{% trans "E-mail Addresses" %}</h1>
 
-      <form action="{% url 'account_email' %}" class="email_list" method="post">
+      <p class="bottom-margin--15">{% trans 'The following e-mail addresses are associated with your account:' %}</p>
+
+      <form action="{% url 'account_email' %}" class="email_list bottom-margin--15" method="post">
       {% csrf_token %}
-      <fieldset class="blockLabels">
 
+      <table class="table-block bottom-margin--15">
+            <tbody>
         {% for emailaddress in user.emailaddress_set.all %}
-      <div class="ctrlHolder">
-            <label for="email_radio_{{ forloop.counter }}" class="{% if emailaddress.primary %}primary_email{% endif %}">
-
-            <input id="email_radio_{{ forloop.counter }}" type="radio" name="email" {% if emailaddress.primary %}checked="checked"{% endif %} value="{{ emailaddress.email }}"/>
-
+      <tr>
+      <td>
+          <label for="email_radio_{{ forloop.counter }}" class="{% if emailaddress.primary %}primary_email{% endif %}">
+              <input class="show-input" id="email_radio_{{ forloop.counter }}" type="radio" name="email" {% if emailaddress.primary %}checked="checked"{% endif %} value="{{ emailaddress.email }}"/>
+            </label>
+      </td>
+      <td>
+          <label for="email_radio_{{ forloop.counter }}" class="{% if emailaddress.primary %}primary_email{% endif %}">
       {{ emailaddress.email }}
+          </label>
+      </td>
+      <td>
           {% if emailaddress.verified %}
           <span class="verified">{% trans "Verified" %}</span>
           {% else %}
           <span class="unverified">{% trans "Unverified" %}</span>
           {% endif %}
             {% if emailaddress.primary %}<span class="primary">{% trans "Primary" %}</span>{% endif %}
-      </label>
-      </div>
+
+      </td>
+      </tr>
         {% endfor %}
 
-      <div class="buttonHolder">
-            <button class="secondaryAction" type="submit" name="action_primary" >{% trans 'Make Primary' %}</button>
-            <button class="secondaryAction" type="submit" name="action_send" >{% trans 'Re-send Verification' %}</button>
-            <button class="primaryAction" type="submit" name="action_remove" >{% trans 'Remove' %}</button>
-      </div>
 
-      </fieldset>
+      </tbody>
+      <tfoot>
+
+      </tfoot>
+</table>
+            <div class="buttonHolder">
+<div class="row row--gutters-20">
+                                    <div class="col-xl-7 col-s-24">
+            <button class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w25" type="submit" name="action_primary" >{% trans 'Make Primary' %}</button>
+            </div>
+    <div class="col-xl-10 col-s-24">
+            <button class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w25" type="submit" name="action_send" >{% trans 'Re-send Verification' %}</button>
+                    </div>
+    <div class="col-xl-5 col-s-24">
+        <button class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w25" type="submit" name="action_remove" >{% trans 'Remove' %}</button>
+
+     </div>
+    </div>
+      </div>
       </form>
 
-      {% else %}
-      <p><strong>{% trans 'Warning:'%}</strong> {% trans "You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc." %}</p>
 
-      {% endif %}
+<h1 class="ti fs30 fw700 uppercase w100 bottom-margin--15">{% trans "Add E-mail Address" %}</h1>
 
 
-          <h2>{% trans "Add E-mail Address" %}</h2>
-
-          <form method="post" action="." class="add_email">
+          <form class="w100 js-form" method="post" action=".">
               {% csrf_token %}
-              {{ form|crispy }}
-              <button class="btn" name="action_add" type="submit">{% trans "Add E-mail" %}</button>
+
+
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <label
+                                                for="id_email"
+                                                class="input-field-label  js-placeholder"
+                                            >{% trans "E-mail address" %} *</label>
+                                            <input
+                                                type="email"
+                                                class="input-field if--50 if--dark  js-placeholder-up {% if form.email.errors %}error{% endif %}"
+                                                id="id_email"
+                                                name="email"
+                                                value="{{ form.email.value|default_if_none:"" }}"
+                                                data-rule-required="true"
+                                                data-rule-email="true"
+                                                data-msg-required="{% trans "This field is mandatory" %}"
+                                                data-msg-email="{% trans "Please enter valid e-mail address!" %}"
+                                            >
+                                            {% if form.email.errors %}
+                                                <p id="id_email-error" class="error">{{ form.email.errors.0 }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row--gutters-20 bottom-margin--15">
+                                    <div class="col-xl-12 col-s-24">
+                                        <button name="action_add" class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w100">
+                                            {% trans "Add E-mail" %}
+                                            <svg class="icon">
+                                                <use
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                    xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+
+
+
+
+
           </form>
-    </div>
-  </div>
-</div>
+
 {% endblock %}
 
 

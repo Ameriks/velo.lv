@@ -1,0 +1,22 @@
+{% load socialaccount i18n staticfiles %}
+
+{% get_providers as socialaccount_providers %}
+
+{% for provider in socialaccount_providers %}
+    <a href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}"
+       class="btn btn--50 btn--{{ provider.id }} btn--no-padding btn--no-borders flex--important wrap--nowrap direction--row justify--start align-items--center w100 bottom-margin--10">
+                                                <span class="btn__icon-block">
+                                                    <svg class="btn__icon-block-icon icon">
+                                                        <use
+                                                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#{{ provider.id }}"></use>
+                                                    </svg>
+                                                </span>
+        <span class="left-margin--20 no-wrap">
+        {% blocktrans with provider.name as provider_name %}Enter with {{ provider_name }}{% endblocktrans %}
+        </span>
+    </a>
+{% endfor %}
+
+
+

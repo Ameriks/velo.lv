@@ -1,0 +1,30 @@
+{
+  "name": "velo",
+  "authors": [
+    "Ameriks <github@ameriks.lv>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "globals",
+    "yui"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.3",
+    "jquery-ui-min": "~1.11.4",
+    "django-superformset": "~1.0.4",
+    "leaflet": "~0.7.7",
+    "Leaflet.awesome-markers": "~2.0.2",
+    "font-awesome": "~4.5.0",
+    "sweetalert": "~1.1.3"
+  }
+}

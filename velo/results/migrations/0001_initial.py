@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import datetime
+
 from django.db import models, migrations
 import easy_thumbnails.fields
 from django.conf import settings
@@ -36,7 +38,7 @@ class Migration(migrations.Migration):
             name='DistanceAdmin',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('zero', models.TimeField(default=b'00:00:00', help_text=b'HH:MM:SS')),
+                ('zero', models.TimeField(default=datetime.time(0,0), help_text=b'HH:MM:SS')),
                 ('distance_actual', models.IntegerField(null=True, blank=True)),
                 ('gpx', models.FileField(null=True, upload_to=velo.results.models._get_gpx_upload_path, blank=True)),
                 ('competition', models.ForeignKey(to='core.Competition')),

@@ -122,7 +122,7 @@ class Payment(TimestampMixin, models.Model):
     legacy_id = models.IntegerField(blank=True, null=True)
 
     # This model can have relation to either Application or Team
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 

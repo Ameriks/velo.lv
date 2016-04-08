@@ -1,2 +1,26 @@
 {% extends "base.html" %}
 {% block title %}{% block head_title %}{% endblock head_title %}{% endblock title %}
+
+
+{% block content %}
+    <div class="w100">
+        <div class="inner">
+            <div class="w100 border-right border-left no-border--480 bottom-padding--80">
+                <div class="inner no-padding--480">
+                    <div class="row">
+                        <div class="col-xl-5 col-l-24"></div>
+                        <div class="col-xl-14 col-l-24">
+                            <div class="w100 bottom-margin--50"></div>
+                            {% block content2 %}{% endblock content2 %}
+                        </div>
+                    <div class="col-xl-5 col-l-24"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+
+
+
+{% endblock %}

@@ -25,8 +25,11 @@ module.exports = function (grunt) {
       images: this.app + '/static/images',
       ts: this.app + '/static/ts',
       js: this.app + '/static/js',
-      manageScript: 'manage.py',
-      dockerCompose: '/usr/local/bin/docker-compose'
+
+      js_template: this.app + '/static/template/velo-2016/html/js',
+      sass_template: this.app + '/static/template/velo-2016/html/css',
+
+      manageScript: 'manage.py'
     }
   };
 
@@ -41,8 +44,15 @@ module.exports = function (grunt) {
         files: ['Gruntfile.js']
       },
       sass: {
-        files: ['<%= paths.sass %>/**/*.{scss,sass}'],
+        files: ['<%= paths.sass %>/**/*.{scss,sass}', '<%= paths.sass_template %>/**/*.{scss,sass}'],
         tasks: ['sass:dev'],
+        options: {
+          atBegin: true
+        }
+      },
+      concat: {
+        files: ['<%= paths.js_template %>/**/*.js', '<%= paths.js %>/components/*.js'],
+        tasks: ['concat:dist'],
         options: {
           atBegin: true
         }
@@ -55,12 +65,34 @@ module.exports = function (grunt) {
           ],
         options: {
           spawn: false,
-          livereload: true,
-        },
+          livereload: 35731
+        }
+      }
+    },
+    concat: {
+      dist: {
+        src: [
+              '<%= paths.js_template %>/libs/*.js',
+              '<%= paths.js_template %>/utilities/*.js',
+              '<%= paths.js_template %>/components/*.js',
+              '<%= paths.js %>/components/*.js'
+        ],
+        dest: '<%= paths.js %>/project.js'
+      }
+    },
+    uglify: {
+      options: {
+        mangle: false,
+        screwIE8: true,
+        sourceMap: true
       },
+      project: {
+        files: {
+          '<%= paths.js %>/project.min.js': ['<%= paths.js %>/project.js']
+        }
+      }
     },
 
-    // see: https://github.com/sindresorhus/grunt-sass
     sass: {
       dev: {
           options: {
@@ -69,7 +101,7 @@ module.exports = function (grunt) {
               precision: 10
           },
           files: {
-              '<%= paths.css %>/project.css': '<%= paths.sass %>/project.scss'
+              '<%= paths.css %>/main/project.css': '<%= paths.sass %>/project.scss'
           },
       },
       dist: {
@@ -79,7 +111,7 @@ module.exports = function (grunt) {
               precision: 10
           },
           files: {
-              '<%= paths.css %>/project.css': '<%= paths.sass %>/project.scss'
+              '<%= paths.css %>/main/project.min.css': '<%= paths.sass %>/project.scss'
           },
       }
     },
@@ -144,10 +176,12 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'sass:dist',
     'postcss',
+    'concat:dist',
+    'uglify:project'
+
   ]);
 
   grunt.registerTask('default', [
     'build'
   ]);
-
 };

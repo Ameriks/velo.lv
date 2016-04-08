@@ -1,28 +1,41 @@
 {% extends "account/base.html" %}
 
-{% load i18n %}
+{% load i18n staticfiles %}
 
 {% block head_title %}{% trans "Sign Out" %}{% endblock %}
 
-{% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-5">
+{% block content2 %}
 
-        <h2>{% trans "Sign Out" %}</h2>
+    <h1 class="ti fs30 fw700 uppercase w100 bottom-margin--15">{% trans "Sign Out" %}</h1>
 
-        <p>{% trans 'Are you sure you want to sign out?' %}</p>
+        <p class="bottom-margin--15">{% trans 'Are you sure you want to sign out?' %}</p>
 
-        <form method="post" action="{% url 'account_logout' %}">
+        <form method="post" action="{% url 'account_logout' %}" id="signout_form" >
           {% csrf_token %}
           {% if redirect_field_value %}
           <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
           {% endif %}
-          <button class="btn btn-danger" type="submit">{% trans 'Sign Out' %}</button>
+
+
+            <div class="row row--gutters-20 bottom-margin--15">
+                <div class="col-xl-12 col-s-24">
+                    <button class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w100">
+                        {% trans "Sign Out" %}
+                        <svg class="icon">
+                            <use
+                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+
+
         </form>
-    </div>
-  </div>
-</div>
+    <script type="application/javascript">
+        document.getElementById("signout_form").submit();
+    </script>
 
 {% endblock %}
 

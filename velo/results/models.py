@@ -152,7 +152,7 @@ class ChipScan(models.Model):
 class DistanceAdmin(models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
-    zero = models.TimeField(default='00:00:00', help_text='HH:MM:SS')
+    zero = models.TimeField(default=datetime.time(00, 00), help_text='HH:MM:SS')
     distance_actual = models.IntegerField(blank=True, null=True)
     gpx = models.FileField(upload_to=_get_gpx_upload_path, blank=True, null=True)
 
@@ -195,7 +195,7 @@ class Result(models.Model):
 
     status = models.CharField(_('Status'), max_length=20, choices=STATUSES, blank=True)
 
-    standings_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    standings_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     standings_object_id = models.PositiveIntegerField(null=True, blank=True)
     standings_object = GenericForeignKey('standings_content_type', 'standings_object_id')
 
@@ -363,7 +363,7 @@ class HelperResults(TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     participant = models.ForeignKey('registration.Participant')
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     result_used = GenericForeignKey('content_type', 'object_id')
 

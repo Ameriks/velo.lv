@@ -255,6 +255,8 @@ ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 ACCOUNT_ADAPTER = 'velo.core.adapters.AccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'velo.core.adapters.SocialAccountAdapter'
 
+ACCOUNT_SIGNUP_FORM_CLASS = 'velo.core.forms.SignupForm'
+
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'core.User'

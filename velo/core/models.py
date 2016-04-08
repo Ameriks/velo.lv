@@ -118,8 +118,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(_('Email Address'), unique=True)
     email_status = models.SmallIntegerField(default=EMAIL_STATUS.not_validated, choices=EMAIL_STATUS)
-    email_validation_code = models.CharField(max_length=36, default=uuid.uuid4)
-    email_validation_expiry = models.DateTimeField(null=True, blank=True)
 
     country = CountryField(_('Country'), blank=True, null=True, default="LV")
     ssn = models.CharField(_('Social Security Number'), max_length=12, blank=True)
@@ -375,7 +373,7 @@ class CustomSlug(models.Model):
 
 
 class Log(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 

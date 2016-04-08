@@ -1,48 +1,99 @@
 {% extends "account/base.html" %}
 
-{% load i18n %}
+{% load i18n staticfiles %}
 {% load account %}
 {% load socialaccount %}
 {% load crispy_forms_tags %}
 
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
-{% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-5">
-      <h2>{% trans "Sign In" %}</h2>
-      {% get_providers as socialaccount_providers %}
-      {% if socialaccount_providers %}
-      <p>{% blocktrans with site.name as site_name %}Please sign in with one
-      of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
-      for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 
-      <div class="socialaccount_ballot">
 
-        <ul class="socialaccount_providers">
-          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-        </ul>
 
-        <div class="login-or">{% trans 'or' %}</div>
+{% block content2 %}
 
-      </div>
 
-      {% include "socialaccount/snippets/login_extra.html" %}
+                            <h1 class="ti fs30 fw700 uppercase w100 bottom-margin--40">{% trans "Sign In" %}</h1>
+                            <div class="w100">
+                                <div class="row">
+                                    <div class="col-xl-12 col-m-24 layouts-login-left">
+                                    {% if form.non_field_errors %}
 
-      {% endif %}
+                                            <div class="w100 bottom-margin--10">
+                                                {{ form.non_field_errors.0 }}
+                                            </div>
 
-      <form class="login" method="POST" action="{% url 'account_login' %}">
-        {% csrf_token %}
-        {{ form|crispy }}
-        {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
-        <button id="sign-in-button" class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
-        <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-      </form>
-    </div>
-  </div>
-</div>
+
+
+                                    {% endif %}
+                                        <form class="w100  js-form" method="POST" action="{% url 'account_login' %}">
+                                            {% csrf_token %}
+
+                        {% if redirect_field_value %}
+                                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+
+                                            <div class="input-wrap w100 bottom-margin--10">
+                                                <input
+                                                    autofocus="autofocus"
+                                                    type="email"
+                                                    class="input-field if--50 if--dark"
+                                                    id="id_login"
+                                                    name="login"
+                                                    placeholder="{% trans "E-mail address" %}"
+                                                    data-rule-required="true"
+                                                    data-rule-email="true"
+                                                    data-msg-required="{% trans "This field is mandatory" %}"
+                                                    data-msg-email="{% trans "Please enter valid e-mail address!" %}"
+                                                >
+                                            </div>
+                                            <div class="input-wrap w100 bottom-margin--10">
+                                                <input
+                                                    type="password"
+                                                    class="input-field if--50 if--dark"
+                                                    id="id_password"
+                                                    name="password"
+                                                    placeholder="{% trans "Password" %}"
+                                                    data-rule-required="true"
+                                                    data-msg-required="{% trans "This field is mandatory" %}"
+                                                >
+                                            </div>
+                                            <button class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w100 bottom-margin--10">
+                                                {% trans "Sign In" %}
+                                                <svg class="icon">
+                                                    <use
+                                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                        xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        <div class="w100 text-align--right">
+                                            <a href="{% url 'account_reset_password' %}" class="ti fs13 underline c-white--50">{% trans "Forgot Password?" %}</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-m-24">
+                                        <div class="w100 layouts-login-right">
+                                            <a href="{{ signup_url }}" class="btn btn--50 btn--yellow-transparent btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w100 bottom-margin--10">
+                                                {% trans "Register" %}
+                                                <svg class="icon">
+                                                    <use
+                                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                        xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                                </svg>
+                                            </a>
+
+
+                                            {% include "account/socialaccount/snippets/provider_list.html" with process="login" %}
+                                            {% include "socialaccount/snippets/login_extra.html" %}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
 {% endblock %}
+
+
 

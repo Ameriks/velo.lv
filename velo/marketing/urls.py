@@ -8,7 +8,7 @@ from velo.marketing.views import SMSReportView, TestEmailTemplate
 
 urlpatterns = patterns('',
                        url(r'^sms/back/$', SMSReportView.as_view(), name='sms_back'),
-                       url(r'^mailgun/webhook/$', 'marketing.views.mailgun_webhook', name='mailgun_webhook'),
+                       url(r'^mailgun/webhook/$', 'velo.marketing.views.mailgun_webhook', name='mailgun_webhook'),
                        url(r'^email/test/$', TestEmailTemplate.as_view(), name='email_test'),
 
 )

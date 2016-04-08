@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load staticfiles i18n %}{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>{% load staticfiles i18n sitetree %}{% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE">
-    <link rel="stylesheet" href="{% static "template/velo-2016/html/css/main/main.css" %}">
+    <link rel="stylesheet" href="{% static "css/main/project.css" %}">
     <link rel="preload" href="{% static "template/velo-2016/html/fonts/titillium/subset-TitilliumWeb-Regular.woff" %}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{% static "template/velo-2016/html/fonts/titillium/subset-TitilliumWeb-Regular.woff2" %}" as="font" type="font/woff2" crossorigin>
     <script>
@@ -69,7 +69,7 @@
                     <div class="burger-bar burger-bar--3"></div>
                 </div>
             </div>
-            <a href="sitemap.php" class="main-header__logo">
+            <a href="/" class="main-header__logo">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 15" width="76" height="15" enable-background="new 0 0 76 15"><g fill="#fff"><path d="M9.05,0.26h3.08L8.77,14.7H3.36L0,0.26h3.08l2.51,11.89h0.96L9.05,0.26z"/><path d="M14.25,14.7V0.26h9.34V2.8h-6.41v3.38h5.14v2.51h-5.14v3.46h6.41v2.55H14.25z"/><path d="M34.44,14.7h-8.22V0.26h2.93V12.1h5.29V14.7z"/><path d="m46.32 13.16c-.9 1.2-2.45 1.79-4.64 1.79s-3.74-.6-4.64-1.79c-.9-1.2-1.35-3.07-1.35-5.62s.45-4.44 1.35-5.68c.9-1.24 2.45-1.86 4.64-1.86s3.74.62 4.64 1.86c.9 1.24 1.35 3.13 1.35 5.68s-.45 4.42-1.35 5.62m-6.98-1.87c.42.74 1.2 1.11 2.35 1.11s1.93-.37 2.35-1.11c.42-.74.63-1.99.63-3.74s-.21-3.02-.64-3.81c-.42-.79-1.2-1.19-2.34-1.19s-1.91.4-2.34 1.19-.64 2.06-.64 3.81.21 2.99.63 3.74"/><path d="m50.01 14.7v-3.53h3.06v3.53h-3.06"/><path d="M64.26,14.7h-8.22V0.26h2.93V12.1h5.29V14.7z"/><path d="m72.92.26h3.08l-3.36 14.44h-5.41l-3.36-14.44h3.08l2.51 11.89h.96l2.5-11.89"/></g></svg>
             </a>
             <div class="mobile-nav flex--1 flex direction--row justify--end align-items--center">
@@ -78,37 +78,100 @@
                     <input type="text" id="header-search" name="search" class="search__input js-placeholder-up">
                     <button class="search__btn">
                         <svg class="icon">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/img/icons.svg#search"></use>
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#search"></use>
                         </svg>
                     </button>
                 </form>
-                <nav class="main-nav flex--1">
-                    <ul class="main-nav__items">
-                        <li class="main-nav__item">
-                            <a href="" class="main-nav__link">Kalendārs</a>
-                        </li>
-                        <li class="main-nav__item">
-                            <a href="" class="main-nav__link">Rezultāti</a>
-                        </li>
-                        <li class="main-nav__item">
-                            <a href="" class="main-nav__link">Galerijas</a>
-                        </li>
-                        <li class="main-nav__item">
-                            <a href="" class="main-nav__link">Jaunumi</a>
-                        </li>
-                        <li class="main-nav__item">
-                            <a href="" class="main-nav__link">Par mums</a>
-                        </li>
-                        <li class="main-nav__item">
-                            <a href="" class="main-nav__link">Veikals</a>
-                        </li>
-                    </ul>
-                </nav>
+
+            {% sitetree_menu from "mainmenu" include "trunk" template "sitetree/mainmenu.html"  %}
             </div>
             <nav class="main-header__secondary-nav">
                 <a href="" class="language-link">RU</a>
-                <a href="" class="login-link">Ineākt</a>
+                <a href="" class="language-link">EN</a>
+
+                <a href="{% url 'account_login' %}" class="login-link">{% trans 'Login' %}</a>
             </nav>
         </div>
     </div>
 </header>
+
+<main>
+
+      {% block content %}
+        <p>Use this document as a way to quick start any new project.</p>
+      {% endblock content %}
+
+</main>
+
+<footer class="main-footer bgc-dgray">
+    {% include 'base/_sponsors.html' %}
+    <div class="main-footer__bottom w100 border-top">
+        <div class="inner">
+            <div class="w100 relative">
+                <div class="main-footer-section">
+                    <p class="main-footer-heading bottom-margin--15">Sacensības</p>
+                    <nav class="main-footer-text">
+                        <ul>
+                            <li><a href="">Rīgas bērnu mini Velomaratons</a></li>
+                            <li><a href="">ELKOR Rīgas Velomaratons</a></li>
+                            <li><a href="">Latvijas Riteņbraucēju vienības brauciens</a></li>
+                            <li><a href="">SEB MTB Maratons</a></li>
+                            <li><a href="">Eiropas Čempionats velomaratonā</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="main-footer-section">
+                    <p class="main-footer-heading bottom-margin--15">IZVĒLNE</p>
+                    <nav class="main-footer-text">
+                        <ul class="multicolumn--2">
+                            <li><a href="">Kalendārs</a></li>
+                            <li><a href="">Rezultāti</a></li>
+                            <li><a href="">Galerija</a></li>
+                            <li><a href="">Jaunumi</a></li>
+                            <li><a href="">Atbalstītaji</a></li>
+                            <li><a href="">Par mums</a></li>
+                            <li><a href="">Shop</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="main-footer-section">
+                    <p class="main-footer-heading bottom-margin--15">Kontakti</p>
+                    <div class="main-footer-text">
+                        <p>Brīvības gatve 222, Rīga, LV-1039</p>
+                        <p><a href="tel:+37167314150">+371 67314150</a></p>
+                        <p><a href="mailto:info@velo.lv">info@velo.lv</a></p>
+                    </div>
+                </div>
+                <nav class="main-footer-social">
+                    <ul class="main-footer-social__items">
+                        <li class="main-footer-social__item">
+                            <a href="" class="main-footer-social__link">
+                                <svg class="icon">
+                                    <use
+                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#twitter"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="main-footer-social__item">
+                            <a href="" class="main-footer-social__link">
+                                <svg class="icon">
+                                    <use
+                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#facebook"></use>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+
+<script src="{% static "vendor/bower_components/jquery/dist/jquery.min.js" %}"></script>
+<script src="{% static "vendor/bower_components/jquery-ui-min/jquery-ui.min.js" %}"></script>
+<script src="{% static "js/project.js" %}"></script>
+</body>
+</html>
