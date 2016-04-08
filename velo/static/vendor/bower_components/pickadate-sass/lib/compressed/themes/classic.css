@@ -1,1 +1,0 @@
-@charset "UTF-8";.picker{font-size:16px;text-align:left;line-height:1.2;color:#000;position:absolute;z-index:10000;user-select:none}.picker__input{cursor:default}.picker__input.picker__input--active{border-color:#0089ec}.picker__holder{width:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}

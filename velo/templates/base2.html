@@ -1,0 +1,85 @@
+<!DOCTYPE html>{% load staticfiles i18n %}{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}{{ cookiecutter.project_name }}{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    {% block css %}
+    <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
+
+    <link href="{% static 'tecss/project.css' %}" rel="stylesheet">
+    {% endblock %}
+
+  </head>
+
+  <body>
+
+    <div class="m-b">
+      <nav class="navbar navbar-dark navbar-static-top bg-inverse">
+        <div class="container">
+          <a class="navbar-brand" href="/">{{ cookiecutter.project_name }}</a>
+          <button type="button" class="navbar-toggler hidden-sm-up pull-xs-right" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
+            &#9776;
+          </button>
+
+          <div class="collapse navbar-toggleable-xs" id="bs-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="nav-item">
+{#                <a class="nav-link" href="{% url 'home' %}">Home</a>#}
+              </li>
+              <li class="nav-item">
+{#                <a class="nav-link" href="{% url 'about' %}">About</a>#}
+              </li>
+            </ul>
+
+            <ul class="nav navbar-nav pull-xs-right">
+              {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Logout" %}</a>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+                </li>
+                <li class="nav-item">
+                  <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Log In" %}</a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+          {% endfor %}
+      {% endif %}
+
+      {% block content %}
+        <p>Use this document as a way to quick start any new project.</p>
+      {% endblock content %}
+
+    </div>
+
+    {% block modal %}{% endblock modal %}
+
+    {% block javascript %}
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
+      <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
+
+      <script src="{% static 'js/project.js' %}"></script>
+    {% endblock javascript %}
+  </body>
+</html>

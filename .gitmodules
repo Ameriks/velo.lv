@@ -1,0 +1,3 @@
+[submodule "velo/static/template/velo-2016"]
+	path = velo/static/template/velo-2016
+	url = git@wdigital.lv:root/velo-2016.git

@@ -8,7 +8,7 @@ import math
 import csv
 from django.core.cache import cache
 from sitetree.utils import item
-import StringIO
+from io import StringIO
 from velo.core.models import Competition, Choices, Log
 from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from velo.registration.competition_classes.base import CompetitionScriptBase
@@ -37,7 +37,7 @@ import os.path
 class VBCompetitionBase(CompetitionScriptBase):
 
     def build_manager_menu(self):
-        return item(unicode(self.competition), 'manager:competition %i' % self.competition.id, in_menu=self.competition.is_in_menu, access_loggedin=True)
+        return item(str(self.competition), 'manager:competition %i' % self.competition.id, in_menu=self.competition.is_in_menu, access_loggedin=True)
 
 
 
@@ -59,7 +59,7 @@ class VBCompetitionBase(CompetitionScriptBase):
             child_items.append(item('Komandu rezultāti', 'competition:result_team_by_name %i' % self.competition.id))
             child_items.append(item('Komandu starp dist.', 'competition:result_team_by_name_btw_distances %i' % self.competition.id))
 
-        return item(unicode(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
+        return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
 
 
     def number_ranges(self):
@@ -458,7 +458,7 @@ AND r.id = res2.id
             self.process_chip_result(chip.id, send_sms)
 
     def generate_diploma(self, result):
-        output = StringIO.StringIO()
+        output = StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
         if not os.path.isfile(path):
