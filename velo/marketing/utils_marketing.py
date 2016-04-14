@@ -8,7 +8,6 @@ from django.db.models import Count
 from io import StringIO
 import csv
 
-# from velo.legacy.models import Ev68RVeloParticipations
 from velo.manager.models import TempDocument
 from velo.marketing.models import MailgunEmail
 from velo.registration.models import Participant, Application

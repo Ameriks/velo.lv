@@ -9,7 +9,6 @@ import celery
 
 from velo.core.models import User
 from velo.core.tasks import LogErrorsTask
-# from velo.legacy.utils import full_sync
 from velo.manager.models import TempDocument
 from velo.manager.pdfreports import PDFReports
 from velo.marketing.models import MailgunEmail
