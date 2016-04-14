@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 # This entrypoint is used to play nicely with the current cookiecutter configuration.
 # Since docker-compose relies heavily on environment variables itself for configuration, we'd have to define multiple

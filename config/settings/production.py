@@ -103,7 +103,7 @@ DATABASES['default'] = env.db("DATABASE_URL")
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "{0}/{1}".format(env.cache_url('REDIS_URL', default="redis://172.17.42.1:16379"), 8),
+        "LOCATION": env.cache_url('REDIS_URL', default="redis://172.17.42.1:16379/7"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "IGNORE_EXCEPTIONS": True,  # mimics memcache behavior.
@@ -111,6 +111,8 @@ CACHES = {
         }
     }
 }
+
+BROKER_URL = env("CELERY_BROKER_URL", default="redis://172.17.42.1:16379/7")
 
 
 # Sentry Configuration

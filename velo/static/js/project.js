@@ -396,10 +396,10 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 })();
 (function(){
     var slider = $('.js-calendar-slider');
-    
+
     slider.owlCarousel({
         items:1,
-        navText:['<svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/img/icons.svg#arrow-2--left"></use></svg>','<svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/img/icons.svg#arrow-2--right"></use></svg>'],
+        navText:[$("#slider-button-left").html(),$("#slider-button-right").html()],
         mouseDrag:false,
         responsive : {
             0 : {
@@ -410,7 +410,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             }
         }
     });
-    
+
     var loadSliderImages = function(containingObject){
         var sliderImage = containingObject.find('.js-calendar-slider-image');
         var sliderImageSrc = sliderImage.attr('data-calendar-slider-img');
@@ -422,34 +422,34 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             sliderImage.removeAttr('data-calendar-slider-img');
         }
     }
-    
+
     var openCloseAccordeon = function(accordeonHead){
         var accordeonBody = accordeonHead.next();
-        
+
         if(!accordeonHead.hasClass('active')){
             $('.owl-item.active .js-accordeon-head').removeClass('active');
             $('.owl-item.active .accordeon-body').removeClass('active');
             accordeonHead.addClass('active');
             accordeonBody.addClass('active');
             loadSliderImages(accordeonBody);
-        } 
+        }
     }
-    
+
     $(document).on('click', '.js-open-accordeon', function(e){
         var $this = $(this);
-        
+
         if($this.hasClass('js-accordeon-head')){
             openCloseAccordeon($this);
         }else{
             openCloseAccordeon($this.closest('.js-accordeon-head'));
         }
-        
+
     });
-    
+
     var eventLink = $('.js-calendar-slider-link');
     var setEventLink = function(){
         var windowWidth = window.innerWidth;
-        
+
         if(windowWidth >= 880){
             eventLink.removeAttr('href');
         }else{
@@ -459,13 +459,13 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             });
         }
     }
-    
-    
+
+
     $(window).on('load orientationchange', setEventLink);
     $(window).on('load', function(){
         loadSliderImages($('.calendar-slider__slide').find('.calendar-slider__body:eq(0)'));
     });
-    
+
     var resizeTimer;
     $(window).on('resize', function (e) {
         clearTimeout(resizeTimer);
@@ -475,6 +475,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }, 250);
     });
 })();
+
 (function () {
     var dragBar = $('.js-drag-bar'); 
     var dragHandle = $('.js-drag-handle');
