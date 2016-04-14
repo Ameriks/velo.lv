@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-import StringIO
+from io import StringIO
 from velo.registration.competition_classes.base_vb import VBCompetitionBase
 from velo.registration.models import Participant
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer
@@ -86,7 +86,7 @@ class VB2014(VBCompetitionBase):
     def number_pdf(self, participant_id):
         participant = Participant.objects.get(id=participant_id)
         styles = getSampleStyleSheet()
-        output = StringIO.StringIO()
+        output = StringIO()
 
         doc = SimpleDocTemplate(output, pagesize=A4, showBoundary=0)
         elements = []
@@ -127,7 +127,7 @@ class VB2014(VBCompetitionBase):
         return output
 
     def generate_diploma(self, result):
-        output = StringIO.StringIO()
+        output = StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
         if not os.path.isfile(path):

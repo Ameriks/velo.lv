@@ -7,10 +7,8 @@ from celery.task import task
 from celery.schedules import crontab
 from celery.task import periodic_task
 from easy_thumbnails.files import generate_all_aliases
-from apiclient.discovery import build
-from oauth2client.client import flow_from_clientsecrets, OAuth2Credentials
+from googleapiclient.discovery import build
 from oauth2client.file import Storage
-from oauth2client.tools import argparser, run_flow
 from subprocess import call
 import httplib2
 import vimeo

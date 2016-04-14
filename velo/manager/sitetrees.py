@@ -1,6 +1,6 @@
 from sitetree.utils import tree, item
 from velo.core.models import Competition
-from velo.utils import load_class
+from velo.velo.utils import load_class
 
 
 def sitetrees_build():
@@ -12,7 +12,7 @@ def sitetrees_build():
             processing = _class(competition=competition)
             items.append(processing.build_manager_menu())
         else:
-            items.append(item(unicode(competition), '#', url_as_pattern=False, children=children, access_loggedin=True))
+            items.append(item(str(competition), '#', url_as_pattern=False, children=children, access_loggedin=True))
     return (tree('dynamic_competition_manager', items=items),)
 
 sitetrees = sitetrees_build()

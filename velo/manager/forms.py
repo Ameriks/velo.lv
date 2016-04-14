@@ -115,7 +115,7 @@ class NumberListSearchForm(RequestKwargModelFormMixin, forms.Form):
         competition = kwargs.pop('competition', None)
         super(NumberListSearchForm, self).__init__(*args, **kwargs)
 
-        self.fields['distance'].choices = [('', '------')] + [(obj.id, unicode(obj)) for obj in competition.get_distances()]
+        self.fields['distance'].choices = [('', '------')] + [(obj.id, str(obj)) for obj in competition.get_distances()]
         self.fields['group'].choices = [('', '------')] + [(obj.get('group'), obj.get('group')) for obj in Number.objects.filter(competition_id__in=competition.get_ids()).exclude(group='').values("group").annotate(Count("id")).order_by()]
         self.fields['status'].choices = (('', '------'), ) + Number.STATUSES
 
@@ -168,7 +168,7 @@ class ResultListSearchForm(RequestKwargModelFormMixin, forms.Form):
         competition = kwargs.pop('competition', None)
         super(ResultListSearchForm, self).__init__(*args, **kwargs)
 
-        self.fields['distance'].choices = [('', '------')] + [(obj.id, unicode(obj)) for obj in competition.get_distances()]
+        self.fields['distance'].choices = [('', '------')] + [(obj.id, str(obj)) for obj in competition.get_distances()]
         self.fields['group'].choices = [('', '------')] + [(obj.get('group'), obj.get('group')) for obj in Participant.objects.exclude(group='').values("group").annotate(Count("id")).order_by()]
         self.fields['status'].choices = [('', '------')] + [(obj.get('status'), obj.get('status')) for obj in Result.objects.filter(competition=competition).exclude(status='').values("status").annotate(Count("id")).order_by()]
 
@@ -264,7 +264,7 @@ class ParticipantListSearchForm(RequestKwargModelFormMixin, forms.Form):
         competition = kwargs.pop('competition', None)
         super(ParticipantListSearchForm, self).__init__(*args, **kwargs)
 
-        self.fields['distance'].choices = [('', '------')] + [(obj.id, unicode(obj)) for obj in competition.get_distances()]
+        self.fields['distance'].choices = [('', '------')] + [(obj.id, str(obj)) for obj in competition.get_distances()]
         self.fields['group'].choices = [('', '------')] + [(obj.get('group'), obj.get('group')) for obj in Participant.objects.filter(competition=competition).exclude(group='').values("group").annotate(Count("id")).order_by()]
         self.fields['status'].choices = [('', '------'), (0, 'Nepiedalās'), (1, 'Piedalās')]
 
@@ -773,7 +773,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
                 if not value or not len(value) == 11:
                     raise forms.ValidationError(_("Invalid Social Security Number."))
                 checksum = 1
-                for i in xrange(10):
+                for i in range(10):
                     checksum = checksum - int(value[i]) * int("01060307091005080402"[i * 2:i * 2 + 2])
                 if not int(checksum - math.floor(checksum / 11) * 11) == int(value[10]):
                     raise forms.ValidationError(_("Invalid Social Security Number."))
@@ -1132,7 +1132,7 @@ class PriceForm(RequestKwargModelFormMixin, forms.ModelForm):
         super(PriceForm, self).__init__(*args, **kwargs)
         self.competition = Competition.objects.get(id=self.request_kwargs.get('pk'))
 
-        self.fields['distance'].choices = [('', '------')] + [(obj.id, unicode(obj)) for obj in self.competition.get_distances()]
+        self.fields['distance'].choices = [('', '------')] + [(obj.id, str(obj)) for obj in self.competition.get_distances()]
 
         self.helper = FormHelper()
         self.helper.form_tag = True
@@ -1174,7 +1174,7 @@ class PreNumberAssignForm(RequestKwargModelFormMixin, forms.ModelForm):
         super(PreNumberAssignForm, self).__init__(*args, **kwargs)
         self.competition = Competition.objects.get(id=self.request_kwargs.get('pk'))
 
-        self.fields['distance'].choices = [('', '------')] + [(obj.id, unicode(obj)) for obj in self.competition.get_distances()]
+        self.fields['distance'].choices = [('', '------')] + [(obj.id, str(obj)) for obj in self.competition.get_distances()]
 
         self.helper = FormHelper()
         self.helper.form_tag = True
@@ -1237,7 +1237,7 @@ class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
         competitions = Competition.objects.filter(level__lte=1)
         competition_choices = [('', '------'),]
         for competition in competitions:
-            title = " -- " * competition.level + unicode(competition)
+            title = " -- " * competition.level + str(competition)
             competition_choices.append((competition.id, title))
 
         self.fields['competition'].choices = competition_choices

@@ -43,9 +43,9 @@ def create_standing_list(competition=None, competition_id=None):
         row = 5
         for index, item in enumerate(items, start=1):
             row_values = (
-                index, item.id, unicode(item.participant.primary_number), item.participant_slug, unicode(item.participant.competition), unicode(item.participant.distance), item.participant.last_name,
+                index, item.id, str(item.participant.primary_number), item.participant_slug, str(item.participant.competition), str(item.participant.distance), item.participant.last_name,
                 item.participant.first_name, item.participant.birthday.strftime("%Y-%m-%d"), item.participant.gender, item.participant.group,
-                item.participant.email, item.participant.phone_number, unicode(item.participant.country), item.participant.team_name, unicode(item.participant.bike_brand2) if item.participant.bike_brand2 else '',
+                item.participant.email, item.participant.phone_number, str(item.participant.country), item.participant.team_name, str(item.participant.bike_brand2) if item.participant.bike_brand2 else '',
                 item.distance_place, item.distance_total, ','.join([str(obj.number) for obj in item.participant.numbers()]))
 
             for col, value in enumerate(row_values):
@@ -61,7 +61,7 @@ def payment_list(competition=None, competition_id=None):
         raise Exception('Expected at least one variable')
     if not competition:
         competition = Competition.objects.get(id=competition_id)
-    output = StringIO.StringIO()
+    output = StringIO()
 
     wbk = xlwt.Workbook()
 
@@ -79,12 +79,12 @@ def payment_list(competition=None, competition_id=None):
     for application in applications:
         payments = application.payment_set.filter(status=Payment.STATUS_OK)
         row_values = (
-            application.id, application.created.date(), application.modified.date(), unicode(application.competition), application.get_payment_status_display(),
+            application.id, application.created.date(), application.modified.date(), str(application.competition), application.get_payment_status_display(),
             application.legacy_id, application.company_name, application.external_invoice_nr, application.final_price,
         )
         for payment in payments:
             row_values += (
-                payment.erekins_code, payment.get_status_display(), payment.total, unicode(payment.channel),
+                payment.erekins_code, payment.get_status_display(), payment.total, str(payment.channel),
             )
         for col, value in enumerate(row_values):
             sheet.write(row, col, value)
@@ -139,9 +139,9 @@ def create_start_list(competition=None, competition_id=None):
                 donation = item.application.donation
 
             row_values = (
-                index, item.id, unicode(item.primary_number), item.slug, unicode(item.competition), unicode(item.distance), item.last_name,
+                index, item.id, str(item.primary_number), item.slug, str(item.competition), str(item.distance), item.last_name,
                 item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, donation, total_entry_fee, total_insurance_fee, final_price,
-                unicode(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand2) if item.bike_brand2 else '',
+                str(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, str(item.country), item.team_name, str(item.bike_brand2) if item.bike_brand2 else '',
                 item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res.calculated_total, res.passage_assigned)
 
             for col, value in enumerate(row_values):
@@ -161,7 +161,7 @@ def start_list_have_participated_this_year(competition=None, competition_id=None
     root_competition = competition.get_root()
     child_competitions = competition.get_siblings()
 
-    output = StringIO.StringIO()
+    output = StringIO()
     distances = competition.get_distances()
 
     wbk = xlwt.Workbook()
@@ -202,9 +202,9 @@ def start_list_have_participated_this_year(competition=None, competition_id=None
                 donation = item.application.donation
 
             row_values = (
-                index, item.id, unicode(item.primary_number), item.slug, unicode(item.competition), unicode(item.distance), item.last_name,
+                index, item.id, str(item.primary_number), item.slug, str(item.competition), str(item.distance), item.last_name,
                 item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, donation, total_entry_fee, total_insurance_fee, final_price,
-                unicode(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, unicode(item.country), item.team_name, unicode(item.bike_brand2) if item.bike_brand2 else '',
+                str(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, str(item.country), item.team_name, str(item.bike_brand2) if item.bike_brand2 else '',
                 item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res_points)
 
             for col, value in enumerate(row_values):
@@ -228,7 +228,7 @@ def create_donations_list(competition=None, competition_id=None):
 
     root_competition = competition.get_root()
 
-    output = StringIO.StringIO()
+    output = StringIO()
 
     wbk = xlwt.Workbook()
 
@@ -254,7 +254,7 @@ def create_donations_list(competition=None, competition_id=None):
             total_payed = payments[0].donation
 
         row_values = (
-            index, application.id, unicode(application.competition), participant.last_name,
+            index, application.id, str(application.competition), participant.last_name,
             participant.first_name, participant.ssn, application.email, application.donation, total_count, total_payed, application.external_invoice_nr)
 
         for col, value in enumerate(row_values):
@@ -272,7 +272,7 @@ def team_member_list(competition=None, competition_id=None):
         raise Exception('Expected at least one variable')
     if not competition:
         competition = Competition.objects.get(id=competition_id)
-    output = StringIO.StringIO()
+    output = StringIO()
     distances = competition.get_distances().filter(can_have_teams=True)
 
     notpayed_pattern = xlwt.Pattern()
@@ -307,21 +307,21 @@ def team_member_list(competition=None, competition_id=None):
         for team in distance.team_set.all():
             for member in competition.memberapplication_set.filter(member__team=team).order_by('kind').select_related('member', 'participant', 'participant_unpaid', 'participant_potential', 'participant__primary_number',):
                 is_payed = True if member.participant_id else False
-                sheet.write(row, 0, unicode(team.id), payed_style if is_payed else not_payed_style)
-                sheet.write(row, 1, unicode(team), payed_style if is_payed else not_payed_style)
-                sheet.write(row, 2, unicode(member.member.first_name), payed_style if is_payed else not_payed_style)
-                sheet.write(row, 3, unicode(member.member.last_name), payed_style if is_payed else not_payed_style)
-                sheet.write(row, 4, unicode(member.member.birthday.year), payed_style if is_payed else not_payed_style)
-                sheet.write(row, 5, unicode(member.get_kind_display()), payed_style if is_payed else not_payed_style)
-                sheet.write(row, 6, unicode(member.participant.slug) if member.participant else '', payed_style if is_payed else not_payed_style)
-                sheet.write(row, 7, unicode(member.participant.bike_brand2) if member.participant and member.participant.bike_brand2 else '', payed_style if is_payed else not_payed_style)
-                sheet.write(row, 8, unicode(member.participant_unpaid.slug) if member.participant_unpaid else '', payed_style if is_payed else not_payed_style)
-                sheet.write(row, 9, unicode(member.participant_potential.slug) if member.participant_potential else '', payed_style if is_payed else not_payed_style)
+                sheet.write(row, 0, str(team.id), payed_style if is_payed else not_payed_style)
+                sheet.write(row, 1, str(team), payed_style if is_payed else not_payed_style)
+                sheet.write(row, 2, str(member.member.first_name), payed_style if is_payed else not_payed_style)
+                sheet.write(row, 3, str(member.member.last_name), payed_style if is_payed else not_payed_style)
+                sheet.write(row, 4, str(member.member.birthday.year), payed_style if is_payed else not_payed_style)
+                sheet.write(row, 5, str(member.get_kind_display()), payed_style if is_payed else not_payed_style)
+                sheet.write(row, 6, str(member.participant.slug) if member.participant else '', payed_style if is_payed else not_payed_style)
+                sheet.write(row, 7, str(member.participant.bike_brand2) if member.participant and member.participant.bike_brand2 else '', payed_style if is_payed else not_payed_style)
+                sheet.write(row, 8, str(member.participant_unpaid.slug) if member.participant_unpaid else '', payed_style if is_payed else not_payed_style)
+                sheet.write(row, 9, str(member.participant_potential.slug) if member.participant_potential else '', payed_style if is_payed else not_payed_style)
                 number = Number.objects.filter(participant_slug=member.member.slug, competition_id__in=competition.get_ids(), distance=team.distance).order_by('-number')
                 if number:
-                    sheet.write(row, 10, unicode(number[0]), payed_style if is_payed else not_payed_style)
+                    sheet.write(row, 10, str(number[0]), payed_style if is_payed else not_payed_style)
                     if number.count()>1:
-                        sheet.write(row, 11, unicode(','.join([str(obj.number) for obj in number[1:]])), payed_style if is_payed else not_payed_style)
+                        sheet.write(row, 11, str(','.join([str(obj.number) for obj in number[1:]])), payed_style if is_payed else not_payed_style)
                 row += 1
 
     wbk.save(output)
@@ -337,7 +337,7 @@ def create_team_list(competition=None, competition_id=None):
 
     distances = competition.get_distances().filter(can_have_teams=True)
 
-    output = StringIO.StringIO()
+    output = StringIO()
 
     notpayed_pattern = xlwt.Pattern()
     notpayed_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
@@ -374,7 +374,7 @@ def create_team_list(competition=None, competition_id=None):
         for index, team in enumerate(distance.team_set.filter(member__memberapplication__competition=competition).distinct(), start=1):
             col_add = 0 if index % 2 == 1 else 6
             sheet.write(row, 0 + col_add, str(index))
-            sheet.write(row, 1 + col_add, unicode(team))
+            sheet.write(row, 1 + col_add, str(team))
             row += 1
             next_line = row
             for member in competition.memberapplication_set.filter(member__team=team).order_by('kind'):
@@ -382,10 +382,10 @@ def create_team_list(competition=None, competition_id=None):
 
 
 
-                sheet.write(row, 1 + col_add, unicode(member.get_kind_display())[0], payed_style if is_payed else not_payed_style)
-                sheet.write(row, 2 + col_add, unicode(member.participant.primary_number) if member.participant else '', payed_style if is_payed else not_payed_style)
-                sheet.write(row, 3 + col_add, unicode(member.member.full_name), payed_style if is_payed else not_payed_style)
-                sheet.write(row, 4 + col_add, unicode(member.member.birthday.year), payed_style if is_payed else not_payed_style)
+                sheet.write(row, 1 + col_add, str(member.get_kind_display())[0], payed_style if is_payed else not_payed_style)
+                sheet.write(row, 2 + col_add, str(member.participant.primary_number) if member.participant else '', payed_style if is_payed else not_payed_style)
+                sheet.write(row, 3 + col_add, str(member.member.full_name), payed_style if is_payed else not_payed_style)
+                sheet.write(row, 4 + col_add, str(member.member.birthday.year), payed_style if is_payed else not_payed_style)
 
 
                 row += 1

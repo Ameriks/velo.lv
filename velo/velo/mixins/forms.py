@@ -71,7 +71,7 @@ class CleanSSNMixin(object):
                 if not value or not len(value) == 11:
                     raise forms.ValidationError(_("Invalid Social Security Number."))
                 checksum = 1
-                for i in xrange(10):
+                for i in range(10):
                     checksum = checksum - int(value[i]) * int("01060307091005080402"[i * 2:i * 2 + 2])
                 if not int(checksum - math.floor(checksum / 11) * 11) == int(value[10]):
                     raise forms.ValidationError(_("Invalid Social Security Number."))

@@ -1,13 +1,16 @@
-#Copyright ReportLab Europe Ltd. 2000-2012
-#see license.txt for license details
-#history http://www.reportlab.co.uk/cgi-bin/viewcvs.cgi/public/reportlab/trunk/reportlab/lib/styles.py
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, absolute_import, division, print_function
 from django.conf import settings
 import os
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
-from reportlab.lib.units import mm, inch, cm
+from reportlab.lib.units import mm, cm
 from reportlab.platypus import Image
+from reportlab.lib.colors import black
+from reportlab.lib.enums import TA_LEFT, TA_CENTER
+from reportlab.lib import utils
+
 
 __version__=''' $Id$ '''
 __doc__='''Classes for ParagraphStyle and similar things.
@@ -23,7 +26,7 @@ getSampleStyleSheet()  returns a stylesheet you can use for initial
 development, with a few basic heading and text styles.
 '''
 
-__all__=(
+__all__ = (
         'PropertySet',
         'ParagraphStyle',
         'LineStyle',
@@ -31,9 +34,7 @@ __all__=(
         'StyleSheet1',
         'getSampleStyleSheet',
         )
-from reportlab.lib.colors import white, black
-from reportlab.lib.enums import TA_LEFT, TA_CENTER
-from reportlab.lib.fonts import tt2ps
+
 _baseFontName = "Ubuntu"
 _baseFontNameB = "UbuntuB"
 _baseFontNameI = "Ubuntu"
@@ -45,7 +46,6 @@ if not 'Ubuntu' in pdfmetrics._fonts:
 if not 'UbuntuB' in pdfmetrics._fonts:
     pdfmetrics.registerFont(TTFont('UbuntuB', os.path.join(str(settings.APPS_DIR), 'static', 'assets', 'Ubuntu-B.ttf')))
 
-from reportlab.lib import utils
 
 def get_image(path, width=1*cm):
     img = utils.ImageReader(path)
@@ -247,8 +247,7 @@ class StyleSheet1:
             self.byAlias[alias] = style
 
     def list(self):
-        styles = self.byName.items()
-        styles.sort()
+        styles = sorted(self.byName.items())
         alii = {}
         for (alias, style) in self.byAlias.items():
             alii[style] = alias
@@ -265,7 +264,6 @@ def testStyles():
     pNormal.leading = 14.4
 
     pNormal.listAttrs()
-    print
     pPre = ParagraphStyle('Literal', pNormal)
     pPre.fontName = 'Courier'
     pPre.listAttrs()

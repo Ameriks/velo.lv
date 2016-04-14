@@ -1,4 +1,4 @@
-from django import template
+# -*- coding: utf-8 -*-
 
 from django.conf import settings
 import re
@@ -6,9 +6,11 @@ import re
 from django import template
 from django.utils.encoding import force_str
 
-TEMPLATEADDONS_COUNTERS_VARIABLE = getattr(settings, 'TEMPLATEADDONS_COUNTER_GLOBAL_VARIABLE', '_templateaddons_counters')
+TEMPLATEADDONS_COUNTERS_VARIABLE = getattr(settings, 'TEMPLATEADDONS_COUNTER_GLOBAL_VARIABLE',
+                                           '_templateaddons_counters')
 
 register = template.Library()
+
 
 def parse_tag_argument(argument, context):
     """Parses a template tag argument within given context.
@@ -38,7 +40,10 @@ def parse_tag_argument(argument, context):
     return argument
 
 
-split_re = re.compile('(?P<left>[\w-]+=)?(?P<right>"(?:[^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|\'(?:[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'|[^\\s]+)')
+split_re = re.compile(
+    '(?P<left>[\w-]+=)?(?P<right>"(?:[^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|\'(?:[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'|[^\\s]+)')
+
+
 def split_arguments(str):
     """
     Inspired by django.template.Token.split_contents(), except that arguments
@@ -69,7 +74,7 @@ def decode_tag_argument(argument):
     if match is None:
         raise template.TemplateSyntaxError("invalid tag argument syntax '%s'" % argument)
     else:
-        return {'name': str(match.group('name')), 'value':match.group('value')}
+        return {'name': str(match.group('name')), 'value': match.group('value')}
 
 
 def decode_tag_arguments(token, default_arguments={}):
@@ -84,7 +89,7 @@ def decode_tag_arguments(token, default_arguments={}):
     arguments = {}
     args = split_arguments(token.contents)
 
-    for (arg_name, arg_value) in default_arguments.iteritems():
+    for (arg_name, arg_value) in default_arguments.items():
         arguments[arg_name] = arg_value
 
     for arg in args:
@@ -92,6 +97,7 @@ def decode_tag_arguments(token, default_arguments={}):
         arguments[argument['name']] = argument['value']
 
     return arguments
+
 
 class Counter:
     def __init__(self, start=0, step=1, ascending=True):
@@ -144,16 +150,17 @@ class CounterNode(template.Node):
 
 
 def counter(parser, token):
-    default_arguments = {}
-    default_arguments['name'] = '"default"'
-    default_arguments['start'] = 0
-    default_arguments['step'] = 1
-    default_arguments['ascending'] = True
-    default_arguments['silent'] = False
-    default_arguments['assign'] = '""'
+    default_arguments = {
+        'name': '"default"',
+        'start': 0,
+        'step': 1,
+        'ascending': True,
+        'silent': False,
+        'assign': '""'}
 
     arguments = decode_tag_arguments(token, default_arguments)
 
     return CounterNode(**arguments)
+
 
 register.tag('counter', counter)

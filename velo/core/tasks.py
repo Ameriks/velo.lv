@@ -2,19 +2,12 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 from builtins import str
 
-from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from django.template.loader import render_to_string
-
 from celery.task import task
 from celery import Task
 from django.utils import timezone
-from premailer import transform
 import json
 
-from velo.core.models import User, FailedTask
-from velo.marketing.models import MailgunEmail
-from velo.marketing.tasks import send_mailgun
+from velo.core.models import FailedTask
 
 
 class LogErrorsTask(Task):
@@ -64,48 +57,3 @@ class LogErrorsTask(Task):
                                update_fields=('updated_at', 'failures'))
         else:
             failed_task.save(force_insert=True)
-
-
-@task
-def send_email_confirmation(user_id):
-    user = User.objects.get(id=user_id)
-    context = {
-        'object': user,
-        'domain': settings.MY_DEFAULT_DOMAIN,
-    }
-
-    template = transform(render_to_string('core/email/email_confirmation.html', context))
-    template_txt = render_to_string('core/email/email_confirmation.txt', context)
-
-    email_data = {
-        'em_to': user.email,
-        'subject': _('Verify your velo.lv email address'),
-        'html': template,
-        'text': template_txt,
-        'content_object': user,
-    }
-    mailgun = MailgunEmail.objects.create(**email_data)
-    return mailgun
-
-
-@task
-def send_change_email_notification(user_id, old_email):
-    user = User.objects.get(id=user_id)
-    context = {
-        'object': user,
-        'domain': settings.MY_DEFAULT_DOMAIN,
-    }
-
-    template = transform(render_to_string('core/email/email_change.html', context))
-    template_txt = render_to_string('core/email/email_change.txt', context)
-
-    email_data = {
-        'em_to': old_email,
-        'subject': _('Change Email Notification'),
-        'html': template,
-        'text': template_txt,
-        'content_object': user,
-    }
-    mailgun = MailgunEmail.objects.create(**email_data)
-    send_mailgun(email=mailgun)
-    return mailgun

@@ -49,7 +49,7 @@ class PaymentTypeWidget(Select):
             name,
             option_value,
             attrs,
-            force_text(unicode(option.payment_channel)))
+            force_text(str(option.payment_channel)))
 
 
 class DoNotRenderWidget(Widget):

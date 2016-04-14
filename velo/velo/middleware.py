@@ -1,10 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.utils.http import cookie_date
 
-import hashlib
-import time
-import uuid
 import re
 
 

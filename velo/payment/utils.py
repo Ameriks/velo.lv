@@ -184,7 +184,7 @@ def create_team_invoice(team, active_payment_type, action="send"):
         client_obj.raise_for_status()
 
     items = [{
-        "description": "Komandas %s profila apmaksa" % unicode(team),
+        "description": "Komandas %s profila apmaksa" % str(team),
         "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
         "units": "gab.",
         "amount": "1",
@@ -277,7 +277,7 @@ def create_application_invoice(application, active_payment_type, action="send"):
         if application.invoice_show_names:
             description = "Dalības maksa %(competition)s - %(distance)s - %(full_name)s (%(year)i)" % {
                 "competition": application.competition.get_full_name,
-                "distance": unicode(participant.distance),
+                "distance": str(participant.distance),
                 "full_name": participant.full_name,
                 "year": participant.birthday.year
             }
@@ -364,7 +364,7 @@ def create_team_bank_transaction(team, active_payment_type):
     session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key},
                               url="https://%s.e-rekins.lv" % prefix)
 
-    information = "Komandas %s profila apmaksa %s" % (unicode(team),
+    information = "Komandas %s profila apmaksa %s" % (str(team),
                                                       team.distance.competition.get_full_name) if not team.external_invoice_code else "Rekins nr.%s" % team.external_invoice_nr
 
     bank_data = {

@@ -1,9 +1,5 @@
-from difflib import get_close_matches
-from velo.core.models import Competition
-from velo.registration.models import Participant
 from velo.team.models import MemberApplication
-from velo.utils import load_class
-
+from velo.velo.utils import load_class
 
 
 def match_participant_to_applied(participant):

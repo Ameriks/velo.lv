@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-import StringIO
+from io import StringIO
 from difflib import get_close_matches
 from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from velo.registration.competition_classes.base import RMCompetitionBase
@@ -67,19 +67,19 @@ class RM2015(RMCompetitionBase):
 
     def number_pdf(self, participant_id):
         participant = Participant.objects.get(id=participant_id)
-        output = StringIO.StringIO()
+        output = StringIO()
 
         c = canvas.Canvas(output, pagesize=A4)
         fill_page_with_image("media/competition/vestule/RVm_2015_vestule_ar_tekstu.jpg", c)
 
         c.setFont(_baseFontNameB, 18)
         c.drawString(5*cm, 20*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
-        c.drawString(5*cm, 18*cm, unicode(participant.distance))
+        c.drawString(5*cm, 18*cm, str(participant.distance))
 
 
         if participant.primary_number:
             c.setFont(_baseFontNameB, 35)
-            c.drawString(15*cm, 18.5*cm, unicode(participant.primary_number))
+            c.drawString(15*cm, 18.5*cm, str(participant.primary_number))
         elif participant.distance_id == self.GIMENU_DISTANCE_ID:
             c.setFont(_baseFontNameB, 25)
             c.drawString(15*cm, 18.5*cm, "Amway")
@@ -94,7 +94,7 @@ class RM2015(RMCompetitionBase):
 
 
     def generate_diploma(self, result):
-        output = StringIO.StringIO()
+        output = StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
         if not os.path.isfile(path):

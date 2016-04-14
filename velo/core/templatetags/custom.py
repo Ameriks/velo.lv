@@ -51,11 +51,11 @@ class URLGetNode(template.Node):
         Read value of variable from template context or return variable name
         as value
         """
-        if (val[0] == val[-1] and val[0] in ('"', "'")):
+        if val[0] == val[-1] and val[0] in ('"', "'"):
             val = val[1:-1]
         else:
             val = template.Variable(val).resolve(context)
-        return unicode(val)
+        return str(val)
 
     def render(self, context):
         """Render new GET string"""

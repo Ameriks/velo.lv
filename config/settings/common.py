@@ -311,7 +311,6 @@ CKEDITOR_CONFIGS = {
 
 SECRET_KEY = env("SECRET_KEY")
 SECRET_KEY2 = env('SECRET_KEY2')  # For short URLS
-LEGACY_KEY = env('LEGACY_KEY')  # TODO: Remove this variable
 
 VIMEO_KEY = env('VIMEO_KEY')
 VIMEO_SECRET = env('VIMEO_SECRET')

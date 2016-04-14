@@ -256,7 +256,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
                                             competition=competition).exclude(
             competition__competition_date__lt=timezone.now())
         distance_choices = [
-            (unicode(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())) for
+            (str(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())) for
             distance in distances]
 
         context.update({'distance_choices': distance_choices})

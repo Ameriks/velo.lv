@@ -227,14 +227,14 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
         distances = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True).exclude(
             competition__competition_date__lt=timezone.now())
         self.fields['distance'].choices = [('', '------')] + [
-            (unicode(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())) for
+            (str(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())) for
             distance in distances]
 
         try:
             if self.instance.distance not in distances:
                 distance = self.instance.distance
                 self.fields['distance'].choices.append((
-                    unicode(distance.id),
+                    str(distance.id),
                     "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())))
         except Distance.DoesNotExist:
             pass

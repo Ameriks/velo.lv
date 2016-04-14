@@ -16,7 +16,6 @@ import datetime
 from velo.advert.models import FlashBanner
 from velo.core.models import Competition, Distance
 from velo.velo.utils import load_class
-from velo.core.tasks import send_email_confirmation
 
 
 class CacheControlMixin(object):
@@ -29,26 +28,6 @@ class CacheControlMixin(object):
         response = super(CacheControlMixin, self).dispatch(*args, **kwargs)
         patch_response_headers(response, self.get_cache_timeout())
         return response
-
-
-class SetPleaseVerifyEmail(object):
-    def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
-            request.user.message_set = True
-
-            change_email_url = reverse('accounts:email_change_view')
-            resend_email_url = reverse('accounts:email_resend_view')
-
-            if request.user.email_status == request.user.EMAIL_NOT_VALIDATED:
-                if not request.user.email_validation_expiry:
-                    request.user.email_validation_expiry = timezone.now() + datetime.timedelta(days=1)
-                    request.user.save()
-                    send_email_confirmation.delay(request.user.id)
-                messages.info(request, mark_safe(_(
-                    'We sent email verification to your email address: {0}. Please verify that your email address is active. <a href="{1}">Resend</a> or <a href="{2}">Change email</a>'.format(
-                        request.user.email, resend_email_url, change_email_url))))
-        return super(SetPleaseVerifyEmail, self).get(request, *args, **kwargs)
-
 
 class RequestFormKwargsMixin(object):
     def get_form_kwargs(self):

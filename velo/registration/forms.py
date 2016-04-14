@@ -241,7 +241,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                 if not ssn or not len(ssn) == 11:
                     self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
                 checksum = 1
-                for i in xrange(10):
+                for i in range(10):
                     checksum -= int(ssn[i]) * int("01060307091005080402"[i * 2:i * 2 + 2])
                 if not int(checksum - math.floor(checksum / 11) * 11) == int(ssn[10]):
                     self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
@@ -478,7 +478,7 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                 if not ssn or not len(ssn) == 11:
                     self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
                 checksum = 1
-                for i in xrange(10):
+                for i in range(10):
                     checksum -= int(ssn[i]) * int("01060307091005080402"[i * 2:i * 2 + 2])
                 if not int(checksum - math.floor(checksum / 11) * 11) == int(ssn[10]):
                     self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})

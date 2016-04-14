@@ -1,32 +1,28 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from difflib import get_close_matches
 
-from celery import task
+from celery.task import task
 import datetime
 from celery.schedules import crontab
 from celery.task import periodic_task
 from django.conf import settings
-from django.core.mail import send_mail
-from django.utils.translation import ugettext_lazy as _
 import requests
-import time
-import StringIO
-import unicodedata
-import urllib
+from io import StringIO
+from urllib.parse import urlparse, urlencode
 import uuid
 from velo.core.models import Log, Competition
+from velo.core.tasks import LogErrorsTask
 from velo.marketing.models import SMS
 from velo.marketing.utils import send_smses
 
-from velo.registration.models import Number, Participant, ChangedName
-from velo.results.models import Result, UrlSync, ChipScan, SebStandings, HelperResults
-from velo.utils import load_class
+from velo.registration.models import Number, Participant
+from velo.results.models import Result, UrlSync, ChipScan
+from velo.velo.utils import load_class
 import traceback
 from django.utils import timezone
 
 
-@task
+@task(base=LogErrorsTask)
 def temp_url_sync_task(urlsync_id):
     from velo.registration.competition_classes import Seb2014
     obj = UrlSync.objects.get(id=urlsync_id)
@@ -40,7 +36,7 @@ def temp_url_sync_task(urlsync_id):
     temp_url_sync_task.apply_async((urlsync_id, ), countdown=10)
 
 
-@task()
+@task(base=LogErrorsTask)
 def send_test_sms():
     sms = {
         'page': 'message/send',
@@ -50,12 +46,12 @@ def send_test_sms():
         'text': 'tests %s' % str(uuid.uuid4()),
     }
 
-    requests.get('%s/?%s' % (settings.SMS_GATEWAY, urllib.urlencode(sms)))
+    requests.get('%s/?%s' % (settings.SMS_GATEWAY, urlencode(sms)))
     return True
 
 
 
-@task()
+@task(base=LogErrorsTask)
 def create_result_sms(result_id):
     send_out = timezone.now()
     result = Result.objects.select_related('competition', 'participant').get(id=result_id)
@@ -97,7 +93,7 @@ def create_result_sms(result_id):
     return True
 
 
-@task()
+@task(base=LogErrorsTask)
 def process_chip_result(_id):
     scan = ChipScan.objects.select_related('competition').get(id=_id)
 
@@ -108,7 +104,7 @@ def process_chip_result(_id):
         if scan.competition.processing_class:
             processing_class.process_chip_result(scan.id)
 
-@task()
+@task(base=LogErrorsTask)
 def recalculate_standing_for_result(competition_id, _id):
     competition = Competition.objects.get(id=competition_id)
     result = Result.objects.get(id=_id)
@@ -119,7 +115,7 @@ def recalculate_standing_for_result(competition_id, _id):
     processing_class.recalculate_standing_for_result(result)
 
 
-@task()
+@task(base=LogErrorsTask)
 def fetch_results(_id):
     url_data = UrlSync.objects.get(id=_id)
 
@@ -133,7 +129,7 @@ def fetch_results(_id):
         if resp.status_code != 200:
             return
 
-        buf = StringIO.StringIO(resp.content)
+        buf = StringIO(resp.content)
         file_lines = tuple(buf.readlines())
         lines_to_process = file_lines[processed_line:]
         for line in lines_to_process:
@@ -172,7 +168,7 @@ def fetch_results(_id):
         raise Exception('Error processing external chip file')
 
 
-@task
+@task(base=LogErrorsTask)
 def update_helper_result_table(competition_id, update=False, participant_id=None):
     competition = Competition.objects.get(id=competition_id)
 

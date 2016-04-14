@@ -88,7 +88,7 @@
 #     get_empty_results = False
 #
 #     def label_from_instance(self, obj):
-#         return '%s (id:%i) %s' % (smart_unicode(obj), obj.id, obj.last_login.date())
+#         return '%s (id:%i) %s' % (smart_str(obj), obj.id, obj.last_login.date())
 #
 #
 # class ParticipantChoices(AutoModelSelect2Field):

@@ -10,6 +10,7 @@ from base64 import b32encode
 from hashlib import sha1
 from random import random
 from ckeditor.fields import RichTextField
+from slugify import slugify
 
 from velo.velo.mixins.models import StatusMixin, TimestampMixin
 

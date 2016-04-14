@@ -139,10 +139,10 @@ class SEBCompetitionBase(CompetitionScriptBase):
             children.append(item('Parametri', '#', url_as_pattern=False, in_menu=False, access_loggedin=True, children=[
                 item('Distance admin', 'manager:distance_admin_list %i' % child.id, access_loggedin=True),
             ]))
-            child_items.append(item(unicode(child), 'manager:competition %i' % child.id, access_loggedin=True, children=children))
+            child_items.append(item(str(child), 'manager:competition %i' % child.id, access_loggedin=True, children=children))
 
 
-        return item(unicode(self.competition), '#', url_as_pattern=False, children=child_items, in_menu=self.competition.is_in_menu, access_loggedin=True)
+        return item(str(self.competition), '#', url_as_pattern=False, children=child_items, in_menu=self.competition.is_in_menu, access_loggedin=True)
 
     def build_menu(self):
         current_date = datetime.date.today()
@@ -172,9 +172,9 @@ class SEBCompetitionBase(CompetitionScriptBase):
                 children.append(item('Rezultāti', 'competition:result_distance_list %i' % child.id))
                 children.append(item('Komandu rezultāti', 'competition:result_team_list %i' % child.id))
 
-            child_items.append(item(unicode(child), 'competition:competition %i' % child.id, url_as_pattern=True, children=children))
+            child_items.append(item(str(child), 'competition:competition %i' % child.id, url_as_pattern=True, children=children))
 
-        return item(unicode(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
+        return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
 
     def get_startlist_table_class(self, distance=None):
         return ParticipantTable
@@ -713,7 +713,7 @@ class RMCompetitionBase(CompetitionScriptBase):
         #         item('Dalībnieku saraksts', 'manager:participant_list %i' % child.id, access_loggedin=True),
         #         item('{{ object }}', 'manager:participant %i object.id' % child.id, in_menu=False, access_loggedin=True),
         #     ]))
-        return item(unicode(self.competition), '#', url_as_pattern=False, children=child_items, in_menu=self.competition.is_in_menu, access_loggedin=True)
+        return item(str(self.competition), '#', url_as_pattern=False, children=child_items, in_menu=self.competition.is_in_menu, access_loggedin=True)
 
 
     def build_menu(self):
@@ -732,7 +732,7 @@ class RMCompetitionBase(CompetitionScriptBase):
         if self.competition.competition_date <= current_date:
             child_items.append(item('Rezultāti', 'competition:result_distance_list %i' % self.competition.id))
             child_items.append(item('Komandu rezultāti', 'competition:result_team_by_name %i' % self.competition.id))
-        return item(unicode(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
+        return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
 
     def number_ranges(self):
         """

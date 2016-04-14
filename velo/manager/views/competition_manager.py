@@ -9,7 +9,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DetailView, TemplateView
 
 from velo.core.models import Competition
-from velo.legacy.utils_marketing import create_csv_seb
 from velo.manager.excels.insured import create_insured_list
 from velo.manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
     create_team_list, payment_list, create_donations_list, start_list_have_participated_this_year
@@ -81,9 +80,10 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         if request.POST.get('action') == 'assign_numbers_continuously':
             self._competition_class.assign_numbers_continuously()
         elif request.POST.get('action') == 'legacy_sync':
-            messages.add_message(request, messages.INFO,
-                                 'Sinhronizācija sākta. Gaidiet e-pastu uz %s ar paziņojumu par beigām.' % request.user.email)
-            legacy_sync.delay(request.user.email)
+            pass # TODO: Fix this
+            # messages.add_message(request, messages.INFO,
+            #                      'Sinhronizācija sākta. Gaidiet e-pastu uz %s ar paziņojumu par beigām.' % request.user.email)
+            # legacy_sync.delay(request.user.email)
         elif request.POST.get('action') == 'start_list':
             file_obj = create_start_list(competition=self.competition)
             response = HttpResponse(content_type='application/vnd.ms-excel')
@@ -151,7 +151,7 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             messages.info(request, 'Veiksmīgi atjaunots')
         elif request.POST.get('action') == 'marketing_create_csv_seb':
             if request.user.is_superuser:
-                create_csv_seb(request.user)
+                # create_csv_seb(request.user) # TODO: Fix this
                 messages.info(request, 'Nosūtīts e-pasts')
             else:
                 messages.info(request, 'Nav tiesību.')

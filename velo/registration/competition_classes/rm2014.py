@@ -8,7 +8,7 @@ import math
 import csv
 from django.core.cache import cache
 from sitetree.utils import item
-import StringIO
+from io import StringIO
 from velo.core.models import Competition, Choices, Log
 from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from velo.registration.competition_classes.base import CompetitionScriptBase, RMCompetitionBase
@@ -82,7 +82,7 @@ class RM2014(RMCompetitionBase):
     def number_pdf(self, participant_id):
         participant = Participant.objects.get(id=participant_id)
         styles = getSampleStyleSheet()
-        output = StringIO.StringIO()
+        output = StringIO()
 
         doc = SimpleDocTemplate(output, pagesize=A4, showBoundary=0)
         elements = []
@@ -149,7 +149,7 @@ class RM2014(RMCompetitionBase):
 
 
     def generate_diploma(self, result):
-        output = StringIO.StringIO()
+        output = StringIO()
         path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
         if not os.path.isfile(path):
