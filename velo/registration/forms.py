@@ -287,7 +287,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         insurances = competition.get_insurances().filter(status=Insurance.STATUS_ACTIVE)
 
         if insurances:
-            self.fields['insurance'].choices = [('', '------')] + [(insurance.id, insurance.__unicode__()) for insurance
+            self.fields['insurance'].choices = [('', '------')] + [(insurance.id, str(insurance)) for insurance
                                                                    in insurances]
 
             if self.instance.insurance_id:
@@ -297,7 +297,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         else:
             pass
 
-        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in
+        self.fields['distance'].choices = [('', '------')] + [(distance.id, str(distance)) for distance in
                                                               distances]
 
         if get_language() == 'lv':
@@ -308,8 +308,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.fields['team_name'].widget.attrs.update({'class': 'team-typeahead'})
 
-        self.fields['team_name'].initial = competition.params.get('default_team', "")
-        self.fields['team_name'].help_text = competition.params.get('default_team_help', "")
+        self.fields['team_name'].initial = competition.params_dict.get('default_team', "")
+        self.fields['team_name'].help_text = competition.params_dict.get('default_team_help', "")
 
         self.fields['distance'].widget.attrs.update(
             {'data-url': str(reverse('payment:check_price', kwargs={'pk': self.application.competition_id}))})
@@ -504,7 +504,7 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         distances = competition.get_distances()
 
-        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in
+        self.fields['distance'].choices = [('', '------')] + [(distance.id, str(distance)) for distance in
                                                               distances]
 
         if get_language() == 'lv':

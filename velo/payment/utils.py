@@ -305,7 +305,7 @@ def create_application_invoice(application, active_payment_type, action="send"):
                 "price": get_insurance_fee_from_insurance(participant.competition, participant.insurance)
             })
     if application.donation > 0:
-        information = application.competition.params.get('donation', {}).get('bank_code',
+        information = application.competition.params_dict.get('donation', {}).get('bank_code',
                                                                              'Ziedojums - %s') % application.donation
         items.append({
             "description": information,
@@ -396,7 +396,7 @@ def create_application_bank_transaction(application, active_payment_type):
 
     information = "Pieteikums nr.%i" % application.id if not application.external_invoice_code else "Rekins nr.%s" % application.external_invoice_nr
     if application.donation > 0:
-        information += (" + %s" % application.competition.params.get('donation', {}).get('bank_code',
+        information += (" + %s" % application.competition.params_dict.get('donation', {}).get('bank_code',
                                                                                          'Ziedojums - %s')) % application.donation
 
     bank_data = {

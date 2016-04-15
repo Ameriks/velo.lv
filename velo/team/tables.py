@@ -41,7 +41,7 @@ class TeamMyTable(tables.Table):
 
     def render_apply(self, record, **kwargs):
         ret = ''
-        if record.distance.competition.params.get('teams_should_apply', False):
+        if record.distance.competition.params_dict.get('teams_should_apply', False):
             ret = mark_safe("<a href='%s'>%s</a>" % (reverse('accounts:team_apply_list', kwargs={'pk2': record.id}), ugettext('Apply')))
 
         if record.distance.profile_price and not record.is_featured:

@@ -159,7 +159,7 @@
                 {% cache 3600 footer_competitions LANGUAGE_CODE %}
                     <nav class="main-footer-text">
                         <ul>
-                            {% for item in competitions %}
+                            {% for item in front_competitions %}
                                 <li><a href="{% url "competition:competition" item.id %}">{{ item }}</a></li>
                             {% endfor %}
                         </ul>

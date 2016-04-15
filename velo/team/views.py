@@ -123,7 +123,7 @@ class MemberInline(GetClassNameMixin, InlineFormSet):
         delete_date_obj = datetime.date.today()
 
         if self.competition and self.competition.params:
-            delete_date = self.competition.params.get('team_member_delete_final', None)
+            delete_date = self.competition.params_dict.get('team_member_delete_final', None)
             if delete_date:
                 delete_date_obj = datetime.datetime.strptime(delete_date, '%Y-%m-%d').date()
 
@@ -147,7 +147,7 @@ class MemberInline(GetClassNameMixin, InlineFormSet):
         kwargs.update({'empty_form_class': self.form_class})
         kwargs.update({'required': 1})
         kwargs.update({'can_add_new': True})
-        kwargs.update({'max_num': self.competition.params.get('team_member_count', 1000) if self.competition else 1000})
+        kwargs.update({'max_num': self.competition.params_dict.get('team_member_count', 1000) if self.competition else 1000})
         kwargs.update({'queryset': Member.objects.filter(status=Member.STATUS_ACTIVE) })
         return kwargs
 
@@ -355,8 +355,8 @@ class TeamApply(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, 
             else:
                 nothing.append(member.id)
 
-        max_team_riders = team_competition.params.get('max_team_riders', 1000)
-        max_team_reserve = team_competition.params.get('max_team_reserve', 1000)
+        max_team_riders = team_competition.params_dict.get('max_team_riders', 1000)
+        max_team_reserve = team_competition.params_dict.get('max_team_reserve', 1000)
         if len(riders) > max_team_riders:
             messages.error(request, _('Too many team members marked as participants. MAX-%i') % max_team_riders)
         elif len(reserve) > max_team_reserve:

@@ -227,7 +227,7 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
         distances = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True).exclude(
             competition__competition_date__lt=timezone.now())
         self.fields['distance'].choices = [('', '------')] + [
-            (str(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())) for
+            (str(distance.id), "{0} - {1}".format(str(distance.competition), str(distance))) for
             distance in distances]
 
         try:
@@ -235,7 +235,7 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
                 distance = self.instance.distance
                 self.fields['distance'].choices.append((
                     str(distance.id),
-                    "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())))
+                    "{0} - {1}".format(str(distance.competition), str(distance))))
         except Distance.DoesNotExist:
             pass
 

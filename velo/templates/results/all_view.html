@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load staticfiles i18n sitetree %}
+
+{% block content %}
+
+
+
+<div class="w100 flex">
+        <div class="inner flex">
+            <div class="w100 border-right border-left no-border--480 bottom-padding--80">
+                <div class="inner no-padding--480">
+                    <div class="row">
+                        <div class="col-xl-8 col-l-24"></div>
+                        <div class="col-xl-8 col-l-24">
+                            <div class="w100 bottom-margin--50"></div>
+                            <h1 class="ti fs30 fw700 uppercase w100 bottom-margin--15">{% sitetree_page_title from "mainmenu" %}</h1>
+                            <p class="ti fw700 fs14 uppercase bottom-margin--40">{% trans "Use filters to find results." %}</p>
+
+                                    <select class="js-form-results-source" style="display:none;">
+                                        <option class="top" value="" disabled selected>{% trans "Select Competition" %}</option>
+                                        {% for competition in competitions %}
+                                            <option value="{{ competition.id }}" class="{{ competition.competition_date.year }}">{{ competition.get_full_name }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                            <form method="post" action="" class="w100  js-form-results">
+                                {% csrf_token %}
+                                <div class="input-wrap w100 bottom-margin--20">
+                                    <select class="select-hide  js-select js-form-results-input">
+                                        <option value="" disabled selected>{% trans "Select Year" %}</option>
+                                        {% for year, text in years %}
+                                        <option value="{{ year }}">{{ text }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="input-wrap w100 bottom-margin--20" style="display:none;">
+                                    <select class="select-hide js-select js-form-results-load-area" name="competition">
+                                        <option value="" disabled selected>{% trans "Select Competition" %}</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn--50 btn--disabled flex--important wrap--nowrap direction--row justify--space-between align-items--center w100  js-form-results-btn" disabled>
+                                    {% trans "See Results" %}
+                                    <svg class="icon">
+                                        <use
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-xl-8 col-l-24"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

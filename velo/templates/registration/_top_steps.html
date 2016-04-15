@@ -1,0 +1,39 @@
+{% load staticfiles i18n %}
+<div class="steps">
+    <div class="row">
+        <div class="col-xl-8 col-m-24">
+            <div class="steps__step {% if active == 1 %}steps__step--active{% endif %} flex wrap--nowrap direction--row justify--start align-items--center">
+                <div class="steps__symbol">
+                    <svg class="steps__symbol-item icon">
+                        <use
+                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#tick"></use>
+                    </svg>
+                </div>
+                <div class="steps__text flex--1">{% trans "Basic information" %}</div>
+            </div>
+        </div>
+        <div class="col-xl-8 col-m-24">
+            <div class="steps__step {% if active == 2 %}steps__step--active{% endif %} flex wrap--nowrap direction--row justify--start align-items--center">
+                <div class="steps__symbol">
+                    <div class="steps__symbol-item">2.</div>
+                </div>
+                <div class="steps__text flex--1">{% trans "Payment" %}</div>
+            </div>
+        </div>
+        <div class="col-xl-8 col-m-24">
+            <div class="steps__step {% if active == 3 %}steps__step--active{% endif %} flex wrap--nowrap direction--row justify--start align-items--center">
+                <div class="steps__symbol">
+                    <div class="steps__symbol-item">
+                        <svg class="steps__symbol-item icon">
+                            <use
+                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#finish"></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="steps__text flex--1">{% trans "Confirmation" %}</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -250,6 +250,10 @@ class Competition(MPTTModel):
     def __str__(self):
         return self.name
 
+    @property
+    def params_dict(self):
+        return json.loads(self.params)
+
     def get_ids(self):
         if self.level == 2:
             return self.id, self.parent_id

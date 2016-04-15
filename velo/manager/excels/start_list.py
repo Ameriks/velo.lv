@@ -28,7 +28,7 @@ def create_standing_list(competition=None, competition_id=None):
 
 
     for distance in distances:
-        sheet = wbk.add_sheet(distance.__unicode__())
+        sheet = wbk.add_sheet(str(distance))
         slugs = []
 
         items = SebStandings.objects.filter(competition_id__in=competition.get_ids(),distance=distance).select_related('participant', 'participant__competition', 'participant__distance', 'participant__price', 'participant__primary_number').order_by('participant__distance', 'participant__primary_number__group', 'participant__primary_number__number', 'participant__registration_dt')
@@ -109,7 +109,7 @@ def create_start_list(competition=None, competition_id=None):
     wbk = xlwt.Workbook()
 
     for distance in distances:
-        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
+        sheet = wbk.add_sheet(slugify(str(distance))[:30])
 
         helperresults = HelperResults.objects.filter(competition=competition, participant__distance=distance, participant__is_participating=True).select_related('participant', 'participant__competition', 'participant__distance', 'participant__application',
                                                                                       'participant__price', 'participant__primary_number').order_by('participant__distance', 'participant__primary_number__group', 'participant__primary_number__number', 'participant__registration_dt')
@@ -168,7 +168,7 @@ def start_list_have_participated_this_year(competition=None, competition_id=None
 
     for distance in distances:
         slugs_participates = [obj.slug for obj in distance.participant_set.filter(is_participating=True, competition=competition)]
-        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
+        sheet = wbk.add_sheet(slugify(str(distance))[:30])
 
         row = 4
         header_row = (
@@ -287,7 +287,7 @@ def team_member_list(competition=None, competition_id=None):
     wbk = xlwt.Workbook()
 
     for distance in distances:
-        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
+        sheet = wbk.add_sheet(slugify(str(distance))[:30])
 
         row=0
         sheet.write(row, 0, "Team ID")
@@ -353,7 +353,7 @@ def create_team_list(competition=None, competition_id=None):
     wbk = xlwt.Workbook()
 
     for distance in distances:
-        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
+        sheet = wbk.add_sheet(slugify(str(distance))[:30])
 
         sheet.col(0).width = 256 * 4
         sheet.col(1).width = 256 * 4

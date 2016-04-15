@@ -23,7 +23,7 @@ class ManageTeamTable(GetRequestTableKwargs, tables.Table):
     apply = tables.Column(verbose_name=" ", empty_values=())
 
     def render_apply(self, record, **kwargs):
-        if record.distance.competition.params.get('teams_should_apply', False):
+        if record.distance.competition.params_dict.get('teams_should_apply', False):
             return mark_safe("<a href='%s'>%s</a>" % (
             reverse('manager:team_apply_list', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.id}),
             'Pieteikt'))
@@ -144,7 +144,7 @@ class ManageParticipantTable(GetRequestTableKwargs, tables.Table):
 
     def render_distance(self, record, **kwargs):
         # Too long distance names for admin.
-        return record.distance.__unicode__().split(' ', 1)[0]
+        return str(record.distance).split(' ', 1)[0]
 
     def render_last_name(self, record, **kwargs):
         url = reverse('manager:participant', kwargs={'pk': self.request_kwargs.get('pk'), 'pk_participant': record.id})

@@ -22,7 +22,7 @@ def create_insured_list(competition=None, competition_id=None):
     wbk = xlwt.Workbook()
 
     for distance in distances:
-        sheet = wbk.add_sheet(slugify(distance.__unicode__())[:30])
+        sheet = wbk.add_sheet(slugify(str(distance))[:30])
 
         participants = Participant.objects.filter(competition_id__in=competition.get_ids(), is_participating=True,distance=distance).exclude(insurance=None).select_related('competition', 'distance', 'insurance')
 

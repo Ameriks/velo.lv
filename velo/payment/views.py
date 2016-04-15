@@ -127,7 +127,7 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
         context.update({'total_insurance_fee': self.total_insurance_fee})
 
         if self.object.competition.params:
-            donation = self.object.competition.params.get('donation', {})
+            donation = self.object.competition.params_dict.get('donation', {})
             if donation.get('enabled', False):
                 context.update({'donation': donation})
 

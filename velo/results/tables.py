@@ -292,7 +292,7 @@ class ResultRMDistanceTable(tables.Table):
         if record.leader:
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
 
-        if record.competition.params.get('have_diploma', False):
+        if record.competition.params_dict.get('have_diploma', False):
             text = '<a href="%s">%s</a>' % (
             reverse('competition:result_diploma', kwargs={'pk': record.competition_id, 'pk2': record.id}), text)
 

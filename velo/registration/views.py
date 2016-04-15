@@ -114,7 +114,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
         self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)
         competition = self.companyapplication.competition
         team_member_count = 0
-        max_team_members = self.companyapplication.competition.params.get('team_member_count', 1000)
+        max_team_members = self.companyapplication.competition.params_dict.get('team_member_count', 1000)
 
         action = request.POST.get('action', 'none')
         pay_for = request.POST.get('pay_for', '')
@@ -256,7 +256,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
                                             competition=competition).exclude(
             competition__competition_date__lt=timezone.now())
         distance_choices = [
-            (str(distance.id), "{0} - {1}".format(distance.competition.__unicode__(), distance.__unicode__())) for
+            (str(distance.id), "{0} - {1}".format(str(distance.competition), str(distance))) for
             distance in distances]
 
         context.update({'distance_choices': distance_choices})

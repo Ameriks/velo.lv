@@ -509,9 +509,9 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
         competitions = Competition.objects.filter(parent_id=competition.parent_id)
         if competition.level == 2:
             comp_choices = [(competition.parent.id, 'Visa sezona')]
-            comp_choices += [(c.id, c.__unicode__()) for c in competitions]
+            comp_choices += [(c.id, str(c)) for c in competitions]
         else:
-            comp_choices = [(competition.id, competition.__unicode__())]
+            comp_choices = [(competition.id, str(competition))]
 
 
         if competition.get_root().id == 1 and competition.level == 1:
@@ -522,11 +522,11 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
             prices = [(str(price.id), "%s€ - %s" % (str(price.price), price.distance)) for price in competition.price_set.all()]
 
         self.fields['price'].choices = [(u'', u'------'), ] + prices
-        self.fields['insurance'].choices = [('', '------')] + [(insurance.id, insurance.__unicode__()) for insurance in insurances]
+        self.fields['insurance'].choices = [('', '------')] + [(insurance.id, str(insurance)) for insurance in insurances]
 
         self.fields['competition'].choices = comp_choices
 
-        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
+        self.fields['distance'].choices = [('', '------')] + [(distance.id, str(distance)) for distance in distances]
 
         self.fields['competition'].initial = self.request_kwargs.get('pk')
         self.fields['country'].initial = 'LV'
@@ -671,12 +671,12 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
         competitions = Competition.objects.filter(parent_id=competition.parent_id)
         if competition.level == 2:
             comp_choices = [(competition.parent.id, 'Visa sezona')]
-            comp_choices += [(c.id, c.__unicode__()) for c in competitions]
+            comp_choices += [(c.id, str(c)) for c in competitions]
         else:
-            comp_choices = [(competition.id, competition.__unicode__())]
+            comp_choices = [(competition.id, str(competition))]
         self.fields['competition'].choices = comp_choices
 
-        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
+        self.fields['distance'].choices = [('', '------')] + [(distance.id, str(distance)) for distance in distances]
 
         self.fields['competition'].initial = self.request_kwargs.get('pk')
         self.fields['country'].initial = 'LV'
@@ -848,13 +848,13 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         competitions = Competition.objects.filter(parent_id=competition.parent_id)
         if competition.level == 2:
             comp_choices = [(competition.parent.id, 'Visa sezona')]
-            comp_choices += [(c.id, c.__unicode__()) for c in competitions]
+            comp_choices += [(c.id, str(c)) for c in competitions]
         else:
-            comp_choices = [(competition.id, competition.__unicode__())]
+            comp_choices = [(competition.id, str(competition))]
         self.fields['competition'].choices = comp_choices
 
-        self.fields['distance'].choices = [('', '------')] + [(distance.id, distance.__unicode__()) for distance in distances]
-        self.fields['insurance'].choices = [('', '------')] + [(insurance.id, insurance.__unicode__()) for insurance in insurances]
+        self.fields['distance'].choices = [('', '------')] + [(distance.id, str(distance)) for distance in distances]
+        self.fields['insurance'].choices = [('', '------')] + [(insurance.id, str(insurance)) for insurance in insurances]
 
         if competition.get_root().id == 1 and competition.level == 1:
             comps = competition.get_descendants()

@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+from django.core.urlresolvers import reverse
 from django.db.models import Q, Min
-from django.http import Http404, HttpResponse
+from django.utils import timezone
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template.defaultfilters import slugify
 from django.views.generic import ListView, TemplateView, DetailView
 from django.db import connection
 from django.core.cache import cache
+from django.utils.translation import ugettext_lazy as _
 
 import datetime
 from django_tables2 import SingleTableView
@@ -19,28 +22,28 @@ from velo.velo.mixins.views import SetCompetitionContextMixin
 from velo.velo.utils import load_class
 
 
-
 class ResultAllView(TemplateView):
     template_name = 'results/all_view.html'
 
     def get_context_data(self, **kwargs):
         context = super(ResultAllView, self).get_context_data(**kwargs)
 
-        start_year = datetime.date.today().year
-        end_year = Result.objects.aggregate(Min('competition__competition_date')).values()[0].year
+        years = []
+        for year in range(2012, datetime.date.today().year + 1):
+            years.append((year, _("Year %(year)i Results") % {"year": year}))
 
-        competitions = []
-        for year in range(end_year, start_year+1):
-            year_comp = Competition.objects.filter(Q(competition_date__year=year) | Q(children__competition_date__year=year)).filter(level=1).distinct().extra(
-                select={
-                    'have_results': 'Select count(*) from results_result rr left outer join core_competition cc1 on rr.competition_id = cc1.id left outer join core_competition cc2 on cc1.parent_id = cc2.id where cc1.id = core_competition.id or cc2.id = core_competition.id',
-                })
-            competitions.append((year, year_comp))
+        competitions = Competition.objects.filter(competition_date__lt=timezone.now()).order_by('competition_date')
 
-        context.update({'competitions': competitions})
+        context.update({'years': years, 'competitions': competitions})
 
         return context
 
+    def post(self, request, *args, **kwargs):
+        try:
+            competition = Competition.objects.get(id=request.POST.get('competition'))
+            return HttpResponseRedirect(reverse("competition:result_distance_list", kwargs={'pk': competition.id}))
+        except:
+            return self.get(request, *args, **kwargs)
 
 
 class ResultList(SetCompetitionContextMixin, SingleTableView):
@@ -79,9 +82,8 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
         if search:
             search_slug = slugify(search)
             queryset = queryset.filter(
-                Q(participant__slug__icontains=search_slug) | Q(number__number__icontains=search_slug)  | Q(participant__team_name__icontains=search.upper()))
-
-
+                Q(participant__slug__icontains=search_slug) | Q(number__number__icontains=search_slug) | Q(
+                    participant__team_name__icontains=search.upper()))
 
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
@@ -103,14 +105,15 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
                     },
                 )
 
-        elif self.competition.id in (45, ):
+        elif self.competition.id in (45,):
             queryset = queryset.extra(
-                    select={
-                        'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
-                    },
-                )
+                select={
+                    'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+                },
+            )
 
-        queryset = queryset.select_related('competition', 'participant__distance', 'participant', 'participant__bike_brand',
+        queryset = queryset.select_related('competition', 'participant__distance', 'participant',
+                                           'participant__bike_brand',
                                            'participant__team', 'number', 'leader')
 
         return queryset
@@ -152,7 +155,8 @@ class SebStandingResultList(SetCompetitionContextMixin, SingleTableView):
         if search:
             search_slug = slugify(search)
             queryset = queryset.filter(Q(participant__slug__icontains=search_slug) | Q(
-                participant__primary_number__number__icontains=search_slug)   | Q(participant__team_name__icontains=search.upper()))
+                participant__primary_number__number__icontains=search_slug) | Q(
+                participant__team_name__icontains=search.upper()))
 
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
@@ -188,7 +192,7 @@ class SebTeamResultList(SetCompetitionContextMixin, ListView):
         index = self.get_competition_class().competition_index  # Get stage index
         queryset = queryset.order_by('-points%i' % index, '-team__is_featured', 'team__title',
                                      '-team__member__memberapplication__participant__result__points_distance',
-                                     'team__member__memberapplication__participant__primary_number__number',)
+                                     'team__member__memberapplication__participant__primary_number__number', )
 
         queryset = queryset.values_list('team__id', 'team__title', 'team__is_featured',
                                         'team__teamresultstandings__points%i' % index,
@@ -197,7 +201,6 @@ class SebTeamResultList(SetCompetitionContextMixin, ListView):
                                         'team__member__memberapplication__participant__result__points_distance',
                                         )
         return queryset
-
 
 
 class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
@@ -220,7 +223,8 @@ class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
 
     def get_queryset(self):
         queryset = super(SebTeamResultStandingList, self).get_queryset()
-        queryset = queryset.filter(team__distance=self.distance).order_by('-points_total', '-team__is_featured', 'team__title')
+        queryset = queryset.filter(team__distance=self.distance).order_by('-points_total', '-team__is_featured',
+                                                                          'team__title')
         queryset = queryset.select_related('team')
 
         return queryset
@@ -246,7 +250,7 @@ class TeamResultsByTeamName(SetCompetitionContextMixin, TemplateView):
 
         cache_key = 'team_results_by_name_%i_%i' % (self.competition.id, self.distance.id)
 
-        default_timeout = 60*30
+        default_timeout = 60 * 30
         if self.competition.competition_date == datetime.date.today():
             default_timeout = 60
         print(default_timeout)
@@ -300,7 +304,6 @@ class TeamResultsByTeamName(SetCompetitionContextMixin, TemplateView):
         return context
 
 
-
 class TeamResultsByTeamNameBetweenDistances(SetCompetitionContextMixin, TemplateView):
     """
     This class is used to view team results for one competition/stage.
@@ -319,14 +322,13 @@ class TeamResultsByTeamNameBetweenDistances(SetCompetitionContextMixin, Template
 
         cache_key = 'team_results_by_name_btw_distances_%i' % self.competition.id
 
-        default_timeout = 60*30
+        default_timeout = 60 * 30
         if self.competition.competition_date == datetime.date.today():
             default_timeout = 60
         print(default_timeout)
 
         object_list = cache.get(cache_key)
         if not object_list:
-
             distance_ids = {
                 "v": self.competition.distance_set.get(kind="V").id,
                 "s": self.competition.distance_set.get(kind="S").id,
@@ -438,8 +440,6 @@ class TeamResultsByTeamNameBetweenDistances(SetCompetitionContextMixin, Template
             'object_list': object_list,
         })
         return context
-
-
 
 
 class ResultDiplomaPDF(DetailView):
