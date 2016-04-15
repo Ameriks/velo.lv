@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.admin import UserAdmin
@@ -95,11 +96,7 @@ admin.site.register(Map, MapAdmin)
 
 
 def admin_login(request, extra_context=None):
-    """ Redirects to default login view which enforces the authentication
-    policy
-    """
-    q = REDIRECT_FIELD_NAME + '=' + request.get_full_path()
-    return HttpResponseRedirect(reverse('accounts:login') + '?' + q)
+    return HttpResponseRedirect(reverse(settings.LOGIN_URL))
 
 
 admin.site.login = admin_login

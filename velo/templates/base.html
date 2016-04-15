@@ -85,12 +85,49 @@
 
             {% sitetree_menu from "mainmenu" include "trunk" template "sitetree/mainmenu.html"  %}
             </div>
-            <nav class="main-header__secondary-nav">
-                <a href="" class="language-link">RU</a>
-                <a href="" class="language-link">EN</a>
 
-                <a href="{% url 'account_login' %}" class="login-link">{% trans 'Login' %}</a>
-            </nav>
+            <div class="main-header__secondary-nav flex wrap--nowrap justify--end align-items--center">
+
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'account_login' %}" class="login-link flex justify--center align-items--center">{% trans 'Login' %}</a>
+                {% else %}
+                    <nav class="profile-nav js-profile-nav">
+                        <div class="profile-nav__text flex justify--center align-items--center">Mans profils</div>
+                        <ul class="profile-nav__items">
+                            <li class="profile-nav__item">
+                                <a href="" class="profile-nav__link">Par mani</a>
+                            </li>
+                            <li class="profile-nav__item">
+                                <a href="" class="profile-nav__link">Sacensības</a>
+                            </li>
+                            <li class="profile-nav__item">
+                                <a href="{% url 'account_logout' %}" class="profile-nav__link">{% trans "Logout" %}</a>
+                            </li>
+                        </ul>
+                    </nav>
+                {% endif %}
+            
+                <nav class="language-nav js-language-nav">
+                    <div class="language-nav__selected">LV</div>
+                    <ul class="language-nav__items">
+                        <li class="language-nav__item">
+                            <a href="" class="language-nav__link">RU</a>
+                        </li>
+                        <li class="language-nav__item">
+                            <a href="" class="language-nav__link">EN</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+
+
+
+
+
+
+
+
         </div>
     </div>
 </header>

@@ -339,6 +339,23 @@ e&&d()}return c});
         }, 250);
     });
 })();
+var jsSelect = function(){
+    $('.js-select')
+        .selectmenu({
+            change: function () {
+                $(this)
+                    .closest('form')
+                    .validate()
+                    .element(this);
+            }
+        })
+        .each(function(){
+            $(this)
+                .selectmenu('widget')
+                .addClass('select');
+        });
+}
+jsSelect();
 (function(){
     var textInput = $(".js-placeholder-up");
 
@@ -618,12 +635,54 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     });
 })();
 (function(){
+    var registrationForm = $('.js-form-participants');
+    
+    registrationForm.validate({
+        ignore: [],
+        errorElement: 'p',
+        errorPlacement: function(error, element) {
+            error.appendTo(element.closest('.input-wrap'));
+        }
+    });
+    
+    
+    $('.js-add-participant').on('click', function(){
+        //ieveito jaunu dalībnieku iekš .js-participant-load-area
+        $('.js-participant-load-area').append();
+        //šī funkcija pārtaisa select inputus par jquery ui menuselect  un pieslēdz jquery validāciju
+        jsSelect();
+    });
+    
+    $(document).on('click', '.js-participant-remove', function(){
+        $(this).closest('.js-participant').slideUp(500, function(){
+            $(this).remove();
+        });
+    });
+})();
+(function(){
     var resultsForm = $('.js-form-results');
+    var resultsFormInput = $('.js-form-results-input');
+    var resultsFormLoadArea = $('.js-form-results-load-area');
+    var resultsFormButton = $('.js-form-results-btn');
+    
+    resultsFormInput.on('change selectmenuchange', function(){
+        //ievieto jaunos select laukus iekš .js-form-results-load-area un palaid jsSelect() funkciju. tas html, kas zemāk tiek padots kā parametrs ir domāts tikai piemēram. to protams dzēs ārā.
+        
+        resultsFormLoadArea.html('<div class="input-wrap w100 bottom-margin--20"><select class="select-hide js-select" name="stage"><option value="" selected>1. posms  -  valmiera, cēsis</option><option value="">1. posms  -  valmiera, cēsis</option><option value="">1. posms  -  valmiera, cēsis</option><option value="">1. posms  -  valmiera, cēsis</option></select></div>');
+        
+        jsSelect();
+        
+        resultsFormButton
+            .removeAttr('disabled')
+            .removeClass('btn--disabled')
+            .addClass('btn--blue btn--blue-hover btn--blue-active');
+    });
 })();
 (function(){
     var registrationForm = $('.js-form');
     
     registrationForm.validate({
+        ignore: [],
         errorElement: 'p',
         errorPlacement: function(error, element) {
             error.appendTo(element.closest('.input-wrap'));
@@ -673,19 +732,111 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         loadWinnerImage(winner.eq(0));
     });
 })();
-(function(){
-    $('.js-select')
-        .selectmenu({
-            change: function () {
-                $(this)
-                    .closest('form')
-                    .validate()
-                    .element(this);
-            }
-        })
-        .each(function(){
-            $(this).selectmenu('widget').addClass('select');
+(function(){   
+    var inputAmount = $('.js-input-amount');
+    
+    var incrementAmount = function(inputValue){
+        var amount = inputValue.val();
+        
+        amount ++
+        
+        inputValue.val(parseInt(amount));
+    }
+    
+    var decrementAmount = function(inputValue){
+        var amount = inputValue.val();
+        
+        if(amount <= 1){
+            amount = 1
+        }else{
+            amount --
+        }
+        
+        inputValue.val(parseInt(amount));
+    }
+    
+    inputAmount.each(function(){
+        var $this = $(this);
+        var inputPlus = $this.find('.js-input-amount-plus');
+        var inputMinus = $this.find('.js-input-amount-minus');
+        var inputValue = $this.find('.js-input-amount-value');
+        
+        inputPlus.on('click', function(){
+            incrementAmount(inputValue);
         });
+        inputMinus.on('click', function(){
+            decrementAmount(inputValue);
+        });
+    });
+})();
+(function () {
+    var isFileSize = function(file, allowedSize){
+        var fileLength = file.length;
+        for (var i = 0; i < fileLength; i++) {
+            if(file[i].size >= allowedSize){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    $('.js-input-file').each(function () {
+        var $input = $(this),
+            $label = $input.next('.js-input-file__label'),
+            labelVal = $label.html(),
+            labelText = $label.find('.js-input-file__text'),
+            allowedSize = $input.attr('data-filesize'),
+            errorMessage = $input.parent().find('.js-input-file__error'),
+            errorMessageFileSize = errorMessage.find('.js-allowed-size');
+        
+        errorMessageFileSize.html(Math.round(allowedSize/1024/1024));
+        
+        $input.on('change', function (e) {
+            var files = this.files;
+            var filesLength = files.length;
+            var fileName = '';
+            
+            if(isFileSize(files, allowedSize)){
+                errorMessage.addClass('hidden');
+                
+                if (files && filesLength > 1){
+                    fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', filesLength);
+                }else if (e.target.value){
+                    fileName = e.target.value.split('\\').pop();
+                }
+                
+                if (fileName){
+                    labelText.html(fileName);
+                }else{
+                    $label.html(labelVal);
+                }
+            }else{
+                errorMessage.removeClass('hidden');
+            }
+        });
+
+        // Firefox bug fix
+        $input
+            .on('focus', function () {
+                $input.addClass('focus');
+            })
+            .on('blur', function () {
+                $input.removeClass('focus');
+            });
+    });
+})();
+(function(){
+    var languageNav = $('.js-language-nav');
+    languageNav.on('click', function(){
+        languageNav.toggleClass('active');
+    });
+    
+    //close opened stuff
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.js-language-nav').length) {
+            languageNav.removeClass('active');
+        }
+    });
 })();
 (function(){    
     var deparmentMap = $('#js-map');
@@ -716,6 +867,19 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             google.maps.event.addDomListener(window, 'load', initialize);
         });
     }
+})();
+(function(){
+    var languageNav = $('.js-profile-nav');
+    languageNav.on('click', function(){
+        languageNav.toggleClass('active');
+    });
+    
+    //close opened stuff
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.js-profile-nav').length) {
+            languageNav.removeClass('active');
+        }
+    });
 })();
 (function(){
     var scrollElement = $('.js-scroll-along');
@@ -760,7 +924,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             if (thisScroll > initialOffsetTop) {
                 scrollElement.addClass('scroll-along');
             }
-            if (thisScroll < initialOffsetTop || thisScroll > (scrollBlockHeight + scrollBlockOffset - tableHeadHeight - 42)) {
+            if (thisScroll < initialOffsetTop || thisScroll > (scrollBlockHeight + scrollBlockOffset - tableHeadHeight - 120)) {
                 scrollElement.removeClass('scroll-along');
             }
         }

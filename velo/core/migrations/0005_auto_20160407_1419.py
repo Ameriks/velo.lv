@@ -9,6 +9,7 @@ from django.db import connection
 from django.utils import timezone
 from allauth.socialaccount.models import SocialAccount, SocialToken
 from allauth.account.models import EmailAddress
+from sitetree.models import TreeItem
 
 
 def migrate_to_allauth(apps, schema_editor):
@@ -65,6 +66,16 @@ def migrate_to_allauth(apps, schema_editor):
     cursor.execute("TRUNCATE django_admin_log")
     cursor.execute("TRUNCATE core_failedtask")
 
+    cursor.execute("INSERT into socialaccount_socialapp_sites VALUES (1, 1, 1)")
+    cursor.execute("INSERT into socialaccount_socialapp_sites VALUES (2, 2, 1)")
+    cursor.execute("INSERT into socialaccount_socialapp_sites VALUES (3, 3, 1)")
+
+    TreeItem.objects.get(id=54).delete()
+    TreeItem.objects.get(id=59).delete()
+
+    prof = TreeItem.objects.get(id=52)
+    prof.inmenu = False
+    prof.save()
 
 
 class Migration(migrations.Migration):
