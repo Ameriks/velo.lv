@@ -242,6 +242,8 @@ class Competition(MPTTModel):
 
     frontpage_ordering = models.PositiveSmallIntegerField(default=0)
 
+    description = models.TextField(blank=True)
+
     class MPTTMeta:
         order_insertion_by = ['competition_date', 'id']
 

@@ -81,3 +81,5 @@ hashids==1.1.0
 # django-shorturls==1.1.1 # NOT COMPATIBLE with python 3
 django-ckeditor==5.0.3
 google-api-python-client
+
+django-modeltranslation==0.11

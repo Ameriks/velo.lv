@@ -29,6 +29,7 @@ DJANGO_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.gis',
 )
@@ -46,6 +47,7 @@ THIRD_PARTY_APPS = (
     'djcelery',
     'ckeditor',
     'impersonate',
+
 
     'allauth',  # registration
     'allauth.account',  # registration
@@ -148,6 +150,7 @@ LANGUAGE_CODE = 'lv'
 LANGUAGES = (
     ('lv', 'Latvian'),
     ('en', 'English'),
+    ('ru', 'Russian'),
 )
 
 
@@ -361,6 +364,8 @@ THUMBNAIL_ALIASES = {
         'agencysupporter': {'size': (240, 180), 'crop': False},
     },
     'gallery': {
+        'front': {'size': (880, 460), 'crop': True},
+        'front_small': {'size': (440, 230), 'crop': True},
         'thumb': {'size': (300, 300), 'crop': True},
         'img': {'size': (1000, 1000), 'crop': False},
         'news_thumb': {'size': (400, 250), 'crop': True},

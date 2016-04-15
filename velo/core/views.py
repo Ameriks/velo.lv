@@ -8,7 +8,7 @@ from django.utils import timezone
 from django_downloadview import ObjectDownloadView
 from braces.views import LoginRequiredMixin
 from velo.core.models import Competition, Map, User
-from velo.gallery.models import Album, Video
+from velo.gallery.models import Album, Video, Photo
 from velo.news.models import News
 from velo.results.models import DistanceAdmin
 from velo.supporter.models import Supporter
@@ -40,8 +40,7 @@ class IndexView(TemplateView):
             next_competition = Competition.objects.order_by('-competition_date')[:1]
         context.update({'next_competition': next_competition[0]})
 
-        next_seb = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[:1]
-
+        context.update({'front_photo': Photo.objects.filter(album_id=144)[0]})
 
         context.update({'news_list': News.objects.published()[:4]})
 

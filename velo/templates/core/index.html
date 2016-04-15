@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load staticfiles %}
+{% load staticfiles i18n %}
 {% block content %}
 <script type="text/template" id="slider-button-left">
   <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow-2--left"></use></svg>
@@ -26,7 +26,7 @@
 
                     <div class="calendar-slider__head accordeon-head h100  js-accordeon-head js-open-accordeon {% if item.id == next_competition.id %}active{% endif %}">
                         <div class="calendar-tile c-white flex wrap--nowrap direction--column justify--start align-items--start border-left">
-                            <a data-href="https://www.google.lv/" class="calendar-tile__info flex--1 js-calendar-slider-link">
+                            <a data-href="{% url "competition:competition" item.id %}" class="calendar-tile__info flex--1 js-calendar-slider-link">
                                 <div class="w100 flex wrap--nowrap direction--row justify--space-between align-items--center">
                                     <div class="calendar-tile__date">
                                         <div class="calendar-tile__day">{{ item.competition_date.day }}</div>
@@ -49,7 +49,7 @@
                             </a>
                             {% if item.is_application_active %}
                                 <a href="{% url 'application' item.id %}" class="calendar-tile__btn btn btn--60 btn--white-transparent btn--blue-hover btn--blue-active btn--border-top w100 flex--important wrap--nowrap direction--row justify--space-between align-items--center">
-                                    Pieteikties
+                                    {% trans "Apply" %}
                                     <svg class="btn__icon icon left-margin--5">
                                         <use
                                             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -65,13 +65,13 @@
                             <figure class="w100 img-wrapper">
                                 <img
                                     class="js-calendar-slider-image"
-                                    data-calendar-slider-img="/userfiles/calendar-slider-hero.jpg"
+                                    data-calendar-slider-img="{{ item.get_random_image.image.front_small.url }}"
                                     data-load-on="880"
                                     onload="imgLoaded(this)"
                                 >
                             </figure>
                             <div class="calendar-slider__acordeon-text editor-text flex--1 flex direction--column justify--center align-items--start">
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.</p>
+                                <p>{{ item.description }}</p>
                             </div>
                         </div>
                     </div>
@@ -110,11 +110,11 @@
                         {% endfor %}
                     </div>
                 </div>
-                <figure class="logo-tiles__hero col-xl-96 flex js-background-image" data-background-image="/userfiles/logo-tiles-hero.jpg"></figure>
+                <figure class="logo-tiles__hero col-xl-96 flex js-background-image" data-background-image="{{ front_photo.image.front_small.url }}"></figure>
             </div>
         </div>
     </div>
-    <?php include('sponsor-line.php'); ?>
+    {% include "base/_sponsors.html" %}
     <div class="w100 border-top">
         <div class="inner">
 

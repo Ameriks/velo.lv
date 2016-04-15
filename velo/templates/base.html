@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load staticfiles i18n sitetree %}{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>{% load staticfiles i18n sitetree translate %}{% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
@@ -74,7 +74,7 @@
             </a>
             <div class="mobile-nav flex--1 flex direction--row justify--end align-items--center">
                 <form action="" method="POST" class="search order--1">
-                    <label for="header-search" class="search__label js-placeholder">Meklēt</label>
+                    <label for="header-search" class="search__label js-placeholder">{% trans "Search" %}</label>
                     <input type="text" id="header-search" name="search" class="search__input js-placeholder-up">
                     <button class="search__btn">
                         <svg class="icon">
@@ -92,7 +92,7 @@
                     <a href="{% url 'account_login' %}" class="login-link flex justify--center align-items--center">{% trans 'Login' %}</a>
                 {% else %}
                     <nav class="profile-nav js-profile-nav">
-                        <div class="profile-nav__text flex justify--center align-items--center">Mans profils</div>
+                        <div class="profile-nav__text flex justify--center align-items--center">{% trans "My Profile" %}</div>
                         <ul class="profile-nav__items">
                             <li class="profile-nav__item">
                                 <a href="" class="profile-nav__link">Par mani</a>
@@ -108,14 +108,23 @@
                 {% endif %}
 
                 <nav class="language-nav js-language-nav">
-                    <div class="language-nav__selected">LV</div>
+                    <div class="language-nav__selected">{{ LANGUAGE_CODE }}</div>
                     <ul class="language-nav__items">
+                        {% if LANGUAGE_CODE != "lv" %}
                         <li class="language-nav__item">
-                            <a href="" class="language-nav__link">RU</a>
+                            <a href="{% change_lang "lv" %}" class="language-nav__link">LV</a>
                         </li>
+                        {% endif %}
+                        {% if LANGUAGE_CODE != "ru" %}
                         <li class="language-nav__item">
-                            <a href="" class="language-nav__link">EN</a>
+                            <a href="{% change_lang "ru" %}" class="language-nav__link">RU</a>
                         </li>
+                        {% endif %}
+                        {% if LANGUAGE_CODE != "en" %}
+                        <li class="language-nav__item">
+                            <a href="{% change_lang "en" %}" class="language-nav__link">EN</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>

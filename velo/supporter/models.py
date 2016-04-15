@@ -28,6 +28,7 @@ class Supporter(models.Model):
 
 class Logo(models.Model):
     supporter = models.ForeignKey(Supporter)
+    svg_logo = models.FileField(upload_to=_get_logo_upload_path, blank=True, )
     image = ThumbnailerImageField(upload_to=_get_logo_upload_path, blank=True, width_field='width', height_field='height')
     width = models.FloatField(blank=True, null=True)
     height = models.FloatField(blank=True, null=True)
