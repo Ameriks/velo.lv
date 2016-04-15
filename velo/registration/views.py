@@ -284,6 +284,17 @@ class ApplicationCreate(SSLRequiredMixin, RequestFormKwargsMixin, CreateView):
     model = Application
     form_class = ApplicationCreateForm
 
+    def get(self, request, *args, **kwargs):
+        pick = kwargs.get('pick', None)
+        if pick and Competition.objects.get(id=pick).is_application_active:
+            self.object = self.model(competition_id=pick)
+            if request.user.is_authenticated():
+                self.object.email = request.user.email
+                self.object.created_by = request.user
+            self.object.save()
+            return HttpResponseRedirect(self.get_success_url())
+        return super(ApplicationCreate, self).get(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse('application', kwargs={'slug': self.object.code})
 
@@ -295,7 +306,7 @@ class ParticipantInline(GetClassNameMixin, InlineFormSet):
 
     @property
     def can_delete(self):
-        if self.view.object.payment_status == self.view.object.PAY_STATUS_NOT_PAYED:
+        if self.view.object.payment_status == self.view.object.PAY_STATUS.not_payed:
             return True
         return False
 
@@ -303,7 +314,7 @@ class ParticipantInline(GetClassNameMixin, InlineFormSet):
     def form_class(self):
         if self.view.object.competition.is_past_due:
             return ParticipantInlineFullyRestrictedForm
-        if self.view.object.payment_status == self.view.object.PAY_STATUS_NOT_PAYED:
+        if self.view.object.payment_status == self.view.object.PAY_STATUS.not_payed:
             return ParticipantInlineForm
         return ParticipantInlineRestrictedForm
 
@@ -319,7 +330,7 @@ class ParticipantInline(GetClassNameMixin, InlineFormSet):
         kwargs.update({'application': self.view.object})
         kwargs.update({'empty_form_class': self.form_class})
         kwargs.update({'required': 1})
-        kwargs.update({'can_add_new': self.view.object.payment_status == self.view.object.PAY_STATUS_NOT_PAYED})
+        kwargs.update({'can_add_new': self.view.object.payment_status == self.view.object.PAY_STATUS.not_payed})
         return kwargs
 
     def get_extra_form_kwargs(self):
@@ -344,7 +355,7 @@ class ApplicationUpdate(SSLRequiredMixin, RequestFormKwargsMixin, NamedFormsetsM
 
     def get_success_url(self):
         if self.request.POST.get('submit_draft'):
-            if self.object.payment_status == Application.PAY_STATUS_PAYED:
+            if self.object.payment_status == Application.PAY_STATUS.payed:
                 messages.info(self.request, _('Saved'))
             else:
                 messages.info(self.request, _('Draft saved'))

@@ -66,7 +66,7 @@ def payment_list(competition=None, competition_id=None):
     wbk = xlwt.Workbook()
 
     applications = Application.objects.filter(competition_id__in=competition.get_ids(),
-                                              payment_status=Application.PAY_STATUS_PAYED)
+                                              payment_status=Application.PAY_STATUS.payed)
 
     sheet = wbk.add_sheet('Applications')
     row = 4
@@ -234,7 +234,7 @@ def create_donations_list(competition=None, competition_id=None):
 
     sheet = wbk.add_sheet('donations')
 
-    applications = Application.objects.filter(competition_id__in=competition.get_ids(), payment_status=Application.PAY_STATUS_PAYED).exclude(donation=0.0).prefetch_related('participant_set').select_related('competition')
+    applications = Application.objects.filter(competition_id__in=competition.get_ids(), payment_status=Application.PAY_STATUS.payed).exclude(donation=0.0).prefetch_related('participant_set').select_related('competition')
 
     row = 1
     header_row = (

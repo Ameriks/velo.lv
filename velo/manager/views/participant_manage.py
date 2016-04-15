@@ -54,7 +54,7 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
     def process_post(self, request):
         action = request.POST.get('action', '')
         if action == 'mark_as_payed':
-            self.object.payment_status = Application.PAY_STATUS_PAYED
+            self.object.payment_status = Application.PAY_STATUS.payed
             for participant in self.object.participant_set.all():
                 participant.is_participating = True
                 participant.save()

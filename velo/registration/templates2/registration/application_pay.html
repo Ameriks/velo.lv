@@ -22,7 +22,7 @@
 
     {% include 'registration/application_header.html' with active=2 %}
 
-    {% if object.payment_status == object.PAY_STATUS_PAYED %}
+    {% if object.payment_status == object.PAY_STATUS.payed %}
         <p class="lead">Paldies, maksājums ir saņemts.</p>
     {% else %}
 
@@ -57,7 +57,7 @@
                 </tr>
             {% endfor %}
 
-            {% if object.payment_status == object.PAY_STATUS_NOT_PAYED %}
+            {% if object.payment_status == object.PAY_STATUS.not_payed %}
                 <tfoot>
                     <tr>
                         <td colspan="3"><a href="{% url 'application' object.code %}" class="btn btn-default btn-block">{% trans 'Add or Update Participants' %}</a></td>

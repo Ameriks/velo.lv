@@ -185,7 +185,7 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
                 Column(Submit('submit_draft', _('Save')),
                        css_class='col-sm-2') if not self.instance.competition.is_past_due else Column(),
                 Column(Submit('submit_pay', _('Save & Pay')),
-                       css_class='col-sm-2 pull-right') if self.instance.payment_status != Application.PAY_STATUS_PAYED and not self.instance.competition.is_past_due else Column(),
+                       css_class='col-sm-2 pull-right') if self.instance.payment_status != Application.PAY_STATUS.payed and not self.instance.competition.is_past_due else Column(),
             ),
         )
 
@@ -252,7 +252,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             if not birthday:
                 self._errors.update({'birthday': [_("Birthday is required."), ]})
 
-        if birthday and distance and self.instance.application.payment_status == self.application.PAY_STATUS_NOT_PAYED:
+        if birthday and distance and self.instance.application.payment_status == self.application.PAY_STATUS.not_payed:
             total = get_total(self.instance.application.competition, distance.id, birthday.year, insurance)
             if not total:
                 self._errors.update({'distance': [_("This distance not available for this participant."), ]})
@@ -265,7 +265,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         obj.competition = self.application.competition
         obj.insurance_id = self.cleaned_data.get('insurance')
 
-        if obj.birthday and obj.distance and self.application.payment_status == self.application.PAY_STATUS_NOT_PAYED:
+        if obj.birthday and obj.distance and self.application.payment_status == self.application.PAY_STATUS.not_payed:
             total = get_total(obj.competition, obj.distance_id, obj.birthday.year, obj.insurance_id)
             if total:
                 obj.price = total.get('price_obj', None)

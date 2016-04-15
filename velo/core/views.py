@@ -30,12 +30,18 @@ class IndexView(TemplateView):
 
         context.update({'competitions': Competition.objects.filter(is_in_menu=True).order_by('frontpage_ordering')})
 
-        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[
-                           :1]
+        calendar = Competition.objects.filter(competition_date__year=timezone.now().year).order_by(
+            'competition_date').select_related('parent')
+        context.update({'calendar': calendar})
+
+
+        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[:1]
         if not next_competition:
             next_competition = Competition.objects.order_by('-competition_date')[:1]
-
         context.update({'next_competition': next_competition[0]})
+
+        next_seb = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[:1]
+
 
         context.update({'news_list': News.objects.published()[:4]})
 

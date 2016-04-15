@@ -423,7 +423,7 @@ def create_application_bank_transaction(application, active_payment_type):
 def approve_payment(payment, user=False, request=None):
     if payment.content_type.model == 'application':
         application = payment.content_object
-        application.payment_status = Application.PAY_STATUS_PAYED
+        application.payment_status = Application.PAY_STATUS.payed
         application.save()
         for participant in application.participant_set.all():
             participant.is_participating = True
@@ -488,7 +488,7 @@ def validate_payment(payment, user=False, request=None):
             application = payment.content_object
             # If there are no other active payments and user haven't taken invoice, then lets reset application payment status.
             if not other_active_payments and not application.external_invoice_code:
-                application.payment_status = application.PAY_STATUS_NOT_PAYED
+                application.payment_status = application.PAY_STATUS.not_payed
                 application.save()
 
         Log.objects.create(content_object=payment, action="TRANSACTION_VALIDATE",

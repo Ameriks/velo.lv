@@ -6,7 +6,7 @@
             <ul class='nav nav-wizard margin-bottom-40'>
               <li {% if active == 1 %}class='active'{% endif %}><a href='{% url "application" object.code %}'>{% trans "1. Add Participants" %}</a></li>
               <li {% if active == 2 %}class='active'{% endif %}><a href='{% url "application_pay" object.code %}'>{% trans "2. Payment" %}</a></li>
-              <li {% if active == 3 %}class='active'{% endif %}><a href="{% if object.payment_status == object.PAY_STATUS_PAYED %}{% url "application_ok" object.code %}{% else %}#{% endif %}">{% trans "3. Confirmation" %}</a></li>
+              <li {% if active == 3 %}class='active'{% endif %}><a href="{% if object.payment_status == object.PAY_STATUS.payed %}{% url "application_ok" object.code %}{% else %}#{% endif %}">{% trans "3. Confirmation" %}</a></li>
             </ul>
         </div>
     </div>

@@ -13,41 +13,54 @@
     <div class="w100">
         <div class="inner">
             <div class="calendar-slider js-calendar-slider">
-                <div class="calendar-slider__slide border-right">
 
 
 
 
-                    {% for competition in competitions %}
+<div class="calendar-slider__slide border-right">
+                    {% for item in calendar %}
+                        {% if forloop.counter0|divisibleby:"3" and forloop.counter0 != 0 %}
+                            </div>
+                        <div class="calendar-slider__slide border-right">
+                        {% endif %}
 
-                    <div class="calendar-slider__head accordeon-head {% if forloop.counter0 == 0 %}active{% endif %} h100  js-accordeon-head js-open-accordeon">
+                    <div class="calendar-slider__head accordeon-head h100  js-accordeon-head js-open-accordeon {% if item.id == next_competition.id %}active{% endif %}">
                         <div class="calendar-tile c-white flex wrap--nowrap direction--column justify--start align-items--start border-left">
                             <a data-href="https://www.google.lv/" class="calendar-tile__info flex--1 js-calendar-slider-link">
                                 <div class="w100 flex wrap--nowrap direction--row justify--space-between align-items--center">
                                     <div class="calendar-tile__date">
-                                        <div class="calendar-tile__day">24</div>
-                                        <div class="calendar-tile__month">apr</div>
+                                        <div class="calendar-tile__day">{{ item.competition_date.day }}</div>
+                                        <div class="calendar-tile__month">{{ item.competition_date|date:"M" }}</div>
                                     </div>
                                 </div>
-                                <div class="calendar-tile__heading">SEB MTB MARATONS ‘16</div>
+                                <div class="calendar-tile__heading">
+                                    {% if item.level == 2 %}
+                                        {{ item.parent }}
+                                    {% else %}
+                                        {{ item }}
+                                    {% endif %}
+                                </div>
                                 <div class="calendar-tile__text">
-                                    1. posms -<br>
-                                    VALMIERA, CĒSis<br>
-                                    45km
+                                    {% if item.level == 2 %}
+                                        {{ item }}<br>
+                                    {% endif %}
+                                    {{ item.place_name }}
                                 </div>
                             </a>
-                            <a href="https://www.google.lv/" class="calendar-tile__btn btn btn--60 btn--white-transparent btn--blue-hover btn--blue-active btn--border-top w100 flex--important wrap--nowrap direction--row justify--space-between align-items--center">
-                                Pieteikties
-                                <svg class="btn__icon icon left-margin--5">
-                                    <use
-                                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
-                                </svg>
-                            </a>
+                            {% if item.is_application_active %}
+                                <a href="{% url 'application' item.id %}" class="calendar-tile__btn btn btn--60 btn--white-transparent btn--blue-hover btn--blue-active btn--border-top w100 flex--important wrap--nowrap direction--row justify--space-between align-items--center">
+                                    Pieteikties
+                                    <svg class="btn__icon icon left-margin--5">
+                                        <use
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                    </svg>
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
 
-                    <div class="calendar-slider__body accordeon-body {% if forloop.counter0 == 0 %}active{% endif %} h100  js-accordeon-body">
+                    <div class="calendar-slider__body accordeon-body h100  js-accordeon-body {% if item.id == next_competition.id %}active{% endif %}">
                         <div class="calendar-slider__acordeon-conent border-left flex wrap--nowrap direction--column">
                             <figure class="w100 img-wrapper">
                                 <img
@@ -65,10 +78,9 @@
 
                     {% endfor %}
 
+</div>
 
 
-
-                </div>
             </div>
         </div>
     </div>
@@ -77,14 +89,16 @@
             <div class="row logo-tiles">
                 <div class="col-xl-144 col-m-24">
                     <div class="row">
+
+                        {% for competition in competitions %}
                         <div class="col-xl-8 border-left border-bottom">
-                            <a href="" class="logo-tiles__tile img-wrapper">
+                            <a href="{% url "competition:competition" competition.id %}" class="logo-tiles__tile img-wrapper">
                                 <img
-                                    data-img-src="/userfiles/sponsors/seb-maratons.svg"
+                                    data-img-src="{{ competition.logo_svg.url }}"
                                     onload="imgLoaded(this)"
                                 >
                                 <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
-                                    <span class="bottom-margin--5">SEB kalnu divriteņu maratons</span>
+                                    <span class="bottom-margin--5">{{ competition }}</span>
                                     <svg class="btn__icon icon">
                                         <use
                                             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -93,71 +107,7 @@
                                 </div>
                             </a>
                         </div>
-                        <div class="col-xl-8 border-left border-bottom">
-                            <a class="logo-tiles__tile img-wrapper">
-                                <img
-                                    data-img-src="/userfiles/sponsors/uec--white.svg"
-                                    onload="imgLoaded(this)"
-                                >
-                                <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
-                                    <span class="bottom-margin--5">UEC</span>
-                                    <svg class="btn__icon icon">
-                                        <use
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
-                                    </svg>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-xl-8 border-left border-bottom border-right">
-                            <a href="" class="logo-tiles__tile img-wrapper">
-                                <img
-                                    data-img-src="/userfiles/sponsors/rigas-velomaratons.svg"
-                                    onload="imgLoaded(this)"
-                                >
-                                <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
-                                    <span class="bottom-margin--5">Rīgas velomaratons 2016</span>
-                                    <svg class="btn__icon icon">
-                                        <use
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
-                                    </svg>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-xl-8"></div>
-                        <div class="col-xl-8 border-left">
-                            <a class="logo-tiles__tile img-wrapper">
-                                <img
-                                    data-img-src="/userfiles/sponsors/rigas-velomaratons.svg"
-                                    onload="imgLoaded(this)"
-                                >
-                                <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
-                                    <span class="bottom-margin--5">Latvijas riteŅbraucēju vienības brauciens</span>
-                                    <svg class="btn__icon icon">
-                                        <use
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
-                                    </svg>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-xl-8 border-left border-right">
-                            <a href="" class="logo-tiles__tile img-wrapper">
-                                <img
-                                    data-img-src="/userfiles/sponsors/rigas-bernu-velomaratons.svg"
-                                    onload="imgLoaded(this)"
-                                >
-                                <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
-                                    <span class="bottom-margin--5">Rīgas bērnu velomaratons</span>
-                                    <svg class="btn__icon icon">
-                                        <use
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
-                                    </svg>
-                                </div>
-                            </a>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <figure class="logo-tiles__hero col-xl-96 flex js-background-image" data-background-image="/userfiles/logo-tiles-hero.jpg"></figure>

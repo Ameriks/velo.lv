@@ -5,11 +5,17 @@ from builtins import str
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext, ugettext_lazy as _
 from model_utils import Choices
 
 from velo.velo.mixins.models import TimestampMixin
+
+
+class ActivePriceManager(models.Manager):
+    def active(self):
+        return self.get_queryset().filter(start_registering__lte=timezone.now(), end_registering__gte=timezone.now())
 
 
 @python_2_unicode_compatible
@@ -21,6 +27,8 @@ class Price(TimestampMixin, models.Model):
     price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     start_registering = models.DateTimeField(blank=True, null=True)
     end_registering = models.DateTimeField(blank=True, null=True)
+
+    objects = ActivePriceManager()
 
     class Meta:
         ordering = ('distance', 'start_registering')

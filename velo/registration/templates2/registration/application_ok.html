@@ -9,7 +9,7 @@
     <div class="row">
             <div class="col-xs-12">
                 <p class="lead">Paldies, ka pieteicāties sacensībām!</p>
-                {% if object.payment_status == object.PAY_STATUS_PAYED %}
+                {% if object.payment_status == object.PAY_STATUS.payed %}
                     <p>Dalībniekiem ir tuvāko 10 minūšu laikā ir jāparādās starta sarakstā.</p>
                 {% endif %}
                 <div class="row margin-bottom-40"></div>
@@ -20,7 +20,7 @@
                         {% endif %}
                     </div>
                     <div class="col-xs-4">
-                        {% if object.external_invoice_code and not object.payment_status == object.PAY_STATUS_PAYED %}
+                        {% if object.external_invoice_code and not object.payment_status == object.PAY_STATUS.payed %}
                             <a class="btn btn-default" href="{% url "application_pay" object.code %}">Veikt rēķina apmaksu ar karti</a>
                         {% endif %}
                     </div>

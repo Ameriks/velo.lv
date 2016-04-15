@@ -48,6 +48,7 @@ urlpatterns = i18n_patterns(
     url(r'^$', IndexView.as_view(), name='index'),
 
     url(_(r'^application/$'), ApplicationCreate.as_view(), name='application'),
+    url(_(r'^application/(?P<pick>\d+)/$'), ApplicationCreate.as_view(), name='application'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$'), ApplicationUpdate.as_view(), name='application'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pay/$'), ApplicationPayView.as_view(), name='application_pay'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$'), ApplicationOKView.as_view(), name='application_ok'),

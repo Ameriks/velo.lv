@@ -306,6 +306,12 @@ class Competition(MPTTModel):
         from velo.gallery.models import Photo
         return Photo.objects.filter(album__competition__tree_id=self.tree_id, is_featured=True).order_by('?').first()
 
+    @property
+    def is_application_active(self):
+        if (self.complex_payment_enddate and self.complex_payment_enddate < timezone.now()) or self.price_set.active().exists():
+            return True
+        return False
+
     def get_absolute_url(self):
         return reverse('competition:competition', args=[self.id])
 
