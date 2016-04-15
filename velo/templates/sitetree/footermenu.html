@@ -1,0 +1,11 @@
+{% load sitetree %}
+
+<ul class="multicolumn--2">
+    {% for item in sitetree_items %}
+        <li>
+            <a aria-expanded="false" role="button" href="{% sitetree_url for item %}">
+                {{ item.title_resolved }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

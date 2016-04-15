@@ -196,7 +196,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
-                # Your stuff: custom template context processors go here
+                'velo.core.context_processors.competitions',
             ],
         },
     },
@@ -368,7 +368,7 @@ THUMBNAIL_ALIASES = {
         'front_small': {'size': (440, 230), 'crop': True},
         'thumb': {'size': (300, 300), 'crop': True},
         'img': {'size': (1000, 1000), 'crop': False},
-        'news_thumb': {'size': (400, 250), 'crop': True},
+        'news_thumb': {'size': (660, 345), 'crop': True},
         'news': {'size': (850, 300), 'crop': True},
     },
     'core': {

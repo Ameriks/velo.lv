@@ -25,7 +25,7 @@ from velo.velo.views import CustomAutoResponseView, cached_javascript_catalog
 admin.autodiscover()
 
 
-register_i18n_trees(['mainmenu', 'competition_admin'])
+register_i18n_trees(['mainmenu', 'competition_admin', 'footermenu'])
 
 try:
     register_dynamic_trees((

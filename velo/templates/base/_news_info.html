@@ -1,0 +1,13 @@
+{% load i18n staticfiles %}
+<div class="card__info">
+    <h2 class="card__heading bottom-margin--15">{{ object }}</h2>
+    <div class="card__text">{{ object.intro_content|safe }}</div>
+    <div class="card-nav card-nav--absolute card-nav--{{ position }} flex wrap--nowrap direction--row justify--space-between align-items--stretch border-top">
+        <a href="{{ object.get_absolute_url }}" class="card-nav__btn btn btn--60 btn--blue btn--blue-hover btn--blue-active w100 flex--1 flex--important wrap--nowrap direction--row justify--space-between align-items--center">
+            {% trans "Read more" %}
+            <svg class="icon btn__icon">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+            </svg>
+        </a>
+    </div>
+</div>

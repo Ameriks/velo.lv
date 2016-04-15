@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from django.core.urlresolvers import reverse
+from django.utils.translation import get_language
 from django.views.generic import TemplateView, DetailView, ListView, RedirectView
 from django.utils import timezone
 
@@ -28,8 +29,6 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-        context.update({'competitions': Competition.objects.filter(is_in_menu=True).order_by('frontpage_ordering')})
-
         calendar = Competition.objects.filter(competition_date__year=timezone.now().year).order_by(
             'competition_date').select_related('parent')
         context.update({'calendar': calendar})
@@ -42,9 +41,9 @@ class IndexView(TemplateView):
 
         context.update({'front_photo': Photo.objects.filter(album_id=144)[0]})
 
-        context.update({'news_list': News.objects.published()[:4]})
+        context.update({'news_list': News.objects.published().filter(language=get_language())[:4]})
 
-        context.update({'supporters': Supporter.objects.filter(is_agency_supporter=True).order_by("?")})
+        context.update({'supporters': Supporter.objects.filter(is_agency_supporter=True).order_by("?").select_related("default_svg")})
 
         return context
 

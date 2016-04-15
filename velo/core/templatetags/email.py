@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import codecs
 import re
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
@@ -21,11 +22,12 @@ def obfuscate(email, linktext=None, autoescape=None):
     else:
         esc = lambda x: x
 
-    email = re.sub('@', '\\\\100', re.sub('\.', '\\\\056',
-                                          esc(email))).encode('rot13')
+    email = re.sub('@', '\\\\100', re.sub('\.', '\\\\056', esc(email)))
+    email = codecs.encode(email, 'rot_13')
 
     if linktext:
-        linktext = esc(linktext).encode('rot13')
+        linktext = esc(linktext)
+        linktext = codecs.encode(linktext, 'rot_13')
     else:
         linktext = email
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load staticfiles i18n sitetree translate %}{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>{% load staticfiles i18n sitetree translate cache email %}{% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
@@ -155,43 +155,36 @@
         <div class="inner">
             <div class="w100 relative">
                 <div class="main-footer-section">
-                    <p class="main-footer-heading bottom-margin--15">Sacensības</p>
+                    <p class="main-footer-heading bottom-margin--15">{% trans "Competitions" %}</p>
+                {% cache 3600 footer_competitions LANGUAGE_CODE %}
                     <nav class="main-footer-text">
                         <ul>
-                            <li><a href="">Rīgas bērnu mini Velomaratons</a></li>
-                            <li><a href="">ELKOR Rīgas Velomaratons</a></li>
-                            <li><a href="">Latvijas Riteņbraucēju vienības brauciens</a></li>
-                            <li><a href="">SEB MTB Maratons</a></li>
-                            <li><a href="">Eiropas Čempionats velomaratonā</a></li>
+                            {% for item in competitions %}
+                                <li><a href="{% url "competition:competition" item.id %}">{{ item }}</a></li>
+                            {% endfor %}
                         </ul>
                     </nav>
+                {% endcache %}
                 </div>
                 <div class="main-footer-section">
-                    <p class="main-footer-heading bottom-margin--15">IZVĒLNE</p>
+                    <p class="main-footer-heading bottom-margin--15">{% trans "Menu" %}</p>
                     <nav class="main-footer-text">
-                        <ul class="multicolumn--2">
-                            <li><a href="">Kalendārs</a></li>
-                            <li><a href="">Rezultāti</a></li>
-                            <li><a href="">Galerija</a></li>
-                            <li><a href="">Jaunumi</a></li>
-                            <li><a href="">Atbalstītaji</a></li>
-                            <li><a href="">Par mums</a></li>
-                            <li><a href="">Shop</a></li>
-                        </ul>
+                        {% sitetree_menu from "footermenu" include "trunk" template "sitetree/footermenu.html"  %}
+
                     </nav>
                 </div>
                 <div class="main-footer-section">
-                    <p class="main-footer-heading bottom-margin--15">Kontakti</p>
+                    <p class="main-footer-heading bottom-margin--15">{% trans "Contacts" %}</p>
                     <div class="main-footer-text">
-                        <p>Brīvības gatve 222, Rīga, LV-1039</p>
+                        <p><a href="https://www.google.lv/maps/place/Br%C4%ABv%C4%ABbas+gatve+222,+Vidzemes+priek%C5%A1pils%C4%93ta,+R%C4%ABga,+LV-1039/@56.9717387,24.1619837,17z/data=!3m1!4b1!4m2!3m1!1s0x46eece50f2d298a1:0x39e5fc662ae26bbd" target="_blank">Brīvības gatve 222, Rīga, LV-1039</a></p>
                         <p><a href="tel:+37167314150">+371 67314150</a></p>
-                        <p><a href="mailto:info@velo.lv">info@velo.lv</a></p>
+                        <p>{{ "info@velo.lv"|obfuscate }}</p>
                     </div>
                 </div>
                 <nav class="main-footer-social">
                     <ul class="main-footer-social__items">
                         <li class="main-footer-social__item">
-                            <a href="" class="main-footer-social__link">
+                            <a href="https://twitter.com/velolv" class="main-footer-social__link" target="_blank">
                                 <svg class="icon">
                                     <use
                                         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -200,7 +193,7 @@
                             </a>
                         </li>
                         <li class="main-footer-social__item">
-                            <a href="" class="main-footer-social__link">
+                            <a href="https://www.facebook.com/velolv/" class="main-footer-social__link" target="_blank">
                                 <svg class="icon">
                                     <use
                                         xmlns:xlink="http://www.w3.org/1999/xlink"

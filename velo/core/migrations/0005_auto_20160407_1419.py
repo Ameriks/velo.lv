@@ -70,12 +70,6 @@ def migrate_to_allauth(apps, schema_editor):
     cursor.execute("INSERT into socialaccount_socialapp_sites VALUES (2, 2, 1)")
     cursor.execute("INSERT into socialaccount_socialapp_sites VALUES (3, 3, 1)")
 
-    TreeItem.objects.get(id=54).delete()
-    TreeItem.objects.get(id=59).delete()
-
-    prof = TreeItem.objects.get(id=52)
-    prof.inmenu = False
-    prof.save()
 
 
 class Migration(migrations.Migration):
