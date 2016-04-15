@@ -43,8 +43,6 @@ class IndexView(TemplateView):
 
         context.update({'news_list': News.objects.published().filter(language=get_language())[:4]})
 
-        context.update({'supporters': Supporter.objects.filter(is_agency_supporter=True).order_by("?").select_related("default_svg")})
-
         return context
 
 

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load staticfiles i18n sitetree %}
+
+{% block content %}
+
+    <div class="primary-heading c-theme border-bottom">
+        <div class="inner">
+            <div class="primary-heading__spacing w100 border-right border-left">
+                <h1 class="primary-heading__text">{% sitetree_page_title from "mainmenu" %}</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="w100 relative js-scroll-along-block">
+        <div class="inner">
+            <div class="w100 bgc-dgray border-right border-left">
+                <div class="drag-box js-drag-container">
+                    <div class="drag-box__content  js-drag-content">
+                        <table class="table-block">
+                            <thead>
+                            <tr>
+                                <th>{% trans "Date" %}</th>
+                                <th>{% trans "Competition" %}</th>
+                                <th>{% trans "Place" %}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for object in this_year %}
+                                <tr {% if object.is_past_due %}class="active"{% endif %}>
+                                    <td>{{ object.competition_date }}{% if object.competition_date_till %} -<br/>
+                                        {{ object.competition_date_till }}{% endif %}</td>
+                                    <td>{{ object.get_full_name }}</td>
+                                    <td>{{ object.place_name }}</td>
+                                    {% if object.is_application_active %}
+                                        <td><a href="{% url 'application' object.id %}">{% trans "Apply" %}</a></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

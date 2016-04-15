@@ -37,6 +37,13 @@
                                                 <div class="calendar-tile__day">{{ item.competition_date.day }}</div>
                                                 <div class="calendar-tile__month">{{ item.competition_date|date:"M" }}</div>
                                             </div>
+
+                                            {% if item.logo_svg %}
+                                            <figure class="calendar-tile__logo img-wrapper flex--1 flex justify--center align-items--center loaded">
+                                                <img onload="imgLoaded(this)" src="{{ item.logo_svg.url }}">
+                                            </figure>
+                                            {% endif %}
+
                                         </div>
                                         <div class="calendar-tile__heading">
                                             {% if item.level == 2 %}
