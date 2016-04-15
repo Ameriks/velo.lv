@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
 from velo.core.views import CompetitionDetail, MapView, MapGPXDownloadView
@@ -13,7 +13,7 @@ from velo.results.views import ResultList, SebStandingResultList, SebTeamResultL
 from velo.supporter.views import CompetitionSupporters, CompetitionIframeSupporters
 from velo.team.views import TeamAppliedView, TeamListView, TeamView
 
-urlpatterns = patterns('',
+urlpatterns = [
                        url(r'^(?P<pk>\d+)/$', CompetitionDetail.as_view(), name='competition'),
                        url(_(r'^(?P<pk>\d+)/total.json$'), DataForExternalTotal.as_view(), name='external_total_json'),
                        url(_(r'^(?P<pk>\d+)/all.json$'), DataForExternalAll.as_view(), name='external_all_json'),
@@ -60,4 +60,4 @@ urlpatterns = patterns('',
                        url(_(r'^(?P<pk>\d+)/(?P<slug>.*)/$'), StaticPageView.as_view(), name='staticpage'),
 
 
-)
+]

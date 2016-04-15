@@ -8,10 +8,6 @@ from velo.staticpage.models import StaticPage
 
 
 class StaticPageForm(forms.ModelForm):
-    url = forms.RegexField(label=_("URL"), max_length=100, regex=r'^[-\w/\.~]+$',
-        error_message = _("This value must contain only letters, numbers,"
-                          " dots, underscores, dashes, slashes or tildes."))
-
     class Meta:
         model = StaticPage
         fields = '__all__'

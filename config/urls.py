@@ -8,6 +8,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import RedirectView
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
+from django.conf.urls.static import static
 
 from sitetree.sitetreeapp import register_dynamic_trees, compose_dynamic_tree
 from sitetree.sitetreeapp import register_i18n_trees
@@ -19,8 +20,7 @@ from velo.registration.views import ApplicationUpdate, ApplicationCreate, Compan
     CompanyApplicationUpdate, ParticipantPDF
 from velo.results.views import ResultAllView
 from velo.supporter.views import AgencySupporters
-from velo.velo.views import CustomAutoResponseView
-
+from velo.velo.views import CustomAutoResponseView, cached_javascript_catalog
 
 admin.autodiscover()
 
@@ -29,10 +29,10 @@ register_i18n_trees(['mainmenu', 'competition_admin'])
 
 try:
     register_dynamic_trees((
-        compose_dynamic_tree('core', target_tree_alias='mainmenu_lv', parent_tree_item_alias='sacensibas'),
+        compose_dynamic_tree('velo.core', target_tree_alias='mainmenu_lv', parent_tree_item_alias='sacensibas'),
     ))
     register_dynamic_trees((
-        compose_dynamic_tree('manager', target_tree_alias='mainmenu_lv', parent_tree_item_alias='manager'),
+        compose_dynamic_tree('velo.manager', target_tree_alias='mainmenu_lv', parent_tree_item_alias='manager'),
     ))
 except ProgrammingError:
     print('Seems that migrations should be run.')
@@ -43,7 +43,7 @@ js_info_dict = {
     # Not yet used
 }
 
-urlpatterns = i18n_patterns('',
+urlpatterns = i18n_patterns(
     #url(r'^$', RedirectView.as_view(url='/lv/sacensibas/42/rezultati/'), name='index'),
     url(r'^$', IndexView.as_view(), name='index'),
 
@@ -74,11 +74,11 @@ urlpatterns = i18n_patterns('',
     url(_(r'^calendar/'), CalendarView.as_view(), name="calendar"),
     url(_(r'^users/'), include('velo.core.urls', namespace='users')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^jsi18n/$', 'velo.velo.views.cached_javascript_catalog', js_info_dict),
+    url(r'^jsi18n/$', cached_javascript_catalog, js_info_dict),
 )
 
 
-urlpatterns += patterns('',
+urlpatterns += [
     url(r'^$', RedirectView.as_view(url='/lv/')),
 
     # url('^s/', include('shorturls.urls')),
@@ -87,20 +87,16 @@ urlpatterns += patterns('',
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^%s' % settings.ADMIN_URL, include(admin.site.urls)),  # This is real admin with hidden link in ENV
 
-    url(r'^impersonate/search/$', 'velo.velo.views.search_users', {'template': 'impersonate/search_users.html'}, name='impersonate-search'),
     url(r'^impersonate/', include('impersonate.urls')),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 
     url(r"^json/fields/auto.json$", CustomAutoResponseView.as_view(), name="django_select2_central_json"),
-    )
+    ]
 
 if settings.DEBUG:
-    urlpatterns += patterns('',
-        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-            'document_root': settings.MEDIA_ROOT,
-        }),
-    )
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
     if 'rosetta' in settings.INSTALLED_APPS:
-        urlpatterns += patterns('',
+        urlpatterns += [
             url(r'^rosetta/', include('rosetta.urls')),
-        )
+        ]

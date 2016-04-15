@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.core.validators import RegexValidator
 from django.db import models
 from django.core.urlresolvers import get_script_prefix
 from django.utils.translation import ugettext_lazy as _
@@ -9,7 +10,10 @@ from ckeditor.fields import RichTextField
 
 class StaticPage(models.Model):
     LANGUAGES = (('', '*'), ) + settings.LANGUAGES
-    url = models.CharField(_('URL'), max_length=100, db_index=True)
+    url = models.CharField(_('URL'),
+                           max_length=100,
+                           db_index=True,
+                           validators=[RegexValidator(r'^[-\w/\.~]+$', _("This value must contain only letters, numbers, dots, underscores, dashes, slashes or tildes."))])
     title = models.CharField(_('title'), max_length=200)
     content = RichTextField(_('content'), blank=True)
     enable_comments = models.BooleanField(_('enable comments'), default=False)

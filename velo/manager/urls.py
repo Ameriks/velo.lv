@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from velo.manager.views import ManageParticipantList, ManageCompetitionList, ManageCompetitionDetail, ManageParticipantUpdate, \
     ManageAppliedTeamMembersList, ManageParticipantCreate, ManageNumberList, ManageNumberUpdate, ManageDistanceAdminList, \
     ManageDistanceAdminUpdate, ManageTeamList, ManageTeamUpdate, MultipleSameSlugView, MultipleNumbersView, \
@@ -15,7 +15,7 @@ from velo.manager.views.participant_manage import ManagePreNumberAssignList, Man
 from velo.manager.views.results_manage import ManageResultList, ManageResultUpdate
 from velo.team.views import TeamApply
 
-urlpatterns = patterns('',
+urlpatterns = [
 
                        url(r'^news/$', ManageNewsList.as_view(), name='news_list'),
                        url(r'^news/(?P<pk2>\d+)/$', ManageNewsUpdate.as_view(), name='news'),
@@ -94,4 +94,4 @@ urlpatterns = patterns('',
                        url(r'^competition/(?P<pk>\d+)/prenumber/add/$', ManagePreNumberAssignCreate.as_view(), name='prenumber'),
 
 
-)
+]

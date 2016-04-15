@@ -229,7 +229,8 @@ class Competition(MPTTModel):
     is_in_menu = models.BooleanField(default=False)
 
     skin = models.CharField(max_length=50, blank=True)
-    logo = ThumbnailerImageField(upload_to=_get_logo_upload_path, blank=True, )
+    logo = ThumbnailerImageField(upload_to=_get_logo_upload_path, blank=True,)
+    logo_svg = models.FileField(upload_to=_get_logo_upload_path, blank=True)
 
     apply_image = ThumbnailerImageField(upload_to=_get_logo_upload_path, blank=True, )
 

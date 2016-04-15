@@ -72,8 +72,8 @@ class Seb2016(SEBCompetitionBase):
         Returns number ranges for each distance.
         """
         return {
-            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
-            self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3300, 'group': ''}, ],
+            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 400, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3200, 'group': ''}, ],
             self.VESELIBAS_DISTANCE_ID: [{'start': 5000, 'end': 5200, 'group': ''}, ],
             self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in ('B 05-04', 'B 06', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11-', )],
         }

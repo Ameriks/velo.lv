@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
 from velo.gallery.views import PhotoListView, AlbumListView, AlbumAssignNumberView, VideoListView, VideoCreateView, \
     PhotoAlbumCreateView, AlbumPickListView, PhotoPickListView
 
-urlpatterns = patterns('',
+urlpatterns = [
                        url(_(r'^video/$'), VideoListView.as_view(), name='video'),
                        url(_(r'^video/add/$'), VideoCreateView.as_view(), name='video_add'),
                        url(_(r'^$'), AlbumListView.as_view(), name='album'),
@@ -19,4 +19,4 @@ urlpatterns = patterns('',
                        url(_(r'^pick/$'), AlbumPickListView.as_view(), name='album_pick'),
                        url(_(r'^pick/(?P<album_pk>\d+)/$'), PhotoPickListView.as_view(), name='album_pick'),
 
-                       )
+                      ]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
 from velo.core.views import UserRedirectView
@@ -9,7 +9,7 @@ from velo.payment.views import TeamPayView
 from velo.registration.views import MyApplicationList
 from velo.team.views import MyTeamList, TeamCreateView, TeamUpdateView, TeamApplyList, TeamApply
 
-urlpatterns = patterns('',
+urlpatterns = [
                        url(r'^~redirect/$', UserRedirectView.as_view(), name='redirect'),
 
                        url(_(r'^my_applications/$'), MyApplicationList.as_view(), name='applications'),
@@ -23,4 +23,4 @@ urlpatterns = patterns('',
                        url(_(r'^my_team/(?P<pk2>\d+)/apply/(?P<competition_pk>\d+)/$'), TeamApply.as_view(),
                            name='team_apply_list'),
 
-)
+]
