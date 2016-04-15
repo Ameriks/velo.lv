@@ -331,7 +331,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.template = "bootstrap/velo_whole_uni_formset.html"
+        self.helper.template = "base/velo_whole_uni_formset.html"
         self.helper.layout = Layout(
             Row(
                 Column(
@@ -386,7 +386,7 @@ class ParticipantInlineRestrictedForm(ParticipantInlineForm):
             if field in self.fields:
                 self.fields[field].widget.attrs['readonly'] = True
 
-        self.helper.template = "bootstrap/velo_whole_uni_formset_noadd.html"
+        self.helper.template = "base/velo_whole_uni_formset_noadd.html"
 
     def clean_first_name(self):
         return self.instance.first_name
@@ -521,7 +521,7 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.template = "bootstrap/velo_whole_uni_formset.html"
+        self.helper.template = "base/velo_whole_uni_formset.html"
         self.helper.layout = Layout(
             Row(
                 Column(

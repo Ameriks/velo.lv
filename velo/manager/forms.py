@@ -361,7 +361,7 @@ class ManageTeamMemberForm(MemberInlineForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.template = "bootstrap/velo_whole_uni_formset.html"
+        self.helper.template = "base/velo_whole_uni_formset.html"
         self.helper.layout = Layout(
             Row(
                 Column(
@@ -397,7 +397,7 @@ class ManageLapResultForm(RequestKwargModelFormMixin, forms.ModelForm):
         super(ManageLapResultForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.template = "bootstrap/velo_whole_uni_formset.html"
+        self.helper.template = "base/velo_whole_uni_formset.html"
         self.helper.layout = Layout(
             Row(
                 Column('index', css_class='col-xs-6 col-sm-4'),
