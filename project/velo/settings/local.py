@@ -59,10 +59,10 @@ SHORT_BASE_URL = 'http://192.168.58.128:58000/s/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'velolv',
+        'NAME': 'velolv_old',
         'USER': 'velolv',
-        'PASSWORD': os.getenv('PGSQL_PASS'),
-        'HOST': '192.168.58.128',
+        'PASSWORD': 'velolv',
+        'HOST': 'dev.docker.local',
     },
     'legacy': {
         'NAME': 'velo',
