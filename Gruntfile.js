@@ -51,7 +51,7 @@ module.exports = function (grunt) {
         }
       },
       concat: {
-        files: ['<%= paths.js_template %>/**/*.js', '<%= paths.js %>/components/*.js'],
+        files: ['<%= paths.js_template %>/**/*.js', '<%= paths.js %>/components/*.js', '<%= paths.js %>/../coffee/*.js'],
         tasks: ['concat:dist'],
         options: {
           atBegin: true
@@ -75,7 +75,8 @@ module.exports = function (grunt) {
               '<%= paths.js_template %>/libs/*.js',
               '<%= paths.js_template %>/utilities/*.js',
               '<%= paths.js_template %>/components/*.js',
-              '<%= paths.js %>/components/*.js'
+              '<%= paths.js %>/components/*.js',
+              '<%= paths.js %>/../coffee/*.js'
         ],
         dest: '<%= paths.js %>/project.js'
       }

@@ -260,8 +260,8 @@ e&&d()}return c});
 
     window.onunload = function(){
         $('.click-circle').remove();
-    }; 
-  
+    };
+
     $('body').on('click', 'a, button, input, select, textarea, label, .js-click-feedback', function(e){
         var clickX = e.clientX - 10;
         var clickY = e.clientY - 10;
@@ -279,21 +279,21 @@ e&&d()}return c});
     var deferBackgroundImageLoading = function() {
         var imgBackgroundDefer = $('.js-background-image');
         var windowWidth = window.innerWidth;
-        
+
         imgBackgroundDefer.each(function(){
             var $this = $(this);
             var imgBackgroundSrc = $this.attr('data-background-image');
             var imgDeferScreenSize = Number($this.attr('data-load-on'));
-            
+
             var loadImage = function(){
                 $('<img/>').attr('src', imgBackgroundSrc).load(function() {
                     $(this).remove();
                     $this
                     .css({'background-image': 'url('+imgBackgroundSrc+')'})
                     .addClass('image-loaded');
-                });                
+                });
             }
-            
+
             if (!isNaN(imgDeferScreenSize)){
                 if(imgDeferScreenSize < windowWidth){
                     loadImage();
@@ -302,8 +302,8 @@ e&&d()}return c});
                 loadImage();
             }
         });
-    };    
-    
+    };
+
     //defer image loading
     var deferImageLoading = function() {
         var imgDefer = $('img');
@@ -312,7 +312,7 @@ e&&d()}return c});
             var $this = $(this);
             var imgDeferSrc = $this.attr('data-img-src');
             var imgDeferScreenSize = Number($this.attr('data-load-on'));
-            
+
             if (typeof imgDeferSrc !== typeof undefined && imgDeferSrc !== false) {
                 if (!isNaN(imgDeferScreenSize)){
                     if(imgDeferScreenSize < windowWidth){
@@ -326,10 +326,10 @@ e&&d()}return c});
             }
         });
     };
-    
+
     $(window).on('load orientationchange', deferImageLoading);
     $(window).on('load orientationchange', deferBackgroundImageLoading);
-    
+
     var resizeTimer;
     $(window).on('resize', function (e) {
         clearTimeout(resizeTimer);
@@ -392,7 +392,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 });
 (function(){
     //menu
-    $('body').on('click', '.js-burger', function() {        
+    $('body').on('click', '.js-burger', function() {
         $('.mobile-nav').toggleClass('active');
         $(this).toggleClass('active');
     });
@@ -401,7 +401,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         $('.mobile-nav').removeClass('active');
         $('.js-burger').removeClass('active');
     });
-    
+
     //close opened stuff
     $(document).on('click', function(e) {
         //close mobile-nav
@@ -494,20 +494,20 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 })();
 
 (function () {
-    var dragBar = $('.js-drag-bar'); 
+    var dragBar = $('.js-drag-bar');
     var dragHandle = $('.js-drag-handle');
     var dragContainer = $('.js-drag-container');
     var dragContent = $('.js-drag-content');
-    
+
     var dragFlag = false;
     var contentDragFlag = false;
     var handleLastPosition = 0;
     var scrollLastPosition = 0;
     var handleDifference;
-    
+
     var pointerStartPosition;
     var scrollStartPosition;
-    
+
     var pointerPosition = function(e){
         var clientX;
         if((e.originalEvent.clientX)){
@@ -518,14 +518,14 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
         return clientX;
     };
-    
+
     var relativeTo = function(numberOne, numberTow){
-        return numberTow * 100 / numberOne; 
+        return numberTow * 100 / numberOne;
     }
     var absoluteTo = function(precentage, numberOne){
-        return precentage * numberOne / 100; 
+        return precentage * numberOne / 100;
     }
-    
+
     var setDragHandleWidth = function(){
         var dragContentWidth = dragContent.width();
         var dragContainerWidth = dragContainer.width();
@@ -534,14 +534,14 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }else{
             dragHandle.css({width:'100%'});
         }
-        
+
     }
-    
+
     var updateHandlePosition = function(e, pointerStartPosition){
         var handlePosition;
         var handleDifference = dragBar.width() - dragHandle.width();
         var pointerDelta = pointerPosition(e) - pointerStartPosition;
-        
+
         if(pointerDelta <= -handleLastPosition){
             handlePosition = 0;
         }else if(pointerDelta >= handleDifference - handleLastPosition){
@@ -549,15 +549,15 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }else{
             handlePosition = handleLastPosition + pointerDelta;
         }
-        
+
         return relativeTo(dragBar.width(), handlePosition);
     }
-    
+
     var updateScrollPosition = function(e, scrollStartPosition){
         var scrollPosition;
         var contentDifference = dragContent.width() - dragContainer.width();
         var scrollDelta = scrollStartPosition - pointerPosition(e);
-        
+
         if(scrollDelta <= -scrollLastPosition || contentDifference < 0){
             scrollPosition = 0;
         }else if(scrollDelta >= contentDifference - scrollLastPosition){
@@ -567,38 +567,38 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
         return scrollPosition;
     }
-        
+
     dragContainer.on('mousedown touchstart', function (e) {
         contentDragFlag = true;
         scrollStartPosition = pointerPosition(e);
     });
-    
+
     dragHandle.on('mousedown touchstart', function(e){
         dragFlag = true;
         pointerStartPosition = pointerPosition(e);
-        
+
     });
-    
+
     $(window).on('mousemove touchmove', function(e){
         //dragContainer move
         if(contentDragFlag == true){
 
             var setScrollPosition = updateScrollPosition(e, scrollStartPosition);
-            
+
             dragContainer.scrollLeft(setScrollPosition);
             dragHandle.css({left:relativeTo(dragContent.width(), setScrollPosition)+'%'});
         }
-        
+
         //dragBar move
         if(dragFlag == true){
 
             var setHandlePosition = updateHandlePosition(e, pointerStartPosition);
-            
+
             dragHandle.css({left:setHandlePosition+'%'});
             dragContainer.scrollLeft(absoluteTo(setHandlePosition, dragContent.width()));
         }
     });
-    
+
     $(window).on('mouseup touchend', function(e){
         dragFlag = false;
         contentDragFlag = false;
@@ -607,9 +607,9 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             scrollLastPosition = dragContainer.scrollLeft();
         }
     });
-    
+
     $(window).on('load orientationchange resize', setDragHandleWidth);
-    
+
 })();
 (function(){
     $('.dropdown').on('click', function(){
@@ -636,7 +636,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 })();
 (function(){
     var registrationForm = $('.js-form-participants');
-    
+
     registrationForm.validate({
         ignore: [],
         errorElement: 'p',
@@ -644,15 +644,15 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             error.appendTo(element.closest('.input-wrap'));
         }
     });
-    
-    
+
+
     $('.js-add-participant').on('click', function(){
         //ieveito jaunu dalībnieku iekš .js-participant-load-area
         $('.js-participant-load-area').append();
         //šī funkcija pārtaisa select inputus par jquery ui menuselect  un pieslēdz jquery validāciju
         jsSelect();
     });
-    
+
     $(document).on('click', '.js-participant-remove', function(){
         $(this).closest('.js-participant').slideUp(500, function(){
             $(this).remove();
@@ -689,7 +689,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 
 (function(){
     var registrationForm = $('.js-form');
-    
+
     registrationForm.validate({
         ignore: [],
         errorElement: 'p',
@@ -704,11 +704,11 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     var indexResults = $('.js-index-results');
     var showWinner = $('.js-show-winner');
     var winner = $('.js-winner');
-    
+
     var loadWinnerImage = function(winnerObject){
         var winnerImage = winnerObject.find('.js-winner-image');
         var winnerImageSrc = winnerImage.attr('data-background-image');
-        
+
         $('<img/>').attr('src', winnerImageSrc).load(function() {
             $(this).remove();
             winnerImage
@@ -716,8 +716,8 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             .addClass('image-loaded');
         });
     }
-    
-    
+
+
     showResults.on('click', function(){
         var $this = $(this);
         var dataShow = $this.attr('data-show');
@@ -726,50 +726,50 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         indexResults.addClass('hidden');
         $(dataShow).removeClass('hidden');
     });
-    
+
     showWinner.on('click', function(){
         var $this = $(this);
         var dataShow = $this.attr('data-show');
-        
+
         winner.addClass('hidden');
         $(dataShow).removeClass('hidden');
-        
+
         loadWinnerImage($(dataShow));
     });
-    
+
     $(window).on('load', function(){
         loadWinnerImage(winner.eq(0));
     });
 })();
-(function(){   
+(function(){
     var inputAmount = $('.js-input-amount');
-    
+
     var incrementAmount = function(inputValue){
         var amount = inputValue.val();
-        
+
         amount ++
-        
+
         inputValue.val(parseInt(amount));
     }
-    
+
     var decrementAmount = function(inputValue){
         var amount = inputValue.val();
-        
+
         if(amount <= 1){
             amount = 1
         }else{
             amount --
         }
-        
+
         inputValue.val(parseInt(amount));
     }
-    
+
     inputAmount.each(function(){
         var $this = $(this);
         var inputPlus = $this.find('.js-input-amount-plus');
         var inputMinus = $this.find('.js-input-amount-minus');
         var inputValue = $this.find('.js-input-amount-value');
-        
+
         inputPlus.on('click', function(){
             incrementAmount(inputValue);
         });
@@ -788,7 +788,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
         return true;
     }
-    
+
     $('.js-input-file').each(function () {
         var $input = $(this),
             $label = $input.next('.js-input-file__label'),
@@ -797,23 +797,23 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             allowedSize = $input.attr('data-filesize'),
             errorMessage = $input.parent().find('.js-input-file__error'),
             errorMessageFileSize = errorMessage.find('.js-allowed-size');
-        
+
         errorMessageFileSize.html(Math.round(allowedSize/1024/1024));
-        
+
         $input.on('change', function (e) {
             var files = this.files;
             var filesLength = files.length;
             var fileName = '';
-            
+
             if(isFileSize(files, allowedSize)){
                 errorMessage.addClass('hidden');
-                
+
                 if (files && filesLength > 1){
                     fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', filesLength);
                 }else if (e.target.value){
                     fileName = e.target.value.split('\\').pop();
                 }
-                
+
                 if (fileName){
                     labelText.html(fileName);
                 }else{
@@ -839,7 +839,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     languageNav.on('click', function(){
         languageNav.toggleClass('active');
     });
-    
+
     //close opened stuff
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.js-language-nav').length) {
@@ -847,14 +847,14 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
     });
 })();
-(function(){    
+(function(){
     var deparmentMap = $('#js-map');
-    
+
     function initialize() {
         var longitude = Number(deparmentMap.attr('data-lng'));
         var lattitude = Number(deparmentMap.attr('data-lat'));
         var mapCanvas = document.getElementById('js-map');
-        
+
         var myLatLng = {lat: lattitude, lng: longitude};
         var mapOptions = {
             center: {lat: lattitude, lng: longitude-0.005},
@@ -882,7 +882,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     languageNav.on('click', function(){
         languageNav.toggleClass('active');
     });
-    
+
     //close opened stuff
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.js-profile-nav').length) {
@@ -893,7 +893,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 (function(){
     var scrollElement = $('.js-scroll-along');
     var scrollBlock = $('.js-scroll-along-block');
-    
+
     if(scrollElement.length){
         var initialOffsetTop;
         var scrollBlockHeight;
@@ -901,13 +901,13 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         var tableHeadHeight;
         var tableThead = scrollBlock.find('thead');
         var clonedThead = tableThead.clone();
-        
+
         var createSecondHead = function(){
             clonedThead.addClass('scroll-along__thead');
             $('.js-scroll-append').append(clonedThead);
         }
         createSecondHead();
-        
+
         var seteDimensions = function(){
             tableThead.find('th').each(function(){
                 var $this = $(this);
@@ -921,15 +921,15 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
                 var cellIndex = $this.index();
                 clonedThead.find('tr:eq('+cellIndex+')').width(cellWidth);
             });
-            
+
             scrollBlockHeight = scrollBlock.height();
             scrollBlockOffset = scrollBlock.offset().top;
             tableHeadHeight = tableThead.height();
         }
-        
+
         var toggleScrollClass = function($this){
             var thisScroll = $this.scrollTop();
-            
+
             if (thisScroll > initialOffsetTop) {
                 scrollElement.addClass('scroll-along');
             }
@@ -937,16 +937,16 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
                 scrollElement.removeClass('scroll-along');
             }
         }
-        
+
         $(window).scroll(function () {
             toggleScrollClass($(this));
         });
-        
+
         $(window).on('load resize orientationchange', function(){
             initialOffsetTop = scrollElement.offset().top;
             seteDimensions();
         });
-    }    
+    }
 })();
 (function () {
     var cursorXStartPosition;
@@ -959,11 +959,11 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     secondaryNavScroll.on('touchstart', function(){
         touchFlag = true;
     });
-    
+
     secondaryNavScroll.on('touchend', function(){
         touchFlag = false;
     });
-    
+
     secondaryNavScroll.on('mousedown', function (e) {
         if(touchFlag == false){
             mouseDown = true;
@@ -981,7 +981,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     $(window).on('mouseup', function (e) {
         mouseDown = false;
     });
-    
+
     $('.secondary-nav__link').on('click', function(e){
         if(Math.abs(cursorXStartPosition - e.clientX) > 20){
             e.preventDefault();
@@ -989,3 +989,402 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     });
 })();
 svg4everybody();
+/**
+ * jQuery Formset 1.3-pre
+ * @author Stanislaus Madueke (stan DOT madueke AT gmail DOT com)
+ * @requires jQuery 1.2.6 or later
+ *
+ * Copyright (c) 2009, Stanislaus Madueke
+ * All rights reserved.
+ *
+ * Licensed under the New BSD License
+ * See: http://www.opensource.org/licenses/bsd-license.php
+ */
+;(function($) {
+    $.fn.formset = function(opts)
+    {
+        var options = $.extend({}, $.fn.formset.defaults, opts),
+            flatExtraClasses = options.extraClasses.join(' '),
+            totalForms = $('#id_' + options.prefix + '-TOTAL_FORMS'),
+            maxForms = $('#id_' + options.prefix + '-MAX_NUM_FORMS'),
+            minForms = $('#id_' + options.prefix + '-MIN_NUM_FORMS'),
+            childElementSelector = 'input,select,textarea,label,div',
+            $$ = $(this),
+
+            applyExtraClasses = function(row, ndx) {
+                if (options.extraClasses) {
+                    row.removeClass(flatExtraClasses);
+                    row.addClass(options.extraClasses[ndx % options.extraClasses.length]);
+                }
+            },
+
+            updateElementIndex = function(elem, prefix, ndx) {
+                var idRegex = new RegExp(prefix + '-(\\d+|__prefix__)-'),
+                    replacement = prefix + '-' + ndx + '-';
+                if (elem.attr("for")) elem.attr("for", elem.attr("for").replace(idRegex, replacement));
+                if (elem.attr('id')) elem.attr('id', elem.attr('id').replace(idRegex, replacement));
+                if (elem.attr('name')) elem.attr('name', elem.attr('name').replace(idRegex, replacement));
+            },
+
+            hasChildElements = function(row) {
+                return row.find(childElementSelector).length > 0;
+            },
+
+            showAddButton = function() {
+                return (maxForms.length == 0 ||   // For Django versions pre 1.2
+                    (maxForms.val() == '' || (maxForms.val() - totalForms.val() > 0))) && (options.container.data('can-add-new') == 'True');
+            },
+
+            /**
+            * Indicates whether delete link(s) can be displayed - when total forms > min forms
+            */
+            showDeleteLinks = function() {
+                return minForms.length == 0 ||   // For Django versions pre 1.7
+                    (minForms.val() == '' || (totalForms.val() - minForms.val() > 0));
+            },
+            insertOrderingButtons = function(row) {
+                var order_input = row.find('input[id $= "-ORDER"]');
+                if (order_input.length) {
+                    order_input.attr("type", "hidden");
+                    var $up_button = $("<button type='button'>").addClass(options.upCssClass);
+                    var $down_button = $("<button type='button'>").addClass(options.downCssClass);
+                    order_input.before($up_button);
+                    order_input.before($down_button);
+                    $up_button.click(
+                        function() {
+                            var row = $(this).parents('.' + options.formCssClass),
+                                other_row = row.prev();
+                            if (other_row.is(':visible') && other_row.length && !other_row.hasClass('dynamic-form-add')) {
+                                var row_order = row.find('input[id $= "-ORDER"]'),
+                                    other_row_order = other_row.find('input[id $= "-ORDER"]'),
+                                    row_order_val = row_order.val(),
+                                    other_row_order_val = other_row_order.val();
+                                row_order.val(other_row_order_val);
+                                other_row_order.val(row_order_val);
+                                row.insertBefore(other_row);
+                            }
+                            return false;
+                        }
+                    );
+
+                    $down_button.click(
+                        function() {
+                            var row = $(this).parents('.' + options.formCssClass),
+                                other_row = row.next();
+                            if (other_row.is(':visible') && other_row.length && !other_row.hasClass('dynamic-form-add')) {
+                                var row_order = row.find('input[id $= "-ORDER"]'),
+                                    other_row_order = other_row.find('input[id $= "-ORDER"]'),
+                                    row_order_val = row_order.val(),
+                                    other_row_order_val = other_row_order.val();
+                                row_order.val(other_row_order_val);
+                                other_row_order.val(row_order_val);
+                                row.insertAfter(other_row);
+                            }
+                            return false;
+                        }
+                    );
+                }
+            },
+            insertDeleteLink = function(row) {
+                var delCssSelector = options.deleteCssClass.trim().replace(/\s+/g, '.'),
+                    addCssSelector = options.addCssClass.trim().replace(/\s+/g, '.');
+                if (row.is('TR')) {
+                    // If the forms are laid out in table rows, insert
+                    // the remove button into the last table cell:
+                    row.children(':last').append('<a class="' + options.deleteCssClass +'" href="javascript:void(0)">' + options.deleteText + '</a>');
+
+                    // AA ADDED
+                    row.children(':last').removeClass('checkbox')
+                    // END AA ADDED
+
+                } else if (row.is('UL') || row.is('OL')) {
+                    // If they're laid out as an ordered/unordered list,
+                    // insert an <li> after the last list item:
+                    row.append('<li><a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a></li>');
+                } else {
+                    // Otherwise, just insert the remove button as the
+                    // last child element of the form's container:
+                    var delete_button = '<a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a>';
+                    if (options.container.data('delete-prepend') == 'True')
+                        row.prepend(delete_button);
+                    else
+                        row.append(delete_button);
+                }
+                // Check if we're under the minimum number of forms - not to display delete link at rendering
+                if (!showDeleteLinks()){
+                    row.find('a.' + delCssSelector).hide();
+                }
+
+                row.find('a.' + delCssSelector).click(function() {
+                    var row = $(this).parents('.' + options.formCssClass),
+                        del = row.find('input:hidden[id $= "-DELETE"]'),
+                        buttonRow = row.siblings("a." + addCssSelector + ', .' + options.formCssClass + '-add'),
+                        forms;
+                    if (del.length) {
+                        // We're dealing with an inline formset.
+                        // Rather than remove this form from the DOM, we'll mark it as deleted
+                        // and hide it, then let Django handle the deleting:
+                        del.val('on');
+                        row.hide();
+                        forms = $('.' + options.formCssClass).not(':hidden');
+                    } else {
+                        row.remove();
+                        // Update the TOTAL_FORMS count:
+                        forms = $('.' + options.formCssClass).not('.template');
+                        totalForms.val(forms.length);
+                    }
+                    for (var i=0, formCount=forms.length; i<formCount; i++) {
+                        // Apply `extraClasses` to form rows so they're nicely alternating:
+                        applyExtraClasses(forms.eq(i), i);
+                        if (!del.length) {
+                            // Also update names and IDs for all child controls (if this isn't
+                            // a delete-able inline formset) so they remain in sequence:
+                            forms.eq(i).find(childElementSelector).each(function() {
+                                updateElementIndex($(this), options.prefix, i);
+                            });
+                        }
+                    }
+                    // Check if we've reached the minimum number of forms - hide all delete link(s)
+                    if (!showDeleteLinks()){
+                        $('a.' + delCssSelector).each(function(){$(this).hide();});
+                    }
+                    // Check if we need to show the add button:
+                    if (buttonRow.is(':hidden') && showAddButton()) buttonRow.show();
+                    // If a post-delete callback was provided, call it with the deleted form:
+                    if (options.removed) options.removed(row);
+                    return false;
+                });
+            },
+            // AA ADDED FUNCTION
+            replaceDeleteLink = function(row) {
+                var del = row.find('input:checkbox[id $= "-DELETE"]');
+                if (del.length) {
+                    // If you specify "can_delete = True" when creating an inline formset,
+                    // Django adds a checkbox to each form in the formset.
+                    // Replace the default checkbox with a hidden field:
+                    if (del.is(':checked')) {
+                        // If an inline formset containing deleted forms fails validation, make sure
+                        // we keep the forms hidden (thanks for the bug report and suggested fix Mike)
+                        del.before('<input type="hidden" name="' + del.attr('name') +'" id="' + del.attr('id') +'" value="on" />');
+                        row.hide();
+                    } else {
+                        del.before('<input type="hidden" name="' + del.attr('name') +'" id="' + del.attr('id') +'" />');
+                    }
+                    // Hide any labels associated with the DELETE checkbox:
+                    $('label[for="' + del.attr('id') + '"]').hide();
+                    del.remove();
+                }
+            };
+        if (!options.container) {
+            options.container = $$.parent()
+        }
+        // END AA ADDED FUNCTION
+        $$.each(function(i) {
+            // AA UPDATED
+            var row = $(this);
+            replaceDeleteLink(row);
+            // END AA UPDATED
+            if (hasChildElements(row)) {
+                row.addClass(options.formCssClass);
+                if (row.is(':visible')) {
+                    // AA ADDED IF
+                    if (options.container.data('can-delete') == 'True')
+                        insertDeleteLink(row);
+                    insertOrderingButtons(row);
+                    applyExtraClasses(row, i);
+                }
+            }
+        });
+
+
+        var hideAddButton = !showAddButton(),
+            addButton, template;
+        if (options.formTemplate) {
+            // If a form template was specified, we'll clone it to generate new form instances:
+            template = (options.formTemplate instanceof $) ? options.formTemplate : $(options.formTemplate);
+            template.removeAttr('id').addClass(options.formCssClass + ' template');
+            template.find(childElementSelector).each(function() {
+                updateElementIndex($(this), options.prefix, '__prefix__');
+            });
+            // AA ADDED
+            replaceDeleteLink(template);
+            insertOrderingButtons(template);
+            if (options.container.data('can-delete') == 'True')
+                insertDeleteLink(template);
+            // END AA ADDED
+        } else {
+            // Otherwise, use the last form in the formset; this works much better if you've got
+            // extra (>= 1) forms (thnaks to justhamade for pointing this out):
+            template = $('.' + options.formCssClass + ':last').clone(true).removeAttr('id');
+            template.find('input:hidden[id $= "-DELETE"]').remove();
+            // Clear all cloned fields, except those the user wants to keep (thanks to brunogola for the suggestion):
+            template.find(childElementSelector).not(options.keepFieldValues).each(function() {
+                var elem = $(this);
+                // If this is a checkbox or radiobutton, uncheck it.
+                // This fixes Issue 1, reported by Wilson.Andrew.J:
+                if (elem.is('input:checkbox') || elem.is('input:radio')) {
+                    elem.attr('checked', false);
+                } else {
+                    elem.val('');
+                }
+            });
+        }
+        // FIXME: Perhaps using $.data would be a better idea?
+        options.formTemplate = template;
+
+        if ($$.is('TR') || options.container.is("TBODY") || options.container.is("TABLE")) {
+            // If forms are laid out as table rows, insert the
+            // "add" button in a new table row:
+            var numCols = $$.eq(0).children().length,   // This is a bit of an assumption :|
+                buttonRow = $('<tr><td colspan="' + numCols + '"><a class="' + options.addCssClass + '" href="javascript:void(0)">' + options.addText + '</a></tr>')
+                            .addClass(options.formCssClass + '-add');
+
+            // AA ADDED
+            var tfoot = options.container.parents("table").find("tfoot");
+            if (tfoot[0]) {
+                tfoot.prepend(buttonRow);
+            } else {
+                options.container.append(buttonRow);
+            }
+            //$$.parent().append(buttonRow);
+            // END AA ADDED
+
+            if (hideAddButton) buttonRow.hide();
+            addButton = buttonRow.find('a');
+        } else {
+            // Otherwise, insert it immediately after the last form:
+            addButton = $('<div class="button-add"><a class="' + options.addCssClass + '" href="javascript:void(0)">' + options.addText + '</a></div>');
+            options.container.parent().append(addButton);
+            if (hideAddButton) addButton.hide();
+            addButton = addButton.find('a');
+        }
+
+        addButton.click(function() {
+            var formCount = parseInt(totalForms.val()),
+                row = options.formTemplate.clone(true).removeClass('template'),
+                buttonRow = $($(this).parents('tr.' + options.formCssClass + '-add').get(0) || this),
+                delCssSelector = options.deleteCssClass.trim().replace(/\s+/g, '.');
+
+            // AA ADDED
+            var max_num = parseInt($('#id_' + options.prefix + '-MAX_NUM_FORMS').val());
+            if (formCount >= max_num) {
+                alert('Reached maximum row count.');
+                return false;
+            }
+
+
+            applyExtraClasses(row, formCount);
+            if (options.container) {
+                row.appendTo(options.container).show();
+            } else
+                row.insertBefore(buttonRow).show();
+
+            // END AA ADDED
+
+            row.find(childElementSelector).each(function() {
+                updateElementIndex($(this), options.prefix, formCount);
+            });
+            totalForms.val(formCount + 1);
+            // Check if we're above the minimum allowed number of forms -> show all delete link(s)
+            if (showDeleteLinks()){
+                $('a.' + delCssSelector).each(function(){$(this).show();});
+            }
+            // Check if we've exceeded the maximum allowed number of forms:
+            if (!showAddButton()) buttonRow.hide();
+            // If a post-add callback was supplied, call it with the added form:
+            if (options.added) options.added(row);
+            return false;
+        });
+
+
+        return $$;
+    };
+
+    /* Setup plugin defaults */
+    $.fn.formset.defaults = {
+        prefix: 'form',                  // The form prefix for your django formset
+        container: null,                 // Container of formsets. AA ADDED
+        formTemplate: null,              // The jQuery selection cloned to generate new form instances
+        addText: 'add another',          // Text for the add link
+        deleteText: 'remove',            // Text for the delete link
+        addCssClass: 'add-row',          // CSS class applied to the add link
+        deleteCssClass: 'delete-row',    // CSS class applied to the delete link
+        formCssClass: 'dynamic-form',    // CSS class applied to each form in a formset
+        upCssClass: 'icon-arrow-up',
+        downCssClass: 'icon-arrow-down',
+        extraClasses: [],                // Additional CSS classes, which will be applied to each form in turn
+        keepFieldValues: '',             // jQuery selector for fields whose values should be kept when the form is cloned
+        added: null,                     // Function called each time a new form is added
+        removed: null                    // Function called each time a form is deleted
+    };
+})(jQuery);
+
+// Generated by CoffeeScript 1.10.0
+(function() {
+  var call_formset_function, formset;
+
+  window.ENV = window.ENV || {};
+
+  this.format_date = function(dt) {
+    var date, hours, minutes, month;
+    month = dt.getUTCMonth() > 8 ? "" + (dt.getUTCMonth() + 1) : "0" + (dt.getUTCMonth() + 1);
+    date = dt.getUTCDate() > 9 ? "" + (dt.getUTCDate()) : "0" + (dt.getUTCDate());
+    hours = dt.getUTCHours() > 9 ? "" + (dt.getUTCHours()) : "0" + (dt.getUTCHours());
+    minutes = dt.getUTCMinutes() > 9 ? "" + (dt.getUTCMinutes()) : "0" + (dt.getUTCMinutes());
+    return (dt.getUTCFullYear()) + "-" + month + "-" + date + " " + hours + ":" + minutes;
+  };
+
+  call_formset_function = function(row, container, type) {
+    var field, function_name, i, len, ref;
+    ref = $(container).prop("class").split(' ');
+    for (i = 0, len = ref.length; i < len; i++) {
+      field = ref[i];
+      if (field.indexOf('_inline_class') !== -1) {
+        function_name = field;
+      }
+    }
+    if (window.console) {
+      console.log(function_name + '_' + type);
+    }
+    if (typeof window[function_name + '_' + type] === 'function') {
+      return window[function_name + '_' + type](row);
+    }
+  };
+
+  formset = function(containers) {
+    var $container, $items, container, i, len, prefix, results, ret_obj;
+    ret_obj = {};
+    results = [];
+    for (i = 0, len = containers.length; i < len; i++) {
+      container = containers[i];
+      prefix = $(container).data("prefix");
+      $container = $(container).find(".formset_container");
+      $items = $container.find(".item:not(.template)");
+      results.push($items.formset({
+        prefix: prefix,
+        container: $container,
+        addText: 'ADDDD',
+        addCssClass: 'btn btn-primary btn-sm glyphicon glyphicon-plus button-add',
+        deleteText: '',
+        deleteCssClass: 'btn btn-danger pull-right btn-xs glyphicon glyphicon-remove delete',
+        upCssClass: 'btn btn-sm icon-arrow-up',
+        downCssClass: 'btn btn-sm icon-arrow-down',
+        formTemplate: $(container).parent().find(".template"),
+        added: function(row) {
+          return call_formset_function(row, container, 'added');
+        },
+        removed: function(row) {
+          return call_formset_function(row, container, 'removed');
+        }
+      }));
+    }
+    return results;
+  };
+
+  $(function() {
+    return window.ENV.formsets = formset($('.django-inline-form'));
+  });
+
+}).call(this);
+
+//# sourceMappingURL=00_core.js.map
