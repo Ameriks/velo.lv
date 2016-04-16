@@ -61,10 +61,10 @@ class Seb2016(SEBCompetitionBase):
         Returns defined groups for each competition type.
         """
         return {
-            self.SPORTA_DISTANCE_ID: ('M-18', 'M', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
-            self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
+            self.SPORTA_DISTANCE_ID: ('M-18', 'M Elite', 'M 19-34 CFA', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
+            self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-40', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
             self.VESELIBAS_DISTANCE_ID: ('M-14', 'W-14', ),
-            self.BERNU_DISTANCE_ID: ('B 05-04 M', 'B 05-04 Z', 'B 06', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11-', )
+            self.BERNU_DISTANCE_ID: ('B 06-05 M', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11', 'B 12-', )
         }
 
     def number_ranges(self):
@@ -75,7 +75,7 @@ class Seb2016(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 400, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3200, 'group': ''}, ],
             self.VESELIBAS_DISTANCE_ID: [{'start': 5000, 'end': 5200, 'group': ''}, ],
-            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in ('B 05-04', 'B 06', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11-', )],
+            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
         }
 
     def get_startlist_table_class(self, distance=None):
@@ -98,7 +98,7 @@ class Seb2016(SEBCompetitionBase):
                 if year in (self._update_year(1997), self._update_year(1996)):
                     return 'M-18'
                 elif self._update_year(1995) >= year >= self._update_year(1980):
-                    return 'M'
+                    return 'M Elite'
                 elif self._update_year(1979) >= year >= self._update_year(1975):
                     return 'M-35'
                 elif self._update_year(1974) >= year >= self._update_year(1970):
@@ -108,7 +108,7 @@ class Seb2016(SEBCompetitionBase):
                 elif year <= self._update_year(1964):
                     return 'M-50'
             else:
-                return 'W'
+                return 'W'  # ok
         elif distance_id == self.TAUTAS_DISTANCE_ID:
             if gender == 'M':
                 if self._update_year(1999) >= year >= self._update_year(1998):
@@ -117,8 +117,10 @@ class Seb2016(SEBCompetitionBase):
                     return 'T M-18'
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'T M'
-                elif self._update_year(1979) >= year >= self._update_year(1970):
+                elif self._update_year(1979) >= year >= self._update_year(1975):
                     return 'T M-35'
+                elif self._update_year(1974) >= year >= self._update_year(1970):
+                    return 'T M-40'
                 elif self._update_year(1969) >= year >= self._update_year(1965):
                     return 'T M-45'
                 elif self._update_year(1964) >= year >= self._update_year(1960):
@@ -142,8 +144,10 @@ class Seb2016(SEBCompetitionBase):
                     return 'T W-45'
         elif distance_id == self.BERNU_DISTANCE_ID:
             # bernu sacensibas
-            if year >= 2011:
-                return 'B 11-'
+            if year >= 2012:
+                return 'B 12-'
+            elif year == 2011:
+                return 'B 11'
             elif year == 2010:
                 return 'B 10'
             elif year == 2009:
@@ -152,16 +156,14 @@ class Seb2016(SEBCompetitionBase):
                 return 'B 08'
             elif year == 2007:
                 return 'B 07'
-            elif year == 2006:
-                return 'B 06'
-            elif year in (2005, 2004):
+            elif year in (2006, 2005):
                 if gender == 'M':
-                    return 'B 05-04 Z'
+                    return 'B 06-05 Z'
                 else:
-                    return 'B 05-04 M'
+                    return 'B 06-05 M'
 
         elif distance_id == self.VESELIBAS_DISTANCE_ID:
-            if year in (2001, 2002, 2003):
+            if year in (self._update_year(2000), self._update_year(2001), self._update_year(2002)):
                 if gender == 'M':
                     return 'M-14'
                 else:
@@ -195,7 +197,7 @@ class Seb2016(SEBCompetitionBase):
         # used for matching similar participants (grammar errors)
         prev_slugs = [obj.participant_slug for obj in SebStandings.objects.filter(competition=prev_competition)]
 
-        def get_prev_standing(participant):
+        def get_prev_standings(participant):
             standings = SebStandings.objects.filter(competition=prev_competition, participant_slug=participant.slug).order_by('-distance_total')
 
             if not standings:
@@ -205,9 +207,7 @@ class Seb2016(SEBCompetitionBase):
                     standings = SebStandings.objects.filter(competition=prev_competition, participant_slug=changed.slug).order_by('-distance_total')
                 except:
                     pass
-            if standings:
-                return standings[0]
-            return None
+            return standings
 
         def get_current_standing(participant):
             standings = SebStandings.objects.filter(competition=current_competition, participant_slug=participant.slug).order_by('-distance_total')
@@ -241,14 +241,22 @@ class Seb2016(SEBCompetitionBase):
             current_standing = get_current_standing(participant)
 
             if self.competition_index == 1 or (self.competition_index == 2 and (not current_standing or current_standing.get('distance_points1') == 0)):
-                standing = get_prev_standing(participant)
+                standings = get_prev_standings(participant)
+                try:
+                    standing = standings[0]
+                except:
+                    standing = None
 
                 helper.matches_slug = ''
                 if standing:
-                    if standing.distance.kind == 'S':
-                        helper.calculated_total = (standing.distance_total or 0.0) / 4.0
-                    else:
-                        helper.calculated_total = (standing.distance_total or 0.0) / 5.0
+
+                    # If participant have participated in all stages, but changed distances, we restore points
+                    divide_by = 5.0
+                    if standing.stages_participated < 5 and standings.count() > 1:
+                        if standing.stages_participated + standings[1].stages_participated >= 5:
+                            divide_by = float(standing.stages_participated)
+
+                    helper.calculated_total = (standing.distance_total or 0.0) / divide_by
 
                     # If last year participant was riding in Tautas and this year he is riding in Sport distance, then he must be after those who where riding sport distance.
                     # To sort participants correctly we have to give less points to them but still keep order based on last years results.

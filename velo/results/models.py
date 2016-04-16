@@ -318,6 +318,15 @@ class SebStandings(models.Model):
         ctype = ContentType.objects.get_for_model(self.__class__)
         return Result.objects.filter(standings_content_type__pk=ctype.id, standings_object_id=self.id)
 
+    @property
+    def stages_participated(self):
+        stages = [1, 2, 3, 4, 5, 6, 7]
+        stages_participated = 0
+        for stage in stages:
+            if getattr(self, "distance_points%i" % stage) > 0:
+                stages_participated += 1
+        return stages_participated
+
     def set_points(self):
         stages = [1, 2, 3, 4, 5, 6, 7]
         mapping = {obj.id: index for index, obj in enumerate(self.competition.get_children(), start=1)}
