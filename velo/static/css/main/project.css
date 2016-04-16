@@ -2460,6 +2460,9 @@ textarea:focus:-ms-input-placeholder {
   line-height: 1.5;
   padding-top: 15px; }
 
+.input-wrap {
+  position: relative; }
+
 .input-wrap p.error {
   float: left;
   width: 100%;
@@ -2467,7 +2470,11 @@ textarea:focus:-ms-input-placeholder {
   font-size: 13px;
   line-height: 1.4;
   color: #f9e103;
-  padding: 5px 0px; }
+  padding: 5px 0px;
+  position: absolute;
+  top: 100%; }
+  .input-wrap p.error span {
+    color: #FFF; }
 
 .input-field-label {
   position: relative;

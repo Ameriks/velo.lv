@@ -66,6 +66,7 @@ class CompanyApplicationCreateForm(GetClassNameMixin, CleanEmailMixin, RequestKw
 
         self.helper = FormHelper()
         self.helper.form_tag = True
+        self.helper.include_media = False
         self.helper.layout = Layout(
             Row(
                 Column(
@@ -120,21 +121,11 @@ class ApplicationCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
 class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
     team_search = forms.CharField(widget=forms.HiddenInput)
     team_search_term = forms.CharField(widget=forms.HiddenInput)
-    email2 = forms.EmailField(label=_('E-mail confirmation'),
-                              help_text=_("Enter the same e-mail as above, for verification."))
+    email2 = forms.EmailField(label=_('E-mail confirmation'), )
 
     class Meta:
         model = Application
-        fields = ('email',)
-
-    class Media:
-        js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
-              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js',
-              'plugins/typeahead.js/typeahead.bundle.min.js',
-              'plugins/handlebars-v3.0.1.js',)
-        css = {
-            'all': ('plugins/datepicker/datepicker.css',)
-        }
+        fields = ('email', 'can_send_newsletters')
 
     def clean_email2(self):
         email1 = self.cleaned_data.get('email', '')
@@ -159,34 +150,160 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
 
         self.helper = FormHelper()
         self.helper.form_tag = True
+        self.helper.form_class = "w100 js-form-participants"
+        self.helper.include_media = False
         self.helper.layout = Layout(
-            Row(
-                Column(
-                    'email',
-                    'team_search',
-                    'team_search_term',
-                    css_class='col-sm-6'
-                ),
-                Column(
-                    'email2',
-                    css_class='col-sm-6'
-                ),
-            ),
-            Row(
-                Column(
-                    Fieldset(
-                        _('Participants'),
-                        HTML('{% load crispy_forms_tags %}{% crispy participant participant.form.helper %}'),
+            'team_search',
+            'team_search_term',
+            Div(
+                Row(
+                    Div(
+                        css_class="col-xl-2 col-s-24",
                     ),
-                    css_class='col-xs-12'
-                )
-            ),
-            Row(
-                Column(Submit('submit_draft', _('Save')),
-                       css_class='col-sm-2') if not self.instance.competition.is_past_due else Column(),
-                Column(Submit('submit_pay', _('Save & Pay')),
-                       css_class='col-sm-2 pull-right') if self.instance.payment_status != Application.PAY_STATUS.payed and not self.instance.competition.is_past_due else Column(),
-            ),
+                    Div(
+                        Div(
+                            Div(
+                                css_class="w100 bottom-margin--40"
+                            ),
+                            Div(
+                                Row(
+                                    Div(
+                                        Field('email',
+                                              css_class="input-field if--50 if--dark  js-placeholder-up",
+                                              **{
+                                                  "data-rule-required": True,
+                                                  "data-rule-email": True,
+                                                  "data-msg-required": str(_("This field is required.")),
+                                                  "data-msg-email": str(_("Please enter valid email address!"))
+                                              }),
+                                        css_class='col-xl-12 col-m-24'
+                                    ),
+                                    Div(
+                                        Field('email2',
+                                              css_class="input-field if--50 if--dark  js-placeholder-up",
+                                              **{
+                                                  "data-rule-required": True,
+                                                  "data-rule-email": True,
+                                                  "data-rule-equalto": "#id_email",
+                                                  "data-msg-required": str(_("This field is required.")),
+                                                  "data-msg-email": str(_("Please enter valid email address!")),
+                                                  "data-msg-equalto": str(_("Emails doesn't match")),
+                                              }),
+
+                                        css_class='col-xl-12 col-m-24'
+                                    ),
+                                    Div(
+                                        Div(
+                                            HTML(_("To this email address confirmation email will be sent.")),
+                                            css_class="fs13 c-white--50 w100 bottom-margin--15",
+                                        ),
+                                        css_class='col-xl-12 col-m-24'
+                                    ),
+                                    Div(
+                                        Div(
+                                            Field("can_send_newsletters", css_class="checkbox__input"),
+                                            css_class="input-wrap w100 bottom-margin--15",
+                                        ),
+                                        css_class='col-xl-12 col-m-24'
+                                    ),
+                                    css_class="row row--gutters-20",
+                                ),
+                                css_class="w100",
+                            ),
+                            css_class="inner no-padding--560"
+                        ),
+                        css_class="col-xl-20 col-s-24",
+                    ),
+                    Div(
+                        css_class="col-xl-2 col-s-24",
+                    ),
+                    Div(
+                        Div(
+                            css_class="w100 bottom-margin--40",
+                        ),
+                        Div(
+
+                            Div(
+                                Row(
+                                    Div(
+                                        css_class="col-xl-2 col-s-24"
+                                    ),
+                                    Div(
+                                        HTML(
+                                            '{% load crispy_forms_tags %}{% crispy participant participant.form.helper %}'),
+
+                                        # Add participant
+                                        Div(
+                                            Div(
+                                                Div(
+                                                    HTML(
+                                                        '<svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#plus"></use></svg>'),
+                                                    css_class="participant__number"
+                                                ),
+                                                Div(
+                                                    HTML(str(_("Add Participant"))),
+                                                    css_class="participant__name flex--1"
+                                                ),
+
+                                                css_class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow"
+                                            ),
+                                            css_class="w100 cursor--pointer bottom-margin--30 js-add-participant"
+                                        ),
+
+                                        css_class='col-xl-20 col-s-24'
+                                    ),
+                                    Div(
+                                        css_class="col-xl-2 col-s-24"
+                                    ),
+                                ),
+                                css_class="inner no-padding--560"
+                            ),
+                            css_class="w100",
+                        ),
+                        css_class="layouts-competition-register-background col-xl-24 border-top bgc-dblue"
+                    ),
+
+                    Div(
+                        Div(
+                            Row(
+                                Div(css_class="col-xl-2 col-s-24"),
+                                Div(
+                                    Div(
+                                        css_class="w100 bottom-margin--20"
+                                    ),
+                                    Div(
+                                        Row(
+                                            Div(
+                                                css_class="col-xs-24 flex--1 fs14 fw700 uppercase bottom-margin--20  js-paricipant-count",
+                                            ),
+                                            Div(
+                                                css_class="col-xs-24 fs14 fw700 uppercase bottom-margin--20",
+                                            )
+                                        ),
+                                        css_class="w100"
+                                    ),
+                                    css_class="col-xl-20 col-s-24"
+                                ),
+                            ),
+                            css_class="inner",
+                        ),
+                        css_class="layouts-competition-register-background col-xl-24 border-top bgc-dblue"
+                    ),
+                    Div(
+                        Row(
+                            Div(
+                                css_class="col-xl-15 col-m-14 col-s-24"
+                            ),
+                            Div(Submit('submit_pay', _('Save & Pay'),
+                                       css_class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100 flex--important wrap--nowrap justify--space-between align-items--center"),
+                                css_class="col-xl-9 col-m-10 col-s-24") if self.instance.payment_status != Application.PAY_STATUS.payed and not self.instance.competition.is_past_due else Div(
+                                css_class="col-xl-9 col-m-10 col-s-24"),
+                        ),
+                        css_class="col-xl-24 border-top border-bottom"
+                    ),
+                ),
+                css_class="w100 border-right border-left no-border--560",
+            )
         )
 
 
@@ -197,14 +314,21 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     class Meta:
         model = Participant
         fields = (
-        'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand2',
-        'team_name', 'email')
+            'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
+            'bike_brand2',
+            'team_name', 'email')
 
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
             return self.cleaned_data.get('ssn', '').replace('-', '').replace(' ', '')
         else:
             return ''
+
+    def clean_insurance(self):
+        insurance = self.cleaned_data.get('insurance', "")
+        if insurance != "":
+            return self.application.competition.get_insurances().filter(status=Insurance.STATUS_ACTIVE).get(id=insurance)
+        return None
 
     def clean_birthday(self):
         if self.cleaned_data.get('country') == 'LV':
@@ -225,8 +349,6 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         return self.cleaned_data.get('last_name').title()
 
     def clean(self):
-        if self.data.get('submit_draft'):
-            return self.cleaned_data
 
         cleaned_data = self.cleaned_data
 
@@ -287,7 +409,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         insurances = competition.get_insurances().filter(status=Insurance.STATUS_ACTIVE)
 
         if insurances:
-            self.fields['insurance'].choices = [('', '------')] + [(insurance.id, str(insurance)) for insurance
+            self.fields['insurance'].choices = [('', _("Select Insurance"))] + [(insurance.id, str(insurance)) for insurance
                                                                    in insurances]
 
             if self.instance.insurance_id:
@@ -297,14 +419,11 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         else:
             pass
 
-        self.fields['distance'].choices = [('', '------')] + [(distance.id, str(distance)) for distance in
+        self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
                                                               distances]
 
         if get_language() == 'lv':
             self.fields['country'].initial = 'LV'
-
-        self.fields['country'].required = True
-        self.fields['gender'].required = True
 
         self.fields['team_name'].widget.attrs.update({'class': 'team-typeahead'})
 
@@ -314,65 +433,240 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['distance'].widget.attrs.update(
             {'data-url': str(reverse('payment:check_price', kwargs={'pk': self.application.competition_id}))})
 
-        if self.data.get('submit_draft'):
-            self.fields['distance'].required = False
-            self.fields['birthday'].required = False
-            self.fields['first_name'].required = False
-            self.fields['last_name'].required = False
-            self.fields['gender'].required = False
-            self.fields['country'].required = False
-            self.fields['ssn'].required = False
-        else:
-            self.fields['distance'].required = True
-            self.fields['first_name'].required = True
-            self.fields['last_name'].required = True
-            self.fields['gender'].required = True
-            self.fields['country'].required = True
+        self.fields['distance'].required = True
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['gender'].required = True
+        self.fields['country'].required = True
+        self.fields['birthday'].required = True
+
+        self.fields['gender'].choices = Participant.GENDER_CHOICES
+        self.fields['gender'].choices.insert(0, ('', _("Select Gender")), )
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.template = "base/velo_whole_uni_formset.html"
+        self.helper.include_media = False
+        self.helper.template = "wd_forms/whole_uni_formset.html"
         self.helper.layout = Layout(
-            Row(
-                Column(
-                    Row(
-                        Column('distance', css_class='col-xs-6 col-sm-4'),
-                        Column('country', css_class='col-xs-6 col-sm-4'),
-                        Column('gender', css_class='col-xs-6 col-sm-4'),
-                    ),
-                    Row(
-                        Column('first_name', css_class='col-xs-6 col-sm-4'),
-                        Column('last_name', css_class='col-xs-6 col-sm-4'),
-                        Column('ssn', css_class='col-xs-6 col-sm-4'),
-                        Column(Field('birthday', css_class='dateinput'), css_class='col-xs-6 col-sm-4'),
-                    ),
-                    Row(
-                        Column('team_name', css_class='col-xs-6 col-sm-4'),
-                        Column('phone_number', css_class='col-xs-6 col-sm-4'),
-                        Column('email', css_class='col-xs-6 col-sm-4'),
-                    ),
-                    Row(
-                        Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>',
-                                                                            css_class='btn-default bike-brand-dropdown')),
-                               css_class='col-xs-6 col-sm-4'),
-                        Column('insurance', css_class='col-xs-6 col-sm-4 pull-right'),
 
-                    ) if insurances else Row(Column(FieldWithButtons('bike_brand2',
-                                                                     StrictButton('<span class="caret"></span>',
-                                                                                  css_class='btn-default bike-brand-dropdown')),
-                                                    css_class='col-xs-6 col-sm-4'), ),
-                    'id',
-                    Div(
-                        Field('DELETE', ),
-                        css_class='hidden',
-                    ),
-                    css_class='col-sm-9'
+            Div(
+                Div(
+                    Div(css_class="participant__number"),
+                    Div(HTML(_("Participant")), css_class="participant__name flex--1"),
+                    Div(HTML(
+                        '<svg class="icon participant__cross"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#cross"></use></svg><div>%s</div>' % _(
+                            "Remove")),
+                        css_class="participant__remove flex wrap--nowrap direction--row justify--center align-items--center"),
+                    css_class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow"
                 ),
-                Column(
-                    Div(css_class='participant_calculation'),
-                    css_class='col-sm-3'
-                )
-            ),
+                Div(
+                    Div(
+                        # Distance
+                        Div(
+                            Div(
+                                Field(
+                                    "distance",
+                                    css_class="select-hide js-select",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--20"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+                        # Country
+                        Div(
+                            Div(
+                                Field(
+                                    "country",
+                                    css_class="select-hide js-select",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--20"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+                        # Gender
+                        Div(
+                            Div(
+                                Field(
+                                    "gender",
+                                    css_class="select-hide js-select",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--20"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        # First Name
+                        Div(
+                            Div(
+                                Field(
+                                    "first_name",
+                                    css_class="input-field if--50 if--dark js-placeholder-up",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--15"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        # Last Name
+                        Div(
+                            Div(
+                                Field(
+                                    "last_name",
+                                    css_class="input-field if--50 if--dark js-placeholder-up",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--15"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        # Birthday
+                        Div(
+                            Div(
+                                Field(
+                                    "birthday",
+                                    css_class="input-field if--50 if--dark js-placeholder-up dateinput",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--15"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        # Team Name
+                        Div(
+                            Div(
+                                Field(
+                                    "team_name",
+                                    css_class="input-field if--50 if--dark js-placeholder-up",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--15"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        # Phone Number
+                        Div(
+                            Div(
+                                Field(
+                                    "phone_number",
+                                    css_class="input-field if--50 if--dark js-placeholder-up",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--15"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        # Email
+                        Div(
+                            Div(
+                                Field(
+                                    "email",
+                                    css_class="input-field if--50 if--dark js-placeholder-up",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--15"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        # Bike Brand
+                        Div(
+                            Div(
+                                Field(
+                                    "bike_brand2",
+                                    css_class="input-field if--50 if--dark js-placeholder-up",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--15"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        # insurance
+                        Div(
+                            Div(
+                                Field(
+                                    "insurance",
+                                    css_class="select-hide js-select"
+                                ),
+                                css_class="input-wrap w100 bottom-margin--20"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ) if insurances else Div(),
+
+                        # SSN
+                        Div(
+                            Div(
+                                Field(
+                                    "ssn",
+                                    css_class="input-field if--50 if--dark js-placeholder-up",
+                                    **{
+                                        "data-rule-required": True,
+                                        "data-msg-required": str(_("This field is required."))
+                                    }
+                                ),
+                                css_class="input-wrap w100 bottom-margin--15"
+                            ),
+                            css_class="col-xl-8 col-m-12 col-s-24"
+                        ),
+
+                        'id',
+                        Div(
+                            Field('DELETE', ),
+                            css_class='hidden',
+                        ),
+
+                        Div(
+                            Div(
+                                css_class="fs14 fw700 c-white uppercase price"
+                            ),
+                            css_class="col-xl-24"
+                        ),
+
+                        css_class="row row--gutters-10"
+                    ),
+
+                    css_class="participant__form"
+                ),
+                css_class="participant bottom-margin--30 bgc-dgray js-participant item"
+            )
         )
 
 
@@ -441,8 +735,9 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     class Meta:
         model = CompanyParticipant
         fields = (
-        'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number', 'bike_brand2',
-        'email')
+            'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
+            'bike_brand2',
+            'email')
 
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
@@ -521,7 +816,8 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.template = "base/velo_whole_uni_formset.html"
+        self.helper.include_media = False
+        self.helper.template = "wd_forms/whole_uni_formset.html"
         self.helper.layout = Layout(
             Row(
                 Column(
@@ -573,6 +869,7 @@ class CompanyApplicationEmptyForm(GetClassNameMixin, CleanEmailMixin, RequestKwa
 
         self.helper = FormHelper()
         self.helper.form_tag = True
+        self.helper.include_media = False
         self.helper.layout = Layout(
             Row(
                 Column(

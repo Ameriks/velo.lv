@@ -32,7 +32,8 @@ class Application(TimestampMixin, models.Model):
     payment_status = models.SmallIntegerField(_('Payment Status'), default=PAY_STATUS.not_payed, choices=PAY_STATUS)
     discount_code = models.ForeignKey('payment.DiscountCode', blank=True, null=True)
 
-    email = models.EmailField(blank=True, help_text=_("You will receive payment confirmation and information about start numbers."))
+    email = models.EmailField(blank=True)
+    can_send_newsletters = models.BooleanField(_("I want to receive velo.lv news in email."), default=True)
 
     code = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
     legacy_id = models.IntegerField(blank=True, null=True)

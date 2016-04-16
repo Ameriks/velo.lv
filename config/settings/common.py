@@ -203,7 +203,8 @@ TEMPLATES = [
 ]
 
 # See: http://django-crispy-forms.readthedocs.org/en/latest/install.html#template-packs
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+CRISPY_TEMPLATE_PACK = 'wd_forms'
+CRISPY_ALLOWED_TEMPLATE_PACKS = ('wd_forms', )
 
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------

@@ -147,7 +147,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.template = "base/velo_whole_uni_formset.html"
+        self.helper.template = "wd_forms/whole_uni_formset.html"
         self.helper.layout = Layout(
             Row(
                 Column(

@@ -27,8 +27,8 @@ class CustomBaseInlineFormSet(GetClassNameMixin, BaseInlineFormSet):
     def clean(self):
         super(CustomBaseInlineFormSet, self).clean()
 
-        initial_num = len(filter(lambda f: not self._should_delete_form(f), self.initial_forms))
-        extra_num = len(filter(lambda f: f.has_changed() and not self._should_delete_form(f), self.extra_forms))
+        initial_num = len(list(filter(lambda f: not self._should_delete_form(f), self.initial_forms)))
+        extra_num = len(list(filter(lambda f: f.has_changed() and not self._should_delete_form(f), self.extra_forms)))
 
         if self.required > 0:
             if initial_num + extra_num < self.required:

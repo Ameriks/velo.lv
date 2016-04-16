@@ -1,0 +1,13 @@
+{% if inputs %}
+    <div class="form-group{% if using_grid_layout %} row{% endif %}">
+        {% if label_class %}
+            <div class="aab controls {{ label_class }}"></div>
+        {% endif %}
+
+        <div class="controls {{ field_class }}">
+            {% for input in inputs %}
+                {% include "wd_forms/layout/baseinput.html" %}
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

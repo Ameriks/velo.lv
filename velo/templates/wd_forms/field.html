@@ -1,0 +1,59 @@
+{% load crispy_forms_field %}
+
+{% if field.is_hidden %}
+    {{ field }}
+{% else %}
+    {% if field|is_checkbox %}
+        <div class="checkbox bottom-margin--15{% if using_grid_layout %} row{% endif %}">
+        {% if label_class %}
+            <div class="controls col-{{ bootstrap_device_type }}-offset-{{ label_size }} {{ field_class }}">
+        {% endif %}
+    {% endif %}
+    <{% if tag %}{{ tag }}{% else %}div{% endif %} id="div_{{ field.auto_id }}" {% if not field|is_checkbox %}class="form-group{% if using_grid_layout %} row{% endif %}{% else %}class="checkbox{% endif %}{% if wrapper_class %} {{ wrapper_class }}{% endif %}{% if form_show_errors%}{% if field.errors %} error{% endif %}{% endif %}{% if field.css_classes %} {{ field.css_classes }}{% endif %} input-wrap w100 bottom-margin--15">
+        {% if field.label and not field|is_checkbox and form_show_labels %}
+
+            <label for="{{ field.id_for_label }}" class="input-field-label  js-placeholder {{ label_class }}{% if field.field.required %} requiredField{% endif %}">{{ field.label|safe }}{% if field.field.required %}<span class="asteriskField">*</span>{% endif %}</label>
+
+        {% endif %}
+
+        {% if field|is_checkboxselectmultiple %}
+            {% include 'wd_forms/layout/checkboxselectmultiple.html' %}
+        {% endif %}
+
+        {% if field|is_radioselect %}
+            {% include 'wd_forms/layout/radioselect.html' %}
+        {% endif %}
+
+        {% if not field|is_checkboxselectmultiple and not field|is_radioselect %}
+            {% if field|is_checkbox and form_show_labels %}
+                {% crispy_field field %}
+                <label for="{{ field.id_for_label }}" class="checkbox__label{% if field.field.required %} requiredField{% endif %}">
+                        <div class="flex wrap--nowrap direction--row justify--start align-items--center">
+                            <svg class="checkbox__graphic checkbox__graphic--default icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#checkbox--default"></use>
+                            </svg>
+                            <svg class="checkbox__graphic checkbox__graphic--checked icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#checkbox--checked"></use>
+                            </svg>
+                            <span class="checkbox__text">{{ field.label|safe }}</span>
+                        </div>
+
+                    {% include 'wd_forms/layout/help_text_and_errors.html' %}
+                </label>
+            {% else %}
+
+                    {% crispy_field field %}
+                    {% include 'wd_forms/layout/help_text_and_errors.html' %}
+
+            {% endif %}
+        {% endif %}
+    </{% if tag %}{{ tag }}{% else %}div{% endif %}>
+    {% if field|is_checkbox %}
+        {% if label_class %}
+            </div>
+        {% endif %}
+        </div>
+    {% endif %}
+{% endif %}
+
+
