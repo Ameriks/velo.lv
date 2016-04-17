@@ -16,7 +16,7 @@
 
     {% include "wd_forms/errors_formset.html" %}
 
-    <div class="formset_container" data-can-delete="{{ formset.can_delete }}">
+    <div class="formset_container" data-can-delete="{{ formset.can_delete }}" data-can-add-new="{{ formset.can_add_new }}">
         <div class="item template" style="display:none;">
         {% with formset.empty_form as form %}
                 {% crispy form %}

@@ -245,7 +245,7 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
                                                     css_class="participant__name flex--1"
                                                 ),
 
-                                                css_class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow"
+                                                css_class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow add-new-row"
                                             ),
                                             css_class="w100 cursor--pointer bottom-margin--30 js-add-participant"
                                         ),
@@ -451,12 +451,13 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
             Div(
                 Div(
-                    Div(css_class="participant__number"),
+                    Div(css_class="participant__number counter"),
                     Div(HTML(_("Participant")), css_class="participant__name flex--1"),
                     Div(HTML(
                         '<svg class="icon participant__cross"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#cross"></use></svg><div>%s</div>' % _(
                             "Remove")),
-                        css_class="participant__remove flex wrap--nowrap direction--row justify--center align-items--center"),
+                        css_class="delete_button participant__remove flex wrap--nowrap direction--row justify--center align-items--center"),
+                    Field('DELETE', ),
                     css_class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow"
                 ),
                 Div(
@@ -649,11 +650,6 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
                         'id',
                         Div(
-                            Field('DELETE', ),
-                            css_class='hidden',
-                        ),
-
-                        Div(
                             Div(
                                 css_class="fs14 fw700 c-white uppercase price"
                             ),
@@ -665,7 +661,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
                     css_class="participant__form"
                 ),
-                css_class="participant bottom-margin--30 bgc-dgray js-participant item"
+                css_class="participant bottom-margin--30 bgc-dgray js-participant"
             )
         )
 

@@ -21,6 +21,10 @@
             $$ = $(this),
 
             applyExtraClasses = function(row, ndx) {
+                if ($('.counter', row)) {
+                    $('.counter', row).html((ndx+1)+".");
+                }
+
                 if (options.extraClasses) {
                     row.removeClass(flatExtraClasses);
                     row.addClass(options.extraClasses[ndx % options.extraClasses.length]);
@@ -40,16 +44,14 @@
             },
 
             showAddButton = function() {
-                return (maxForms.length == 0 ||   // For Django versions pre 1.2
-                    (maxForms.val() == '' || (maxForms.val() - totalForms.val() > 0))) && (options.container.data('can-add-new') == 'True');
+                return (maxForms.val() == '' || (maxForms.val() - totalForms.val() > 0)) && (options.container.data('can-add-new') == 'True');
             },
 
             /**
             * Indicates whether delete link(s) can be displayed - when total forms > min forms
             */
             showDeleteLinks = function() {
-                return minForms.length == 0 ||   // For Django versions pre 1.7
-                    (minForms.val() == '' || (totalForms.val() - minForms.val() > 0));
+                return minForms.val() == '' || (totalForms.val() - minForms.val() > 0);
             },
             insertOrderingButtons = function(row) {
                 var order_input = row.find('input[id $= "-ORDER"]');
@@ -95,12 +97,16 @@
                 }
             },
             insertDeleteLink = function(row) {
-                var delCssSelector = options.deleteCssClass.trim().replace(/\s+/g, '.'),
-                    addCssSelector = options.addCssClass.trim().replace(/\s+/g, '.');
-                if (row.is('TR')) {
+                var addCssSelector = options.addCssClass.trim().replace(/\s+/g, '.'),
+                    delete_button = undefined;
+
+                if (options.deleteButtonSelector) {
+                    delete_button = row.find(options.deleteButtonSelector)
+                } else if (row.is('TR')) {
                     // If the forms are laid out in table rows, insert
                     // the remove button into the last table cell:
-                    row.children(':last').append('<a class="' + options.deleteCssClass +'" href="javascript:void(0)">' + options.deleteText + '</a>');
+                    delete_button = $('<a class="' + options.deleteCssClass +'" href="javascript:void(0)">' + options.deleteText + '</a>');
+                    row.children(':last').append(delete_button);
 
                     // AA ADDED
                     row.children(':last').removeClass('checkbox')
@@ -109,11 +115,12 @@
                 } else if (row.is('UL') || row.is('OL')) {
                     // If they're laid out as an ordered/unordered list,
                     // insert an <li> after the last list item:
-                    row.append('<li><a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a></li>');
+                    delete_button =  $('<a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a>');
+                    row.append($("<li>").append(delete_button));
                 } else {
                     // Otherwise, just insert the remove button as the
                     // last child element of the form's container:
-                    var delete_button = '<a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a>';
+                    delete_button = $('<a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a>');
                     if (options.container.data('delete-prepend') == 'True')
                         row.prepend(delete_button);
                     else
@@ -121,10 +128,10 @@
                 }
                 // Check if we're under the minimum number of forms - not to display delete link at rendering
                 if (!showDeleteLinks()){
-                    row.find('a.' + delCssSelector).hide();
+                    delete_button.hide();
                 }
 
-                row.find('a.' + delCssSelector).click(function() {
+                delete_button.click(function() {
                     var row = $(this).parents('.' + options.formCssClass),
                         del = row.find('input:hidden[id $= "-DELETE"]'),
                         buttonRow = row.siblings("a." + addCssSelector + ', .' + options.formCssClass + '-add'),
@@ -155,7 +162,7 @@
                     }
                     // Check if we've reached the minimum number of forms - hide all delete link(s)
                     if (!showDeleteLinks()){
-                        $('a.' + delCssSelector).each(function(){$(this).hide();});
+                        delete_button.each(function(){$(this).hide();});
                     }
                     // Check if we need to show the add button:
                     if (buttonRow.is(':hidden') && showAddButton()) buttonRow.show();
@@ -261,11 +268,18 @@
             if (hideAddButton) buttonRow.hide();
             addButton = buttonRow.find('a');
         } else {
-            // Otherwise, insert it immediately after the last form:
-            addButton = $('<div class="button-add"><a class="' + options.addCssClass + '" href="javascript:void(0)">' + options.addText + '</a></div>');
-            options.container.parent().append(addButton);
-            if (hideAddButton) addButton.hide();
-            addButton = addButton.find('a');
+            // AA Added CSS Selector
+            if (options.addCssSelector) {
+                addButton = options.container.parents("form").find(options.addCssSelector);
+                if (hideAddButton) addButton.hide();
+            }
+            if (!addButton) {
+                // Otherwise, insert it immediately after the last form:
+                addButton = $('<div class="button-add"><a class="' + options.addCssClass + '" href="javascript:void(0)">' + options.addText + '</a></div>');
+                options.container.parent().append(addButton);
+                if (hideAddButton) addButton.hide();
+                addButton = addButton.find('a');
+            }
         }
 
         addButton.click(function() {
@@ -281,7 +295,6 @@
                 return false;
             }
 
-
             applyExtraClasses(row, formCount);
             if (options.container) {
                 row.appendTo(options.container).show();
@@ -296,7 +309,10 @@
             totalForms.val(formCount + 1);
             // Check if we're above the minimum allowed number of forms -> show all delete link(s)
             if (showDeleteLinks()){
-                $('a.' + delCssSelector).each(function(){$(this).show();});
+                if (options.deleteButtonSelector)
+                    $(options.deleteButtonSelector, row).each(function(){$(this).show();});
+                else
+                    $('a.' + delCssSelector).each(function(){$(this).show();});
             }
             // Check if we've exceeded the maximum allowed number of forms:
             if (!showAddButton()) buttonRow.hide();
@@ -317,7 +333,9 @@
         addText: 'add another',          // Text for the add link
         deleteText: 'remove',            // Text for the delete link
         addCssClass: 'add-row',          // CSS class applied to the add link
+        addButtonSelector: null,        // AA ADDED if this is set, no new add buttons are added.
         deleteCssClass: 'delete-row',    // CSS class applied to the delete link
+        deleteButtonSelector: null,        // AA ADDED if this is set, no new add buttons are added.
         formCssClass: 'dynamic-form',    // CSS class applied to each form in a formset
         upCssClass: 'icon-arrow-up',
         downCssClass: 'icon-arrow-down',
