@@ -24,6 +24,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 SERVER_EMAIL = u'Tavs velo.lv <hi@mans.velo.lv>'
+MAILGUN_FROM = SERVER_EMAIL # TMP
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 SECRET_KEY2 = os.getenv('SECRET_KEY2')
