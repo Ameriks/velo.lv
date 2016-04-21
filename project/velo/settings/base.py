@@ -23,7 +23,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-SERVER_EMAIL = "webmaster@mans.velo.lv"
+SERVER_EMAIL = u'Tavs velo.lv <hi@mans.velo.lv>'
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 SECRET_KEY2 = os.getenv('SECRET_KEY2')
@@ -211,12 +211,6 @@ CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-
-
-MAILGUN_FROM = u'Tavs velo.lv <hi@mans.velo.lv>'
-MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_ACCESS_KEY')
-MAILGUN_URL = 'https://api.mailgun.net/v2'
-MAILGUN_SERVER_NAME = 'mans.velo.lv'
 
 
 MY_DEFAULT_DOMAIN = 'https://mans.velo.lv'

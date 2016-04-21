@@ -2,6 +2,9 @@ from django.utils.translation import ugettext_lazy
 import re
 from .base import *
 
+AWS_SES_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SES_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -21,7 +24,7 @@ DATABASES = {
     },
 }
 
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+EMAIL_BACKEND = 'django_ses.SESBackend'
 
 SESSION_COOKIE_DOMAIN = '.velo.lv'
 #LANGUAGE_COOKIE_DOMAIN = '.velo.lv'
