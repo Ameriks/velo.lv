@@ -19,9 +19,7 @@ from velo.results.tables import *
 from velo.results.tables import ResultDistanceStandingTable, ResultRMSportsDistanceTable, ResultRMTautaDistanceTable, \
     ResultRMGroupTable
 from velo.results.tasks import create_result_sms
-from velo.results.helper import time_to_seconds
-from velo.team.models import Team, MemberApplication
-from velo.marketing.tasks import send_mailgun
+
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer, PageBreak
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm
@@ -131,9 +129,7 @@ class RM2014(RMCompetitionBase):
                 participant.primary_number = next_number
                 participant.save()
                 send_sms_to_participant(participant)
-                mailgun = send_number_email(participant)
-                if mailgun:
-                    send_mailgun(mailgun.id)
+                send_number_email(participant)
 
         participants = Participant.objects.filter(competition_id=self.competition_id, is_participating=True, is_sent_number_sms=False, distance_id=self.GIMENU_DISTANCE_ID).order_by('created')
         for participant in participants:
@@ -141,12 +137,9 @@ class RM2014(RMCompetitionBase):
 
         participants = Participant.objects.filter(competition_id=self.competition_id, distance_id=self.GIMENU_DISTANCE_ID, is_participating=True, is_sent_number_email=False).order_by('created')
         for participant in participants:
-            mailgun = send_number_email(participant)
-            if mailgun:
-                send_mailgun(mailgun.id)
+            send_number_email(participant)
 
         send_smses()
-
 
     def generate_diploma(self, result):
         output = StringIO()

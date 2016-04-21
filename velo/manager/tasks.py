@@ -11,16 +11,8 @@ from velo.core.models import User
 from velo.core.tasks import LogErrorsTask
 from velo.manager.models import TempDocument
 from velo.manager.pdfreports import PDFReports
-from velo.marketing.models import MailgunEmail
 from velo.registration.models import Participant
 from velo.velo.utils import load_class
-
-
-# @celery.task
-# def legacy_sync(email):
-#     full_sync()
-#     send_mail("Finished sync", "Finished synchronisation", settings.SERVER_EMAIL, [email,],)
-#
 
 
 @celery.task
@@ -104,10 +96,10 @@ def generate_pdfreport(competition_id, action, user_id):
     obj.save()
     file_obj.close()
 
-    MailgunEmail.objects.create(content_object=obj,
-                                em_to=user.email,
-                                subject='PDF atskaite %s' % action,
-                                html='Atskaite atrodama šeit: <a href="{0}{1}">{0}{1}</a>'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url),
-                                text='Atskaite atrodama šeit: {0}{1}'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url)
-                                )
+    send_mail(subject='PDF atskaite %s' % action,
+              message='Atskaite atrodama šeit: {0}{1}'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url),
+              from_email=settings.SERVER_EMAIL,
+              recipient_list=[user.email, ],
+              html_message='Atskaite atrodama šeit: <a href="{0}{1}">{0}{1}</a>'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url))
+
     return True

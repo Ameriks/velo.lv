@@ -2,13 +2,13 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from django.conf import settings
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 
 from celery.task import task
 from premailer import transform
 
-from velo.marketing.models import MailgunEmail
 from velo.registration.models import Application
 
 
@@ -41,12 +41,10 @@ def send_success_email(application_id):
     template_txt = render_to_string('registration/email/success_email.txt', context)
 
     email_data = {
-        'em_to': application.email,
         'subject': u'velo.lv dalībnieku pieteikums nr.%i' % application_id,
-        'html': template,
-        'text': template_txt,
-        'content_object': application,
+        'message': template_txt,
+        'from_email': settings.SERVER_EMAIL,
+        'recipient_list': [application.email, ],
+        'html_message': template,
     }
-    mailgun = MailgunEmail.objects.create(**email_data)
-
-    return mailgun
+    send_mail(**email_data)

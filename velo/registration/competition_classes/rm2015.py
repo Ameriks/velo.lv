@@ -7,8 +7,6 @@ from velo.registration.competition_classes.base import RMCompetitionBase
 from velo.registration.models import Number, Participant, ChangedName
 from velo.results.models import Result, HelperResults
 
-from velo.marketing.tasks import send_mailgun
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm
 from reportlab.pdfgen import canvas

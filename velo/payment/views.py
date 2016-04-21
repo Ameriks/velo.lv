@@ -34,10 +34,12 @@ class CheckPriceView(JsonRequestResponseMixin, DetailView):
         except ValueError:
             return self.render_json_response({
                 'message': _('Please enter all details'),
+                'success': False
             })
         messages = get_form_message(self.get_object(), distance_id, year, insurance_id=insurance_id)
         return self.render_json_response({
             'message': ''.join(messages),
+            'success': True
         })
 
     def get(self, request, *args, **kwargs):

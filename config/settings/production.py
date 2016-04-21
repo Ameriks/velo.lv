@@ -13,13 +13,11 @@ Production Configurations
 from __future__ import absolute_import, unicode_literals
 
 
-from boto.s3.connection import OrdinaryCallingFormat
-from django.utils import six
 
-import logging
 
 
 from .common import *  # noqa
+
 
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -73,15 +71,18 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # EMAIL
 # ------------------------------------------------------------------------------
-DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
-                         default='Ameri System <noreply@is.ameri.lv>')
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-MAILGUN_ACCESS_KEY = env('DJANGO_MAILGUN_API_KEY')
-MAILGUN_SERVER_NAME = env('DJANGO_MAILGUN_SERVER_NAME')
-EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default='[Ameri System] ')
+DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL', default=u'Tavs velo.lv <hi@mans.velo.lv>')
+
+AWS_SES_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SES_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
+
+EMAIL_BACKEND = 'django_ses.SESBackend'
+
+EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default='[VELO System] ')
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 # NEW_RELIC_LICENSE_KEY = env('NEW_RELIC_LICENSE_KEY')
-# NEW_RELIC_APP_NAME = 'Ameri System'
+# NEW_RELIC_APP_NAME = 'Velo System'
 
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -103,7 +104,7 @@ DATABASES['default'] = env.db("DATABASE_URL")
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env.cache_url('REDIS_URL', default="redis://172.17.42.1:16379/7"),
+        "LOCATION": env('REDIS_URL', default="redis://172.17.42.1:16379/7"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "IGNORE_EXCEPTIONS": True,  # mimics memcache behavior.

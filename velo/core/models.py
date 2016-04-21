@@ -24,7 +24,6 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django_countries.fields import CountryField
 from autoslug import AutoSlugField
 
-from velo.marketing.models import MailgunEmail
 from velo.velo.mixins.models import TimestampMixin, StatusMixin
 
 
@@ -310,7 +309,7 @@ class Competition(MPTTModel):
 
     def get_random_image(self):
         from velo.gallery.models import Photo
-        return Photo.objects.filter(album__competition__tree_id=self.tree_id, is_featured=True).order_by('?').first()
+        return Photo.objects.filter(album__competition__tree_id=self.tree_id, is_featured=False, album__gallery_date__year=2014).order_by('?').first()
 
     @property
     def is_application_active(self):
@@ -332,7 +331,7 @@ class Distance(TimestampMixin, models.Model):
     have_results = models.BooleanField(default=True)
 
     profile_price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
-    kind = models.CharField(max_length=1, blank=True)  # We need kind to map distances between competitions
+    kind = models.CharField(max_length=2, blank=True)  # We need kind to map distances between competitions
 
     class Meta:
         order_with_respect_to = 'competition'
@@ -397,42 +396,6 @@ class Log(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-
-    @classmethod
-    def from_mailgun_request(cls, request, commit=True):
-        email_code = request.POST.get('email_code')
-        if not email_code:
-            return None
-
-        event_obj = cls()
-        try:
-            event_obj.content_object = MailgunEmail.objects.get(code=email_code)
-        except MailgunEmail.DoesNotExist:
-            return
-        event_obj.action = request.POST.get('event')
-        event_obj.message = request.POST.get('recipient', '')
-
-        json_dict = {
-            'dt': datetime.datetime.fromtimestamp(int(request.POST.get('timestamp'))),
-            'ip': request.POST.get('ip', ''),
-            'device_type': request.POST.get('device-type', ''),
-            'user_agent': request.POST.get('user-agent', ''),
-            'client_name': request.POST.get('client-name', ''),
-            'client_os': request.POST.get('client-os', ''),
-            'client_type': request.POST.get('client-type', ''),
-            'description': request.POST.get('url', '')
-        }
-
-        if event_obj.action not in ('delivered', 'opened', 'clicked'):
-            json_dict.update({
-                'description': str(request.POST)
-            })
-        event_obj.params = json_dict
-
-        if commit:
-            event_obj.save()
-
-        return event_obj
 
 
 @python_2_unicode_compatible

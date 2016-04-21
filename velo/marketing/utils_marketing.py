@@ -3,13 +3,13 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.mail import send_mail
 from django.db.models import Count
 
 from io import StringIO
 import csv
 
 from velo.manager.models import TempDocument
-from velo.marketing.models import MailgunEmail
 from velo.registration.models import Participant, Application
 
 
@@ -119,8 +119,8 @@ this_year_participates: {0}{3}
 not_in_sec_stage: {0}{4}
     """.format(settings.MY_DEFAULT_DOMAIN, obj1.doc.url, obj2.doc.url, obj.doc.url, obj4.doc.url)
 
-    MailgunEmail.objects.create(em_to=user.email,
-                                subject='Emails for marketing',
-                                html=html,
-                                text=txt
-                                )
+    send_mail(subject='Emails for marketing',
+              message=txt,
+              from_email=settings.SERVER_EMAIL,
+              recipient_list=[user.email, ],
+              html_message=html)

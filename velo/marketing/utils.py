@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals  # u'' strings by default # Awesome :)
 from django.conf import settings
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import timezone
 import requests
@@ -8,7 +9,7 @@ import unicodedata
 import urllib
 import uuid
 from velo.core.models import Competition
-from velo.marketing.models import SMS, MailgunEmail
+from velo.marketing.models import SMS
 from velo.registration.models import Participant, Application
 from premailer import transform
 import logging
@@ -45,13 +46,13 @@ def send_number_email(competition, participants=None, application=None):
         subject = u'Reģistrācijas apliecinājums - %s' % competition.get_full_name
 
     email_data = {
-        'em_to': email,
         'subject': subject,
+        'message': template_txt,
+        'from_email': settings.SERVER_EMAIL,
+        'recipient_list': [email, ],
         'html': template,
-        'text': template_txt,
-        'content_object': application or participants[0],
     }
-    MailgunEmail.objects.create(**email_data)
+    send_mail(**email_data)
 
     return True
 

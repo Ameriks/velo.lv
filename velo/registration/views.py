@@ -303,6 +303,7 @@ class ParticipantInline(GetClassNameMixin, InlineFormSet):
     can_order = False
     model = Participant
     formset_class = CustomBaseInlineFormSet
+    fields = ParticipantInlineForm.Meta.fields
 
     @property
     def can_delete(self):

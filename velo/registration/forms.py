@@ -322,7 +322,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         if self.cleaned_data.get('country') == 'LV':
             return self.cleaned_data.get('ssn', '').replace('-', '').replace(' ', '')
         else:
-            return ''
+            return self.cleaned_data.get('ssn', '')
 
     def clean_insurance(self):
         insurance = self.cleaned_data.get('insurance', "")
@@ -331,7 +331,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         return None
 
     def clean_birthday(self):
-        if self.cleaned_data.get('country') == 'LV':
+        ssn = self.cleaned_data.get('ssn')
+        if self.cleaned_data.get('country') == 'LV' and ssn:
             return bday_from_LV_SSN(self.cleaned_data.get('ssn'))
         else:
             return self.cleaned_data.get('birthday')
@@ -358,24 +359,23 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         distance = cleaned_data.get('distance', '')
         insurance = cleaned_data.get('insurance', None)
 
-        if country == 'LV':
-            try:
-                if not ssn or not len(ssn) == 11:
+        if insurance:
+            if country == 'LV':
+                try:
+                    if not ssn or not len(ssn) == 11:
+                        self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
+                    checksum = 1
+                    for i in range(10):
+                        checksum -= int(ssn[i]) * int("01060307091005080402"[i * 2:i * 2 + 2])
+                    if not int(checksum - math.floor(checksum / 11) * 11) == int(ssn[10]):
+                        self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
+                except:
                     self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
-                checksum = 1
-                for i in range(10):
-                    checksum -= int(ssn[i]) * int("01060307091005080402"[i * 2:i * 2 + 2])
-                if not int(checksum - math.floor(checksum / 11) * 11) == int(ssn[10]):
-                    self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
-            except:
-                self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
-
-        else:
-            if not birthday:
-                self._errors.update({'birthday': [_("Birthday is required."), ]})
+            elif not ssn:
+                self._errors.update({'ssn': [_("SSN is required."), ]})
 
         if birthday and distance and self.instance.application.payment_status == self.application.PAY_STATUS.not_payed:
-            total = get_total(self.instance.application.competition, distance.id, birthday.year, insurance)
+            total = get_total(self.instance.application.competition, distance.id, birthday.year, insurance.id if insurance else None)
             if not total:
                 self._errors.update({'distance': [_("This distance not available for this participant."), ]})
 

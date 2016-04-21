@@ -7,8 +7,7 @@ from django.conf import settings
 from django.core.cache.utils import make_template_fragment_key
 from django.db import connection
 from sitetree.utils import item
-from velo.core.models import Competition, Log, Choices
-from velo.marketing.models import MailgunEmail
+from velo.core.models import Competition, Log
 from velo.marketing.utils import send_sms_to_participant
 from velo.marketing.utils import send_number_email
 from velo.marketing.utils import send_sms_to_family_participant
@@ -1003,8 +1002,7 @@ AND r.id = res2.id
 
             for participant in participants:
                 if participant.application_id and participant.application_id not in application_ids:
-                    if not MailgunEmail.objects.filter(object_id=participant.application_id, content_type_id=19):
-                        application_ids.append(participant.application_id)
+                    application_ids.append(participant.application_id)
                 next_number = Number.objects.filter(distance_id=distance_id, number__gt=last_number, participant_slug='')[0]
                 next_number.participant_slug = participant.slug
                 next_number.save()
@@ -1023,8 +1021,7 @@ AND r.id = res2.id
         participants = Participant.objects.filter(competition_id=self.competition_id, distance_id=self.GIMENU_DISTANCE_ID, is_participating=True, is_sent_number_email=False).order_by('-created')
         for participant in participants:
             if participant.application_id and participant.application_id not in application_ids:
-                if not MailgunEmail.objects.filter(object_id=participant.application_id, content_type_id=19):
-                    application_ids.append(participant.application_id)
+                application_ids.append(participant.application_id)
             if participant.email:
                 send_number_email(self.competition, [participant, ])
 

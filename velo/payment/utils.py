@@ -110,7 +110,8 @@ def get_total(competition, distance_id, year, insurance_id=None):
         return None
     if insurance_id:
         insurance_fee = get_insurance_fee(competition, insurance_id)
-        ret = dict(participant_fee.items() + insurance_fee.items())
+        ret = dict(participant_fee)
+        ret.update(insurance_fee)
         ret.update({'total': participant_fee.get('entry_fee') + insurance_fee.get('insurance_fee')})
         return ret
     else:
@@ -121,10 +122,10 @@ def get_total(competition, distance_id, year, insurance_id=None):
 def get_form_message(competition, distance_id, year, insurance_id=None):
     totals = get_total(competition, distance_id, year, insurance_id)
     if totals:
-        messages = [_("<div class='entry'>Entry fee: <span>%(entry_fee)s€</span></div>") % totals, ]
+        messages = [_("<div class='entry'>Entry fee - <span>%(entry_fee)s€</span></div>") % totals, ]
         if insurance_id:
-            messages.append(_("<div class='insurance'>Insurance fee: <span>%(insurance_fee)s€</span></div>") % totals)
-        messages.append(_("<div class='total'>Total: <span>%(total)s€</span></div>") % totals)
+            messages.append(_("<div class='insurance'>Insurance fee - <span>%(insurance_fee)s€</span></div>") % totals)
+        messages.append(_("<div class='total'>Total - <span class='c-yellow'>%(total)s€</span></div>") % totals)
     else:
         messages = [_("This distance isn't available for birth year %(year)s.") % {'year': year}, ]
     return messages

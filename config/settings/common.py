@@ -335,14 +335,10 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 SERVER_EMAIL = "webmaster@mans.velo.lv"
 
-MAILGUN_FROM = u'Tavs velo.lv <hi@mans.velo.lv>'
-MAILGUN_ACCESS_KEY = env('MAILGUN_ACCESS_KEY')
-MAILGUN_URL = 'https://api.mailgun.net/v2'
-MAILGUN_SERVER_NAME = 'mans.velo.lv'
-
-
 MY_DEFAULT_DOMAIN = 'https://mans.velo.lv'
 SHORT_BASE_URL = 'http://mans.velo.lv/s/'
+
+MAILGUN_ACCESS_KEY = env('MAILGUN_ACCESS_KEY')
 
 REPLACE_AUTH_USER_ADMIN = False
 

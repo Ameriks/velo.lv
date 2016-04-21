@@ -20,7 +20,8 @@ gunicorn==19.4.5
 
 # Mailgun Support
 # ---------------
-django-mailgun==0.8.0
+#django-mailgun==0.8.0
+django-ses==0.7.1
 
 # Raven is the Sentry client
 # --------------------------

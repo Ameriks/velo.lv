@@ -22,8 +22,6 @@ from velo.results.tables import ResultDistanceStandingTable, ResultRMSportsDista
 from velo.results.tasks import create_result_sms
 from velo.results.helper import time_to_seconds
 from velo.team.models import Team, MemberApplication
-from velo.marketing.tasks import send_mailgun
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer, PageBreak
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm
 from reportlab.pdfgen import canvas
