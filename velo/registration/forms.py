@@ -201,7 +201,7 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
                                     ),
                                     Div(
                                         Div(
-                                            Field("can_send_newsletters", css_class="checkbox__input"),
+                                            "can_send_newsletters",
                                             css_class="input-wrap w100 bottom-margin--15",
                                         ),
                                         css_class='col-xl-12 col-m-24'
@@ -385,7 +385,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         obj = super(ParticipantInlineForm, self).save(commit=False)
 
         obj.competition = self.application.competition
-        obj.insurance_id = self.cleaned_data.get('insurance')
+        obj.insurance = self.cleaned_data.get('insurance')
 
         if obj.birthday and obj.distance and self.application.payment_status == self.application.PAY_STATUS.not_payed:
             total = get_total(obj.competition, obj.distance_id, obj.birthday.year, obj.insurance_id)
@@ -457,7 +457,10 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                         '<svg class="icon participant__cross"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#cross"></use></svg><div>%s</div>' % _(
                             "Remove")),
                         css_class="delete_button participant__remove flex wrap--nowrap direction--row justify--center align-items--center"),
-                    Field('DELETE', ),
+                    Div(
+                        Field('DELETE', ),
+                        css_class="checkbox bottom-margin--15"
+                    ),
                     css_class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow"
                 ),
                 Div(

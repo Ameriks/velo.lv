@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load staticfiles i18n sitetree crispy_forms_tags velomath %}
+
+{% block content %}
+
+
+
+    <div class="w100 flex">
+        <div class="inner flex">
+            <div class="w100 border-right border-left no-border--560">
+                <div class="inner no-padding--560">
+                    <div class="row">
+                        <div class="col-xl-2 col-s-24"></div>
+                        <div class="col-xl-20 col-s-24">
+                            <h1 class="heading w100 border-right border-left no-border--560 fs30">
+                                {% trans "Apply for competition" %}<br/>{{ object.competition.get_full_name }}
+                            </h1>
+                            {% include "registration/_top_steps.html" with active=2 %}
+
+
+
+
+
+
+
+
+
+                            <form action="" method="post" class="w100 border-right border-left no-border--560 bgc-dgray  js-form" novalidate="novalidate">
+                                <div class="w100 bottom-margin--20"></div>
+                                <div class="inner no-padding--560">
+                                    <div class="w100 overflow--auto">
+                                        <table class="table-block table-block--thead-border">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>{% trans "Full Name" %}</th>
+                                                    <th>{% trans "Birthday" %}</th>
+                                                    <th>{% trans "Team" %}</th>
+                                                    <th>{% trans "Price" %}</th>
+                                                    <th>{% trans "Insurance" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                        {% for participant in participants %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ participant.full_name }}</td>
+                                                <td>{{ participant.birthday|date:"d.m.Y" }}</td>
+                                                <td>{{ participant.team_name }}</td>
+                                            {% with price=participant.price|getParticipationFeePrice:participant.competition insurance=participant.insurance|getInsurancePrice:participant.competition %}
+                                                <td>{{ price|floatformat:"-2" }} €</td>
+                                                <td>{% if insurance %}{{ insurance|floatformat:"-2" }} €{% else %}-{% endif %}</td>
+                                            {% endwith %}
+                                            </tr>
+                                        {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="layouts-competition-register-total w100 bgc-dblue bottom-margin--30">
+                                        <div class="inner">
+                                            <div class="w100 bottom-margin--20"></div>
+                                            <div class="w100">
+                                                <div class="row">
+                                                    <div class="col-xs-24 flex--1 fs14 fw700 uppercase bottom-margin--20  js-paricipant count">
+                                                        {% blocktrans count counter=participants.count %}
+                                                        {{  counter }} participant
+                                                            {% plural %}
+                                                            {{  counter }} participants
+                                                        {% endblocktrans %}</div>
+                                                    <div class="col-xs-24 fs14 fw700 uppercase bottom-margin--20">{% trans "Total" %} - <span class="c-yellow">{{ total_entry_fee|addfloat:total_insurance_fee|floatformat:"-2" }} EUR</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="{% url 'application' object.code %}" class="w100 bottom-margin--30">
+                                        <div class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow">
+                                            <div class="participant__number">
+                                                <svg class="icon">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#plus"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="participant__name flex--1">{% trans 'Add or Update Participants' %}</div>
+                                        </div>
+                                    </a>
+
+
+                                {% crispy form %}
+
+
+
+                                <div class="w100 border-top border-bottom">
+                                    <div class="row">
+                                        <div class="col-xl-15 col-m-14 col-s-24"></div>
+                                        <div class="col-xl-9 col-m-10 col-s-24">
+                                            <button type="submit" class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100 flex--important wrap--nowrap justify--space-between align-items--center">
+                                                Maksāt
+                                                <svg class="left-margin--15 icon">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/img/icons.svg#arrow--right"></use>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w100 bottom-margin--20"></div>
+                            </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

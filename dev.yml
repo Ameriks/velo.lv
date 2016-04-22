@@ -3,7 +3,12 @@ postgres:
   volumes:
     # If you are using boot2docker, postgres data has to live in the VM for now until #581 is fixed
     # for more info see here: https://github.com/boot2docker/boot2docker/issues/581
-    - /data/dev/ameri/postgres:/var/lib/postgresql/data
+    - /var/lib/postgresql/data
+  ports:
+      - "0.0.0.0:16432:5432"
+  environment:
+      - POSTGRES_PASSWORD=postgres
+
 
 django:
   dockerfile: Dockerfile-dev
@@ -13,3 +18,22 @@ django:
     - .:/app
   ports:
     - "8000:8000"
+  links:
+    - postgres
+  environment:
+    - PGSQL_PASS=postgres
+    - DJANGO_SETTINGS_MODULE=config.settings.local_db
+    - MAILGUN_ACCESS_KEY=changeme
+    - SMS_PASSWORD=changeme
+    - SMS_USERNAME=changeme
+    - SOCIAL_AUTH_FACEBOOK_SECRET=changeme
+    - SOCIAL_AUTH_TWITTER_SECRET=changeme
+    - SOCIAL_AUTH_DRAUGIEM_KEY=changeme
+    - RABBITMQ_PASS=changeme
+    - AWS_ACCESS_KEY_ID=changeme
+    - AWS_SECRET_ACCESS_KEY=changeme
+    - ADMIN_URL=changeme
+    - C_FORCE_ROOT=true
+    - VIMEO_KEY=changeme
+    - VIMEO_SECRET=changeme
+    - VIMEO_TOKEN=changeme

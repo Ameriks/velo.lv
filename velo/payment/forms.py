@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML
+from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML, Field
 from crispy_forms.helper import FormHelper
 
 from velo.payment.models import ActivePaymentChannel
@@ -29,7 +29,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                                                     required=True)
     accept_insurance = forms.BooleanField(label="", required=False)
 
-    payment_type = forms.ChoiceField(choices=(), label=_("Payment Type"), widget=PaymentTypeWidget)
+    payment_type = forms.ChoiceField(choices=(), label="", widget=PaymentTypeWidget)
 
     prepend = 'payment_'
     participants = None
@@ -151,34 +151,100 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Row(
-                Column(
-                    *checkboxes,
-                    css_class='col-sm-8'
-                ),
-                Column(
+                *checkboxes,
+                Div(
                     Div(
-                        HTML(
-                            "<h4>%s: <span id='final_price' data-amount='%s'>%s</span> €</h4>" % (
-                            _('Final Price'), self.instance.total_entry_fee + self.instance.total_insurance_fee,
-                            floatformat(self.instance.final_price, -2)),
+                      css_class="w100 bottom-margin--30",
+                    ),
+                    Div(
+                        Div(
+                            HTML(_("Payment method")),
+                          css_class="fs14 fw700 uppercase w100 bottom-margin--30"
                         ),
-                        css_class='margin-bottom-40'
+                        Div(
+                            Div(
+                                Field('payment_type', wrapper_class="row row--gutters-20"),
+
+                                css_class="w100"
+                            ),
+                            css_class="input-wrap w100"
+                        ),
+
+                      css_class="inner no-padding--560"
                     ),
-                    'payment_type',
-                    Fieldset(
-                        _('Invoice Fields'),
-                        'company_name',
-                        'company_vat',
-                        'company_regnr',
-                        'company_address',
-                        'company_juridical_address',
-                        'invoice_show_names',
-                        css_class='invoice_fields',
+                    css_class="w100 border-top"
+                ),
+
+
+
+                Div(
+                Div(
+
+                    # company_name
+                    Div(
+                        Div(
+                            Field(
+                                "company_name",
+                                css_class="input-field if--50 if--dark js-placeholder-up",
+                            ),
+                            css_class="input-wrap w100 bottom-margin--15"
+                        ),
+                        css_class="col-xl-8 col-m-12 col-s-24"
                     ),
-                    css_class='col-sm-4',
+
+                    # company_vat
+                    Div(
+                        Div(
+                            Field(
+                                "company_vat",
+                                css_class="input-field if--50 if--dark js-placeholder-up"
+                            ),
+                            css_class="input-wrap w100 bottom-margin--15"
+                        ),
+                        css_class="col-xl-8 col-m-12 col-s-24"
+                    ),
+
+                    # company_regnr
+                    Div(
+                        Div(
+                            Field(
+                                "company_regnr",
+                                css_class="input-field if--50 if--dark js-placeholder-up"
+                            ),
+                            css_class="input-wrap w100 bottom-margin--15"
+                        ),
+                        css_class="col-xl-8 col-m-12 col-s-24"
+                    ),
+
+                    # company_address
+                    Div(
+                        Div(
+                            Field(
+                                "company_address",
+                                css_class="input-field if--50 if--dark js-placeholder-up"
+                            ),
+                            css_class="input-wrap w100 bottom-margin--15"
+                        ),
+                        css_class="col-xl-8 col-m-12 col-s-24"
+                    ),
+
+                    # company_juridical_address
+                    Div(
+                        Div(
+                            Field(
+                                "company_juridical_address",
+                                css_class="input-field if--50 if--dark js-placeholder-up"
+                            ),
+                            css_class="input-wrap w100 bottom-margin--15"
+                        ),
+                        css_class="col-xl-8 col-m-12 col-s-24"
+                    ),
+
+                    'invoice_show_names',
+                    css_class=""
+                ),
+                    css_class="invoice_fields"
                 )
-            ),
         )
 
 

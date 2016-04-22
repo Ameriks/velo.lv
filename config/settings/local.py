@@ -17,6 +17,7 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 THUMBNAIL_DEBUG = True
 
 SECRET_KEY = env("DJANGO_SECRET_KEY", default='CHANGEME!!!7z0c)k$qd19(@)@_qmg(dgxnmsr!dd&f8^s&2_avzww+u)s0x)')
+SECRET_KEY2 = env('SECRET_KEY2', default='CHANGEME!!!7z0c)k$qd19(@)@_qmg(dgxnmsr!dd&f8^s&2_avzww+u)s0x)')  # For short URLS
 
 
 # Mail settings

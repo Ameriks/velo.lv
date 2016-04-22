@@ -6,3 +6,19 @@
 }
 
 
+.checkboxinput{
+    display: none;
+    cursor: pointer;
+}
+
+.checkboxinput:checked + .checkbox__label .checkbox__graphic--default{
+    display: none;
+}
+.checkboxinput:checked + .checkbox__label .checkbox__graphic--checked{
+    display: block;
+}
+
+
+.invoice_fields {
+  display: none;
+}
