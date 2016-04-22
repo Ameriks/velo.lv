@@ -5,7 +5,7 @@ postgres:
     # for more info see here: https://github.com/boot2docker/boot2docker/issues/581
     - /var/lib/postgresql/data
   ports:
-      - "0.0.0.0:16432:5432"
+      - "0.0.0.0:5432:5432"
   environment:
       - POSTGRES_PASSWORD=postgres
 
