@@ -343,3 +343,8 @@ LOGGING = {
         },
     }
 }
+
+# TMP For legacy email sending.
+MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_ACCESS_KEY')
+MAILGUN_URL = 'https://api.mailgun.net/v2'
+MAILGUN_SERVER_NAME = 'mans.velo.lv'
