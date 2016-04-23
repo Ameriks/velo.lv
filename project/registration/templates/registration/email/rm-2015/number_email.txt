@@ -9,7 +9,7 @@ Dalībnieki Jūsu pieteikumā:
 Vārds, uzvārds: {{participant.first_name}} {{participant.last_name}}
 Distance: {{participant.distance}}
 {% if participant.primary_number %}Starta numurs: {{participant.primary_number}}{% endif %}
-Vēstule numura izņemšanai: http://mans.velo.lv{% url 'participant_number_pdf' participant.code_short %}
+Vēstule numura izņemšanai: http://velo.lv{% url 'participant_number_pdf' participant.code_short %}
 
 
 {% endfor %}

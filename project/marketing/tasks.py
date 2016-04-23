@@ -34,7 +34,7 @@ def send_mailgun(_id=None, email=None):
             data.update({'h:Reply-To': email.em_replyto})
 
         ret = requests.post(
-            "%s/mans.velo.lv/messages" % settings.MAILGUN_URL,
+            "%s/velo.lv/messages" % settings.MAILGUN_URL,
             auth=("api", settings.MAILGUN_ACCESS_KEY),
             data=data)
         if ret.status_code == 200:

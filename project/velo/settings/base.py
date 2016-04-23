@@ -214,8 +214,8 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 
-MY_DEFAULT_DOMAIN = 'https://mans.velo.lv'
-SHORT_BASE_URL = 'http://mans.velo.lv/s/'
+MY_DEFAULT_DOMAIN = 'https://velo.lv'
+SHORT_BASE_URL = 'http://velo.lv/s/'
 
 REPLACE_AUTH_USER_ADMIN = False
 

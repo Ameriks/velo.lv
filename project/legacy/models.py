@@ -11,7 +11,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-# These are legacy models from www.velo.lv. It is planned to migrate all data from www.velo.lv to mans.velo.lv,
+# These are legacy models from www.velo.lv. It is planned to migrate all data from www.velo.lv to velo.lv,
 # but it's still in progress. :)
 
 class Ev68RAcepollsOptions(models.Model):

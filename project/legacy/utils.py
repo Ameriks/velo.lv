@@ -1,9 +1,9 @@
 # coding=utf-8
 from __future__ import unicode_literals
 
-# This is migration script from www.velo.lv to mans.velo.lv.
+# This is migration script from www.velo.lv to velo.lv.
 # Migration was online, so that in migration beginning participants could register in both sites - www.velo.lv and
-# mans.velo.lv.
+# velo.lv.
 import csv
 
 from django.core.files.base import ContentFile
