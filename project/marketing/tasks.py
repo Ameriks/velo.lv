@@ -14,34 +14,11 @@ def send_mailgun(_id=None, email=None):
         print 'Already sent'
         return False
 
-    if settings.DEBUG:
-        msg = EmailMultiAlternatives(email.subject, email.text, email.em_from, to=[email.em_to, ], cc=[email.em_cc, ])
-        msg.attach_alternative(email.html, "text/html")
-        msg.send()
-        return True
-    try:
-        data = {
-            "from": email.em_from,
-            "to": email.em_to.split(';'),
-            "subject": email.subject,
-            "text": email.text,
-            "html": email.html,
-            "v:email_code": email.code,
-        }
-        if email.em_cc:
-            data.update({"cc": email.em_cc.split(';')})
-        if email.em_replyto:
-            data.update({'h:Reply-To': email.em_replyto})
+    msg = EmailMultiAlternatives(email.subject, email.text, email.em_from, to=[email.em_to, ], cc=[email.em_cc, ])
+    msg.attach_alternative(email.html, "text/html")
+    msg.send()
 
-        ret = requests.post(
-            "%s/velo.lv/messages" % settings.MAILGUN_URL,
-            auth=("api", settings.MAILGUN_ACCESS_KEY),
-            data=data)
-        if ret.status_code == 200:
-            email.is_sent = True
-            email.email_id = ret.json().get('id')
-            email.save()
-        else:
-            raise Exception
-    except Exception as exc:
-        raise send_mailgun.retry(exc=exc, countdown=120)
+    email.is_sent = True
+    email.save()
+
+    return True
