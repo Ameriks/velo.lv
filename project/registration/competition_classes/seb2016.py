@@ -64,7 +64,7 @@ class Seb2016(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: ('M-18', 'M Elite', 'M 19-34 CFA', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
             self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-40', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
             self.VESELIBAS_DISTANCE_ID: ('M-14', 'W-14', ),
-            self.BERNU_DISTANCE_ID: ('B 06-05 M', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11', 'B 12-', )
+            self.BERNU_DISTANCE_ID: ('B 06-05 Z', 'B 06-05 M', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11', 'B 12-', )
         }
 
     def number_ranges(self):
