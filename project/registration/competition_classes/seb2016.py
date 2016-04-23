@@ -315,8 +315,13 @@ class Seb2016(SEBCompetitionBase):
     def get_group_for_number_search(self, distance_id, gender, birthday):
         group = super(Seb2016, self).get_group_for_number_search(distance_id, gender, birthday)
 
-        if group in ('B 06-05 Z', 'B 06-05 M'):
-            return 'B 06-05'
+        groups = self.groups.get(self.BERNU_DISTANCE_ID)
+
+        if groups[0][:7] != groups[1][:7]:
+            raise Exception("First two groups should be gender deperated. Update script otherwise.")
+
+        if group in groups[:2]:
+            return groups[0][:7]
 
         return group
 
@@ -338,15 +343,11 @@ class Seb2016(SEBCompetitionBase):
         Function processes chip result and recalculates all standings
         """
 
-        if self.competition_index != 7:
-            return super(Seb2016, self).process_chip_result(chip_id, sendsms)
-
         chip = ChipScan.objects.get(id=chip_id)
 
         if chip.is_processed:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
-
 
         if chip.url_sync.kind == 'FINISH':
             return super(Seb2016, self).process_chip_result(chip_id, sendsms)
@@ -354,8 +355,9 @@ class Seb2016(SEBCompetitionBase):
             result_time, seconds = self.calculate_time(chip)
 
             # Do not process if finished in 10 minutes.
-            if seconds < 10 * 60: # 10 minutes
-                Log.objects.create(content_object=chip, action="Chip process", message="Chip result less than 10 minutes. Ignoring.")
+            if seconds < 10 * 60:  # 10 minutes
+                Log.objects.create(content_object=chip, action="Chip process",
+                                   message="Chip result less than 10 minutes. Ignoring.")
                 return None
 
             participant = self.process_chip_create_participant(chip)
@@ -375,9 +377,8 @@ class Seb2016(SEBCompetitionBase):
 
         print(chip)
 
-
     def get_result_table_class(self, distance, group=None):
-        if distance.id != self.BERNU_DISTANCE_ID and self.competition_index == 7 and not group:
+        if distance.id != self.BERNU_DISTANCE_ID and self.competition_index in (1,) and not group:
             return ResultDistanceCheckpointTable
 
         return super(Seb2016, self).get_result_table_class(distance, group)
