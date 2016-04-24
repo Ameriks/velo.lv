@@ -53,8 +53,10 @@ class CompetitionScriptBase(object):
             numbers = ranges.get(distance_id)
             for number_dict in numbers:
                 for number in range(number_dict.get('start'), number_dict.get('end')):
-                    print Number.objects.get_or_create(competition_id=self.competition_id, group=number_dict.get('group', ''), distance_id=distance_id, number=number, defaults={'status': 1})
+                    print Number.objects.get_or_create(competition_id=self.competition_id, group=self.get_group_for_number_search(number_dict.get('group', '')), distance_id=distance_id, number=number, defaults={'status': 1})
 
+    def get_group_for_number_search(self, distance_id, gender, birthday):
+        return ''
 
     def reset_cache(self):
         cache.delete('sitetrees')
