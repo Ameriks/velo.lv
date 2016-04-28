@@ -1,0 +1,16 @@
+{% extends "base/competition.html" %}
+{% load i18n cache %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block content_left %}
+    <article class="article">
+    <div class="article__text editor-text">
+    {% cache 60 staticpage_staticpage_detail LANGUAGE_CODE object.id %}
+    {% spaceless %}
+        {{ content|safe }}
+    {{ block.super }}
+    {% endspaceless %}
+    {% endcache %}
+    </div>
+    </article>
+{% endblock content_left %}

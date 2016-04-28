@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block content %}
+
+    <main>
+    <div class="primary-heading c-white border-bottom">
+        <div class="inner">
+            <div class="row border-right border-left">
+                <div class="col-xl-17 col-l-15 col-m-24">
+                    <div class="primary-heading__spacing w100">
+                        <h1 class="primary-heading__text primary-heading__text--smaller bottom-margin--10">{{ object }}</h1>
+                        <time datetime="2007-08-29T13:58Z" class="w100 ro fw300 fs13 c-white--50">{{ object.published_on }}</time>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w100">
+        <div class="inner">
+            <div class="flex wrap--nowrap direction--row justify--start align-items--stretch border-right no-border--480">
+                <div class="banner-area-context flex--1 border-left no-border--480 bgc-dblue">
+                    <article class="article">
+                        {% if object.image.image %}
+                        <figure class="article__image img-wrapper">
+                            <img onload="imgLoaded(this)" src="{{ object.image.image.news.url }}">
+                        </figure>
+                        {% endif %}
+                        <div class="article__text editor-text">
+                            {{ object.intro_content|safe }}
+
+                            {{ object.content|safe }}
+
+                        </div>
+                    </article>
+                </div>
+                <div class="banner-area border-left no-border--480 bgc-dgray flex wrap--nowrap direction--column justify--start align-items--center">
+                    <div class="w100 bottom-margin--20"></div>
+                    <div class="banner banner--240x400 bottom-margin--20">
+                        banner
+                    </div>
+                    <div class="banner banner--240x400 bottom-margin--20">
+                        banner
+                    </div>
+                    <div class="banner banner--240x400 bottom-margin--20">
+                        banner
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock %}

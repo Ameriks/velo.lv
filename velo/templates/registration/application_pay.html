@@ -19,11 +19,10 @@
 
 
 
-
-
-
-
-
+                        {% if object.payment_status == object.PAY_STATUS.payed %}
+                            <div class="w100 bottom-margin--20"></div>
+                            <h3 style="text-align:center;">{% trans "Thank you! We have received the payment." %}</h3>
+                        {% else %}
 
                             <form action="" method="post" class="w100 border-right border-left no-border--560 bgc-dgray  js-form" novalidate="novalidate">
                                 <div class="w100 bottom-margin--20"></div>
@@ -103,21 +102,9 @@
                                     </div>
                                 </div>
                                 <div class="w100 bottom-margin--20"></div>
+                                </div>
                             </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        {% endif %}
 
                         </div>
                     </div>

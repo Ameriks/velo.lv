@@ -1,0 +1,37 @@
+
+{% if competition.level == 2 %}
+    <div class="layouts-competition-key-info">
+        <div class="dropdown">
+
+            <div class="dropdown__selected">
+                <div class="layouts-competition-item flex wrap--nowrap direction--row justify--space-between align-items--center">
+                    <time datetime="{{ competition.competition_date|date:"c" }}" class="flex direction--row align-items--center">
+                        <span class="c-theme ti fs20 fw700">{{ competition.competition_date.day }}</span>
+                        <span class="ti fs11 fw700 c-white left-padding--5">{{ competition.competition_date|date:"M" }}</span>
+                    </time>
+                    <span class="layouts-competition-location ti fs13 fw300 c-white--70 flex--1">{{ competition.place_name }}</span>
+                    <span class="c-theme ti fw700 fs13">{{ competition }}</span>
+                </div>
+                <div class="dropdown__arrow"></div>
+            </div>
+
+
+            <ul class="dropdown__items">
+                {% for item in competition.get_siblings %}
+                    <li class="dropdown__item">
+                        <a href="{% url url item.id %}" class="dropdown__link">
+                            <div class="layouts-competition-item flex wrap--nowrap direction--row justify--space-between align-items--center">
+                                <time datetime="{{ item.competition_date|date:"c" }}" class="flex direction--row align-items--center">
+                                    <span class="c-theme ti fs20 fw700">{{ item.competition_date.day }}</span>
+                                    <span class="ti fs11 fw700 c-white left-padding--5">{{ item.competition_date|date:"M" }}</span>
+                                </time>
+                                <span class="layouts-competition-location ti fs13 fw300 c-white--70 flex--1">{{ item.place_name }}</span>
+                                <span class="c-theme ti fw700 fs13">{{ item }}</span>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}

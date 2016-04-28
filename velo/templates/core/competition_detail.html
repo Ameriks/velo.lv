@@ -1,0 +1,108 @@
+{% extends "base/competition.html" %}
+{% load i18n staticfiles %}
+
+{% block content_left %}
+
+    <div class="w100">
+
+        <div class="row">
+            <div class="col-xl-10 col-l-24 flex">
+                <div class="layouts-competition-intro-padding layouts-competition-intro-left flex--1 border-right">
+                    <div class="calendar-tile calendar-tile--no-hover c-white flex--1 flex wrap--nowrap direction--column justify--start align-items--start border-top border-right border-bottom border-left">
+                        <div class="calendar-tile__info flex--1 js-calendar-slider-link">
+                            <div class="w100 flex wrap--nowrap direction--row justify--space-between align-items--center">
+                                <div class="calendar-tile__date">
+                                    <div class="calendar-tile__day">{{ competition.competition_date.day }}</div>
+                                    <div class="calendar-tile__month">{{ competition.competition_date|date:"M" }}</div>
+                                </div>
+                            </div>
+                            <div class="calendar-tile__heading">
+                                {% if competition.level == 2 %}
+                                    {{ competition.parent }}
+                                {% else %}
+                                    {{ competition }}
+                                {% endif %}
+                            </div>
+                            <div class="calendar-tile__text bottom-margin--30">
+                                {% if competition.level == 2 %}
+                                    {{ competition }}<br>
+                                {% endif %}
+                                {{ competition.place_name }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-14 col-l-24 flex">
+                <div class="layouts-competition-intro-padding flex--1">
+                    <h2 class="w100 fs24 fw700 uppercase c-theme bottom-margin--30">{% trans "About Competition" %}</h2>
+                    <div class="editor-text w100">
+                        {{ competition.description|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    {% if galleries %}
+
+        <h2 class="heading heading--smaller w100 border-top border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
+            <span class="w100">
+                    {% trans "Photo Galleries" %}
+            </span>
+        </h2>
+
+        <div class="w100 border-bottom">
+            <div class="inner no-padding--480">
+                <div class="w100 bottom-margin--20"></div>
+                <div class="w100">
+                    <div class="row row--gutters-20">
+
+                        {% for gallery in galleries %}
+
+                            <div class="col-xl-8 col-l-8 col-m-8 col-s-12 col-xs-24 flex direction--column justify--start align-items--stretch">
+                                <a href="" class="brief border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
+                                    <div class="w100">
+                                        <figure class="brief__hero brief-hover-layer img-wrapper loaded loaded">
+                                            <img onload="imgLoaded(this)" src="{{ gallery.primary_image.image.thumb.url }}">
+                                            <div class="brief-hover-top-layer brief-hover-top-layer--hero">
+                                                <div class="table">
+                                                    <div class="table-cell text-align--center">
+                                                        <div class="brief__hover-item">
+                                                            <svg class="icon">
+                                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#zoom"></use>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </figure>
+                                    </div>
+                                </a>
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% endif %}
+    {% if video %}
+        <div class="w100">
+            <div class="w100 bottom-margin--20"></div>
+            <div class="inner no-padding--480">
+                <div class="video video--16x9 bottom-margin--20">
+                    <iframe class="video__iframe" src="{{ video.url_embed }}" data-src="{{ video.url_embed }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+
+{% endblock content_left %}

@@ -35,7 +35,7 @@ class ResultTeamStandingTable(tables.Table):
 
     class Meta:
         model = TeamResultStandings
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("points_total", "points1", 'points2', 'points3', 'points4', 'points5', 'points6', 'points7')
         sequence = (
         "place", "team_name", "points_total", "points1", "points2", "points3", "points4", "points5", "points6",
@@ -43,7 +43,7 @@ class ResultTeamStandingTable(tables.Table):
         empty_text = _("There are no results")
         order_by = ("-points_total",)
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultChildrenGroupStandingTable(tables.Table):
@@ -62,7 +62,7 @@ class ResultChildrenGroupStandingTable(tables.Table):
 
     class Meta:
         model = SebStandings
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("group_points1", "group_points2", 'group_points3', 'group_points4', 'group_points5', 'group_points6',
                   'group_points7', 'group_total')  # all_numbers
         sequence = (
@@ -71,7 +71,7 @@ class ResultChildrenGroupStandingTable(tables.Table):
         empty_text = _("There are no results")
         order_by = ("group", "group_place", "last_name")
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultGroupStandingTable(tables.Table):
@@ -94,7 +94,7 @@ class ResultGroupStandingTable(tables.Table):
 
     class Meta:
         model = SebStandings
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("group_points1", "group_points2", 'group_points3', 'group_points4', 'group_points5', 'group_points6',
                   'group_points7', 'group_total')  # all_numbers
         sequence = (
@@ -103,7 +103,7 @@ class ResultGroupStandingTable(tables.Table):
         empty_text = _("There are no results")
         order_by = ("group_place",)
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultDistanceStandingTable(tables.Table):
@@ -125,7 +125,7 @@ class ResultDistanceStandingTable(tables.Table):
 
     class Meta:
         model = SebStandings
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("distance_points1", "distance_points2", 'distance_points3', 'distance_points4', 'distance_points5',
                   'distance_points6', 'distance_points7', 'distance_total')  # all_numbers
         sequence = (
@@ -135,7 +135,7 @@ class ResultDistanceStandingTable(tables.Table):
         empty_text = _("There are no results")
         order_by = ("distance_place",)
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultChildrenGroupTable(tables.Table):
@@ -150,14 +150,14 @@ class ResultChildrenGroupTable(tables.Table):
 
     class Meta:
         model = Participant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("number", "status")  # all_numbers
         sequence = (
         "result_group", "number", 'first_name', 'last_name', 'year', 'team_name', 'group', 'points_group', 'status')
         empty_text = _("There are no results")
         order_by = ("group", "result_group", "last_name")
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultGroupTable(tables.Table):
@@ -192,7 +192,7 @@ class ResultGroupTable(tables.Table):
 
     class Meta:
         model = Participant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("number", "status", "time")  # all_numbers
         sequence = ("result_group", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'time', 'group',
                     'points_group', 'status')
@@ -200,7 +200,7 @@ class ResultGroupTable(tables.Table):
         order_by = ("time")
         # ordering = ('created')
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultDistanceTable(tables.Table):
@@ -246,7 +246,7 @@ class ResultDistanceTable(tables.Table):
 
     class Meta:
         model = Participant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("number", "status", "time")  # all_numbers
         sequence = (
         "result_distance", "number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2', 'time',
@@ -255,7 +255,7 @@ class ResultDistanceTable(tables.Table):
         order_by = ("time")
         # ordering = ('created')
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultDistanceCheckpointTable(ResultDistanceTable):
@@ -311,7 +311,7 @@ class ResultRMDistanceTable(tables.Table):
 
     class Meta:
         model = Participant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("number", "status", "time")  # all_numbers
         sequence = (
         "result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'time', 'status')
@@ -319,7 +319,7 @@ class ResultRMDistanceTable(tables.Table):
         order_by = ("time")
         # ordering = ('created')
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultRMTautaDistanceTable(ResultRMDistanceTable):
@@ -331,7 +331,7 @@ class ResultRMTautaDistanceTable(ResultRMDistanceTable):
 
     class Meta:
         model = Participant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("number", "status")  # all_numbers
         sequence = (
         "result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'l1', 'time', 'status')
@@ -339,7 +339,7 @@ class ResultRMTautaDistanceTable(ResultRMDistanceTable):
         order_by = ("time", "l1")
         # ordering = ('created')
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultRMSportsDistanceTable(ResultRMDistanceTable):
@@ -367,7 +367,7 @@ class ResultRMSportsDistanceTable(ResultRMDistanceTable):
 
     class Meta:
         model = Participant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("number", "status")  # all_numbers
         sequence = (
         "result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'l1', 'l2', 'l3', 'l4',
@@ -376,7 +376,7 @@ class ResultRMSportsDistanceTable(ResultRMDistanceTable):
         order_by = ("time", "l5", "l4", "l3", "l2", "l1")
         # ordering = ('created')
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ResultRMGroupTable(tables.Table):
@@ -407,7 +407,7 @@ class ResultRMGroupTable(tables.Table):
 
     class Meta:
         model = Participant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("number", "status")  # all_numbers
         sequence = (
         "result_group", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'time', 'group', 'status')
@@ -415,4 +415,4 @@ class ResultRMGroupTable(tables.Table):
         order_by = ("time")
         # ordering = ('created')
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"

@@ -1,0 +1,60 @@
+{% extends "base/competition.html" %}
+{% load i18n cache staticfiles thumbnail %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block content_left %}
+    <div class="w100 bottom-margin--20"></div>
+
+    <div class="w100">
+        <div class="inner no-padding--480">
+
+            <div class="row row--gutters-20">
+
+
+
+                {% for object in object_list %}
+
+                    {% thumbnail object.image 720x480 crop as img %}
+
+                    <div class="col-xl-12 col-l-24 col-m-12 col-s-24 flex direction--column justify--start align-items--stretch">
+                        <div class="card border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
+                            <div class="flex--1">
+                                <div class="card__info">
+                                    <h2 class="card__heading">{{ object.title }}</h2>
+                                </div>
+                            </div>
+                            <div>
+                                <figure class="card__image card__image--3by2 img-wrapper">
+                                    <img onload="imgLoaded(this)" class="cover-img" src="{{ img.url }}">
+                                </figure>
+                            </div>
+                            <div class="card-nav flex wrap--nowrap direction--row justify--space-between align-items--stretch">
+                                {% if object.gpx %}
+                                <a href="{% url 'competition:map_gpx' object.id %}" class="card-nav__icon">
+                                    <svg class="icon">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#gpx"></use>
+                                    </svg>
+                                </a>
+                                {% endif %}
+                                <a href="{{ object.image.url }}" target="_blank" class="card-nav__btn btn btn--60 btn--theme btn--blue-hover btn--blue-active w100 flex--1 flex--important wrap--nowrap direction--row justify--space-between align-items--center">
+                                    {% trans "View" %}
+                                    <svg class="icon btn__icon">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock content_left %}

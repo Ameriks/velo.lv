@@ -25,12 +25,12 @@ class ApplicationTable(tables.Table):
 
     class Meta:
         model = Application
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("id", "competition", "created", "payment_status",)
         empty_text = _("You haven't created any application.")
         order_by = ("-created")
         per_page = 20
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ParticipantTableBase(tables.Table):
@@ -51,13 +51,13 @@ class ParticipantTableBase(tables.Table):
 
     class Meta:
         model = Participant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("first_name", "last_name", "bike_brand2", "group")
         sequence = ('first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2',)
         empty_text = _("There are no participants")
         order_by = ("last_name")
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class ParticipantTable(ParticipantTableBase):
@@ -105,7 +105,7 @@ class CompanyParticipantTable(tables.Table):
 
     class Meta:
         model = CompanyParticipant
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = (
         "first_name", "last_name", "birthday", "distance", "phone_number", 'email', 'created', 'is_participating')
         sequence = ('selection', "first_name", 'last_name', 'birthday', "distance", 'phone_number', 'email', 'created',
@@ -113,7 +113,7 @@ class CompanyParticipantTable(tables.Table):
         empty_text = _("There are no participants")
         order_by = ("created")
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class CompanyApplicationTable(tables.Table):
@@ -125,9 +125,9 @@ class CompanyApplicationTable(tables.Table):
 
     class Meta:
         model = Application
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("id", "team_name", "competition", "created",)
         empty_text = _("You haven't created any company application.")
         order_by = ("-created")
         per_page = 20
-        template = "bootstrap/table.html"
+        template = "base/table.html"

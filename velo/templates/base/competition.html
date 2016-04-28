@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles i18n sitetree %}
+
+
+{% block content %}
+
+
+    <main class="theme--blue">
+        <div class="primary-heading c-theme border-bottom">
+            <div class="inner">
+                <div class="primary-heading__spacing w100 border-right border-left">
+                    <h1 class="primary-heading__text">{{ competition.get_full_name }}</h1>
+                </div>
+            </div>
+        </div>
+        <nav class="secondary-nav w100 border-bottom">
+            <div class="inner">
+                <div class="secondary-nav__inner border-right border-left">
+
+
+                    {% sitetree_menu from "mainmenu" include "this-children,this-siblings" template "sitetree/competition.html"  %}
+
+
+                    <div class="secondary-nav__icon">
+                        <svg class="icon">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#swipe"></use>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        {% block content2 %}
+        <div class="w100">
+            <div class="inner">
+                <div class="row border-right no-border--480">
+                    <div class="col-xl-17 col-l-15 col-m-24 bgc-dgray border-left no-border--480">
+
+                        {% include "base/_competition_picker.html" with url="competition:competition" %}
+
+                        {% block content_left %}
+
+                        {% endblock content_left %}
+
+                    </div>
+                    <div class="col-xl-7 col-l-9 bgc-dgray border-left no-border--480">
+                        {% include "base/_competition_supporters.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock content2 %}
+    </main>
+{% endblock %}

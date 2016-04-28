@@ -1,0 +1,45 @@
+{% load i18n thumbnail staticfiles %}
+
+
+{% if competition.is_application_active %}
+    <a href="{% url 'application' competition.id %}" class="btn btn--60 btn--theme btn--blue-hover btn--blue-active w100 flex--important wrap--nowrap direction--row justify--space-between align-items--center">
+        {% trans "Apply" %}
+        <svg class="icon btn__icon">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+        </svg>
+    </a>
+{% endif %}
+
+
+<div class="sponsors">
+    {% if competition.logo_svg %}
+        <div class="sponsors__group">
+            <figure class="sponsors__image sponsors__image--large img-wrapper">
+                <img data-load-on="768" onload="imgLoaded(this)" src="{{ competition.logo_svg.url }}">
+            </figure>
+        </div>
+    {% endif %}
+    {% for supporter in supporters %}
+
+        {% ifchanged supporter.support_level or supporter.label %}
+            {% if forloop.counter0 > 0 %}
+                </div>
+            {% endif %}
+            <div class="sponsors__heading">{% firstof supporter.label supporter.get_support_level_display %}</div>
+            <div class="sponsors__group loaded {% if supporter.support_level >= 90 %}sponsors__image--large{% endif %}">
+        {% endifchanged %}
+
+        {% thumbnail supporter.logo.image 420x215 as logo %}
+
+        {# todo: Add support for <a> in CSS #}
+        {#                            {% if supporter.supporter.url %}<a target="_blank" href="{{ supporter.supporter.url }}">{% endif %}#}
+        <figure class="sponsors__image img-wrapper {% if supporter.support_level < 90 %}sponsors__image--small{% endif %} img-wrapper">
+            <img data-load-on="768" onload="imgLoaded(this)" src="
+                    {% if supporter.logo.svg_logo %}{{ supporter.logo.svg_logo.url }}{% else %}{{ logo.url }}{% endif %}"
+                 alt="{{ supporter.supporter }}">
+        </figure>
+        {#                            {% if supporter.supporter.url %}</a>{% endif %}#}
+
+    {% endfor %}
+    </div>
+

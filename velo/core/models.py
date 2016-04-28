@@ -46,6 +46,11 @@ def _get_map_upload_path(instance, filename):
         return os.path.join("competition", "maps", "%s%s" % (filename, ext))
 
 
+def _get_gpx_upload_path(instance, filename):
+    folder = str(uuid.uuid4())
+    return os.path.join("competition", "gpx", folder, filename)
+
+
 @python_2_unicode_compatible
 class FailedTask(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -403,6 +408,7 @@ class Map(models.Model):
     competition = models.ForeignKey(Competition)
     title = models.CharField(max_length=255)
     image = ThumbnailerImageField(upload_to=_get_map_upload_path)
+    gpx = models.FileField(upload_to=_get_gpx_upload_path, blank=True, null=True)
     ordering = models.IntegerField(default=0)
 
     class Meta:

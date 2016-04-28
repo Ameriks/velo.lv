@@ -25,11 +25,11 @@ class TeamTable(tables.Table):
 
     class Meta:
         model = Team
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("is_featured", "title", "country", "contact_person")
         empty_text = _("There are no teams")
         per_page = 200
-        template = "bootstrap/table.html"
+        template = "base/table.html"
 
 
 class TeamMyTable(tables.Table):
@@ -54,10 +54,10 @@ class TeamMyTable(tables.Table):
 
     class Meta:
         model = Team
-        attrs = {"class": "table table-striped table-hover"}
+        attrs = {"class": "table-block"}
         fields = ("title", "is_featured", "distance")
         sequence = ("is_featured", "title", "competition", "distance", "apply")
         empty_text = _("You haven't created any official team.")
         order_by = ("-id")
         per_page = 20
-        template = "bootstrap/table.html"
+        template = "base/table.html"

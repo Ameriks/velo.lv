@@ -15,7 +15,7 @@
             {% if participant.primary_number %}
     Starta numurs: <b>{{participant.primary_number}}</b><br />
         {% endif %}
-            Vēstule numura izņemšanai: <a href="http://mans.velo.lv{% url 'participant_number_pdf' participant.code_short %}">http://mans.velo.lv{% url 'participant_number_pdf' participant.code_short %}</a>
+            Vēstule numura izņemšanai: <a href="http://velo.lv{% url 'participant_number_pdf' participant.code_short %}">http://velo.lv{% url 'participant_number_pdf' participant.code_short %}</a>
         </p>
 
     {% endfor %}

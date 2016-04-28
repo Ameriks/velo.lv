@@ -1,0 +1,12 @@
+{% load sitetree %}
+<ul class="secondary-nav__scroll disable--select js-secondary-nav-scroll">
+        {% for item in sitetree_items %}
+            {% if not item.has_children %}
+            <li class="secondary-nav__item">
+                <a aria-expanded="false" role="button" href="{% sitetree_url for item %}" class="secondary-nav__link" draggable="false">
+                    {{ item.title_resolved }}
+                </a>
+            </li>
+            {% endif %}
+        {% endfor %}
+    </ul>

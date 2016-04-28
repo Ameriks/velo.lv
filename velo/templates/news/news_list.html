@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block content %}
+
+    <main>
+        <div class="w100 bottom-margin--30">
+
+            {% for news in object_list %}
+                <div class="w100 border-bottom">
+                    <div class="inner">
+                        <div class="card card--large border-right border-left flex wrap--wrap direction--row justify--space-between align-items--stretch">
+                                {% if forloop.counter0|divisibleby:"2" %}
+                                    {% include "base/_news_info.html" with position="left" object=news %}
+                                {% endif %}
+                                {% if news.image %}
+                                    <figure class="card__image card__image--background flex--1  js-background-image"
+                                            data-background-image="{{ news.image.image.news_thumb.url }}"></figure>
+                                {% endif %}
+                                {% if not forloop.counter0|divisibleby:"2" %}
+                                    {% include "base/_news_info.html" with position="right" object=news %}
+                                {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+
+    {% if is_paginated %}
+    <div class="w100 border-top">
+        <div class="inner">
+            <nav class="pagination border-right border-left flex wrap--nowrap direction--row justify--space-between">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="pagination__increment border-right flex justify--center align-items--center">
+                    <svg class="pagination__icon icon">
+                        <use
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--left"></use>
+                    </svg>
+                    <span class="pagination__text">{% trans "Previous Page" %}</span>
+                </a>
+                {% endif %}
+
+                <ul class="pagination__numbers flex--1 flex wrap--nowrap direction--row justify--center">
+
+                </ul>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="pagination__increment border-left flex justify--center align-items--center">
+                    <span class="pagination__text">{% trans "Next Page" %}</span>
+                    <svg class="pagination__icon icon">
+                        <use
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                    </svg>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+
+    </main>
+
+{% endblock content %}

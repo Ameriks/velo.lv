@@ -85,6 +85,7 @@
                                     </figure>
                                     <div class="calendar-slider__acordeon-text editor-text flex--1 flex direction--column justify--center align-items--start">
                                         <p>{{ item.description }}</p>
+                                        <a href="{% url "competition:competition" item.id %}">{% trans "Open Competition" %}</a>
                                     </div>
                                 </div>
                             </div>

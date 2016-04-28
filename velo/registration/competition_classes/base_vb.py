@@ -42,7 +42,7 @@ class VBCompetitionBase(CompetitionScriptBase):
     def build_menu(self):
         current_date = datetime.date.today()
         child_items = [
-            item('Atbalstītāji', 'competition:supporters %i' % self.competition.id),
+            # item('Atbalstītāji', 'competition:supporters %i' % self.competition.id),
             item('Komandas', 'competition:team %i' % self.competition.id, children=[
                 item('{{ object }}', 'competition:team %i object.id' % self.competition.id, in_menu=False),
             ]),

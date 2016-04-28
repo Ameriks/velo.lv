@@ -40,7 +40,7 @@ class Seb2016(SEBCompetitionBase):
                 (2,  50,  0),
                 (3,  100, 0),
                 (4,  100, 0),
-                (5,  200, 30),
+                (5,  200, 0),
                 (6,  200, 0),
                 (7,  200, 0),
                 (8,  200, 0),
@@ -64,7 +64,7 @@ class Seb2016(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: ('M-18', 'M Elite', 'M 19-34 CFA', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
             self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-40', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
             self.VESELIBAS_DISTANCE_ID: ('M-14', 'W-14', ),
-            self.BERNU_DISTANCE_ID: ('B 06-05 M', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11', 'B 12-', )
+            self.BERNU_DISTANCE_ID: ('B 06-05 Z', 'B 06-05 M', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11', 'B 12-', )
         }
 
     def number_ranges(self):
@@ -315,8 +315,13 @@ class Seb2016(SEBCompetitionBase):
     def get_group_for_number_search(self, distance_id, gender, birthday):
         group = super(Seb2016, self).get_group_for_number_search(distance_id, gender, birthday)
 
-        if group in ('B 05-04 M', 'B 05-04 Z'):
-            return 'B 05-04'
+        groups = self.groups.get(self.BERNU_DISTANCE_ID)
+
+        if groups[0][:7] != groups[1][:7]:
+            raise Exception("First two groups should be gender deperated. Update script otherwise.")
+
+        if group in groups[:2]:
+            return groups[0][:7]
 
         return group
 
@@ -338,15 +343,11 @@ class Seb2016(SEBCompetitionBase):
         Function processes chip result and recalculates all standings
         """
 
-        if self.competition_index != 7:
-            return super(Seb2016, self).process_chip_result(chip_id, sendsms)
-
         chip = ChipScan.objects.get(id=chip_id)
 
         if chip.is_processed:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
-
 
         if chip.url_sync.kind == 'FINISH':
             return super(Seb2016, self).process_chip_result(chip_id, sendsms)
@@ -377,7 +378,7 @@ class Seb2016(SEBCompetitionBase):
 
 
     def get_result_table_class(self, distance, group=None):
-        if distance.id != self.BERNU_DISTANCE_ID and self.competition_index == 7 and not group:
+        if distance.id != self.BERNU_DISTANCE_ID and self.competition_index in (1, ) and not group:
             return ResultDistanceCheckpointTable
 
         return super(Seb2016, self).get_result_table_class(distance, group)

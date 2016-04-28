@@ -1,0 +1,63 @@
+{% extends "base/competition.html" %}
+{% load i18n cache staticfiles thumbnail django_tables2 %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block content2 %}
+{#    {% cache 60 team_list LANGUAGE_CODE distance_active competition request.GET %}#}
+{#        {% spaceless %}#}
+
+
+            <div class="w100 bgc-dgray border-right border-bottom border-left">
+                <div class="w100 bottom-margin--20"></div>
+                <div class="inner">
+                    <form method="get" action="" class="w100">
+                        <div class="row row--gutters-20">
+                            <div class="col-xl-14 col-s-24 bottom-margin--20">
+                                <div class="right">
+                                    <button class="btn btn--50 btn--square-50 btn--dblue btn--blue-hover btn--blue-active left-minus-1">
+                                        <svg class="fs20 icon">
+                                            <use
+                                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#search"></use>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="context">
+                                    <div class="input-wrap">
+                                        <input
+                                            type="text"
+                                            class="input-field if--50 if--dark"
+                                            placeholder="Meklēt komandu" name="search" value="{{ request.GET.search }}"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-10 col-s-24 bottom-margin--20">
+                                <div class="input-wrap">
+                                    <select
+                                        class="select-hide js-select"
+                                        name="distance"
+                                    >
+                                        {% for distance in distances %}
+                                        <option value="{{ distance.id }}" {% if distance.id == distance_active.id %}selected{% endif %}>{{ distance }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+
+
+
+{% render_table table %}
+
+{#    {{ block.super }}#}
+{#        {% endspaceless %}#}
+{#    {% endcache %}#}
+{% endblock %}

@@ -8,11 +8,10 @@ from django.utils import timezone
 
 from django_downloadview import ObjectDownloadView
 from braces.views import LoginRequiredMixin
-from velo.core.models import Competition, Map, User
+from velo.core.models import Competition, Map
 from velo.gallery.models import Album, Video, Photo
 from velo.news.models import News
-from velo.results.models import DistanceAdmin
-from velo.supporter.models import Supporter
+from velo.supporter.models import CompetitionSupporter
 from velo.velo.mixins.views import SetCompetitionContextMixin, CacheControlMixin
 
 
@@ -33,8 +32,8 @@ class IndexView(TemplateView):
             'competition_date').select_related('parent')
         context.update({'calendar': calendar})
 
-
-        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[:1]
+        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[
+                           :1]
         if not next_competition:
             next_competition = Competition.objects.order_by('-competition_date')[:1]
         context.update({'next_competition': next_competition[0]})
@@ -63,16 +62,32 @@ class CompetitionDetail(SetCompetitionContextMixin, DetailView):
                 calendar = [self.object, ]
         context.update({'calendar': calendar})
 
-        context.update({'galleries': Album.objects.filter(
-            competition_id__in=[self.object.id, self.object.parent_id]).filter(is_processed=True).order_by('-id')[:5]})
-        context.update({'videos': Video.objects.filter(
-            competition_id__in=[self.object.id, self.object.parent_id]).filter(status=1).order_by('-id')[:3]})
+        # Showing 6 albums from current type of competition, first showing albums from current competition
+        albums = Album.objects.filter(competition__tree_id=self.object.tree_id, is_processed=True).extra(select={
+            'is_current': "CASE WHEN competition_id = %s Then true ELSE false END"
+        }, select_params=(self.object.id,)).order_by('-is_current', '-gallery_date', '-id')[:6]
+        context.update({'galleries': albums})
+
+        # Showing latest featured video in current/parent competition
+        try:
+            video = Video.objects.filter(competition_id__in=self.object.get_ids()) \
+                .filter(status=1, is_featured=True).order_by('-id')[0]
+        except IndexError:
+            video = None
+        context.update({'video': video})
+
+        # Supporters
+        context.update({'supporters': CompetitionSupporter.objects \
+                       .filter(competition_id__in=self.object.get_ids()) \
+                       .order_by('-support_level', 'ordering', '-label') \
+                       .select_related('supporter')
+                        })
 
         return context
 
 
 class MapGPXDownloadView(ObjectDownloadView):
-    model = DistanceAdmin
+    model = Map
     file_field = 'gpx'
     pk_url_kwarg = 'pk2'
     mimetype = 'application/gpx+xml'
@@ -88,16 +103,6 @@ class MapView(SetCompetitionContextMixin, ListView):
 
         return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super(MapView, self).get_context_data(**kwargs)
-
-        distanceadmin = DistanceAdmin.objects.filter(competition=self.competition).exclude(gpx=None).select_related(
-            'competition', 'distance', 'competition__parent').order_by('distance__id')
-
-        context.update({'distanceadmin': distanceadmin})
-
-        return context
-
 
 class CalendarView(CacheControlMixin, TemplateView):
     template_name = 'core/calendar_view.html'
@@ -109,11 +114,9 @@ class CalendarView(CacheControlMixin, TemplateView):
 
         this_year = Competition.objects.filter(competition_date__year=now.year).order_by(
             'competition_date').select_related('parent')
-        next_year = Competition.objects.filter(competition_date__year=(now.year + 1)).order_by('competition_date')
 
         context.update({
             'this_year': this_year,
-            'next_year': next_year,
         })
 
         return context

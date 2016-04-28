@@ -332,8 +332,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 SERVER_EMAIL = "webmaster@mans.velo.lv"
 
-MY_DEFAULT_DOMAIN = 'https://mans.velo.lv'
-SHORT_BASE_URL = 'http://mans.velo.lv/s/'
+MY_DEFAULT_DOMAIN = 'https://velo.lv'
+SHORT_BASE_URL = 'http://velo.lv/s/'
 
 MAILGUN_ACCESS_KEY = env('MAILGUN_ACCESS_KEY')
 
@@ -360,10 +360,10 @@ THUMBNAIL_ALIASES = {
     'gallery': {
         'front': {'size': (880, 460), 'crop': True},
         'front_small': {'size': (440, 230), 'crop': True},
-        'thumb': {'size': (300, 300), 'crop': True},
+        'thumb': {'size': (460, 460), 'crop': True},
         'img': {'size': (1000, 1000), 'crop': False},
         'news_thumb': {'size': (660, 345), 'crop': True},
-        'news': {'size': (850, 300), 'crop': True},
+        'news': {'size': (850, 400), 'crop': False},
     },
     'core': {
         'email_logo': {'size': (210, 120), 'crop': False},
@@ -381,6 +381,7 @@ THUMBNAIL_OPTIMIZE_COMMAND = {
 }
 THUMBNAIL_BASEDIR = 'easy_thumbnails'
 THUMBNAIL_CHECK_CACHE_MISS = True
+THUMBNAIL_PRESERVE_EXTENSIONS = ('png',)
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 USE_X_FORWARDED_HOST = True
