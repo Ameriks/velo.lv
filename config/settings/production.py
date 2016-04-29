@@ -176,16 +176,6 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 
-
-RABBITMQ_USER = 'velolv'
-RABBITMQ_PASS = env('RABBITMQ_PASS')
-RABBITMQ_HOST = '172.17.42.1'
-RABBITMQ_PORT = '15015'
-RABBITMQ_VHOST = RABBITMQ_USER
-BROKER_URL = 'amqp://{user}:{password}@{host}:{port}/{vhost}'.format(user=RABBITMQ_USER, password=RABBITMQ_PASS,
-                                                                     host=RABBITMQ_HOST, port=RABBITMQ_PORT,
-                                                                     vhost=RABBITMQ_VHOST)
-
 ALWAYS_SSL_PAGES = [
             "^%s" % ADMIN_URL,
             "^/manager",
