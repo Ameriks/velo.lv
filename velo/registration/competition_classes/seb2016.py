@@ -327,13 +327,13 @@ class Seb2016(SEBCompetitionBase):
 
     def recalculate_team_result(self, team_id=None, team=None):
         """
-        4. stage should have zeros.
+        3. stage should have zeros.
         """
         standing = super(Seb2016, self).recalculate_team_result(team_id, team)
 
-        if self.competition_index == 4:
+        if self.competition_index == 3:
             if standing.team.distance_id == self.SPORTA_DISTANCE_ID:
-                standing.points4 = 0
+                standing.points3 = 0
                 standing.save()
 
         return standing

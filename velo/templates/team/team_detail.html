@@ -1,0 +1,128 @@
+{% extends "base/competition.html" %}
+{% load i18n cache staticfiles thumbnail django_tables2 email %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block content2 %}
+
+    {{ block.super }}
+
+
+
+<div class="w100">
+        <div class="inner">
+            <div class="w100 bgc-dgray border-right border-left no-border--480">
+                <div class="w100 bottom-margin--20"></div>
+                <div class="w100">
+                    <div class="inner no-padding--480">
+                        <div class="row row--gutters-20">
+
+
+
+
+                            {% for member in members %}
+                                <div class="col-xl-48 col-l-6 col-m-8 col-s-12 col-xs-24 flex direction--column justify--start align-items--stretch">
+                                    <a href="{% url 'competition:team_member' competition.id object.id member.id %}" class="brief border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
+                                        <div>
+                                            <figure class="brief__hero brief-hover-layer img-wrapper">
+                                                <img
+                                                    data-img-src="{% static "template/velo-2016/html/userfiles/1by1.jpg" %}"
+                                                    onload="imgLoaded(this)"
+                                                >
+                                                <div class="brief-hover-top-layer brief-hover-top-layer--hero">
+                                                    <div class="table">
+                                                        <div class="table-cell text-align--center">
+                                                            <div class="brief__hover-item">
+                                                                Skatīt
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </figure>
+                                        </div>
+                                        <div class="brief__info brief-hover-layer flex direction--column justify--start align-items--stretch">
+                                            <div class="brief-hover-top-layer  flex direction--column justify--start align-items--stretch">
+                                                <div class="flex--1 flex direction--row justify--space-between align-items--center">
+                                                    <div class="brief__text">
+                                                        <div class="top-padding--13 right-padding--5 bottom-padding--13 left-padding--13">{{ member.first_name }} {{ member.last_name }}</div>
+                                                    </div>
+                                                    <div class="brief__secondary-text">
+                                                        <div class="top-padding--13 right-padding--13 bottom-padding--13 left-padding--5">{{ member.birthday.year }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock content2 %}
+
+
+
+
+{% block content_left %}
+
+    <div class="w100 bottom-margin--20"></div>
+    <div class="w100 border-top border-bottom bottom-margin--20">
+        <div class="inner no-padding--480">
+            <div class="secondary-heading c-theme w100">
+                {{ object }}
+            </div>
+        </div>
+    </div>
+    <div class="inner no-padding--480">
+        <div class="editor-text w100 bottom-margin--20">
+            <p>{{ object.description }}</p>
+        </div>
+        {% if object.img %}
+            {% thumbnail object.img 585x1000 as img %}
+            <figure class="img-wrapper">
+                <img onload="imgLoaded(this)" class="cover-img" src="{{ img.url }}">
+            </figure>
+        {% endif %}
+    </div>
+
+{% endblock content_left %}
+
+
+{% block content_right %}
+
+    <div class="w100 bottom-margin--20"></div>
+    <div class="w100 border-top border-bottom bottom-margin--20">
+        <div class="inner no-padding--480">
+            <div class="secondary-heading c-theme w100">
+                {% trans "Contacts" %}
+            </div>
+        </div>
+    </div>
+    <div class="inner no-padding--480">
+        <div class="editor-text w100 bottom-margin--20">
+            <p class="uppercase">
+                {% trans "Manager" %}: <span class="c-yellow">{{ object.contact_person }}</span><br>
+                {% trans "E-mail" %}: <span class="c-yellow">{{ object.email|obfuscate }}</span><br>
+                {% trans "Phone" %}: <span class="c-yellow"><a href="callto:{{ object.phone_number }}">{{ object.phone_number }}</a></span><br>
+                {% trans "Management" %}: <span class="c-yellow">{{ object.management_info }}</span><br>
+            </p>
+        </div>
+        {% if object.shirt_image %}
+            {% thumbnail object.shirt_image 585x1000 as shirt_image %}
+            <figure class="img-wrapper">
+                <img onload="imgLoaded(this)" class="cover-img" src="{{ shirt_image.url }}">
+            </figure>
+        {% endif %}
+
+    </div>
+
+{% endblock content_right %}

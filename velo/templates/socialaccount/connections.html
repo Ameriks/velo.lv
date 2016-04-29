@@ -1,0 +1,71 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block content2 %}
+<h1>{% trans "Account Connections" %}</h1>
+
+{% if form.accounts %}
+<p class="bottom-margin--15">{% blocktrans %}You can sign in to your account using any of the following third party accounts:{% endblocktrans %}</p>
+
+
+<form method="post" action="{% url 'socialaccount_connections' %}">
+{% csrf_token %}
+
+
+{% if form.non_field_errors %}
+<div id="errorMsg">{{ form.non_field_errors }}</div>
+{% endif %}
+
+<table class="table-block bottom-margin--15">
+    {% for base_account in form.accounts %}
+    {% with base_account.get_provider_account as account %}
+    <tr>
+
+        <td>
+          <label for="id_account_{{ base_account.id }}">
+              <input class="show-input" id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}"/>
+            </label>
+      </td>
+
+
+    <td><span class="socialaccount_provider {{ base_account.provider }} {{ account.get_brand.id }}">{{ account }}</span></td>
+
+
+
+    </tr>
+    {% endwith %}
+    {% endfor %}
+
+
+      </tbody>
+      <tfoot>
+
+      </tfoot>
+</table>
+
+<div class="buttonHolder">
+<div class="row row--gutters-20">
+    <div class="col-xl-7 col-s-24">
+            <button class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w25" type="submit" name="action_primary" >{% trans 'Remove' %}</button>
+            </div>
+
+    </div>
+      </div>
+
+
+</form>
+
+{% else %}
+<p class="bottom-margin--15">{% trans 'You currently have no social network accounts connected to this account.' %}</p>
+{% endif %}
+<div class="w100 bottom-margin--20"></div>
+<h2 class="bottom-margin--15">{% trans 'Add a 3rd Party Account' %}</h2>
+
+<ul class="socialaccount_providers">
+{% include "socialaccount/snippets/provider_list.html" with process="connect" %}
+</ul>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+{% endblock %}

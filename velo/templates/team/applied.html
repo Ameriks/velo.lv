@@ -1,0 +1,133 @@
+{% extends "base/competition.html" %}
+{% load i18n cache staticfiles thumbnail %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block content_left %}
+
+
+
+    <div class="w100 bgc-dgray border-right border-bottom border-left">
+        <div class="w100 bottom-margin--20"></div>
+        <div class="inner">
+            <form method="get" action="" class="w100">
+                <div class="row row--gutters-20">
+                    <div class="col-xl-14 col-s-24 bottom-margin--20">
+                        <div class="right">
+                            <button class="btn btn--50 btn--square-50 btn--dblue btn--blue-hover btn--blue-active left-minus-1">
+                                <svg class="fs20 icon">
+                                    <use
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#search"></use>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="context">
+                            <div class="input-wrap">
+                                <input
+                                        type="text"
+                                        class="input-field if--50 if--dark"
+                                        placeholder="{% trans "Search" %}" name="search"
+                                        value="{{ request.GET.search }}"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-10 col-s-24 bottom-margin--20">
+                        <div class="input-wrap">
+                            <select
+                                    class="select-hide js-select"
+                                    name="distance"
+                            >
+                                {% for distance in distances %}
+                                    <option value="{{ distance.id }}"
+                                            {% if distance.id == distance_active.id %}selected{% endif %}>{{ distance }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <p>Ja komandas dalībnieks ir sarkanā krāsā, tas nozīmē, ka nav saņemta samaksa par dalībnieku vai arī nav
+                atrodams starp apmaksātajiem dalībniekiem. Lūdzam šim pievērst pastiprinātu uzmanību, jo sarkanā krāsā
+                esošo komandas dalībnieku rezultāti netiks ņemti vērā.</p>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+    <div class="w100 bottom-margin--20"></div>
+
+    <div class="w100">
+        <div class="inner no-padding--480">
+
+            <div class="row row--gutters-20">
+
+
+                {% for object in object_list %}
+
+
+
+
+                    {% ifchanged object.0 %}
+
+                        {% if forloop.counter0 %}
+                            </tbody></table></div></div></div>
+                        {% endif %}
+
+
+                        <div class="col-xl-12 col-l-24 col-m-12 col-s-24 flex direction--column justify--start align-items--stretch">
+                        <div class="card border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
+                        <div class="flex--1">
+                            <div class="card__info">
+                                <h2 class="card__heading">{{ object.1 }}
+                                    {% if object.2 %}{% trans "VIP" %}{% endif %}</h2>
+                            </div>
+                        </div>
+
+
+                        <div>
+                        <table class="table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans 'First Name' %}</th>
+                            <th>{% trans 'Last Name' %}</th>
+                            <th>{% trans 'Year' %}</th>
+                            <th>{% trans 'Tips' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    {% endifchanged %}
+
+
+                    <tr style="{% if not object.8 %}background-color:red{% endif %}">
+                        <td>{% firstof object.7 '-' %}</td>
+                        <td>{{ object.3 }}</td>
+                        <td>{{ object.4 }}</td>
+                        <td>{{ object.5.year }}</td>
+                        <td>{% if object.6 == 10 %}
+                            <span class="label label-dark">{% trans 'Participant' %}</span>
+                        {% else %}
+                            <span class="label label-warning">{% trans 'Reserve' %}</span>
+                        {% endif %}
+                        </td>
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+                </tbody></table></div></div></div>
+    </div>
+    </div>
+
+    </div>
+
+{% endblock content_left %}

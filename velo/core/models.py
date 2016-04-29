@@ -36,6 +36,11 @@ def _get_logo_upload_path(instance, filename):
     filename = str(uuid.uuid4())
     return os.path.join("competition", "%02d_%s%s" % (instance.id, filename, ext))
 
+def _get_profile_upload_path(instance, filename):
+    ext = os.path.splitext(filename)[1]
+    filename = str(uuid.uuid4())
+    return os.path.join("profile", "%02d_%s%s" % (instance.id, filename, ext))
+
 
 def _get_map_upload_path(instance, filename):
     ext = os.path.splitext(filename)[1]
@@ -121,18 +126,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('Last Name'), max_length=30, blank=True)
 
     email = models.EmailField(_('Email Address'), unique=True)
-    email_status = models.SmallIntegerField(default=EMAIL_STATUS.not_validated, choices=EMAIL_STATUS)
 
     country = CountryField(_('Country'), blank=True, null=True, default="LV")
     ssn = models.CharField(_('Social Security Number'), max_length=12, blank=True)
-    birthday = models.DateField(_('Birthday'), blank=True, null=True, help_text='YYYY-MM-DD')
+    birthday = models.DateField(_('Birthday'), blank=True, null=True)
     city = models.ForeignKey('core.Choices', verbose_name=_('City'), related_name='+',
                              limit_choices_to={'kind': Choices.KINDS.city}, blank=True, null=True)
     bike_brand = models.ForeignKey('core.Choices', verbose_name=_('Bike Brand'), related_name='+',
                                    limit_choices_to={'kind': Choices.KINDS.bike_brand}, blank=True, null=True)
     phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True)
     send_email = models.BooleanField(default=True, verbose_name=_('Send Email Newsletters'))
-    legacy_id = models.IntegerField(blank=True, null=True)
 
     full_name = models.CharField(_('Full Name'), max_length=60, blank=True)
 
@@ -145,6 +148,9 @@ class User(AbstractBaseUser, PermissionsMixin):
                                                 'active. Unselect this instead of deleting accounts.'))
 
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+
+    image = ThumbnailerImageField(_("Profile Image"), blank=True, upload_to=_get_profile_upload_path)
+    description = models.TextField(_("Description"), blank=True)
 
     objects = UserManager()
 
@@ -172,7 +178,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.email_validation_expiry = timezone.now() + datetime.timedelta(days=1)
 
     def get_absolute_url(self):
-        return "/users/%s/" % urlquote(self.username)  # TODO: Fix url
+        return reverse("account:profile")
 
     def get_full_name(self):
         return self.full_name

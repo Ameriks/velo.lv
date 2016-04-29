@@ -1,0 +1,10 @@
+{% extends "base/competition.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+
+{% block content2 %}
+
+    {% include "base/competition/_head_search.html" %}
+    {% render_table table %}
+
+{% endblock %}

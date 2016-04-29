@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load staticfiles i18n sitetree django_tables2 %}
+
+{% block content %}
+    <div class="w100 flex">
+        <div class="inner flex">
+            <div class="w100 border-right border-left flex direction--column">
+                <h1 class="heading w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
+                    <span class="w100">{% trans "My Profile" %}</span>
+                    <span class="w100 c-yellow">{{ user.email }}</span>
+                </h1>
+                <h2 class="heading heading--smaller w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
+                    <span class="w100">{% trans "My Company Applications" %}</span>
+                </h2>
+
+                <div class="row">
+                <div class="col-xl-16 col-s-24">
+                    <p>Uzņēmuma pieteikums ir paredzēts lielākiem uzņēmumiem vai grupām, kurām ir nepieciešams ievadīt daudzu dalībnieku datus.</p>
+                    <p>Izveidojot uzņēmuma pieteikumu, Jūs iegūsiet publiski pieejamu interneta adresi, kuru būs iespējams izsūtīt darbiniekiem, kur viņiem pašiem būs iespēja pievienot informāciju par sevi.</p>
+                    <p>Pēc tam Jums būs iespējams pieteikt un apmaksāt izvēlētos dalībniekus.</p>
+                    </div>
+                <div class="col-xl-8 col-s-24">
+                    <a class="btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100" href="{% url 'companyapplication' %}">{% trans 'Create New' %}</a>
+                </div>
+                    </div>
+                {% render_table table %}
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

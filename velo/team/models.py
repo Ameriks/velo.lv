@@ -12,6 +12,7 @@ from django_countries.fields import CountryField
 from slugify import slugify
 
 from velo.core.models import CustomSlug
+from velo.results.models import Result
 from velo.velo.mixins.models import StatusMixin, TimestampMixin
 
 
@@ -113,3 +114,7 @@ class MemberApplication(models.Model):
     participant_potential = models.ForeignKey('registration.Participant', related_name='memberapplication_potential_set',blank=True, null=True)
 
     legacy_id = models.IntegerField(blank=True, null=True)
+
+    @property
+    def get_result(self):
+        return Result.objects.get(competition=self.competition, participant=self.participant)

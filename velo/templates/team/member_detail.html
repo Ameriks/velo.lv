@@ -1,0 +1,123 @@
+{% extends "base/competition.html" %}
+{% load i18n cache staticfiles thumbnail django_tables2 email %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block content2 %}
+
+    {{ block.super }}
+
+            <div class="w100 bgc-dgray border-right border-left no-border--480">
+                <div class="w100 bottom-margin--20"></div>
+                <div class="w100">
+                    <div class="inner no-padding--480">
+                        <div class="row row--gutters-20">
+
+                    <div class="col-xl-7 col-m-11 col-s-24">
+                        <a href="{% url "competition:team" competition.id object.team_id %}" class="btn btn--50 btn--dblue btn--blue-hover btn--blue-active btn--no-borders w100 flex--important wrap--nowrap direction--row justify--space-between align-items--center">
+                            <svg class="btn__icon icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--left"></use>
+                            </svg>
+                            <div>{% trans "Team Information" %}</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w100 bottom-margin--20"></div>
+{% endblock %}
+
+
+{% block content_left %}
+
+    <div class="w100 bottom-margin--20"></div>
+    <div class="w100 border-top border-bottom bottom-margin--20">
+        <div class="inner no-padding--480">
+            <div class="secondary-heading c-theme w100">
+                {{ object.team }}
+            </div>
+        </div>
+    </div>
+<div class="w100 bottom-margin--20 border-bottom">
+    <div class="row">
+        <div class="col-xl-10 col-s-24 border-right no-border--480">
+            <figure class="w100 img-wrapper">
+                <img
+                    data-img-src="{% static "template/velo-2016/html/userfiles/1by1.jpgg" %}"
+                    onload="imgLoaded(this)"
+                    class="w100"
+                >
+            </figure>
+        </div>
+        <div class="col-xl-14 col-s-24">
+            <h2 class="heading heading--smaller heading--padding-20 w100 border-bottom fs21 flex wrap--nowrap direction--column justify--center align-items--start">
+                Andris Alps
+            </h2>
+            <div class="w100 bottom-margin--20"></div>
+            <div class="inner no-padding--480">
+                <div class="editor-text">
+                    <p class="uppercase">{% trans "Country" %}: <span class="c-yellow">{{ object.country }}</span><br>
+                    {% trans "Birth Year" %}: <span class="c-yellow">{{ object.birthday.year }}</span></p>
+                </div>
+            </div>
+            <div class="w100 bottom-margin--20"></div>
+        </div>
+    </div>
+</div>
+
+<div class="w100 overflow--auto border-bottom bottom-margin--20">
+                        <table class="table-block">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>{% trans "Competition" %}</th>
+                                    <th>{% trans "Points" %}</th>
+                                    <th>{% trans "Result" %}</th>
+                                    <th>{% trans "Kind" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for comp in object.memberapplication_set.all %}
+                                {% with result=comp.get_result %}
+                                <tr>
+                                    <td>{{ comp.participant.primary_number }}</td>
+                                    <td>{{ comp.competition.get_full_name }}</td>
+                                    <td>{{ result.points_distance }}</td>
+                                    <td>{{ result.result_distance }}</td>
+                                    <td>{{ comp.get_kind_display }}</td>
+                                </tr>
+                                {% endwith %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+{% endblock content_left %}
+
+
+{% block content_right %}
+
+    <div class="w100 bottom-margin--20"></div>
+    <div class="w100 border-top border-bottom bottom-margin--20">
+        <div class="inner no-padding--480">
+            <div class="secondary-heading c-theme w100">
+                {% trans "All Team" %}
+            </div>
+        </div>
+    </div>
+    <div class="w100 bottom-border--20">
+        <div class="w100 bottom-margin--20"></div>
+        {% for member in members %}
+            <a href="{% url 'competition:team_member' competition.id member.team_id member.id %}" class="w100 border-bottom bottom-margin--20">
+                <div class="inner no-padding--480">
+                    <div class="row">
+                        <div class="col-xs-24 flex--1 fs12 c-yellow uppercase bottom-margin--20">{{ member.first_name }} {{ member.last_name }}</div>
+                        <div class="col-xs-24 fs12 c-white uppercase bottom-margin--20">{{ member.birthday.year }}</div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+
+{% endblock content_right %}

@@ -13,20 +13,15 @@ from velo.registration.models import Participant, Application, CompanyParticipan
 
 class ApplicationTable(tables.Table):
     id = tables.LinkColumn('application', args=[A('code')])
+    action = tables.TemplateColumn(verbose_name="", orderable=False, template_name="registration/table/my_application_action.html")
 
     def render_competition(self, value):
         return value.get_full_name
 
-    def render_payment_status(self, value, record):
-        if record.external_invoice_code:
-            return mark_safe("%s <a href='https://www.e-rekins.lv/d/i/%s/'>%s</a>" % (
-            value, record.external_invoice_code, _('Download Invoice')))
-        return value
-
     class Meta:
         model = Application
         attrs = {"class": "table-block"}
-        fields = ("id", "competition", "created", "payment_status",)
+        fields = ("id", "competition", "created", "payment_status", "action")
         empty_text = _("You haven't created any application.")
         order_by = ("-created")
         per_page = 20

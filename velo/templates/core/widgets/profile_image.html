@@ -1,0 +1,23 @@
+{% load i18n %}
+<div
+    class="layouts-profile-hero  js-background-image"
+    data-background-image="{{ value }}"
+></div>
+<div class="input-wrap w100 bottom-margin--20">
+    <div class="input-file">
+        <input
+            type="file"
+            name="{{ name }}"
+            id="{{ id }}"
+            class="{{ class }} input-file__input  js-input-file"
+            data-filesize="8388608"
+        />
+        <label
+            for="{{ id }}"
+            class="layouts-profile-image-input input-file__label btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100  js-input-file__label"
+        >
+            <span class="js-input-file__text">{% trans "Change Image" %}</span>
+        </label>
+        <p class="error hidden  js-input-file__error">{% trans "Upload image that is smaller than" %} <span class="js-allowed-size">NN</span> MB</p>
+    </div>
+</div>

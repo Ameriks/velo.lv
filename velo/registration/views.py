@@ -597,3 +597,7 @@ class ParticipantPDF(DetailView):
         response.write(file_obj.getvalue())
         file_obj.close()
         return response
+
+
+class ParticipantProfile(TemplateView):
+    template_name = 'registration/participant_profile.html'

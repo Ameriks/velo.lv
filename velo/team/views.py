@@ -92,9 +92,20 @@ class TeamView(DetailView):
     pk_url_kwarg = 'pk2'
 
     def get_context_data(self, **kwargs):
-        context = super(TeamView, self).get_context_data(**kwargs)
-
+        context = super().get_context_data(**kwargs)
+        context.update({'competition': Competition.objects.get(id=self.kwargs.get('pk'))})
         context.update({'members': self.object.member_set.filter(status=Member.STATUS_ACTIVE).order_by('last_name')})
+
+        return context
+
+class TeamMemberProfileView(DetailView):
+    model = Member
+    pk_url_kwarg = 'pk3'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'competition': Competition.objects.get(id=self.kwargs.get('pk'))})
+        context.update({'members': self.object.team.member_set.filter(status=Member.STATUS_ACTIVE).order_by('last_name')})
 
         return context
 
@@ -105,7 +116,7 @@ class MyTeamList(LoginRequiredMixin, SingleTableView):
     template_name = 'team/team_list_my.html'
 
     def get_queryset(self):
-        queryset = super(MyTeamList, self).get_queryset()
+        queryset = super().get_queryset()
         queryset = queryset.filter(owner=self.request.user).select_related('distance', 'distance__competition', 'distance__competition__parent')
         return queryset
 
@@ -118,7 +129,7 @@ class MemberInline(GetClassNameMixin, InlineFormSet):
     competition = None
 
     def __init__(self, *args, **kwargs):
-        super(MemberInline, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.object:
             self.competition = self.object.distance.competition
 
@@ -191,7 +202,7 @@ class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
         return queryset
 
     def post(self, request, *args, **kwargs):
-        ret = super(TeamUpdateView, self).post(request, *args, **kwargs)
+        ret = super().post(request, *args, **kwargs)
         if request.POST.get('submit_pay', None):
 
             next_competition = None
@@ -231,7 +242,7 @@ class TeamApplyList(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMix
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(TeamApplyList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         competition = self.object.distance.competition
         child_competitions = competition.get_children()

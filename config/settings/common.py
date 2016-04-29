@@ -264,7 +264,7 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'velo.core.forms.SignupForm'
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'core.User'
-LOGIN_REDIRECT_URL = 'users:redirect'
+LOGIN_REDIRECT_URL = 'account:redirect'
 LOGIN_URL = 'account_login'
 
 
@@ -368,6 +368,7 @@ THUMBNAIL_ALIASES = {
     'core': {
         'email_logo': {'size': (210, 120), 'crop': False},
         'email_logo_double': {'size': (420, 240), 'crop': False},
+        'profile': {'size': (110, 110), 'crop': True}
     },
     'news': {
 

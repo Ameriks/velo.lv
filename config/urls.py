@@ -73,8 +73,8 @@ urlpatterns = i18n_patterns(
     url(_(r'^competition/'), include('velo.velo.urls_competition', namespace='competition')),
     url(_(r'^supporters/'), AgencySupporters.as_view(), name="agency_supporters"),
     url(_(r'^calendar/'), CalendarView.as_view(), name="calendar"),
-    url(_(r'^users/'), include('velo.core.urls', namespace='users')),
-    url(r'^accounts/', include('allauth.urls')),
+    url(_(r'^account/'), include('velo.core.urls', namespace='account')),
+    url(_(r'^account/'), include('allauth.urls')),
     url(r'^jsi18n/$', cached_javascript_catalog, js_info_dict),
 )
 

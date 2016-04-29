@@ -119,7 +119,7 @@ class CounterNode(template.Node):
 
     def render(self, context):
         # global context initialization
-        if not context.has_key(TEMPLATEADDONS_COUNTERS_VARIABLE):
+        if not TEMPLATEADDONS_COUNTERS_VARIABLE in context:
             context[TEMPLATEADDONS_COUNTERS_VARIABLE] = {}
         counters = context[TEMPLATEADDONS_COUNTERS_VARIABLE]
 
@@ -127,7 +127,7 @@ class CounterNode(template.Node):
         silent = parse_tag_argument(self.silent, context)
         assign = parse_tag_argument(self.assign, context)
 
-        if not counters.has_key(name):
+        if not name in counters:
             start = parse_tag_argument(self.start, context)
             step = parse_tag_argument(self.step, context)
             ascending = parse_tag_argument(self.ascending, context)

@@ -93,20 +93,37 @@
                 {% if not user.is_authenticated %}
                     <a href="{% url 'account_login' %}" class="login-link flex justify--center align-items--center">{% trans 'Login' %}</a>
                 {% else %}
+
+
                     <nav class="profile-nav js-profile-nav">
-                        <div class="profile-nav__text flex justify--center align-items--center">{% trans "My Profile" %}</div>
-                        <ul class="profile-nav__items">
-                            <li class="profile-nav__item">
-                                <a href="" class="profile-nav__link">Par mani</a>
-                            </li>
-                            <li class="profile-nav__item">
-                                <a href="" class="profile-nav__link">Sacensības</a>
-                            </li>
+                    <div class="profile-nav__select flex direction--column justify--center align-items--center">
+                        <figure class="profile-nav__hero flex justify--center align-items--center img-wrapper">
+                            <img
+                                class="profile-nav__hero-image"
+                                data-img-src="{% if not user.image %}{% static "template/velo-2016/html/userfiles/igo-japins.jpg" %}{% else %}{{ user.image.profile.url }}{% endif %}"
+                                onload="imgLoaded(this)"
+                            >
+                        </figure>
+                        <div class="profile-nav__triangle"></div>
+                    </div>
+                    <ul class="profile-nav__items">
+                        <li class="profile-nav__item">
+                            <a href="{% url 'account:profile' %}" class="profile-nav__link">{% trans "Profile" %}</a>
+                        </li>
+                        <li class="profile-nav__item">
+                            <a href="{% url 'account:applications' %}" class="profile-nav__link">{% trans "Applications" %}</a>
+                        </li>
+
+                        <li class="profile-nav__item">
+                            <a href="{% url 'companyapplication_list' %}" class="profile-nav__link">{% trans "Company Applications" %}</a>
+                        </li>
+
                             <li class="profile-nav__item">
                                 <a href="{% url 'account_logout' %}" class="profile-nav__link">{% trans "Logout" %}</a>
                             </li>
-                        </ul>
-                    </nav>
+                    </ul>
+                </nav>
+
                 {% endif %}
 
                 <nav class="language-nav js-language-nav">

@@ -11,7 +11,7 @@ from velo.registration.views import ParticipantList, TeamJsonList, ParticipantSe
 from velo.results.views import ResultList, SebStandingResultList, SebTeamResultList, SebTeamResultStandingList, \
     TeamResultsByTeamName, ResultDiplomaPDF, TeamResultsByTeamNameBetweenDistances
 from velo.supporter.views import CompetitionSupporters, CompetitionIframeSupporters
-from velo.team.views import TeamAppliedView, TeamListView, TeamView
+from velo.team.views import TeamAppliedView, TeamListView, TeamView, TeamMemberProfileView
 
 urlpatterns = [
                        url(r'^(?P<pk>\d+)/$', CompetitionDetail.as_view(), name='competition'),
@@ -25,6 +25,7 @@ urlpatterns = [
 
                        url(_(r'^(?P<pk>\d+)/team/$'), TeamListView.as_view(), name='team'),
                        url(_(r'^(?P<pk>\d+)/team/(?P<pk2>\d+)/$'), TeamView.as_view(), name='team'),
+                       url(_(r'^(?P<pk>\d+)/team/(?P<pk2>\d+)/(?P<pk3>\d+)/$'), TeamMemberProfileView.as_view(), name='team_member'),
 
                        url(_(r'^(?P<pk>\d+)/supporters/iframe/$'), CompetitionIframeSupporters.as_view(),
                            name='supporters_embeded'),

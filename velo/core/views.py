@@ -3,12 +3,14 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 from django.core.urlresolvers import reverse
 from django.utils.translation import get_language
-from django.views.generic import TemplateView, DetailView, ListView, RedirectView
+from django.views.generic import TemplateView, DetailView, ListView, RedirectView, UpdateView
 from django.utils import timezone
 
 from django_downloadview import ObjectDownloadView
 from braces.views import LoginRequiredMixin
-from velo.core.models import Competition, Map
+
+from velo.core.forms import UserProfileForm
+from velo.core.models import Competition, Map, User
 from velo.gallery.models import Album, Video, Photo
 from velo.news.models import News
 from velo.supporter.models import CompetitionSupporter
@@ -19,7 +21,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
-        return reverse("users:applications")
+        return reverse("account:applications")
 
 
 class IndexView(TemplateView):
@@ -120,3 +122,12 @@ class CalendarView(CacheControlMixin, TemplateView):
         })
 
         return context
+
+
+class ProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = 'core/user_registration.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user

@@ -10,11 +10,11 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit
+from crispy_forms.layout import Layout, Submit, Div, Fieldset, Field
 from django_countries.data import COUNTRIES
 
 from velo.core.models import User, Choices
-from velo.core.widgets import ButtonWidget
+from velo.core.widgets import ButtonWidget, ProfileImage, SplitDateWidget
 
 
 # NEW
@@ -54,38 +54,111 @@ class SignupForm(forms.Form):
 class UserProfileForm(forms.ModelForm):
     email = forms.CharField(required=False, widget=ButtonWidget())
     password = forms.CharField(required=False, widget=ButtonWidget())
+    social = forms.CharField(required=False, widget=ButtonWidget())
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "country", "birthday", "city", "bike_brand", "phone_number", "send_email")
+        fields = ("first_name", "last_name", "country", "birthday", "city", "bike_brand", "phone_number", "send_email", "image", "description")
+        widgets = {
+            'image': ProfileImage,
+            'birthday': SplitDateWidget
+        }
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
 
         self.fields['email'].widget.attrs.update(
-            {'href': reverse('accounts:email_change_view'), 'class': 'btn btn-primary'})
+            {'href': reverse('account_email'), 'class': 'btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100'})
         self.fields['email'].widget.text = mark_safe(
             "%s <small>%s</small>" % (self.instance.email, ugettext('Change Email')))
 
         self.fields['password'].widget.attrs.update(
-            {'href': reverse('accounts:password_change'), 'class': 'btn btn-primary'})
+            {'href': reverse('account_change_password'), 'class': 'btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100'})
         self.fields['password'].widget.text = mark_safe("****** <small>%s</small>" % ugettext('Change Password'))
 
-        self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-8'
-        self.helper.layout = Layout(
-            'email',
-            'password',
+        self.fields['social'].widget.attrs.update(
+            {'href': reverse('socialaccount_connections'), 'class': 'btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100'})
+        self.fields['social'].widget.text = mark_safe(ugettext('Connect / Disconnect Social Accounts'))
 
-            'first_name',
-            'last_name',
-            'birthday',
-            'country',
-            'city',
-            'bike_brand',
-            'phone_number',
-            'send_email',
-            Submit('update_profile', _('Update Profile'), css_class='btn-default'),
+
+        self.helper = FormHelper()
+        self.helper.form_class = "w100 bottom-margin--20  js-form"
+        self.helper.label_class = "w100 fs13 bottom-margin--10"
+        self.helper.field_class = "input-field if--50 if--dark"
+        self.helper.layout = Layout(
+            Div(
+                Div(
+                    Div(css_class='w100 bottom-margin--20',),
+                    Fieldset(
+                        None,
+                        'email',
+                        'password',
+                        Field('country', css_class="select-hide js-select"),
+                        Field('city', css_class="select-hide js-select"),
+                        Field('bike_brand', css_class="select-hide js-select"),
+                        'social',
+                        css_class='inner'
+                    ),
+                  css_class='col-xl-9 col-m-24 layouts-profile-left'
+                ),
+
+
+                Div(
+                    Div(css_class='w100 bottom-margin--20', ),
+                    Fieldset(
+                        None,
+                        Div(
+                            Div(
+                                "image",
+                                css_class="col-xl-8 col-s-18"
+                            ),
+                            Div(
+                               Field("description", css_class="layouts-profile-textarea input-field if--50 if--dark input-field--textarea w100"),
+                                css_class="col-xl-16 col-s-24"
+                            ),
+                            Div(
+                                Field("first_name", css_class="input-field if--50 if--dark"),
+                              css_class="col-xl-12 col-s-24"
+                            ),
+                            Div(
+                                Field("last_name", css_class="input-field if--50 if--dark"),
+                                css_class="col-xl-12 col-s-24"
+                            ),
+                            Div(
+                                "birthday",
+                                css_class="col-xl-12 col-s-24"
+                            ),
+                            Div(
+                                Field("phone_number", css_class="input-field if--50 if--dark"),
+                                css_class="col-xl-12 col-s-24"
+                            ),
+                            Div(
+                                "send_email",
+                                css_class="col-xl-24"
+                            ),
+                          css_class='row row--gutters-20'
+                        ),
+                        css_class='inner'
+                    ),
+                    css_class="col-xl-15 col-m-24 bgc-dgray relative"
+                ),
+
+                Div(
+                    Div(
+                        Div(
+                            css_class="col-xl-18 col-m-14 col-s-24"
+                        ),
+                        Div(
+                            Submit('update_profile', _('Update Profile'), css_class='btn btn--50 btn--blue btn--blue-hover btn--blue-active w100'),
+                          css_class="col-xl-6 col-m-10 col-s-24"
+                        ),
+                        css_class="row"
+                    ),
+                    css_class="col-xl-24 border-top border-bottom"
+                ),
+
+
+                css_class='row',
+            ),
+
         )

@@ -151,6 +151,7 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.form_class = "w100 js-form-participants"
+        self.helper.label_class = "input-field-label"
         self.helper.include_media = False
         self.helper.layout = Layout(
             'team_search',
@@ -447,6 +448,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.helper.form_tag = False
         self.helper.include_media = False
         self.helper.template = "wd_forms/whole_uni_formset.html"
+        self.helper.label_class = "input-field-label"
         self.helper.layout = Layout(
 
             Div(

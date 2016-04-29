@@ -33,7 +33,7 @@
         {% block content2 %}
         <div class="w100">
             <div class="inner">
-                <div class="row border-right no-border--480">
+                <div class="row border-right border-bottom no-border--480">
                     <div class="col-xl-17 col-l-15 col-m-24 bgc-dgray border-left no-border--480">
 
                         {% include "base/_competition_picker.html" with url="competition:competition" %}
@@ -44,7 +44,9 @@
 
                     </div>
                     <div class="col-xl-7 col-l-9 bgc-dgray border-left no-border--480">
-                        {% include "base/_competition_supporters.html" %}
+                        {% block content_right %}
+                            {% include "base/_competition_supporters.html" %}
+                        {% endblock content_right %}
                     </div>
                 </div>
             </div>

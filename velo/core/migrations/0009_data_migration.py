@@ -108,10 +108,11 @@ def migrate_data(apps, schema_editor):
 
     TreeItem.objects.get(id=54).delete()
     TreeItem.objects.get(id=59).delete()
+    TreeItem.objects.get(id=51).delete()
 
-    prof = TreeItem.objects.get(id=52)
-    prof.inmenu = False
-    prof.save()
+    TreeItem.objects.filter(id__in=[2, 5, 52]).update(inmenu=False)
+    TreeItem.objects.create(title="Jaunumi", url="news:news_list", urlaspattern=True, tree_id=1, hidden=False,
+                            alias="news", inmenu=True, inbreadcrumbs=True, insitetree=True)
 
 
 class Migration(migrations.Migration):

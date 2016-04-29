@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load staticfiles i18n sitetree crispy_forms_tags %}
+
+{% block content %}
+    <div class="w100 flex">
+        <div class="inner flex">
+            <div class="w100 border-right border-left flex direction--column">
+                <h1 class="heading w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
+                    <span class="w100">{% trans "My Profile" %}</span>
+                    <span class="w100 c-yellow">{{ object.email }}</span>
+                </h1>
+                <h2 class="heading heading--smaller w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
+                    <span class="w100">{% trans "My Information" %}</span>
+                </h2>
+
+
+                {% crispy form %}
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
