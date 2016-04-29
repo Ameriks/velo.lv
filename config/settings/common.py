@@ -83,7 +83,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'velo.velo.middleware.SSLRedirectMiddleware', # CUSTOM
+ #   'velo.velo.middleware.SSLRedirectMiddleware', # CUSTOM
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
