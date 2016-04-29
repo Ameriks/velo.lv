@@ -149,7 +149,7 @@ module.exports = function (grunt) {
           buildName: 'project_velo',
           tag: 'latest',
           username: 'ameriks',
-          push: false,
+          push: true,
           force: true
         }
       }

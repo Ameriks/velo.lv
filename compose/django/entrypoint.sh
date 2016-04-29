@@ -14,6 +14,6 @@ export CELERY_BROKER_URL=$REDIS_URL
 
 #export DATABASE_URL=postgres://$POSTGRES_ENV_POSTGRES_USER:$POSTGRES_ENV_POSTGRES_PASSWORD@postgres:5432/$POSTGRES_ENV_POSTGRES_USER
 
-cd /app && git pull
+#cd /app && git pull
 
 exec "$@"
