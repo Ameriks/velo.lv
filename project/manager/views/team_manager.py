@@ -147,8 +147,9 @@ class ManageTeamUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, Reque
     def forms_valid(self, form, inlines):
         ret = super(ManageTeamUpdate, self).forms_valid(form, inlines)
 
-        class_ = load_class(self.object.distance.competition.processing_class)
-        competition_class = class_(competition_id=self.kwargs.get('pk'))
-        competition_class.recalculate_team_result(team=self.object)
+        # TODO: Fix recalculation. In SEB we should recalculate every child competition instead parent competition
+        #class_ = load_class(self.object.distance.competition.processing_class)
+        #competition_class = class_(competition_id=self.kwargs.get('pk'))
+        #competition_class.recalculate_team_result(team=self.object)
 
         return ret
