@@ -18,7 +18,7 @@
     <main>
         <div class="w100">
             <div class="inner">
-                <div class="calendar-slider js-calendar-slider">
+                <div class="calendar-slider js-calendar-slider" data-slide-to="1">
 
 
                     <div class="calendar-slider__slide border-right">
@@ -28,8 +28,8 @@
                                 <div class="calendar-slider__slide border-right">
                             {% endif %}
 
-                            <div class="calendar-slider__head accordeon-head h100  js-accordeon-head js-open-accordeon {% if item.id == next_competition.id %}active{% endif %}">
-                                <div class="calendar-tile c-white flex wrap--nowrap direction--column justify--start align-items--start border-left">
+                            <div class="calendar-slider__head accordeon-head h100  js-accordeon-head js-open-accordeon {% if forloop.counter0 in active_indexes %}active{% endif %}">
+                                <div class="calendar-tile h100 c-white flex wrap--nowrap direction--column justify--start align-items--start border-left">
                                     <a data-href="{% url "competition:competition" item.id %}"
                                        class="calendar-tile__info flex--1 js-calendar-slider-link">
                                         <div class="w100 flex wrap--nowrap direction--row justify--space-between align-items--center">
@@ -73,20 +73,25 @@
                                 </div>
                             </div>
 
-                            <div class="calendar-slider__body accordeon-body h100  js-accordeon-body {% if item.id == next_competition.id %}active{% endif %}">
+                            <div class="calendar-slider__body accordeon-body h100  js-accordeon-body {% if forloop.counter0 in active_indexes %}active{% endif %}">
                                 <div class="calendar-slider__acordeon-conent border-left flex wrap--nowrap direction--column">
                                     <figure class="w100 img-wrapper">
                                         <img
                                                 class="js-calendar-slider-image"
-                                                data-calendar-slider-img="{{ item.get_random_image.image.front_small.url }}"
+                                                {% if forloop.counter0 in active_indexes %}src{% else %}data-calendar-slider-img{% endif %}="{{ item.get_random_image.image.front_small.url }}"
                                                 data-load-on="880"
                                                 onload="imgLoaded(this)"
                                         >
                                     </figure>
                                     <div class="calendar-slider__acordeon-text editor-text flex--1 flex direction--column justify--center align-items--start">
                                         <p>{{ item.description }}</p>
-                                        <a href="{% url "competition:competition" item.id %}">{% trans "Open Competition" %}</a>
                                     </div>
+                                    <a class="calendar-slider__btn btn btn--60 btn--white-transparent btn--no-borders left flex--important wrap--nowrap justify--space-between align-items--center" href="{% url "competition:competition" item.id %}">
+                                        <span class="c-yellow">Atvērt sacensības</span>
+                                        <svg class="left-margin--10 c-yellow icon">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                        </svg>
+                                    </a>
                                 </div>
                             </div>
 
@@ -109,7 +114,7 @@
                                     <a href="{% url "competition:competition" competition.id %}"
                                        class="logo-tiles__tile img-wrapper">
                                         <img
-                                                data-img-src="{{ competition.logo_svg.url }}"
+                                                data-src="{{ competition.logo_svg.url }}"
                                                 onload="imgLoaded(this)"
                                         >
                                         <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
@@ -137,7 +142,7 @@
         {#    {% include "base/_newest_results.html" %}#}
 
         {% if news_list %}
-            <div class="w100 border-bottom">
+            <div class="w100 border-bottom border-top">
                 <div class="inner">
                     <h2 class="heading fs21 border-left flex wrap--nowrap direction--row justify--start align-items--center">
                         <a href="{% url 'news:news_list' %}" class="heading__link">

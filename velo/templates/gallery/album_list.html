@@ -5,7 +5,7 @@
     <div class="w100">
         <div class="inner">
             <div class="row border-right no-border--480">
-                <div class="flex--1 border-left no-border--480">
+                <div class="banner-area-context banner-area-context--small flex--1 border-left no-border--480">
                     <div class="w100 bottom-margin--20"></div>
                     <div class="w100">
                         <div class="inner no-padding--480">
@@ -22,7 +22,7 @@
                                         class="brief border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20 cursor--pointer  js-open-gallery-lightbox">
                                         <div>
                                             <figure class="brief__hero brief-hover-layer img-wrapper">
-                                                <img data-img-src="{{ object.primary_image.image.thumb.url }}" onload="imgLoaded(this)" />
+                                                <img data-src="{{ object.primary_image.image.thumb.url }}" onload="imgLoaded(this)" />
                                                 <div class="brief-hover-top-layer brief-hover-top-layer--hero">
                                                     <div class="table">
                                                         <div class="table-cell text-align--center">
@@ -34,8 +34,8 @@
                                                 </div>
                                             </figure>
                                         </div>
-                                        <div class="brief__info brief-hover-layer flex direction--column justify--start align-items--stretch">
-                                            <div class="brief-hover-top-layer  flex direction--column justify--start align-items--stretch">
+                                        <div class="brief__info brief-hover-layer">
+                                            <div class="brief-hover-top-layer">
                                                 <div class="flex--1">
                                                     <div class="brief__heading">
                                                         <div class="top-padding--13 right-padding--13 bottom-padding--10 left-padding--13">{{ object.title }}</div>

@@ -53,7 +53,7 @@
 <div class="background">
     <figure class="background__image img-wrapper">
         <img
-            data-img-src="{% static "template/velo-2016/html/img/background-images/bg1.jpg" %}"
+            data-src="{% static "template/velo-2016/html/img/background-images/bg1.jpg" %}"
             onload="imgLoaded(this)"
         >
         <div class="background__gradient"></div>
@@ -100,7 +100,7 @@
                         <figure class="profile-nav__hero flex justify--center align-items--center img-wrapper">
                             <img
                                 class="profile-nav__hero-image"
-                                data-img-src="{% if not user.image %}{% static "template/velo-2016/html/userfiles/igo-japins.jpg" %}{% else %}{{ user.image.profile.url }}{% endif %}"
+                                data-src="{% if not user.image %}{% static "template/velo-2016/html/userfiles/igo-japins.jpg" %}{% else %}{{ user.image.profile.url }}{% endif %}"
                                 onload="imgLoaded(this)"
                             >
                         </figure>

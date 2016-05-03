@@ -3041,6 +3041,10 @@ textarea:focus:-ms-input-placeholder {
   max-width: 818px;
   width: calc(100% - 281px); }
 
+.banner-area-context--small {
+  max-width: 898px;
+  width: calc(100% - 201px); }
+
 .banner {
   background-color: #726658;
   position: relative;
@@ -3131,16 +3135,18 @@ textarea:focus:-ms-input-placeholder {
 .brief-hover-top-layer--hero {
   position: absolute;
   top: 0;
-  left: 0; }
+  left: 0;
+  z-index: 2; }
 
 .brief__hero {
   float: left;
   width: 100%;
-  padding: 0 0 100% 0;
   position: relative;
-  background-color: transparent; }
+  padding: 0 0 100% 0; }
 
 .brief__hero img {
+  float: left;
+  width: 100%;
   position: absolute;
   top: 0;
   left: 0;
@@ -3322,9 +3328,12 @@ textarea:focus:-ms-input-placeholder {
   height: 100%; }
 
 .calendar-slider__acordeon-text {
-  padding: 0px 40px;
+  padding: 0px 30px;
   float: left;
   width: 100%; }
+
+.calendar-slider__btn {
+  width: 230px; }
 
 .accordeon {
   float: left;
@@ -3381,7 +3390,6 @@ textarea:focus:-ms-input-placeholder {
 .calendar-tile {
   float: left;
   width: 100%;
-  height: 100%;
   position: relative;
   cursor: pointer; }
 
@@ -3443,18 +3451,20 @@ textarea:focus:-ms-input-placeholder {
   height: 60px;
   margin: 0px 0px 15px 0px; }
 
+.calendar-tile__logo img {
+  width: 100%; }
+
 .calendar-tile__heading {
   float: left;
   width: 100%;
-  font-size: 21px;
+  font-size: 19px;
   text-transform: uppercase;
   font-weight: 700;
   line-height: 1.1;
   border-style: solid;
   border-width: 1px 0px;
   padding: 10px 0px;
-  margin: 0px 0px 15px 0px;
-  word-break: break-all; }
+  margin: 0px 0px 15px 0px; }
 
 .calendar-tile__text {
   float: left;
@@ -3474,7 +3484,9 @@ textarea:focus:-ms-input-placeholder {
   .calendar-tile__day {
     font-size: 40px; }
   .calendar-tile__month {
-    font-size: 23px; } }
+    font-size: 23px; }
+  .calendar-tile__heading {
+    font-size: 16px; } }
 
 @media only screen and (max-width: 560px) {
   .calendar-tile__day {
@@ -3484,7 +3496,7 @@ textarea:focus:-ms-input-placeholder {
   .calendar-tile__logo {
     height: 42px; }
   .calendar-tile__heading {
-    font-size: 18px; } }
+    font-size: 16px; } }
 
 .card {
   flex-grow: 1;

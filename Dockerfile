@@ -1,4 +1,4 @@
-FROM ameriks/django_webapp:alpine
+FROM ameriks/django_geowebapp:latest
 
 COPY ./requirements /tmp/requirements
 RUN pip3 install -r /tmp/requirements/production.txt

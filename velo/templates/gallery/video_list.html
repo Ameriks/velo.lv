@@ -22,7 +22,7 @@
                                         class="brief border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20 cursor--pointer  js-open-gallery-lightbox">
                                         <div>
                                             <figure class="brief__hero brief-hover-layer img-wrapper">
-                                                <img data-img-src="{% firstof object.image '/static/img/grey_placeholder.png' %}" onload="imgLoaded(this)" />
+                                                <img data-src="{% firstof object.image '/static/img/grey_placeholder.png' %}" onload="imgLoaded(this)" />
                                                 <div class="brief-hover-top-layer brief-hover-top-layer--hero">
                                                     <div class="table">
                                                         <div class="table-cell text-align--center">

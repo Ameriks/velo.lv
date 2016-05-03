@@ -182,6 +182,63 @@ var StdHistory = function (d) {
 };
 
 var historyApi = new StdHistory();
+/**
+ * jQuery Unveil
+ * A very lightweight jQuery plugin to lazy load images
+ * http://luis-almeida.github.com/unveil
+ *
+ * Licensed under the MIT license.
+ * Copyright 2013 Luís Almeida
+ * https://github.com/luis-almeida
+ */
+
+;(function($) {
+
+  $.fn.unveil = function(threshold, callback) {
+
+    var $w = $(window),
+        th = threshold || 0,
+        retina = window.devicePixelRatio > 1,
+        attrib = retina? "data-src-retina" : "data-src",
+        images = this,
+        loaded;
+
+    this.one("unveil", function() {
+      var source = this.getAttribute(attrib);
+      source = source || this.getAttribute("data-src");
+      if (source) {
+        this.setAttribute("src", source);
+        if (typeof callback === "function") callback.call(this);
+      }
+    });
+
+    function unveil() {
+      var inview = images.filter(function() {
+        var $e = $(this);
+        if ($e.is(":hidden")) return;
+
+        var wt = $w.scrollTop(),
+            wb = wt + $w.height(),
+            et = $e.offset().top,
+            eb = et + $e.height();
+
+        return eb >= wt - th && et <= wb + th;
+      });
+
+      loaded = inview.trigger("unveil");
+      images = images.not(loaded);
+    }
+
+    $w.on("scroll.unveil resize.unveil lookup.unveil", unveil);
+
+    unveil();
+
+    return this;
+
+  };
+
+})(window.jQuery || window.Zepto);
+
 /*! jQuery Validation Plugin - v1.15.0 - 2/24/2016
  * http://jqueryvalidation.org/
  * Copyright (c) 2016 Jörn Zaefferer; Licensed MIT */
@@ -302,49 +359,14 @@ e&&d()}return c});
                 loadImage();
             }
         });
-    };    
-    
-    //defer image loading
-    var deferImageLoading = function() {
-        var imgDefer = $('img');
-        var windowWidth = window.innerWidth;
-        imgDefer.each(function(){
-            var $this = $(this);
-            var imgDeferSrc = $this.attr('data-img-src');
-            var imgDeferScreenSize = Number($this.attr('data-load-on'));
-            
-            if (typeof imgDeferSrc !== typeof undefined && imgDeferSrc !== false) {
-                if (!isNaN(imgDeferScreenSize)){
-                    if(imgDeferScreenSize < windowWidth){
-                        $this.attr('src', imgDeferSrc);
-                        $this.removeAttr('data-img-src');
-                    }
-                }else{
-                    $this.attr('src', imgDeferSrc);
-                    $this.removeAttr('data-img-src');
-                }
-            }
-        });
     };
     
-    var deferIframeLoading = function() {
-        var iframeDefer = document.getElementsByTagName('iframe');
-        for (var i = 0; i < iframeDefer.length; i++) {
-            if (iframeDefer[i].getAttribute('data-src')) {
-                iframeDefer[i].setAttribute('src', iframeDefer[i].getAttribute('data-src'));
-            }
-        }
-    };
-    
-    $(window).on('load orientationchange', deferImageLoading);
     $(window).on('load orientationchange', deferBackgroundImageLoading);
-    $(window).on('load', deferIframeLoading);
     
     var resizeTimer;
     $(window).on('resize', function (e) {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
-            deferImageLoading();
             deferBackgroundImageLoading();
         }, 250);
     });
@@ -427,6 +449,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 })();
 (function(){
     var slider = $('.js-calendar-slider');
+    var slideTo = slider.attr('data-slide-to');
 
     slider.owlCarousel({
         items:1,
@@ -441,6 +464,8 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             }
         }
     });
+    
+    slider.trigger('to.owl.carousel', [slideTo]);
 
     var loadSliderImages = function(containingObject){
         var sliderImage = containingObject.find('.js-calendar-slider-image');
@@ -528,7 +553,6 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             clientX = e.originalEvent.clientX;
         }else if(e.originalEvent.targetTouches){
             clientX = e.originalEvent.targetTouches[0].clientX;
-            //e.preventDefault();
         }
         return clientX;
     };
@@ -726,7 +750,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             gallerySliderItem = itemIndex + 2;
             for(var i = gallerySlideReached; i < gallerySliderItem; i++) {
                 var thisImage = sync1.find('.gallery-slider__slide img:eq('+i+')');
-                thisImage.attr('src', thisImage.attr('data-src'));
+                thisImage.attr('src', thisImage.attr('data-slider-src'));
                 gallerySlideReached ++;
             }
         }
@@ -735,7 +759,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 
             for(var i = gallerySlideReached; i < 3; i++) {
                 var thisImage = sync1.find('.gallery-slider__slide img:eq('+i+')');
-                thisImage.attr('src', thisImage.attr('data-src'));
+                thisImage.attr('src', thisImage.attr('data-slider-src'));
                 gallerySlideReached ++;
             }
             gallerySliderItem = e.item.index + 1;
@@ -1117,6 +1141,10 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     });
 })();
 svg4everybody();
+(function(){
+    $('.video__iframe').unveil();
+    $('img').unveil();
+})();
 /**
  * jQuery Formset 1.3-pre
  * @author Stanislaus Madueke (stan DOT madueke AT gmail DOT com)

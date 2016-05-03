@@ -30,8 +30,8 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-        calendar = Competition.objects.filter(competition_date__year=timezone.now().year).order_by(
-            'competition_date').select_related('parent')
+        calendar = list(Competition.objects.filter(competition_date__year=timezone.now().year).order_by(
+            'competition_date').select_related('parent'))
         context.update({'calendar': calendar})
 
         next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[
@@ -43,6 +43,16 @@ class IndexView(TemplateView):
         context.update({'front_photo': Photo.objects.filter(album_id=144)[0]})
 
         context.update({'news_list': News.objects.published().filter(language=get_language())[:4]})
+
+        active_indexes = []
+        for index in range(0, len(calendar)):
+            if next_competition and calendar[index].id == next_competition[0].id:
+                active_indexes.append(index)
+            elif (not active_indexes or index - active_indexes[-1] > 2) and index % 3 == 2 and index > 0:
+                active_indexes.append(index-2)
+            elif index == len(calendar)-1 and (index - active_indexes[-1] > 2):  # LAST ELEMENT
+                active_indexes.append(index - (index - active_indexes[-1]) % 3)
+        context.update({'active_indexes': active_indexes})
 
         return context
 
