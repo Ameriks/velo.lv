@@ -689,143 +689,91 @@ main {
 
 /* FLEXBOX */
 .flex {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
   display: flex; }
 
 .flex--important {
-  display: -webkit-flex !important;
-  display: -ms-flexbox !important;
   display: flex !important; }
 
 /* flex-wrap */
 .wrap--nowrap {
-  -webkit-flex-wrap: nowrap;
   flex-wrap: nowrap; }
 
 .wrap--wrap {
-  -webkit-flex-wrap: wrap;
   flex-wrap: wrap; }
 
 .wrap--wrap-reverse {
-  -webkit-flex-wrap: wrap-reverse;
   flex-wrap: wrap-reverse; }
 
 /* flex-basis */
 .flex--1 {
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  flex-basis: auto; }
+  flex: 1 1 auto; }
 
 .flex--1-important {
-  -webkit-box-flex: 1 !important;
-  -webkit-flex: 1 !important;
-  -ms-flex: 1 !important;
-  flex: 1 !important;
-  flex-basis: auto; }
+  flex: 1 1 auto !important; }
 
 /* order */
 .order--1 {
-  -webkit-order: 1;
-  -ms-order: 1;
   order: 1; }
 
 /* flex-direction */
 .direction--column {
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
   flex-direction: column; }
 
 .direction--column-reverse {
-  -webkit-flex-direction: column-reverse;
-  -ms-flex-direction: column-reverse;
   flex-direction: column-reverse; }
 
 .direction--row {
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row; }
 
 .direction--row-reverse {
-  -webkit-flex-direction: row-reverse;
-  -ms-flex-direction: row-reverse;
   flex-direction: row-reverse; }
 
 /* justify-content */
 .justify--start {
-  -webkit-justify-content: flex-start;
-  -ms-justify-content: flex-start;
   justify-content: flex-start; }
 
 .justify--end {
-  -webkit-justify-content: flex-end;
-  -ms-justify-content: flex-end;
   justify-content: flex-end; }
 
 .justify--center {
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
   justify-content: center; }
 
 .justify--space-between {
-  -webkit-justify-content: space-between;
-  -ms-flex-pack: space-between;
   justify-content: space-between; }
 
 .justify--space-around {
-  -webkit-justify-content: space-around;
-  -ms-flex-pack: space-around;
   justify-content: space-around; }
 
 /* align-items */
 .align-items--start {
-  -webkit-align-items: flex-start;
-  -ms-flex-align: flex-start;
   align-items: flex-start; }
 
 .align-items--end {
-  -webkit-align-items: flex-end;
-  -ms-flex-align: flex-end;
   align-items: flex-end; }
 
 .align-items--center {
-  -webkit-align-items: center;
-  -ms-flex-align: center;
   align-items: center; }
 
 .align-items--baseline {
-  -webkit-align-items: baseline;
-  -ms-flex-align: baseline;
   align-items: baseline; }
 
 .align-items--stretch {
-  -webkit-align-items: stretch;
-  -ms-flex-align: stretch;
   align-items: stretch; }
 
 /* align-self IE11 support*/
 .align-self--start {
-  -webkit-align-self: flex-start;
   align-self: flex-start; }
 
 .align-self--end {
-  -webkit-align-self: flex-end;
   align-self: flex-end; }
 
 .align-self--center {
-  -webkit-align-self: center;
   align-self: center; }
 
 .align-self--baseline {
-  -webkit-align-self: baseline;
   align-self: baseline; }
 
 .align-self--stretch {
-  -webkit-align-self: stretch;
   align-self: stretch; }
 
 .left {
@@ -3107,8 +3055,11 @@ textarea:focus:-ms-input-placeholder {
 .brief {
   float: left;
   width: 100%;
-  flex: 1;
-  flex-basis: auto; }
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start; }
 
 .brief-hover-layer:after {
   content: "";
@@ -3126,17 +3077,20 @@ textarea:focus:-ms-input-placeholder {
 
 .brief-hover-top-layer {
   width: 100%;
-  height: 100%;
   position: relative;
   z-index: 3;
-  flex: 1;
-  flex-basis: auto; }
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start; }
 
 .brief-hover-top-layer--hero {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2; }
+  z-index: 2;
+  height: 100%; }
 
 .brief__hero {
   float: left;
@@ -3172,7 +3126,11 @@ textarea:focus:-ms-input-placeholder {
   width: 100%;
   position: relative;
   flex: 1;
-  flex-basis: auto; }
+  flex-basis: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start; }
 
 .brief__heading {
   font-family: 'Titillium';
