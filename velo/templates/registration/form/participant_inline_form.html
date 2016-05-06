@@ -2,6 +2,8 @@
 
 <div class="item participant bottom-margin--30 bgc-dgray  js-participant">
 {{ form.id }}
+
+{% if show_header %}
     <div class="participant__head bgc-dblue flex wrap--nowrap direction--row justify--start align-items--center c-yellow">
         <div class="participant__number"></div>
         <div class="participant__name flex--1">{% trans "Participant" %}</div>
@@ -14,6 +16,8 @@
             <div>{% trans "Remove" %}</div>
         </div>
     </div>
+{% endif %}
+
     <div class="participant__form">
         <fieldset class="w100 border-bottom bottom-margin--20">
             <div class="w100 bottom-margin--20"></div>
@@ -147,7 +151,7 @@
                         </div>
                     </div>
 
-
+                    {% if form.team_name %}
                     {# Team #}
                     <div class="col-xl-8 col-m-12 col-s-24">
                         <div class="input-wrap w100 bottom-margin--15">
@@ -163,6 +167,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% endif  %}
 
                     {# Bike Brand #}
                     <div class="col-xl-8 col-m-12 col-s-24">
@@ -180,35 +185,36 @@
                         </div>
                     </div>
 
-
-                    {# Insurance #}
-                    <div class="col-xl-8 col-m-12 col-s-24">
-                        <div class="input-wrap w100 bottom-margin--20">
-                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
-                            {{ form.insurance|add_extra_classes:"select" }}
-                            {% if form.insurance.help_text or form.insurance.errors %}
-                                <p id="{{ form.insurance.auto_id }}-error" class="error">
-                                    {% for error in form.insurance.errors %}{{ error }}{% empty %}
-                                        {{ form.insurance.help_text }}{% endfor %}</p>
-                            {% endif %}
+                    {% if form.insurance %}
+                        {# Insurance #}
+                        <div class="col-xl-8 col-m-12 col-s-24">
+                            <div class="input-wrap w100 bottom-margin--20">
+                                <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                                {{ form.insurance|add_extra_classes:"select" }}
+                                {% if form.insurance.help_text or form.insurance.errors %}
+                                    <p id="{{ form.insurance.auto_id }}-error" class="error">
+                                        {% for error in form.insurance.errors %}{{ error }}{% empty %}
+                                            {{ form.insurance.help_text }}{% endfor %}</p>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
 
-                    {# SSN #}
-                    <div class="col-xl-8 col-m-12 col-s-24">
-                        <div class="input-wrap w100 bottom-margin--15">
-                            <label
-                                    for="{{ form.ssn.auto_id }}"
-                                    class="input-field-label  js-placeholder"
-                            >{% trans "Social Security Number" %} *</label>
-                            {{ form.ssn|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
-                            {% if form.ssn.help_text or form.ssn.errors %}
-                                <p id="{{ form.ssn.auto_id }}-error" class="error">
-                                    {% for error in form.ssn.errors %}{{ error }}{% empty %}
-                                        {{ form.ssn.help_text }}{% endfor %}</p>
-                            {% endif %}
+                        {# SSN #}
+                        <div class="col-xl-8 col-m-12 col-s-24">
+                            <div class="input-wrap w100 bottom-margin--15">
+                                <label
+                                        for="{{ form.ssn.auto_id }}"
+                                        class="input-field-label  js-placeholder"
+                                >{% trans "Social Security Number" %} *</label>
+                                {{ form.ssn|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                                {% if form.ssn.help_text or form.ssn.errors %}
+                                    <p id="{{ form.ssn.auto_id }}-error" class="error">
+                                        {% for error in form.ssn.errors %}{{ error }}{% empty %}
+                                            {{ form.ssn.help_text }}{% endfor %}</p>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
 
                     {# PRICE #}
                     <div class="col-xl-24 price">

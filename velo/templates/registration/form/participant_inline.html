@@ -12,11 +12,11 @@
          data-can-add-new="{{ formset.can_add_new }}">
         <div class="item template" style="display:none;">
             {% with form=formset.empty_form %}
-                {% include "registration/form/participant_inline_form.html" %}
+                {% include "registration/form/participant_inline_form.html" with show_header=True %}
             {% endwith %}
         </div>
         {% for form in formset %}
-            {% include "registration/form/participant_inline_form.html" %}
+            {% include "registration/form/participant_inline_form.html" with show_header=True %}
         {% endfor %}
     </div>
     <div class="w100 cursor--pointer bottom-margin--30  js-add-participant">

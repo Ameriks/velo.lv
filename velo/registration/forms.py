@@ -370,6 +370,9 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
             'bike_brand2',
             'email')
+        widgets = {
+            'birthday': SplitDateWidget,
+        }
 
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
@@ -449,37 +452,9 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.include_media = False
-        self.helper.template = "wd_forms/whole_uni_formset.html"
-        self.helper.layout = Layout(
-            Row(
-                Column(
-                    Row(
-                        Column('distance', css_class='col-xs-6 col-sm-4'),
-                        Column('country', css_class='col-xs-6 col-sm-4'),
-                        Column('gender', css_class='col-xs-6 col-sm-4'),
-                    ),
-                    Row(
-                        Column('first_name', css_class='col-xs-6 col-sm-4'),
-                        Column('last_name', css_class='col-xs-6 col-sm-4'),
-                        Column('ssn', css_class='col-xs-6 col-sm-4'),
-                        Column(Field('birthday', css_class='dateinput'), css_class='col-xs-6 col-sm-4'),
-                    ),
-                    Row(
-                        Column('phone_number', css_class='col-xs-6 col-sm-4'),
-                        Column('email', css_class='col-xs-6 col-sm-4'),
-                        Column(FieldWithButtons('bike_brand2', StrictButton('<span class="caret"></span>',
-                                                                            css_class='btn-default bike-brand-dropdown')),
-                               css_class='col-xs-6 col-sm-4'),
-                    ),
-                    'id',
-                    Div(
-                        Field('DELETE', ),
-                        css_class='hidden',
-                    ),
-                    css_class='col-sm-9'
-                ),
-            ),
-        )
+        self.helper.template = "registration/form/participant_inline.html"
+        self.helper.layout = Layout()
+
 
 
 class CompanyApplicationEmptyForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
@@ -487,35 +462,6 @@ class CompanyApplicationEmptyForm(GetClassNameMixin, CleanEmailMixin, RequestKwa
         model = CompanyApplication
         fields = ()
 
-    class Media:
-        js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
-              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js',
-              'plugins/typeahead.js/typeahead.bundle.min.js',
-              'plugins/handlebars-v3.0.1.js',)
-        css = {
-            'all': ('plugins/datepicker/datepicker.css',)
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(CompanyApplicationEmptyForm, self).__init__(*args, **kwargs)
-
-        self.helper = FormHelper()
-        self.helper.form_tag = True
-        self.helper.include_media = False
-        self.helper.layout = Layout(
-            Row(
-                Column(
-                    Fieldset(
-                        _('New Company Participants'),
-                        HTML('{% load crispy_forms_tags %}{% crispy participant participant.form.helper %}'),
-                    ),
-                    css_class='col-xs-12'
-                )
-            ),
-            Row(
-                Column(Submit('submit', _('Save')), css_class='col-sm-2 pull-right'),
-            ),
-        )
 
     def get_app_label(self):
         return "registration/application"

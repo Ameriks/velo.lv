@@ -9,6 +9,8 @@ def add_class(field, css):
 
 @register.filter
 def add_extra_classes(field, extra_classes=None):
+    if isinstance(field, str):
+        return ''
     classes = field.field.widget.attrs.get('class', '')
     if hasattr(classes, 'split'):
         classes = classes.split()

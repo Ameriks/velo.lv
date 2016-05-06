@@ -23,7 +23,7 @@
 
 
                 <form method="post">
-            <a href="{% url 'companyapplication_edit' companyapplication.code %}" class="btn btn-default pull-right">{% trans 'Edit' %}</a>
+            <a href="{% url 'companyapplication_edit' companyapplication.code %}" class="btn btn--60 c-yellow">{% trans 'Edit' %}</a>
             <div class="row">
                 <div class="col-xs-12">
                     <dl class="dl-horizontal">
@@ -46,7 +46,7 @@
 
 
             {% csrf_token %}
-            {{ block.super }}
+            {% render_table table %}
 
 
 

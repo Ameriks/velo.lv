@@ -311,7 +311,7 @@ class CompanyParticipant(TimestampMixin, models.Model):
     distance = models.ForeignKey('core.Distance', blank=True, null=True)
     first_name = models.CharField(_('First Name'), max_length=60, blank=True)
     last_name = models.CharField(_('Last Name'), max_length=60, blank=True)
-    birthday = models.DateField(_('Birthday'), help_text=_('YYYY-MM-DD'), blank=True, null=True)
+    birthday = models.DateField(_('Birthday'), blank=True, null=True)
     gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True)
     ssn = models.CharField(_('Social Security Number'), max_length=12, blank=True)
     phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True, help_text="Uz šo telefona numuru tiks sūtīts rezultāts")
