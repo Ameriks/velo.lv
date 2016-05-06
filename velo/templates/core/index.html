@@ -87,7 +87,7 @@
                                         <p>{{ item.description }}</p>
                                     </div>
                                     <a class="calendar-slider__btn btn btn--60 btn--white-transparent btn--no-borders left flex--important wrap--nowrap justify--space-between align-items--center" href="{% url "competition:competition" item.id %}">
-                                        <span class="c-yellow">Atvērt sacensības</span>
+                                        <span class="c-yellow">{% trans "Open Competition" %}</span>
                                         <svg class="left-margin--10 c-yellow icon">
                                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
                                         </svg>
