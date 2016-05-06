@@ -2554,6 +2554,23 @@ textarea:focus:-ms-input-placeholder {
   left: 0px;
   width: 100%; }
 
+.input-filed-with-select {
+  float: left;
+  width: 130px;
+  position: relative; }
+
+.input-filed-with-select__field {
+  float: left;
+  width: 80px;
+  position: relative;
+  z-index: 2; }
+
+.input-filed-with-select__select {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1; }
+
 .input-file {
   position: relative;
   float: left;
@@ -2643,6 +2660,9 @@ textarea:focus:-ms-input-placeholder {
   text-transform: uppercase;
   line-height: 50px;
   color: #ffffff; }
+
+.select.error {
+  border-color: #f9e103; }
 
 select:-moz-focusring {
   color: transparent;
@@ -3474,7 +3494,10 @@ img.brief__video-thumbnail {
   margin: 0px 0px 15px 0px; }
 
 .calendar-tile__logo img {
-  width: 100%; }
+  width: auto !important;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%; }
 
 .calendar-tile__heading {
   float: left;
