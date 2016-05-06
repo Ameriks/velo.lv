@@ -110,12 +110,15 @@
                         <li class="profile-nav__item">
                             <a href="{% url 'account:profile' %}" class="profile-nav__link">{% trans "Profile" %}</a>
                         </li>
-                        <li class="profile-nav__item">
-                            <a href="{% url 'account:applications' %}" class="profile-nav__link">{% trans "Applications" %}</a>
-                        </li>
 
                         <li class="profile-nav__item">
-                            <a href="{% url 'companyapplication_list' %}" class="profile-nav__link">{% trans "Company Applications" %}</a>
+                            <a href="{% url 'account:applications' %}" class="profile-nav__link">{% trans "My Applications" %}</a>
+                        </li>
+                        <li class="profile-nav__item">
+                            <a href="{% url 'account:team_list' %}" class="profile-nav__link">{% trans "My Teams" %}</a>
+                        </li>
+                        <li class="profile-nav__item">
+                            <a href="{% url 'companyapplication_list' %}" class="profile-nav__link">{% trans "My Company Applications" %}</a>
                         </li>
 
                             <li class="profile-nav__item">

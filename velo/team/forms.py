@@ -178,14 +178,6 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
             'phone_number',
             'management_info',)
 
-    class Media:
-        js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
-              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js',
-              'plugins/typeahead.js/typeahead.bundle.min.js')
-        css = {
-            'all': ('plugins/datepicker/datepicker.css',)
-        }
-
     def clean_distance(self):
         distance = self.cleaned_data.get('distance')
         if self.instance.id:
@@ -225,19 +217,21 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
         self.fields['country'].initial = 'LV'
 
         distances = Distance.objects.filter(can_have_teams=True, competition__is_in_menu=True).exclude(
-            competition__competition_date__lt=timezone.now())
+            competition__competition_date__lt=timezone.now()).order_by('competition_id', 'id')
+
         self.fields['distance'].choices = [('', '------')] + [
             (str(distance.id), "{0} - {1}".format(str(distance.competition), str(distance))) for
             distance in distances]
 
-        try:
-            if self.instance.distance not in distances:
-                distance = self.instance.distance
-                self.fields['distance'].choices.append((
-                    str(distance.id),
-                    "{0} - {1}".format(str(distance.competition), str(distance))))
-        except Distance.DoesNotExist:
-            pass
+        if self.instance.distance_id:
+            try:
+                if self.instance.distance not in distances:
+                    distance = self.instance.distance
+                    self.fields['distance'].choices.append((
+                        str(distance.id),
+                        "{0} - {1}".format(str(distance.competition), str(distance))))
+            except Distance.DoesNotExist:
+                pass
 
         if self.instance.id:
             self.fields['distance'].widget.attrs['readonly'] = True
