@@ -669,7 +669,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     var resultsFormLoadArea = $('.js-form-results-load-area');
     var resultsFormButton = $('.js-form-results-btn');
 
-    resultsFormInput.on('change selectmenuchange', function(){
+    resultsFormInput.on('change', function(){
         var year = resultsFormInput.val()
 
         if ($("option", resultsFormLoadArea).length > 0)
@@ -680,7 +680,6 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
               resultsFormLoadArea.append(self);
             }
         });
-        resultsFormLoadArea.selectmenu("refresh");
         resultsFormLoadArea.parent().show();
 
         resultsFormButton

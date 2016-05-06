@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load staticfiles i18n sitetree crispy_forms_tags %}
+{% load staticfiles i18n sitetree crispy_forms_tags form_helper %}
 
 {% block content %}
     <div class="w100 flex">
@@ -14,7 +14,131 @@
                 </h2>
 
 
-                {% crispy form %}
+                <form class="w100 bottom-margin--20  js-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-xl-9 col-m-24 layouts-profile-left">
+                            <div class="w100 bottom-margin--20"></div>
+                            <fieldset class="inner ">
+                                <div id="div_id_email" class="form-group input-wrap w100 bottom-margin--15">
+                                    <label for="id_email"
+                                           class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Email" %}</label>
+                                    <a class="btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100 buttonwidget"
+                                       href="{% url "account_email" %}">{{ user.email }}
+                                        <small>{% trans "Change Email" %}</small>
+                                    </a>
+                                </div>
+                                <div id="div_id_password" class="form-group input-wrap w100 bottom-margin--15">
+                                    <label for="id_password"
+                                           class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Password" %}</label>
+                                    <a class="btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100 buttonwidget"
+                                       href="{% url "account_change_password" %}">******
+                                        <small>{% trans "Change Password" %}</small>
+                                    </a>
+                                </div>
+                                <div id="div_id_country" class="form-group input-wrap w100 bottom-margin--15">
+                                    <label for="id_country"
+                                           class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Country" %}</label>
+                                    {{ form.country|add_extra_classes:"select" }}
+                                </div>
+                                <div id="div_id_city" class="form-group input-wrap w100 bottom-margin--15">
+                                    <label for="id_city"
+                                           class="js-placeholder w100 fs13 bottom-margin--10">{% trans "City" %}</label>
+                                    {{ form.city|add_extra_classes:"select" }}
+                                </div>
+                                <div id="div_id_bike_brand" class="form-group input-wrap w100 bottom-margin--15">
+                                    <label for="id_bike_brand"
+                                           class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Bike Brand" %}</label>
+                                    {{ form.bike_brand|add_extra_classes:"select" }}
+                                </div>
+                                <div id="div_id_social" class="form-group input-wrap w100 bottom-margin--15">
+                                    <label for="id_social"
+                                           class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Social Accounts" %}</label>
+                                    <a class="btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100 buttonwidget"
+                                       href="{% url "socialaccount_connections" %}">{% trans "Connect / Disconnect Social Accounts" %}</a>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                        <div class="col-xl-15 col-m-24 bgc-dgray relative">
+                            <div class="w100 bottom-margin--20"></div>
+                            <fieldset class="inner ">
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-8 col-s-18">
+                                        <div id="div_id_image" class="form-group input-wrap w100 bottom-margin--15">
+                                            <label for="id_image" class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Profile Image" %}</label>
+                                            {{ form.image|add_extra_classes:"profileimage input-file__input  js-input-file" }}
+                                        </div>
+                                    </div>
+                                    <div
+                                            class="col-xl-16 col-s-24">
+                                        <div id="div_id_description"
+                                             class="form-group input-wrap w100 bottom-margin--15"><label
+                                                for="id_description" class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Background" %}</label>{{ form.description|add_extra_classes:"layouts-profile-textarea input-field if--50 if--dark input-field--textarea w100" }}</div>
+                                    </div>
+                                    <div
+                                            class="col-xl-12 col-s-24">
+                                        <div id="div_id_first_name"
+                                             class="form-group input-wrap w100 bottom-margin--15"><label
+                                                for="id_first_name" class="js-placeholder w100 fs13 bottom-margin--10">{% trans "First Name" %}</label>
+                                            {{ form.first_name|add_extra_classes:"input-field if--50 if--dark textinput textInput" }}</div>
+                                    </div>
+                                    <div
+                                            class="col-xl-12 col-s-24">
+                                        <div id="div_id_last_name" class="form-group input-wrap w100 bottom-margin--15">
+                                            <label for="id_last_name"
+                                                   class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Last Name" %}</label>
+                                            {{ form.last_name|add_extra_classes:"input-field if--50 if--dark textinput textInput" }}</div>
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--20">
+                                            <div></div>
+                                            <div id="div_id_birthday" class="form-group input-wrap w100 bottom-margin--15">
+                                                <label for="id_birthday_month" class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Birthday" %}</label>
+
+<div class="w100"><div class="row row--gutters-20">
+                                                {{ form.birthday }}
+</div></div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                        <div id="div_id_phone_number"
+                                             class="form-group input-wrap w100 bottom-margin--15"><label
+                                                for="id_phone_number"
+                                                class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Phone Number" %}</label>
+                                        {{ form.phone_number|add_extra_classes:"input-field if--50 if--dark textinput textInput" }}</div>
+                                    </div>
+                                    <div
+                                            class="col-xl-24">
+
+                                        {% include "wd_forms/new/checkbox.html" with field=form.send_email %}
+
+                                    </div>
+
+                                </div>
+                            </fieldset>
+
+                        </div>
+                        <div class="col-xl-24 border-top border-bottom">
+                            <div class="row">
+                                <div class="col-xl-18 col-m-14 col-s-24"></div>
+                                <div class="col-xl-6 col-m-10 col-s-24">
+
+                                    <button type="submit" class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">
+                                        {% trans "Save" %}
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </form>
 
 
             </div>

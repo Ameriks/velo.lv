@@ -93,9 +93,9 @@ class UserProfileForm(forms.ModelForm):
                         None,
                         'email',
                         'password',
-                        Field('country', css_class="select-hide js-select"),
-                        Field('city', css_class="select-hide js-select"),
-                        Field('bike_brand', css_class="select-hide js-select"),
+                        Field('country', css_class="select-hide js-select select"),
+                        Field('city', css_class="select-hide js-select select"),
+                        Field('bike_brand', css_class="select-hide js-select select"),
                         'social',
                         css_class='inner'
                     ),
@@ -125,7 +125,14 @@ class UserProfileForm(forms.ModelForm):
                                 css_class="col-xl-12 col-s-24"
                             ),
                             Div(
-                                "birthday",
+                                Div(
+                                    Div(
+
+                                    ),
+                                    "birthday",
+                                    css_class="input-wrap w100 bottom-margin--20"
+                                ),
+
                                 css_class="col-xl-12 col-s-24"
                             ),
                             Div(

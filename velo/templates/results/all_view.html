@@ -16,7 +16,7 @@
                             <h1 class="ti fs30 fw700 uppercase w100 bottom-margin--15">{% sitetree_page_title from "mainmenu" %}</h1>
                             <p class="ti fw700 fs14 uppercase bottom-margin--40">{% trans "Use filters to find results." %}</p>
 
-                                    <select class="js-form-results-source" style="display:none;">
+                                    <select class="js-form-results-source select" style="display:none;">
                                         <option class="top" value="" disabled selected>{% trans "Select Competition" %}</option>
                                         {% for competition in competitions %}
                                             <option value="{{ competition.id }}" class="{{ competition.competition_date.year }}">{{ competition.get_full_name }}</option>
@@ -26,7 +26,7 @@
                             <form method="post" action="" class="w100  js-form-results">
                                 {% csrf_token %}
                                 <div class="input-wrap w100 bottom-margin--20">
-                                    <select class="select-hide  js-select js-form-results-input">
+                                    <select class="select-hide select js-select js-form-results-input">
                                         <option value="" disabled selected>{% trans "Select Year" %}</option>
                                         {% for year, text in years %}
                                         <option value="{{ year }}">{{ text }}</option>
@@ -34,7 +34,7 @@
                                     </select>
                                 </div>
                                 <div class="input-wrap w100 bottom-margin--20" style="display:none;">
-                                    <select class="select-hide js-select js-form-results-load-area" name="competition">
+                                    <select class="select-hide select js-select js-form-results-load-area" name="competition">
                                         <option value="" disabled selected>{% trans "Select Competition" %}</option>
                                     </select>
                                 </div>

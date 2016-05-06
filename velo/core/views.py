@@ -44,15 +44,17 @@ class IndexView(TemplateView):
 
         context.update({'news_list': News.objects.published().filter(language=get_language())[:4]})
 
+        slide_to = 0
         active_indexes = []
         for index in range(0, len(calendar)):
             if next_competition and calendar[index].id == next_competition[0].id:
+                slide_to = len(active_indexes)
                 active_indexes.append(index)
             elif (not active_indexes or index - active_indexes[-1] > 2) and index % 3 == 2 and index > 0:
                 active_indexes.append(index-2)
             elif index == len(calendar)-1 and (index - active_indexes[-1] > 2):  # LAST ELEMENT
                 active_indexes.append(index - (index - active_indexes[-1]) % 3)
-        context.update({'active_indexes': active_indexes})
+        context.update({'active_indexes': active_indexes, 'slide_to': slide_to})
 
         return context
 
