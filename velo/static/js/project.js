@@ -371,27 +371,6 @@ e&&d()}return c});
         }, 250);
     });
 })();
-var jsSelect = function(scope){
-  if (scope == undefined)
-    scope = document;
-  
-  $('.js-select:visible', scope)
-      .selectmenu({
-          change: function () {
-              $(this)
-                  .closest('form')
-                  .validate()
-                  .element(this);
-          }
-      })
-      .each(function(){
-          $(this)
-              .selectmenu('widget')
-              .addClass('select');
-      });
-}
-jsSelect();
-
 (function(){
     var textInput = $(".js-placeholder-up");
 
@@ -674,7 +653,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 })();
 (function(){
     var registrationForm = $('.js-form-participants');
-
+    
     registrationForm.validate({
         ignore: [],
         errorElement: 'p',
@@ -683,7 +662,6 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
     });
 })();
-
 (function(){
     var resultsForm = $('.js-form-results');
     var resultsFormInput = $('.js-form-results-input');
@@ -692,7 +670,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     var resultsFormButton = $('.js-form-results-btn');
 
     resultsFormInput.on('change selectmenuchange', function(){
-        var year = resultsFormInput.val();
+        var year = resultsFormInput.val()
 
         if ($("option", resultsFormLoadArea).length > 0)
           $("option", resultsFormLoadArea).remove();
@@ -702,9 +680,8 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
               resultsFormLoadArea.append(self);
             }
         });
-        resultsFormLoadArea.parent().show();
-        jsSelect();
         resultsFormLoadArea.selectmenu("refresh");
+        resultsFormLoadArea.parent().show();
 
         resultsFormButton
             .removeAttr('disabled')
@@ -712,7 +689,6 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             .addClass('btn--blue btn--blue-hover btn--blue-active');
     });
 })();
-
 
 (function(){
     var registrationForm = $('.js-form');
@@ -1028,6 +1004,20 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             google.maps.event.addDomListener(window, 'load', initialize);
         });
     }
+})();
+(function(){
+    var playVideo = function(triggerElement){
+        var videoIframe = triggerElement.find('.js-video-iframe');
+        var videoIframeSrc = videoIframe.attr('data-src');
+        
+        triggerElement.off('click');
+        triggerElement.addClass('brief--video-playing');
+        videoIframe.attr('src', videoIframeSrc);
+    }
+    
+    $('.js-play-video').on('click', function(){
+        playVideo($(this));
+    });
 })();
 (function(){
     var languageNav = $('.js-profile-nav');
@@ -1570,24 +1560,23 @@ svg4everybody();
   var check_price, update_line_participant;
 
   this.Participant_inline_class_added = function(row) {
-    update_line_participant(row);
-    return jsSelect(row);
+    return update_line_participant(row);
   };
 
   check_price = function(row) {
     var birthday, csrf, distance, insurance, url;
     distance = $("select[name$='distance']", row).val();
-    birthday = $("input[name$='birthday']", row).val();
-    insurance = $("select[name$='insurance']", row).val();
+    birthday = $("select[name$='birthday_year']", row).val();
+    insurance = $("[name$='insurance']", row).val();
     csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-    url = $("select[name$='distance']", row).data('url');
+    url = $(row).parents("form").data('check-price');
     return $.ajax({
       url: url,
       type: 'POST',
       data: {
         csrfmiddlewaretoken: csrf,
         distance: distance,
-        birthday: birthday,
+        birthday_year: birthday,
         insurance: insurance
       },
       dataType: 'json',
@@ -1605,9 +1594,7 @@ svg4everybody();
     ssn = $("input[name$='-ssn']", row);
     birthday = $("input[name$='-birthday']", row).val();
     insurance = $("select[name$='-insurance']", row);
-    $('.dateinput', row).datetimepicker({
-      format: 'YYYY-MM-DD'
-    });
+    $(".participant__number", row).html(row.index());
     if (!insurance.val()) {
       $(ssn).parents(".input-wrap").hide();
     }
@@ -1621,13 +1608,13 @@ svg4everybody();
         return el.hide();
       }
     });
-    $("input[name$='-birthday']", row).on("dp.change", function(e) {
-      return check_price(row);
-    });
-    $("select[name$='distance'], select[name$='insurance']", row).on("selectmenuchange", function(e) {
-      return check_price(row);
-    });
-    check_price(row);
+    if (!row.hasClass("noadd")) {
+      $("select[name$='-birthday_year'], select[name$='distance'], select[name$='insurance']", row).on("change", function(e) {
+        check_price(row);
+        return void 0;
+      });
+      check_price(row);
+    }
     return void 0;
   };
 

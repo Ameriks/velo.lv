@@ -122,12 +122,12 @@ def get_total(competition, distance_id, year, insurance_id=None):
 def get_form_message(competition, distance_id, year, insurance_id=None):
     totals = get_total(competition, distance_id, year, insurance_id)
     if totals:
-        messages = [_("<div class='entry'>Entry fee - <span>%(entry_fee)s€</span></div>") % totals, ]
+        messages = [_("<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-margin--10'>Entry fee - <span>%(entry_fee)s€</span></div>") % totals, ]
         if insurance_id:
-            messages.append(_("<div class='insurance'>Insurance fee - <span>%(insurance_fee)s€</span></div>") % totals)
-        messages.append(_("<div class='total'>Total - <span class='c-yellow'>%(total)s€</span></div>") % totals)
+            messages.append(_("<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-margin--10'>Insurance fee - <span>%(insurance_fee)s€</span></div>") % totals)
+        messages.append(_("<div class='fs14 fw700 c-white uppercase text-align--right'>Total - <span class='c-yellow'>%(total)s€</span></div>") % totals)
     else:
-        messages = [_("This distance isn't available for birth year %(year)s.") % {'year': year}, ]
+        messages = [_("<div class='fs14 fw700 c-white uppercase text-align--right'>This distance isn't available for birth year %(year)s.</div>") % {'year': year}, ]
     return messages
 
 

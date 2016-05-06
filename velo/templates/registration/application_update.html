@@ -1,9 +1,7 @@
 {% extends "base.html" %}
-{% load staticfiles i18n sitetree crispy_forms_tags %}
+{% load staticfiles i18n sitetree crispy_forms_tags form_helper %}
 
 {% block content %}
-
-
 
     <div class="w100 flex">
         <div class="inner flex">
@@ -17,11 +15,104 @@
                             </h1>
                             {% include "registration/_top_steps.html" with active=1 %}
 
+                            <form method="post" class="w100 js-form-participants"
+                                  data-team-search="{% url 'competition:teams_json' object.competition_id %}"
+                                  data-team-search-term="{% url 'competition:teams_json' object.competition_id %}?search=%QUERY"
+                                  data-check-price="{% url "payment:check_price"  object.competition_id %}">
+                                {% csrf_token %}
+                                <div class="w100 border-right border-left no-border--560">
+
+                                    <div class="row">
+                                        <div class="col-xl-2 col-s-24"></div>
+                                        <div class="col-xl-20 col-s-24">
+                                            <div class="inner no-padding--560">
+                                                <div class="w100 bottom-margin--40"></div>
+                                                <div class="w100">
+                                                    <div class="row row--gutters-20">
+                                                        <div class="col-xl-12 col-m-24">
+                                                            <div class="input-wrap w100 bottom-margin--15">
+                                                                <label
+                                                                        for="id_email"
+                                                                        class="input-field-label  js-placeholder"
+                                                                >{% trans "E-mail" %} *</label>
+                                                                {{ form.email|add_extra_classes }}
+                                                                {% if form.email.help_text or form.email.errors %}
+                                                                    <p id="{{ form.email.auto_id }}-error"
+                                                                       class="error">
+                                                                        {% for error in form.email.errors %}
+                                                                            {{ error }}{% empty %}
+                                                                            {{ form.email.help_text }}{% endfor %}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xl-12 col-m-24">
+                                                            <div class="input-wrap w100 bottom-margin--15">
+                                                                <label
+                                                                        for="id_email2"
+                                                                        class="input-field-label  js-placeholder"
+                                                                >{% trans "E-mail Confirmation" %} *</label>
+                                                                {{ form.email2|add_extra_classes }}
+                                                                {% if form.email2.help_text or form.email2.errors %}
+                                                                    <p id="{{ form.email2.auto_id }}-error"
+                                                                       class="error">
+                                                                        {% for error in form.email2.errors %}
+                                                                            {{ error }}{% empty %}
+                                                                            {{ form.email2.help_text }}{% endfor %}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-12 col-m-24">
+                                                            <div class="fs13 c-white--50 w100 bottom-margin--15">{% trans "To this email address confirmation email will be sent." %}</div>
+                                                        </div>
+
+                                                        <div class="col-xl-12 col-m-24">
+                                                            {% include "wd_forms/new/checkbox.html" with field=form.can_send_newsletters %}
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-2 col-s-24"></div>
+                                        <div class="layouts-competition-register-background col-xl-24">
+                                            <div class="w100">
+                                                <div class="inner no-padding--560">
+                                                    <div class="row">
+                                                        <div class="col-xl-24">
+                                                            {% crispy participant participant.form.helper %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
 
-                            {% crispy form %}
+                                        <div class="col-xl-24 border-top border-bottom">
+                                            <div class="row">
+                                                <div class="col-xl-15 col-m-14 col-s-24"></div>
+                                                <div class="col-xl-9 col-m-10 col-s-24">
+                                                    <button type="submit"
+                                                            class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">
+                                                        <div class="btn__flex">
+                                                            {% trans "Save & Pay" %}
+                                                            <svg class="left-margin--15 icon">
+                                                                <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                     xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                                            </svg>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                        <div class="col-xl-24">
+                                            <div class="w100 bottom-margin--20"></div>
+                                        </div>
+                                    </div>
+                                </div>
 
+                            </form>
 
                         </div>
                     </div>

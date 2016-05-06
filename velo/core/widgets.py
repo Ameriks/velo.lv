@@ -11,6 +11,7 @@ from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.dates import MONTHS
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 RE_DATE = re.compile(r'(\d{4})-(\d\d?)-(\d\d?)$')
 
@@ -57,7 +58,7 @@ class SplitDateWidget(Widget):
         # years is an optional list/tuple of years to use in the "year" select box.
         self.attrs = attrs or {}
         self.required = required
-        self.years = reversed(range(1915, datetime.date.today().year))
+        self.years = range(1915, datetime.date.today().year)
 
     def render(self, name, value, attrs=None):
         try:
@@ -76,23 +77,23 @@ class SplitDateWidget(Widget):
         else:
             id_ = 'id_%s' % name
 
-        year_choices = [(0, 'YYYY'), ] + [(i, i) for i in self.years]
-        local_attrs = self.build_attrs({"id": self.year_field % id_, "class": "select-hide js-select"})
-        s = Select(choices=year_choices, attrs={"class": "select-hide js-select"})
+        year_choices = [(0, 'YYYY'), ] + [(i, i) for i in reversed(self.years)]
+        local_attrs = self.build_attrs({"id": self.year_field % id_, "class": "select"})
+        s = Select(choices=year_choices)
         select_html = s.render(self.year_field % name, year_val, local_attrs)
-        output.append('<div class="col-xl-12">%s</div>' % select_html)
+        output.append('<div class="col-xl-8">%s</div>' % select_html)
 
         month_choices = [(0, 'MM'), ] + list(MONTHS.items())
         local_attrs['id'] = self.month_field % id_
-        s = Select(choices=month_choices, attrs={"class": "select-hide js-select"})
+        s = Select(choices=month_choices)
         select_html = s.render(self.month_field % name, month_val, local_attrs)
-        output.append('<div class="col-xl-12">%s</div>' % select_html)
+        output.append('<div class="col-xl-8">%s</div>' % select_html)
 
         day_choices = [(0, 'DD'), ] + [(i, i) for i in range(1, 31)]
         local_attrs['id'] = self.day_field % id_
-        s = Select(choices=day_choices, attrs={"class": "select-hide js-select"})
+        s = Select(choices=day_choices)
         select_html = s.render(self.day_field % name, day_val, local_attrs)
-        output.append('<div class="col-xl-12">%s</div>' % select_html)
+        output.append('<div class="col-xl-8">%s</div>' % select_html)
 
         return mark_safe(u'\n'.join(output))
 

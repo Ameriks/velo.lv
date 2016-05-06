@@ -20,7 +20,7 @@
                                     <a href="#" title="{{ object.title }}" class="gallery_album" data-url="{{ object.url_embed }}" data-kind="{{ object.kind }}">
                                     <div
                                         class="brief border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20 cursor--pointer  js-open-gallery-lightbox">
-                                        <div>
+                                        <div class="w100">
                                             <figure class="brief__hero brief-hover-layer img-wrapper">
                                                 <img data-src="{% firstof object.image '/static/img/grey_placeholder.png' %}" onload="imgLoaded(this)" />
                                                 <div class="brief-hover-top-layer brief-hover-top-layer--hero">

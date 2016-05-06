@@ -14,6 +14,7 @@ import math
 import uuid
 
 from velo.core.models import Competition, Insurance
+from velo.core.widgets import SplitDateWidget
 from velo.payment.utils import get_total
 from velo.registration.models import Application, Participant, CompanyApplication, CompanyParticipant
 from velo.registration.widgets import CompetitionWidget
@@ -119,13 +120,31 @@ class ApplicationCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
 
 
 class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
-    team_search = forms.CharField(widget=forms.HiddenInput)
-    team_search_term = forms.CharField(widget=forms.HiddenInput)
-    email2 = forms.EmailField(label=_('E-mail confirmation'), )
+    email2 = forms.EmailField(label=_('E-mail confirmation'),
+                              widget=forms.TextInput(attrs={
+                                  "class": "input-field if--50 if--dark js-placeholder-up",
+                                  "data-rule-required": True,
+                                  "data-rule-email": True,
+                                  "data-rule-equalto": "#id_email",
+                                  "data-msg-required": _("This field is required."),
+                                  "data-msg-email": _("Please enter valid email address!"),
+                                  "data-msg-equalto": _("Emails doesn't match"),
+                              }))
+
+    error_css_class = 'error'
 
     class Meta:
         model = Application
         fields = ('email', 'can_send_newsletters')
+        widgets = {
+            'email': forms.TextInput(attrs={
+                'class': "input-field if--50 if--dark  js-placeholder-up",
+                "data-rule-required": True,
+                "data-rule-email": True,
+                "data-msg-required": _("This field is required."),
+                "data-msg-email": _("Please enter valid email address!"),
+              }),
+        }
 
     def clean_email2(self):
         email1 = self.cleaned_data.get('email', '')
@@ -140,177 +159,14 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
     def __init__(self, *args, **kwargs):
         super(ApplicationUpdateForm, self).__init__(*args, **kwargs)
         self.fields['email'].required = True
-
-        self.fields['team_search'].initial = reverse('competition:teams_json',
-                                                     kwargs={'pk': self.instance.competition_id})
-        self.fields['team_search_term'].initial = "{0}?search=%QUERY".format(
-            reverse('competition:teams_json', kwargs={'pk': self.instance.competition_id}))
-
         self.fields['email2'].initial = self.instance.email
 
-        self.helper = FormHelper()
-        self.helper.form_tag = True
-        self.helper.form_class = "w100 js-form-participants"
-        self.helper.label_class = "input-field-label"
-        self.helper.include_media = False
-        self.helper.layout = Layout(
-            'team_search',
-            'team_search_term',
-            Div(
-                Row(
-                    Div(
-                        css_class="col-xl-2 col-s-24",
-                    ),
-                    Div(
-                        Div(
-                            Div(
-                                css_class="w100 bottom-margin--40"
-                            ),
-                            Div(
-                                Row(
-                                    Div(
-                                        Field('email',
-                                              css_class="input-field if--50 if--dark  js-placeholder-up",
-                                              **{
-                                                  "data-rule-required": True,
-                                                  "data-rule-email": True,
-                                                  "data-msg-required": str(_("This field is required.")),
-                                                  "data-msg-email": str(_("Please enter valid email address!"))
-                                              }),
-                                        css_class='col-xl-12 col-m-24'
-                                    ),
-                                    Div(
-                                        Field('email2',
-                                              css_class="input-field if--50 if--dark  js-placeholder-up",
-                                              **{
-                                                  "data-rule-required": True,
-                                                  "data-rule-email": True,
-                                                  "data-rule-equalto": "#id_email",
-                                                  "data-msg-required": str(_("This field is required.")),
-                                                  "data-msg-email": str(_("Please enter valid email address!")),
-                                                  "data-msg-equalto": str(_("Emails doesn't match")),
-                                              }),
-
-                                        css_class='col-xl-12 col-m-24'
-                                    ),
-                                    Div(
-                                        Div(
-                                            HTML(_("To this email address confirmation email will be sent.")),
-                                            css_class="fs13 c-white--50 w100 bottom-margin--15",
-                                        ),
-                                        css_class='col-xl-12 col-m-24'
-                                    ),
-                                    Div(
-                                        Div(
-                                            "can_send_newsletters",
-                                            css_class="input-wrap w100 bottom-margin--15",
-                                        ),
-                                        css_class='col-xl-12 col-m-24'
-                                    ),
-                                    css_class="row row--gutters-20",
-                                ),
-                                css_class="w100",
-                            ),
-                            css_class="inner no-padding--560"
-                        ),
-                        css_class="col-xl-20 col-s-24",
-                    ),
-                    Div(
-                        css_class="col-xl-2 col-s-24",
-                    ),
-                    Div(
-                        Div(
-                            css_class="w100 bottom-margin--40",
-                        ),
-                        Div(
-
-                            Div(
-                                Row(
-                                    Div(
-                                        css_class="col-xl-2 col-s-24"
-                                    ),
-                                    Div(
-                                        HTML(
-                                            '{% load crispy_forms_tags %}{% crispy participant participant.form.helper %}'),
-
-                                        # Add participant
-                                        Div(
-                                            Div(
-                                                Div(
-                                                    HTML(
-                                                        '<svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#plus"></use></svg>'),
-                                                    css_class="participant__number"
-                                                ),
-                                                Div(
-                                                    HTML(str(_("Add Participant"))),
-                                                    css_class="participant__name flex--1"
-                                                ),
-
-                                                css_class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow add-new-row"
-                                            ),
-                                            css_class="w100 cursor--pointer bottom-margin--30 js-add-participant"
-                                        ),
-
-                                        css_class='col-xl-20 col-s-24'
-                                    ),
-                                    Div(
-                                        css_class="col-xl-2 col-s-24"
-                                    ),
-                                ),
-                                css_class="inner no-padding--560"
-                            ),
-                            css_class="w100",
-                        ),
-                        css_class="layouts-competition-register-background col-xl-24 border-top bgc-dblue"
-                    ),
-
-                    Div(
-                        Div(
-                            Row(
-                                Div(css_class="col-xl-2 col-s-24"),
-                                Div(
-                                    Div(
-                                        css_class="w100 bottom-margin--20"
-                                    ),
-                                    Div(
-                                        Row(
-                                            Div(
-                                                css_class="col-xs-24 flex--1 fs14 fw700 uppercase bottom-margin--20  js-paricipant-count",
-                                            ),
-                                            Div(
-                                                css_class="col-xs-24 fs14 fw700 uppercase bottom-margin--20",
-                                            )
-                                        ),
-                                        css_class="w100"
-                                    ),
-                                    css_class="col-xl-20 col-s-24"
-                                ),
-                            ),
-                            css_class="inner",
-                        ),
-                        css_class="layouts-competition-register-background col-xl-24 border-top bgc-dblue"
-                    ),
-                    Div(
-                        Row(
-                            Div(
-                                css_class="col-xl-15 col-m-14 col-s-24"
-                            ),
-                            Div(Submit('submit_pay', _('Save & Pay'),
-                                       css_class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100 flex--important wrap--nowrap justify--space-between align-items--center"),
-                                css_class="col-xl-9 col-m-10 col-s-24") if self.instance.payment_status != Application.PAY_STATUS.payed and not self.instance.competition.is_past_due else Div(
-                                css_class="col-xl-9 col-m-10 col-s-24"),
-                        ),
-                        css_class="col-xl-24 border-top border-bottom"
-                    ),
-                ),
-                css_class="w100 border-right border-left no-border--560",
-            )
-        )
 
 
 class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     insurance = forms.ChoiceField(required=False, choices=(), label=_('Insurance'))
     application = None
+    error_css_class = 'error'
 
     class Meta:
         model = Participant
@@ -318,6 +174,9 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
             'bike_brand2',
             'team_name', 'email')
+        widgets = {
+            'birthday': SplitDateWidget,
+        }
 
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
@@ -418,7 +277,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             elif not self.fields['insurance'].initial and insurances[0].price == 0.0:
                 self.fields['insurance'].initial = insurances[0].id
         else:
-            pass
+            self.fields['insurance'].widget = forms.HiddenInput()
 
         self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
                                                               distances]
@@ -427,19 +286,11 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['country'].initial = 'LV'
 
         self.fields['team_name'].widget.attrs.update({'class': 'team-typeahead'})
-
         self.fields['team_name'].initial = competition.params_dict.get('default_team', "")
         self.fields['team_name'].help_text = competition.params_dict.get('default_team_help', "")
 
-        self.fields['distance'].widget.attrs.update(
-            {'data-url': str(reverse('payment:check_price', kwargs={'pk': self.application.competition_id}))})
-
-        self.fields['distance'].required = True
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
-        self.fields['gender'].required = True
-        self.fields['country'].required = True
-        self.fields['birthday'].required = True
+        for field_name in ['distance', 'first_name', 'last_name', 'gender', 'country', 'birthday']:
+            self.fields[field_name].required = True
 
         self.fields['gender'].choices = Participant.GENDER_CHOICES
         self.fields['gender'].choices.insert(0, ('', _("Select Gender")), )
@@ -447,228 +298,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.include_media = False
-        self.helper.template = "wd_forms/whole_uni_formset.html"
-        self.helper.label_class = "input-field-label"
-        self.helper.layout = Layout(
-
-            Div(
-                Div(
-                    Div(css_class="participant__number counter"),
-                    Div(HTML(_("Participant")), css_class="participant__name flex--1"),
-                    Div(HTML(
-                        '<svg class="icon participant__cross"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#cross"></use></svg><div>%s</div>' % _(
-                            "Remove")),
-                        css_class="delete_button participant__remove flex wrap--nowrap direction--row justify--center align-items--center"),
-                    Div(
-                        Field('DELETE', ),
-                        css_class="checkbox bottom-margin--15"
-                    ),
-                    css_class="participant__head flex wrap--nowrap direction--row justify--start align-items--center c-yellow"
-                ),
-                Div(
-                    Div(
-                        # Distance
-                        Div(
-                            Div(
-                                Field(
-                                    "distance",
-                                    css_class="select-hide js-select",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--20"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-                        # Country
-                        Div(
-                            Div(
-                                Field(
-                                    "country",
-                                    css_class="select-hide js-select",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--20"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-                        # Gender
-                        Div(
-                            Div(
-                                Field(
-                                    "gender",
-                                    css_class="select-hide js-select",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--20"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        # First Name
-                        Div(
-                            Div(
-                                Field(
-                                    "first_name",
-                                    css_class="input-field if--50 if--dark js-placeholder-up",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--15"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        # Last Name
-                        Div(
-                            Div(
-                                Field(
-                                    "last_name",
-                                    css_class="input-field if--50 if--dark js-placeholder-up",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--15"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        # Birthday
-                        Div(
-                            Div(
-                                Field(
-                                    "birthday",
-                                    css_class="input-field if--50 if--dark js-placeholder-up dateinput",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--15"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        # Team Name
-                        Div(
-                            Div(
-                                Field(
-                                    "team_name",
-                                    css_class="input-field if--50 if--dark js-placeholder-up",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--15"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        # Phone Number
-                        Div(
-                            Div(
-                                Field(
-                                    "phone_number",
-                                    css_class="input-field if--50 if--dark js-placeholder-up",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--15"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        # Email
-                        Div(
-                            Div(
-                                Field(
-                                    "email",
-                                    css_class="input-field if--50 if--dark js-placeholder-up",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--15"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        # Bike Brand
-                        Div(
-                            Div(
-                                Field(
-                                    "bike_brand2",
-                                    css_class="input-field if--50 if--dark js-placeholder-up",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--15"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        # insurance
-                        Div(
-                            Div(
-                                Field(
-                                    "insurance",
-                                    css_class="select-hide js-select"
-                                ),
-                                css_class="input-wrap w100 bottom-margin--20"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ) if insurances else Div(),
-
-                        # SSN
-                        Div(
-                            Div(
-                                Field(
-                                    "ssn",
-                                    css_class="input-field if--50 if--dark js-placeholder-up",
-                                    **{
-                                        "data-rule-required": True,
-                                        "data-msg-required": str(_("This field is required."))
-                                    }
-                                ),
-                                css_class="input-wrap w100 bottom-margin--15"
-                            ),
-                            css_class="col-xl-8 col-m-12 col-s-24"
-                        ),
-
-                        'id',
-                        Div(
-                            Div(
-                                css_class="fs14 fw700 c-white uppercase price"
-                            ),
-                            css_class="col-xl-24"
-                        ),
-
-                        css_class="row row--gutters-10"
-                    ),
-
-                    css_class="participant__form"
-                ),
-                css_class="participant bottom-margin--30 bgc-dgray js-participant"
-            )
-        )
+        self.helper.template = "registration/form/participant_inline.html"
+        self.helper.layout = Layout()
 
 
 class ParticipantInlineRestrictedForm(ParticipantInlineForm):

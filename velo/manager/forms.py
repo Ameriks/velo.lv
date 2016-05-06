@@ -49,8 +49,8 @@ class InvoiceCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         if self.request:
             instance.updated_by = self.request.user
-        if instance.payment_status < Application.PAY_STATUS_WAITING:
-            instance.payment_status = Application.PAY_STATUS_WAITING
+        if instance.payment_status < Application.PAY_STATUS.waiting:
+            instance.payment_status = Application.PAY_STATUS.waiting
 
         if not bool(self.errors) and commit:
             instance.save()

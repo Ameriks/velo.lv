@@ -1,0 +1,224 @@
+{% load i18n staticfiles form_helper %}
+
+<div class="item participant bottom-margin--30 bgc-dgray  js-participant">
+{{ form.id }}
+    <div class="participant__head bgc-dblue flex wrap--nowrap direction--row justify--start align-items--center c-yellow">
+        <div class="participant__number"></div>
+        <div class="participant__name flex--1">{% trans "Participant" %}</div>
+        <div class="participant__remove delete_button flex wrap--nowrap direction--row justify--center align-items--center">
+            <svg class="icon participant__cross">
+                <use
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#cross"></use>
+            </svg>
+            <div>{% trans "Remove" %}</div>
+        </div>
+    </div>
+    <div class="participant__form">
+        <fieldset class="w100 border-bottom bottom-margin--20">
+            <div class="w100 bottom-margin--20"></div>
+            <legend class="w100 fs14 fw700 uppercase">{% trans "Competition Information" %}</legend>
+            <div class="w100">
+                <div class="row row--gutters-50">
+
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                            {{ form.distance|add_extra_classes:"select" }}
+                            {% if form.distance.help_text or form.distance.errors %}
+                                <p id="{{ form.distance.auto_id }}-error" class="error">
+                                    {% for error in form.distance.errors %}{{ error }}{% empty %}
+                                        {{ form.distance.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="w100 bottom-margin--20">
+            <legend class="w100 fs14 fw700 uppercase">{% trans "Participant Information" %}</legend>
+            <div class="w100">
+                <div class="row row--gutters-50">
+
+                    {# First Name #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.first_name.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "First Name" %} *</label>
+                            {{ form.first_name|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.first_name.help_text or form.first_name.errors %}
+                                <p id="{{ form.first_name.auto_id }}-error" class="error">
+                                    {% for error in form.first_name.errors %}{{ error }}{% empty %}
+                                        {{ form.first_name.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Last Name #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.last_name.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "Last Name" %} *</label>
+                            {{ form.last_name|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.last_name.help_text or form.last_name.errors %}
+                                <p id="{{ form.last_name.auto_id }}-error" class="error">
+                                    {% for error in form.last_name.errors %}{{ error }}{% empty %}
+                                        {{ form.last_name.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Gender #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                            {{ form.gender|add_extra_classes:"select" }}
+                            {% if form.gender.help_text or form.gender.errors %}
+                                <p id="{{ form.gender.auto_id }}-error" class="error">
+                                    {% for error in form.gender.errors %}{{ error }}{% empty %}
+                                        {{ form.gender.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Birthday #}
+                    <div class="col-xl-16 col-l-24">
+                        <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">{% trans "Birthday" %}</div>
+                            <div class="w100">
+                                <div class="row row--gutters-20">
+                                    {{ form.birthday }}
+                                </div>
+                            </div>
+                            {% if form.birthday.help_text or form.birthday.errors %}
+                                <p id="{{ form.birthday.auto_id }}-error" class="error">
+                                    {% for error in form.birthday.errors %}{{ error }}{% empty %}
+                                        {{ form.birthday.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Country #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                            {{ form.country|add_extra_classes:"select" }}
+                            {% if form.country.help_text or form.country.errors %}
+                                <p id="{{ form.country.auto_id }}-error" class="error">
+                                    {% for error in form.country.errors %}{{ error }}{% empty %}
+                                        {{ form.country.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Email #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.email.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "Email" %}</label>
+                            {{ form.email|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.email.help_text or form.email.errors %}
+                                <p id="{{ form.email.auto_id }}-error" class="error">
+                                    {% for error in form.email.errors %}{{ error }}{% empty %}
+                                        {{ form.email.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Phone Number #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.phone_number.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "Phone Number" %}</label>
+                            {{ form.phone_number|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.phone_number.help_text or form.phone_number.errors %}
+                                <p id="{{ form.phone_number.auto_id }}-error" class="error">
+                                    {% for error in form.phone_number.errors %}{{ error }}{% empty %}
+                                        {{ form.phone_number.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                    {# Team #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.team_name.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "Team Name" %}</label>
+                            {{ form.team_name|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.team_name.help_text or form.team_name.errors %}
+                                <p id="{{ form.team_name.auto_id }}-error" class="error">
+                                    {% for error in form.team_name.errors %}{{ error }}{% empty %}
+                                        {{ form.team_name.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Bike Brand #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.bike_brand2.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "Bike Brand" %}</label>
+                            {{ form.bike_brand2|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.bike_brand2.help_text or form.bike_brand2.errors %}
+                                <p id="{{ form.bike_brand2.auto_id }}-error" class="error">
+                                    {% for error in form.bike_brand2.errors %}{{ error }}{% empty %}
+                                        {{ form.bike_brand2.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                    {# Insurance #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                            {{ form.insurance|add_extra_classes:"select" }}
+                            {% if form.insurance.help_text or form.insurance.errors %}
+                                <p id="{{ form.insurance.auto_id }}-error" class="error">
+                                    {% for error in form.insurance.errors %}{{ error }}{% empty %}
+                                        {{ form.insurance.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# SSN #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.ssn.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "Social Security Number" %} *</label>
+                            {{ form.ssn|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.ssn.help_text or form.ssn.errors %}
+                                <p id="{{ form.ssn.auto_id }}-error" class="error">
+                                    {% for error in form.ssn.errors %}{{ error }}{% empty %}
+                                        {{ form.ssn.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# PRICE #}
+                    <div class="col-xl-24 price">
+
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+
+    </div>
+
+</div>

@@ -70,8 +70,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         instance = super(ApplicationPayUpdateForm, self).save(commit=False)
         if self.request:
             instance.updated_by = self.request.user
-        if instance.payment_status < Application.PAY_STATUS_WAITING:
-            instance.payment_status = Application.PAY_STATUS_WAITING
+        if instance.payment_status < Application.PAY_STATUS.waiting:
+            instance.payment_status = Application.PAY_STATUS.waiting
+
+        instance.params = self.cleaned_data
 
         if commit:
             instance.save()
@@ -79,16 +81,17 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         return instance
 
     def clean_donation(self):
-        donation = self.cleaned_data.get('donation')
+        donation = self.cleaned_data.get('donation', 0.00)
         # If person have already taken invoice, then we do not allow changing donation amount
         if self.instance.external_invoice_code:
-            return self.instance.donation
+            return float(self.instance.donation)
         else:
-            return donation
+            return float(donation)
 
     def clean(self):
         if not self.cleaned_data.get('donation', ''):
             self.cleaned_data.update({'donation': 0.00})
+
         super(ApplicationPayUpdateForm, self).clean()
         try:
             active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))

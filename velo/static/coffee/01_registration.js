@@ -3,24 +3,23 @@
   var check_price, update_line_participant;
 
   this.Participant_inline_class_added = function(row) {
-    update_line_participant(row);
-    return jsSelect(row);
+    return update_line_participant(row);
   };
 
   check_price = function(row) {
     var birthday, csrf, distance, insurance, url;
     distance = $("select[name$='distance']", row).val();
-    birthday = $("input[name$='birthday']", row).val();
-    insurance = $("select[name$='insurance']", row).val();
+    birthday = $("select[name$='birthday_year']", row).val();
+    insurance = $("[name$='insurance']", row).val();
     csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-    url = $("select[name$='distance']", row).data('url');
+    url = $(row).parents("form").data('check-price');
     return $.ajax({
       url: url,
       type: 'POST',
       data: {
         csrfmiddlewaretoken: csrf,
         distance: distance,
-        birthday: birthday,
+        birthday_year: birthday,
         insurance: insurance
       },
       dataType: 'json',
@@ -38,9 +37,7 @@
     ssn = $("input[name$='-ssn']", row);
     birthday = $("input[name$='-birthday']", row).val();
     insurance = $("select[name$='-insurance']", row);
-    $('.dateinput', row).datetimepicker({
-      format: 'YYYY-MM-DD'
-    });
+    $(".participant__number", row).html(row.index());
     if (!insurance.val()) {
       $(ssn).parents(".input-wrap").hide();
     }
@@ -54,13 +51,13 @@
         return el.hide();
       }
     });
-    $("input[name$='-birthday']", row).on("dp.change", function(e) {
-      return check_price(row);
-    });
-    $("select[name$='distance'], select[name$='insurance']", row).on("selectmenuchange", function(e) {
-      return check_price(row);
-    });
-    check_price(row);
+    if (!row.hasClass("noadd")) {
+      $("select[name$='-birthday_year'], select[name$='distance'], select[name$='insurance']", row).on("change", function(e) {
+        check_price(row);
+        return void 0;
+      });
+      check_price(row);
+    }
     return void 0;
   };
 

@@ -1,6 +1,5 @@
 @Participant_inline_class_added = (row) ->
   update_line_participant row
-  jsSelect(row)
 
 
 
@@ -8,11 +7,11 @@
 
 check_price = (row) ->
   distance = $("select[name$='distance']", row).val()
-  birthday = $("input[name$='birthday']", row).val()
-  insurance = $("select[name$='insurance']", row).val()
+  birthday = $("select[name$='birthday_year']", row).val()
+  insurance = $("[name$='insurance']", row).val()
   csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
 
-  url = $("select[name$='distance']", row).data('url')
+  url = $(row).parents("form").data('check-price')
 
   $.ajax
     url: url
@@ -20,7 +19,7 @@ check_price = (row) ->
     data:
       csrfmiddlewaretoken: csrf
       distance: distance
-      birthday: birthday
+      birthday_year: birthday
       insurance: insurance
     dataType: 'json'
     success: (data) ->
@@ -34,8 +33,7 @@ update_line_participant = (row) ->
   birthday = $("input[name$='-birthday']", row).val()
   insurance = $("select[name$='-insurance']", row)
 
-  $('.dateinput', row).datetimepicker
-    format: 'YYYY-MM-DD'
+  $(".participant__number", row).html(row.index())
 
   if not insurance.val()
     $(ssn).parents(".input-wrap").hide()
@@ -49,25 +47,12 @@ update_line_participant = (row) ->
       $(ssn).val("")
       el.hide()
 
-  $("input[name$='-birthday']", row).on "dp.change", (e) ->
+  if !row.hasClass("noadd")
+    $("select[name$='-birthday_year'], select[name$='distance'], select[name$='insurance']", row).on "change", (e) ->
+      check_price row
+      undefined
+
     check_price row
-#    alert "Check price"
-  $("select[name$='distance'], select[name$='insurance']", row).on "selectmenuchange", (e) ->
-    check_price row
-#    alert "Check price"
-
-  check_price row
-
-
-
-#  if !row.hasClass("noadd")
-##    debugger
-#    $("select[name$='distance'], input[name$='birthday'], select[name$='insurance']", row).change ->
-#      check_price(row)
-#      ""
-#    check_price(row)
-
-
 
 
   undefined

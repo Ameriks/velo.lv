@@ -27,43 +27,49 @@
                                             <div class="fs30 fw700 uppercase w100 text-align--center bottom-margin--30">{% trans "Registration successful" %}</div>
                                             <div class="fs70 c-yellow w100 text-align--center bottom-margin--15">
                                                 <svg class="icon">
-                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#velo"></use>
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                         xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#velo"></use>
                                                 </svg>
                                             </div>
                                             <div class="fs14 fw700 lh15 uppercase c-yellow w100 text-align--center bottom-margin--30">{% trans "Thank you for applying!" %}</div>
-                                            <div class="fs14 fw700 lh15 uppercase c-white w100 text-align--center bottom-margin--50">{% trans "You will receive email with confirmation that you have successfuly applied." %}</div>
+                                            <div class="fs14 fw700 lh15 uppercase c-white w100 text-align--center bottom-margin--20">{% trans "You will receive email with confirmation that you have successfuly applied." %}</div>
 
-                                            {% if object.external_invoice_code %}
-                                                <div class="fs14 fw700 lh15 uppercase c-white w100 text-align--center bottom-margin--50">
-                                                <a href="https://www.e-rekins.lv/d/i/{{ object.external_invoice_code }}/">{% trans "To download invoice, press here." %}</a>
+
+                                            <div class="w100 bottom-margin--20">
+                                                <div class="row row--gutters-50">
+                                                    {% if object.external_invoice_code %}
+                                                        <a href="https://www.e-rekins.lv/d/i/{{ object.external_invoice_code }}/"
+                                                           class="col-xl-24">
+                                                            <div class="btn btn--50 btn--blue btn--blue-hover btn--blue-active btn--no-borders w100 bottom-margin--20">
+                                                                {% trans "To download invoice, press here." %}
+                                                            </div>
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if object.external_invoice_code and not object.payment_status == object.PAY_STATUS.payed %}
+                                                        <a href="{% url "application_pay" object.code %}"
+                                                           class="col-xl-24">
+                                                            <div class="btn btn--50 btn--blue btn--blue-hover btn--blue-active btn--no-borders w100 bottom-margin--20">
+                                                                {% trans "Pay with Creditcard" %}
+                                                            </div>
+                                                        </a>
+                                                    {% endif %}
+                                                    <a href="{% url "application" object.code %}" class="col-xl-24">
+                                                        <div class="btn btn--50 btn--blue btn--blue-hover btn--blue-active btn--no-borders w100 bottom-margin--20">
+                                                            {% trans "Update participant contact information" %}
+                                                        </div>
+                                                    </a>
                                                 </div>
-                                            {% endif %}
-
-
-                                            {% if object.external_invoice_code %}
-                                                <div class="fs14 fw700 lh15 uppercase c-white w100 text-align--center bottom-margin--50">
-                                                <a href="https://www.e-rekins.lv/d/i/{{ object.external_invoice_code }}/">{% trans "To download invoice, press here." %}</a>
-                                                </div>
-                                            {% endif %}
-                                            {% if object.external_invoice_code and not object.payment_status == object.PAY_STATUS.payed %}
-                                                <a class="btn btn-default" href="{% url "application_pay" object.code %}">Veikt rēķina apmaksu ar karti</a>
-                                            {% endif %}
-                                            <a class="btn btn-primary" href="{% url "application" object.code %}">Labot dalībnieku kontaktinformāciju</a>
+                                            </div>
 
                                         </div>
-                                        <div class="col-xl-7 col-l-6 col-m-4 col-s-24"></div>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
 
 {% endblock %}

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 from builtins import str
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -56,6 +57,8 @@ class Application(TimestampMixin, models.Model):
     total_insurance_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     final_price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
+    params = JSONField(default={})
+
     payment_set = GenericRelation(Payment)
 
     def save(self, *args, **kwargs):
@@ -102,7 +105,7 @@ class Participant(TimestampMixin, models.Model):
 
     first_name = models.CharField(_('First Name'), max_length=60, blank=True)
     last_name = models.CharField(_('Last Name'), max_length=60, blank=True)
-    birthday = models.DateField(_('Birthday'), help_text='YYYY-MM-DD', blank=True, null=True)
+    birthday = models.DateField(_('Birthday'), blank=True, null=True)
     is_only_year = models.BooleanField(default=False)
     slug = models.SlugField(blank=True)
 

@@ -26,14 +26,14 @@ class CheckPriceView(JsonRequestResponseMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         try:
-            year = int(request.POST.get('birthday')[0:4])
+            year = int(request.POST.get('birthday_year'))
             distance_id = request.POST.get('distance', None)
             insurance_id = request.POST.get('insurance', None)
-            if not distance_id:
+            if not distance_id or not year:
                 raise ValueError
         except ValueError:
             return self.render_json_response({
-                'message': _('Please enter all details'),
+                'message': _("<div class='fs14 fw700 c-white uppercase text-align--right'>Please enter all details</div>"),
                 'success': False
             })
         messages = get_form_message(self.get_object(), distance_id, year, insurance_id=insurance_id)
