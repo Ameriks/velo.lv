@@ -83,7 +83,7 @@ class PDFReports(object):
                          Paragraph(obj.participant.last_name, styles["SmallNormal"]),
                          Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
                          Paragraph(obj.participant.team_name, styles["SmallNormal"]),
-                         Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
+                         Paragraph(obj.time.strftime("%H:%M:%S") if obj.time else "-", styles["SmallNormal"]),
                          Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
                          Paragraph(str(obj.points_group), styles["SmallNormal"])])
 
@@ -100,7 +100,7 @@ class PDFReports(object):
                  Paragraph(obj.participant.last_name, styles["SmallNormal"]),
                  Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
                  Paragraph(obj.participant.team_name, styles["SmallNormal"]),
-                 Paragraph(obj.time.strftime("%H:%M:%S"), styles["SmallNormal"]),
+                 Paragraph(obj.time.strftime("%H:%M:%S") if obj.time else "-", styles["SmallNormal"]),
                  Paragraph(str(obj.avg_speed), styles["SmallNormal"]),
                  Paragraph(str(obj.points_distance), styles["SmallNormal"]),
                  Paragraph(str(obj.participant.group), styles["SmallNormal"]),
