@@ -102,10 +102,6 @@ def generate_pdfreport(competition_id, action, user_id):
     obj.save()
     file_obj.close()
 
-    MailgunEmail.objects.create(content_object=obj,
-                                em_to=user.email,
-                                subject='PDF atskaite %s' % action,
-                                html='Atskaite atrodama šeit: <a href="{0}{1}">{0}{1}</a>'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url),
-                                text='Atskaite atrodama šeit: {0}{1}'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url)
-                                )
+    send_mail('PDF atskaite %s' % action, 'Atskaite atrodama šeit: {0}{1}'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url), settings.SERVER_EMAIL, recipient_list=[user.email, ])
+
     return True
