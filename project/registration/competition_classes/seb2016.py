@@ -378,7 +378,7 @@ class Seb2016(SEBCompetitionBase):
         print(chip)
 
     def get_result_table_class(self, distance, group=None):
-        if distance.id != self.BERNU_DISTANCE_ID and self.competition_index in (1,) and not group:
+        if distance.id != self.BERNU_DISTANCE_ID and not group:
             return ResultDistanceCheckpointTable
 
         return super(Seb2016, self).get_result_table_class(distance, group)

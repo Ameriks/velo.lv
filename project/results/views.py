@@ -99,7 +99,7 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
                     },
                 )
 
-        elif self.competition.id in (45, 52, 53, ):
+        elif self.competition.id == 45 or self.competition.parent_id == 51:
             queryset = queryset.extra(
                     select={
                         'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
