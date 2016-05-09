@@ -187,17 +187,17 @@ class TeamPayView(LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
 
         if self.object.is_featured:
             messages.success(self.request, _('Team profile already payed.'))
-            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.id}))
+            return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': self.object.id}))
 
         if self.object.distance.competition.is_past_due:
             messages.error(self.request, _('Competition already passed.'))
-            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.id}))
+            return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': self.object.id}))
 
         self.payment_amount = self.object.distance.profile_price
 
         if not self.payment_amount or self.payment_amount == 0.0:
             messages.error(self.request, _('Price for team profile not defined.'))
-            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.id}))
+            return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': self.object.id}))
         else:
             # Let's set amount here
             self.object.final_price = self.payment_amount
@@ -235,5 +235,5 @@ class PaymentReturnView(DetailView):
             if self.object.content_type.model == 'application':
                 return HttpResponseRedirect(reverse('application_ok', kwargs={'slug': self.object.content_object.code}))
             elif self.object.content_type.model == 'team':
-                return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': self.object.content_object.id}))
+                return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': self.object.content_object.id}))
         return validate_payment(self.object, user=True, request=request)

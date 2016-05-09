@@ -447,7 +447,7 @@ def approve_payment(payment, user=False, request=None):
 
         if user:
             messages.success(request, _('Team profile successfully paid.'))
-            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': payment.content_object.id}))
+            return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': payment.content_object.id}))
         else:
             return True
 
@@ -500,7 +500,7 @@ def validate_payment(payment, user=False, request=None):
             if payment.content_type.model == 'application':
                 return HttpResponseRedirect(reverse('application_pay', kwargs={'slug': payment.content_object.code}))
             elif payment.content_type.model == 'team':
-                return HttpResponseRedirect(reverse('accounts:team_pay', kwargs={'pk2': payment.content_object.id}))
+                return HttpResponseRedirect(reverse('account:team_pay', kwargs={'pk2': payment.content_object.id}))
         else:
             return False
     else:
@@ -513,6 +513,6 @@ def validate_payment(payment, user=False, request=None):
             if payment.content_type.model == 'application':
                 return HttpResponseRedirect(reverse('application_pay', kwargs={'slug': payment.content_object.code}))
             elif payment.content_type.model == 'team':
-                return HttpResponseRedirect(reverse('accounts:team_pay', kwargs={'pk2': payment.content_object.id}))
+                return HttpResponseRedirect(reverse('account:team_pay', kwargs={'pk2': payment.content_object.id}))
         else:
             return False

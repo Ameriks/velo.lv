@@ -175,7 +175,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
             child_items.append(item(str(child), 'competition:competition %i' % child.id, url_as_pattern=True, children=children))
 
-        return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
+        return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu, alias="level2" if self.competition.get_level() == 1 else "")
 
     def get_startlist_table_class(self, distance=None):
         return ParticipantTable

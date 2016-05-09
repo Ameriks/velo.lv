@@ -23,6 +23,23 @@
   display: none;
 }
 
+.autocomplete-suggestions {
+  background-color: #1a2126;
+
+  .autocomplete-suggestion {
+    border: 1px solid rgba(255,255,255,0.3);
+    line-height: 40px;
+    padding-left:10px;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+
+    &.autocomplete-selected {
+      background-color: #1a2937;
+    }
+  }
+}
+
 //a {
 //  color: #FFF;
 //}

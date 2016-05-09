@@ -100,7 +100,7 @@
                         <figure class="profile-nav__hero flex justify--center align-items--center img-wrapper">
                             <img
                                 class="profile-nav__hero-image"
-                                data-src="{% if not user.image %}{% static "template/velo-2016/html/userfiles/igo-japins.jpg" %}{% else %}{{ user.image.profile.url }}{% endif %}"
+                                data-src="{% if not user.image %}{% static "template/velo-2016/html/img/placeholders/velo-placeholder--1x1.svg" %}{% else %}{{ user.image.profile.url }}{% endif %}"
                                 onload="imgLoaded(this)"
                             >
                         </figure>

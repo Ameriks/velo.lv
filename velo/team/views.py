@@ -181,7 +181,7 @@ class TeamCreateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
     form_class = TeamForm
 
     def get_success_url(self):
-        return reverse('accounts:team_list')
+        return reverse('account:team_list')
 
 
 class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
@@ -193,7 +193,7 @@ class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
     pk_url_kwarg = 'pk2'
 
     def get_success_url(self):
-        return reverse('accounts:team_list')
+        return reverse('account:team_list')
 
     def get_queryset(self):
         queryset = super(TeamUpdateView, self).get_queryset()
@@ -399,6 +399,6 @@ class TeamApply(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, 
             if 'pk' in self.kwargs:
                 return HttpResponseRedirect(reverse('manager:team_apply_list', kwargs={'pk2': self.object.id, 'pk': self.kwargs.get('pk')}))
             else:
-                return HttpResponseRedirect(reverse('accounts:team_apply_list', kwargs={'pk2': self.object.id}))
+                return HttpResponseRedirect(reverse('account:team_apply_list', kwargs={'pk2': self.object.id}))
 
         return self.render_to_response(context)

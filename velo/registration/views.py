@@ -3,12 +3,13 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.db.models import Q, Count, Sum
+from django.db.models import Q, Count, Sum, Max
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.views.generic import CreateView, ListView, View, DetailView, TemplateView, UpdateView
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 from django_tables2 import SingleTableView
 from extra_views import UpdateWithInlinesView, NamedFormsetsMixin, InlineFormSet
@@ -233,7 +234,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
                                            ssn=participant.ssn,
                                            country=participant.country,
                                            status=Member.STATUS_ACTIVE)
-            return HttpResponseRedirect(reverse('accounts:team', kwargs={'pk2': team.id}))
+            return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': team.id}))
 
         return HttpResponseRedirect(reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
 
@@ -378,7 +379,7 @@ class ApplicationUpdate(SSLRequiredMixin, RequestFormKwargsMixin, NamedFormsetsM
         if self.object.created_by and self.object.created_by != request.user:
             messages.error(request, _(
                 "Currently logged in user doesn't have access to this application. Please, login with user that you used to create application."))
-            return HttpResponseRedirect("%s?next=%s" % (reverse('accounts:login'), request.path))
+            return HttpResponseRedirect("%s?next=%s" % (reverse(settings.LOGIN_URL), request.path))
 
         return super(BaseUpdateWithInlinesView, self).get(request, *args, **kwargs)
 
@@ -436,38 +437,31 @@ class ParticipantSearchView(SSLRequiredMixin, JsonRequestResponseMixin, ListView
     def get_queryset(self):
         queryset = super(ParticipantSearchView, self).get_queryset()
 
-        queryset = queryset.filter(is_participating=True)
+        search = self.request.GET.get('query', '')
 
-        queryset = queryset.select_related('competition', 'distance').order_by('-competition__competition_date',
-                                                                               'last_name')
-
-        kind = self.kwargs.get('kind')
-        search = self.request.GET.get('search', '')
-
-        search_slug = ''
-        if search:
-            search_slug = slugify(search)
-
-        queryset = queryset.extra(where=["to_char(birthday, 'YYYY-MM-DD') LIKE %s OR ssn LIKE %s OR slug LIKE %s"],
-                                  params=["%{0}%".format(search), "%{0}%".format(search.replace('-', '')),
-                                          "%{0}%".format(search_slug), ])
+        id_search = Participant.objects.filter(is_participating=True)
 
         if not self.request.user.is_authenticated():
-            queryset = queryset.filter(created_by=-1)
+            id_search = id_search.filter(created_by=-1)
         elif not self.request.user.has_perm('registration.add_number'):
-            queryset = queryset.filter(created_by=self.request.user)
+            id_search = id_search.filter(created_by=self.request.user)
 
-        queryset = queryset[:20]
+        id_search = id_search.filter(full_name__icontains=search)\
+                             .values("first_name", "last_name", "birthday")\
+                             .order_by("first_name", "last_name", "birthday")\
+                             .annotate(Count('first_name'), Count('last_name'), Max('id'))[:7]\
+                             .values_list("id__max", flat=True)
 
-        queryset = queryset.values('birthday', 'full_name', 'country', 'first_name', 'last_name', 'gender', 'ssn',
-                                   'team_name', 'phone_number', 'email', 'city', 'occupation', 'bike_brand2',
-                                   'competition__name')
+        queryset = queryset.filter(id__in=id_search).select_related('competition', 'distance').order_by('-id', 'last_name')
+
+        queryset = queryset.extra(select={'value': 'first_name'}).values('birthday', 'country', 'first_name', 'last_name', 'gender',
+                                   'team_name', 'phone_number', 'email', 'city', 'occupation', 'bike_brand2', 'value', 'id')
 
         return queryset
 
     def get(self, *args, **kwargs):
         self.object_list = self.get_queryset()
-        return self.render_json_response(list(self.object_list))
+        return self.render_json_response({"suggestions": list(self.object_list)})
 
 
 class MyApplicationList(SSLRequiredMixin, LoginRequiredMixin, SingleTableView):
@@ -476,7 +470,7 @@ class MyApplicationList(SSLRequiredMixin, LoginRequiredMixin, SingleTableView):
     template_name = 'registration/application_my.html'
 
     def get_queryset(self):
-        queryset = super(MyApplicationList, self).get_queryset()
+        queryset = super(MyApplicationList, self).get_queryset().filter(competition__competition_date__year__gte=timezone.now().year)
         queryset = queryset.filter(created_by=self.request.user).select_related('competition', 'competition__parent')
 
         return queryset

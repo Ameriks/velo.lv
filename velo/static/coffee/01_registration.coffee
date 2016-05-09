@@ -30,15 +30,37 @@ check_price = (row) ->
 
 update_line_participant = (row) ->
   ssn = $("input[name$='-ssn']", row)
-  birthday = $("input[name$='-birthday']", row).val()
   insurance = $("select[name$='-insurance']", row)
+
+  $("input[name$='-first_name']", row).autocomplete
+      serviceUrl: row.parents("form").data("autocomplete"),
+      onSelect: (suggestion) ->
+          $("select[name$='country']", row).val(suggestion.country).change()
+          $("select[name$='gender']", row).val(suggestion.gender).change()
+
+          $("input[name$='last_name']", row).val(suggestion.last_name).change().focus()
+          $("input[name$='bike_brand2']", row).val(suggestion.bike_brand2).change().focus()
+
+          birthday = suggestion.birthday.split('-')
+          console.log birthday
+          $("select[name$='birthday_year']", row).val(parseInt(birthday[0])).change()
+          $("select[name$='birthday_month']", row).val(parseInt(birthday[1])).change()
+          $("select[name$='birthday_day']", row).val(parseInt(birthday[2])).change()
+
+          $("input[name$='team_name']", row).val(suggestion.team_name).change().focus()
+          $("input[name$='phone_number']", row).val(suggestion.phone_number).change().focus()
+          $("input[name$='email']", row).val(suggestion.email).change().focus().blur()
+
+      formatResult: (suggestion, currentValue) ->
+          return "#{suggestion.first_name} #{suggestion.last_name} #{suggestion.birthday} "
+
 
   $(".participant__number", row).html(row.index())
 
   if not insurance.val()
     $(ssn).parents(".input-wrap").hide()
 
-  insurance.on "selectmenuchange", (e) ->
+  insurance.on "change", (e) ->
     el = $(ssn).parents(".input-wrap")
 
     if $(this).val()

@@ -271,7 +271,7 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
                 if active_payment_type.payment_channel.is_bill:
                     instance.external_invoice_code, instance.external_invoice_nr = create_team_invoice(instance,
                                                                                                        active_payment_type)
-                    self.success_url = reverse('accounts:team', kwargs={'pk2': instance.id})
+                    self.success_url = reverse('account:team', kwargs={'pk2': instance.id})
                     messages.info(self.request,
                                   _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
                 else:

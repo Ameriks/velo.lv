@@ -33,15 +33,35 @@
   };
 
   update_line_participant = function(row) {
-    var birthday, insurance, ssn;
+    var insurance, ssn;
     ssn = $("input[name$='-ssn']", row);
-    birthday = $("input[name$='-birthday']", row).val();
     insurance = $("select[name$='-insurance']", row);
+    $("input[name$='-first_name']", row).autocomplete({
+      serviceUrl: row.parents("form").data("autocomplete"),
+      onSelect: function(suggestion) {
+        var birthday;
+        $("select[name$='country']", row).val(suggestion.country).change();
+        $("select[name$='gender']", row).val(suggestion.gender).change();
+        $("input[name$='last_name']", row).val(suggestion.last_name).change().focus();
+        $("input[name$='bike_brand2']", row).val(suggestion.bike_brand2).change().focus();
+        birthday = suggestion.birthday.split('-');
+        console.log(birthday);
+        $("select[name$='birthday_year']", row).val(parseInt(birthday[0])).change();
+        $("select[name$='birthday_month']", row).val(parseInt(birthday[1])).change();
+        $("select[name$='birthday_day']", row).val(parseInt(birthday[2])).change();
+        $("input[name$='team_name']", row).val(suggestion.team_name).change().focus();
+        $("input[name$='phone_number']", row).val(suggestion.phone_number).change().focus();
+        return $("input[name$='email']", row).val(suggestion.email).change().focus().blur();
+      },
+      formatResult: function(suggestion, currentValue) {
+        return suggestion.first_name + " " + suggestion.last_name + " " + suggestion.birthday + " ";
+      }
+    });
     $(".participant__number", row).html(row.index());
     if (!insurance.val()) {
       $(ssn).parents(".input-wrap").hide();
     }
-    insurance.on("selectmenuchange", function(e) {
+    insurance.on("change", function(e) {
       var el;
       el = $(ssn).parents(".input-wrap");
       if ($(this).val()) {

@@ -12,6 +12,8 @@ from django.utils.html import format_html
 from django.utils.dates import MONTHS
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.staticfiles.templatetags.staticfiles import static
+
 
 RE_DATE = re.compile(r'(\d{4})-(\d\d?)-(\d\d?)$')
 
@@ -41,7 +43,7 @@ class ProfileImage(FileInput):
         try:
             final_attrs.update({'value': value.url})
         except ValueError:
-            pass
+            final_attrs.update({'value': static('template/velo-2016/html/img/placeholders/velo-placeholder--1x1.svg')})
 
         return render_to_string('core/widgets/profile_image.html', final_attrs)
 

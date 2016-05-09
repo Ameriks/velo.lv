@@ -24,7 +24,7 @@
                                     <label for="id_email"
                                            class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Email" %}</label>
                                     <a class="btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100 buttonwidget"
-                                       href="{% url "account_email" %}">{{ user.email }}
+                                       href="{% url "account_email" %}">{{ user.email }}&nbsp;
                                         <small>{% trans "Change Email" %}</small>
                                     </a>
                                 </div>
@@ -32,8 +32,8 @@
                                     <label for="id_password"
                                            class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Password" %}</label>
                                     <a class="btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100 buttonwidget"
-                                       href="{% url "account_change_password" %}">******
-                                        <small>{% trans "Change Password" %}</small>
+                                       href="{% url "account_change_password" %}">******&nbsp;
+                                        <small> {% trans "Change Password" %}</small>
                                     </a>
                                 </div>
                                 <div id="div_id_country" class="form-group input-wrap w100 bottom-margin--15">
