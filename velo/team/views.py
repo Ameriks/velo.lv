@@ -192,6 +192,20 @@ class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
     form_class = TeamForm
     pk_url_kwarg = 'pk2'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if not self.request.user.has_perm('team.change_member'):
+            competition = self.object.distance.competition
+            if competition.get_root().id == 1:
+                next_competition = self.object.distance.competition.children.filter(
+                    competition_date__gt=timezone.now())[:1]
+                context.update({'next_competition': next_competition[0] if next_competition else None})
+            elif competition.competition_date and competition.competition_date > datetime.date.today():
+                context.update({'next_competition': competition})
+
+        return context
+
     def get_success_url(self):
         return reverse('account:team_list')
 

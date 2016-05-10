@@ -1887,18 +1887,19 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 })();
 (function(){
     var fieldSelectGroupSelect = $('.js-input-field-with-select__select');
-    
+
     var updateFieldValue = function(triggerElement){
         var fieldSelectGroup = triggerElement.closest('.js-input-field-with-select');
         var fieldSelectGroupField = fieldSelectGroup.find('.js-input-field-with-select__field');
         var selectVal = triggerElement.val();
-        fieldSelectGroupField.val('€ '+ selectVal);
+        fieldSelectGroupField.val(selectVal);
     }
-    
+
     fieldSelectGroupSelect.on('change', function(){
         updateFieldValue($(this));
     });
 })();
+
 (function () {
     var isFileSize = function(file, allowedSize){
         var fileLength = file.length;
@@ -2181,7 +2182,7 @@ svg4everybody();
             * Indicates whether delete link(s) can be displayed - when total forms > min forms
             */
             showDeleteLinks = function() {
-                return minForms.val() == '' || (totalForms.val() - minForms.val() > 0);
+                return (minForms.val() == '' || (totalForms.val() - minForms.val() > 0)) && (options.container.data('can-delete') == 'True');
             },
             insertOrderingButtons = function(row) {
                 var order_input = row.find('input[id $= "-ORDER"]');
@@ -2607,6 +2608,10 @@ svg4everybody();
         return suggestion.first_name + " " + suggestion.last_name + " " + suggestion.birthday + " ";
       }
     });
+    if (row.parents(".formset_container").data("can-delete") === 'False') {
+      $('.delete_button', row).remove();
+      $('.price', row).remove();
+    }
     $(".participant__number", row).html(row.index());
     if (!insurance.val()) {
       $(ssn).parents(".input-wrap").hide();

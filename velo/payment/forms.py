@@ -86,7 +86,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         if self.instance.external_invoice_code:
             return float(self.instance.donation)
         else:
-            return float(donation)
+            return donation
 
     def clean(self):
         if not self.cleaned_data.get('donation', ''):

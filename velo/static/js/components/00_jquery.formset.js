@@ -51,7 +51,7 @@
             * Indicates whether delete link(s) can be displayed - when total forms > min forms
             */
             showDeleteLinks = function() {
-                return minForms.val() == '' || (totalForms.val() - minForms.val() > 0);
+                return (minForms.val() == '' || (totalForms.val() - minForms.val() > 0)) && (options.container.data('can-delete') == 'True');
             },
             insertOrderingButtons = function(row) {
                 var order_input = row.find('input[id $= "-ORDER"]');

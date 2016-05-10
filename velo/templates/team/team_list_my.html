@@ -7,12 +7,13 @@
             <div class="w100 border-right border-left flex direction--column">
                 <h1 class="heading w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
                     <span class="w100">{% trans "My Profile" %}</span>
-                    <span class="w100 c-yellow">{{ object.email }}</span>
+                    <span class="w100 c-yellow">{{ user.email }}</span>
                 </h1>
-                <h2 class="heading heading--smaller w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
-                    <span class="w100">{% trans "My Teams" %}</span>
-                    <a href="{% url 'account:team' %}" class="btn btn--blue">{% trans 'New Team' %}</a>
+                <h2 class="heading heading--smaller w100 border-bottom fs21">
+                    <span>{% trans "My Teams" %}</span>
+                    <a href="{% url 'account:team' %}" class="btn btn--50 btn--white-transparent" style="float:right;">{% trans 'New Team' %}</a>
                 </h2>
+
 
 
                 {% render_table table %}

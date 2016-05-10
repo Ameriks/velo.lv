@@ -312,7 +312,7 @@ class ParticipantInlineRestrictedForm(ParticipantInlineForm):
             if field in self.fields:
                 self.fields[field].widget.attrs['readonly'] = True
 
-        self.helper.template = "base/velo_whole_uni_formset_noadd.html"
+        self.helper.template = "registration/form/participant_inline.html"
 
     def clean_first_name(self):
         return self.instance.first_name

@@ -54,6 +54,9 @@ update_line_participant = (row) ->
       formatResult: (suggestion, currentValue) ->
           return "#{suggestion.first_name} #{suggestion.last_name} #{suggestion.birthday} "
 
+  if row.parents(".formset_container").data("can-delete") == 'False'
+    $('.delete_button', row).remove()
+    $('.price', row).remove()
 
   $(".participant__number", row).html(row.index())
 

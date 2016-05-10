@@ -21,6 +21,7 @@ class CustomBaseInlineFormSet(GetClassNameMixin, BaseInlineFormSet):
         self.max_num = kwargs.pop('max_num', 1000)
         self.empty_form_class = kwargs.pop('empty_form_class', self.form)
         self.can_add_new = kwargs.pop('can_add_new', self.can_add_new)
+        self.can_delete = kwargs.pop('can_delete', self.can_delete)
 
         super(CustomBaseInlineFormSet, self).__init__(*args, **kwargs)
 

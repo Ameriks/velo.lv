@@ -332,7 +332,9 @@ class ParticipantInline(GetClassNameMixin, InlineFormSet):
         kwargs.update({'application': self.view.object})
         kwargs.update({'empty_form_class': self.form_class})
         kwargs.update({'required': 1})
-        kwargs.update({'can_add_new': self.view.object.payment_status == self.view.object.PAY_STATUS.not_payed})
+        kwargs.update({'can_add_new': self.view.object.payment_status == self.view.object.PAY_STATUS.not_payed and not self.view.object.competition.is_past_due})
+        kwargs.update({'can_delete': self.view.object.payment_status == self.view.object.PAY_STATUS.not_payed and not self.view.object.competition.is_past_due})
+
         return kwargs
 
     def get_extra_form_kwargs(self):
@@ -356,11 +358,8 @@ class ApplicationUpdate(SSLRequiredMixin, RequestFormKwargsMixin, NamedFormsetsM
         return context
 
     def get_success_url(self):
-        if self.request.POST.get('submit_draft'):
-            if self.object.payment_status == Application.PAY_STATUS.payed:
-                messages.info(self.request, _('Saved'))
-            else:
-                messages.info(self.request, _('Draft saved'))
+        if self.object.payment_status == Application.PAY_STATUS.payed:
+            messages.info(self.request, _('Saved'))
             return ''
         else:
             return reverse('application_pay', kwargs={'slug': self.object.code})
@@ -369,6 +368,7 @@ class ApplicationUpdate(SSLRequiredMixin, RequestFormKwargsMixin, NamedFormsetsM
         self.object = self.get_object()
 
         if self.object.competition.is_past_due:
+            messages.error(self.request, _("Competition is in past. Cannot change application."))
             return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
         else:
             return super(BaseUpdateWithInlinesView, self).post(request, *args, **kwargs)

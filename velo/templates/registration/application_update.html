@@ -88,7 +88,7 @@
                                             </div>
                                         </div>
 
-
+                                        {% if not object.competition.is_past_due %}
                                         <div class="col-xl-24 border-top border-bottom">
                                             <div class="row">
                                                 <div class="col-xl-15 col-m-14 col-s-24"></div>
@@ -96,7 +96,11 @@
                                                     <button type="submit"
                                                             class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">
                                                         <div class="btn__flex">
-                                                            {% trans "Save & Pay" %}
+                                                            {% if object.payment_status == object.PAY_STATUS.payed %}
+                                                                {% trans "Save" %}
+                                                            {% else %}
+                                                                {% trans "Save & Pay" %}
+                                                            {% endif %}
                                                             <svg class="left-margin--15 icon">
                                                                 <use xmlns:xlink="http://www.w3.org/1999/xlink"
                                                                      xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
@@ -106,6 +110,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        {% endif %}
 
                                         <div class="col-xl-24">
                                             <div class="w100 bottom-margin--20"></div>

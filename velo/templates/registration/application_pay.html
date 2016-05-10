@@ -104,13 +104,29 @@
                                                         <div class="w100 bottom-margin--15">
                                                             {% if not object.external_invoice_code %}
 
-                                                                <select class="select" name="donation" id='id_donation'>
-                                                                    <option>0 €</option>
-                                                                    {% for amount in donation.amount %}
-                                                                        <option value="{{ amount }}">{{ amount }} €
-                                                                        </option>
-                                                                    {% endfor %}
-                                                                </select>
+
+
+
+
+                                                    <div class="input-filed-with-select  js-input-field-with-select">
+                                                        <input type="text" class="input-field if--50 if--dark input-filed-with-select__field  js-input-field-with-select__field" name="donation" id='id_donation' value="{{ form.donation.value|floatformat:-2 }}">
+                                                        <select class="select input-filed-with-select__select  js-input-field-with-select__select" id="charity">
+                                                            <option value="0">€ 0</option>
+                                                            {% for amount in donation.amount %}
+                                                                <option value="{{ amount }}">€ {{ amount }}
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                                {% if form.donation.help_text or form.donation.errors %}
+                                                                    <p id="{{ form.donation.auto_id }}-error"
+                                                                       class="error">
+                                                                        {% for error in form.donation.errors %}
+                                                                            {{ error }}
+                                                                        {% endfor %}</p>
+                                                                {% endif %}
+
+
 
                                                             {% else %}
                                                                 <b>{{ object.donation }} €</b>

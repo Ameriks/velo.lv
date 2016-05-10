@@ -1,0 +1,114 @@
+{% load i18n staticfiles form_helper %}
+
+<div class="item participant bottom-margin--30 bgc-dgray  js-participant">
+{{ form.id }}
+
+{% if show_header %}
+    <div class="participant__head bgc-dblue flex wrap--nowrap direction--row justify--start align-items--center c-yellow">
+        <div class="participant__number"></div>
+        <div class="participant__name flex--1">{% trans "Participant" %}</div>
+        <div class="participant__remove delete_button flex wrap--nowrap direction--row justify--center align-items--center">
+            <svg class="icon participant__cross">
+                <use
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#cross"></use>
+            </svg>
+            <div>{% trans "Remove" %}</div>
+        </div>
+    </div>
+{% endif %}
+
+    <div class="participant__form">
+
+            <div class="w100">
+                <div class="row row--gutters-50">
+
+                    {# First Name #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.first_name.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "First Name" %} *</label>
+                            {{ form.first_name|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.first_name.help_text or form.first_name.errors %}
+                                <p id="{{ form.first_name.auto_id }}-error" class="error">
+                                    {% for error in form.first_name.errors %}{{ error }}{% empty %}
+                                        {{ form.first_name.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Last Name #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15">
+                            <label
+                                    for="{{ form.last_name.auto_id }}"
+                                    class="input-field-label  js-placeholder"
+                            >{% trans "Last Name" %} *</label>
+                            {{ form.last_name|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                            {% if form.last_name.help_text or form.last_name.errors %}
+                                <p id="{{ form.last_name.auto_id }}-error" class="error">
+                                    {% for error in form.last_name.errors %}{{ error }}{% empty %}
+                                        {{ form.last_name.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Gender #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                            {{ form.gender|add_extra_classes:"select" }}
+                            {% if form.gender.help_text or form.gender.errors %}
+                                <p id="{{ form.gender.auto_id }}-error" class="error">
+                                    {% for error in form.gender.errors %}{{ error }}{% empty %}
+                                        {{ form.gender.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Birthday #}
+                    <div class="col-xl-16 col-l-24">
+                        <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">{% trans "Birthday" %}</div>
+                            <div class="w100">
+                                <div class="row row--gutters-20">
+                                    {{ form.birthday }}
+                                </div>
+                            </div>
+                            {% if form.birthday.help_text or form.birthday.errors %}
+                                <p id="{{ form.birthday.auto_id }}-error" class="error">
+                                    {% for error in form.birthday.errors %}{{ error }}{% empty %}
+                                        {{ form.birthday.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Country #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                            {{ form.country|add_extra_classes:"select" }}
+                            {% if form.country.help_text or form.country.errors %}
+                                <p id="{{ form.country.auto_id }}-error" class="error">
+                                    {% for error in form.country.errors %}{{ error }}{% empty %}
+                                        {{ form.country.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                                    <div class="col-xl-8 col-s-18">
+                                        <div id="div_id_image" class="form-group input-wrap w100 bottom-margin--15">
+                                            <label for="id_image" class="js-placeholder w100 fs13 bottom-margin--10">{% trans "Profile Image" %}</label>
+                                            {{ form.image|add_extra_classes:"profileimage input-file__input  js-input-file" }}
+                                        </div>
+                                    </div>
+
+                </div>
+            </div>
+
+
+    </div>
+
+</div>

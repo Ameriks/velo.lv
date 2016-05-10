@@ -72,6 +72,7 @@ module.exports = function (grunt) {
     concat: {
       dist: {
         src: [
+              '<%= this.app %>/static/vendor/bower_components/devbridge-autocomplete/dist/jquery.autocomplete.js',
               '<%= paths.js_template %>/libs/*.js',
               '<%= paths.js_template %>/utilities/*.js',
               '<%= paths.js_template %>/components/*.js',

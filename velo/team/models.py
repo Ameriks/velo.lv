@@ -9,6 +9,7 @@ import os
 import uuid
 from autoslug import AutoSlugField
 from django_countries.fields import CountryField
+from easy_thumbnails.fields import ThumbnailerImageField
 from slugify import slugify
 
 from velo.core.models import CustomSlug
@@ -80,7 +81,7 @@ class Member(StatusMixin, models.Model):
     country = CountryField(_('Country'))
     license_nr = models.CharField(_('License NR'), max_length=50, blank=True)
 
-    legacy_id = models.IntegerField(blank=True, null=True)
+    image = ThumbnailerImageField(_("Image"), blank=True, upload_to=get_team_upload)
 
     def __str__(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.birthday)
