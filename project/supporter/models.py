@@ -40,10 +40,12 @@ class CompetitionSupporter(models.Model):
     SUPPORT_LEVELS = (
         (10, _('Supporter')),
 
-        (30, _('Partner')),
-        (40, _('Technical Partner')),
-
+        (30, _('Partners')),
+        (35, _('Official Energy Drink')),
+        (40, _('Official Technical Partner')),
+        (65, _('Official Prize Sponsor')),
         (70, _('Sponsor')),
+        (80, _('Official Partners')),
         (90, _('General Sponsor'))
     )
     competition = models.ForeignKey('core.Competition')
