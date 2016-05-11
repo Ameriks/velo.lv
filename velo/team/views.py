@@ -45,6 +45,11 @@ class TeamAppliedView(SetCompetitionContextMixin, ListView):
 
         queryset = queryset.filter(distance=self.distance, member__memberapplication__competition=self.competition)
 
+        search = self.request.GET.get('search', None)
+        if search:
+            queryset = queryset.filter(title__icontains=search)
+
+
         queryset = queryset.order_by('-is_featured', 'title',
                                      'member__memberapplication__kind', 'member__memberapplication__participant__primary_number__number',)
 

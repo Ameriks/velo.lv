@@ -9,7 +9,7 @@
     <div class="w100 bgc-dgray border-right border-bottom border-left">
         <div class="w100 bottom-margin--20"></div>
         <div class="inner">
-            <form method="get" action="" class="w100">
+            <form method="get" action="" class="w100 filter-form">
                 <div class="row row--gutters-20">
                     <div class="col-xl-14 col-s-24 bottom-margin--20">
                         <div class="right">
@@ -47,9 +47,11 @@
                     </div>
                 </div>
             </form>
+        <div class="w100 editor-text bottom-margin--20">
             <p>Ja komandas dalībnieks ir sarkanā krāsā, tas nozīmē, ka nav saņemta samaksa par dalībnieku vai arī nav
                 atrodams starp apmaksātajiem dalībniekiem. Lūdzam šim pievērst pastiprinātu uzmanību, jo sarkanā krāsā
                 esošo komandas dalībnieku rezultāti netiks ņemti vērā.</p>
+            </div>
         </div>
 
     </div>
@@ -83,7 +85,7 @@
 
                         <div class="col-xl-12 col-l-24 col-m-12 col-s-24 flex direction--column justify--start align-items--stretch">
                         <div class="card border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
-                        <div class="flex--1">
+                        <div class="">
                             <div class="card__info">
                                 <h2 class="card__heading">{{ object.1 }}
                                     {% if object.2 %}{% trans "VIP" %}{% endif %}</h2>
@@ -106,7 +108,7 @@
                     {% endifchanged %}
 
 
-                    <tr style="{% if not object.8 %}background-color:red{% endif %}">
+                    <tr style="{% if not object.8 %}background-color:#c64c38{% endif %}">
                         <td>{% firstof object.7 '-' %}</td>
                         <td>{{ object.3 }}</td>
                         <td>{{ object.4 }}</td>

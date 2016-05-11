@@ -63,7 +63,10 @@
   };
 
   $(function() {
-    return window.ENV.formsets = formset($('.django-inline-form'));
+    window.ENV.formsets = formset($('.django-inline-form'));
+    return $(".filter-form select").on("change", function(evt) {
+      return $(this).parents("form").submit();
+    });
   });
 
 }).call(this);

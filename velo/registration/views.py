@@ -45,6 +45,11 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
 
         return super(ParticipantList, self).get(*args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'groups': self.get_competition_class().groups.get(self.distance.id, ())})
+        return context
+
     def get_queryset(self):
         queryset = super(ParticipantList, self).get_queryset()
         queryset = queryset.filter(is_participating=True)
@@ -58,6 +63,10 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
             queryset = queryset.filter(
                 Q(slug__icontains=search_slug) | Q(primary_number__number__icontains=search_slug) | Q(
                     team_name__icontains=search.upper()))
+
+        if self.request.GET.get('group', None):
+            queryset = queryset.filter(group=self.request.GET.get('group', None))
+
 
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 

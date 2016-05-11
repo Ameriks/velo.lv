@@ -40,3 +40,7 @@ formset = (containers) ->
 
 $ ->
   window.ENV.formsets = formset $ '.django-inline-form'
+
+
+  $(".filter-form select"). on "change", (evt) ->
+    $(this).parents("form").submit()
