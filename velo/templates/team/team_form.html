@@ -15,7 +15,8 @@
 
 
 
-                <form action="" class="w100 bgc-dgray js-form">
+                <form method="post" action="" class="w100 bgc-dgray js-form" enctype="multipart/form-data">
+                    {% csrf_token %}
                         <div class="w100">
                             <div class="inner no-padding--560">
                                 <div class="row row--gutters-50">
