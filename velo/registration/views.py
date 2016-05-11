@@ -232,7 +232,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
         if action in ('create_team', 'add_to_team'):
             for participant in participants:
                 if participant.id in participant_already_in_teams:
-                    messages.info(request, _("Member %s %s is already registered in other team.") % (
+                    messages.info(request, _("Member %(first_name)s %(last_name)s is already registered in other team.") % (
                     participant.first_name, participant.last_name))
                 else:
                     team.member_set.create(first_name=participant.first_name,

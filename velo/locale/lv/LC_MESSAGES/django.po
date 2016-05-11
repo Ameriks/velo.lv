@@ -1,0 +1,1131 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-11 15:23+0300\n"
+"PO-Revision-Date: 2016-05-11 15:43+0137\n"
+"Last-Translator: b'Agris Ameriks <agris@pd.lv>'\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"X-Translated-Using: django-rosetta 0.7.11\n"
+
+#: config/urls.py:57
+msgid "^application/$"
+msgstr "^pieteikums/$"
+
+#: config/urls.py:58
+msgid "^application/(?P<pick>\\d+)/$"
+msgstr "^pieteikums/(?P<pick>\\d+)/$"
+
+#: config/urls.py:59
+#, python-brace-format
+msgid ""
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
+msgstr ""
+"^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
+
+#: config/urls.py:60
+#, python-brace-format
+msgid ""
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pay/$"
+msgstr ""
+"^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/maksat/$"
+
+#: config/urls.py:61
+#, python-brace-format
+msgid ""
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+msgstr ""
+"^ "
+"pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+
+#: config/urls.py:65
+msgid "^company_application/$"
+msgstr "^uznemuma_pieteikums/$"
+
+#: config/urls.py:66
+msgid "^company_application/add/$"
+msgstr "^uznemuma_pieteikums/pievienot/$"
+
+#: config/urls.py:67
+#, python-brace-format
+msgid ""
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
+msgstr ""
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
+
+#: config/urls.py:68
+#, python-brace-format
+msgid ""
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/add/$"
+msgstr ""
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pievienot/$"
+
+#: config/urls.py:69
+#, python-brace-format
+msgid ""
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+msgstr ""
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+
+#: config/urls.py:70
+#, python-brace-format
+msgid ""
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/edit/$"
+msgstr ""
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/labot/$"
+
+#: config/urls.py:73
+msgid "^results/"
+msgstr "^rezultati/"
+
+#: config/urls.py:74
+msgid "^payment/"
+msgstr "^maksajums/"
+
+#: config/urls.py:75
+msgid "^whatever/"
+msgstr "^wh/"
+
+#: config/urls.py:76
+msgid "^news/"
+msgstr "^jaunumi/"
+
+#: config/urls.py:77
+msgid "^gallery/"
+msgstr "^galerija/"
+
+#: config/urls.py:78
+msgid "^mk/"
+msgstr "^mk/"
+
+#: config/urls.py:80
+msgid "^competition/"
+msgstr "^sacensibas/"
+
+#: config/urls.py:81
+msgid "^supporters/"
+msgstr "^atbalstitaji/"
+
+#: config/urls.py:82
+msgid "^calendar/"
+msgstr "^kalendars/"
+
+#: config/urls.py:83 config/urls.py:84
+msgid "^account/"
+msgstr "^konts/"
+
+#: config/urls.py:93
+msgid "^pdf/(?P<slug>\\w+)/"
+msgstr "^pdf/(?P<slug>\\w+)/"
+
+#: velo/gallery/forms.py:58
+msgid "Link"
+msgstr "Links"
+
+#: velo/gallery/forms.py:58
+msgid "Youtube or Vimeo link"
+msgstr "Youtube vai Vimeo links"
+
+#: velo/gallery/forms.py:79
+msgid "You can add only youtube and vimeo videos."
+msgstr "Jūs varat pievienot tikai youtube un vimeo video failus."
+
+#: velo/gallery/forms.py:83
+msgid "Incorrect youtube link."
+msgstr "Kļūdains youtube links."
+
+#: velo/gallery/forms.py:87
+msgid "Incorrect vimeo link."
+msgstr "Kļūdains vimeo links"
+
+#: velo/gallery/forms.py:105
+msgid ""
+"Video successfully added. Video must be approved by agency to be available "
+"to public."
+msgstr ""
+"Video veiksmīgi pievienots. Aģentūrai ir jāapstiprina video, lai tas "
+"parādītos mājaslapā."
+
+#: velo/gallery/forms.py:112
+msgid "Zip File"
+msgstr "ZIP fails"
+
+#: velo/gallery/forms.py:112
+msgid "ZIP File containing photos"
+msgstr "ZIP fails, kurš satur bildes"
+
+#: velo/gallery/forms.py:204 velo/gallery/forms.py:285
+#: velo/templates/registration/company_application_add.html:31
+#: velo/templates/registration/company_application_detail.html:30
+#: velo/templates/team/member_detail.html:73
+msgid "Competition"
+msgstr "Sacensības"
+
+#: velo/gallery/forms.py:205
+msgid "Show"
+msgstr "Rādīt"
+
+#: velo/gallery/forms.py:206 velo/gallery/forms.py:286
+#: velo/templates/base/competition/_head_search.html:22
+#: velo/templates/base/competition/_head_search_w_group.html:22
+#: velo/templates/registration/participant_list.html:27
+#: velo/templates/results/participant.html:48
+#: velo/templates/results/participant_standing.html:46
+#: velo/templates/results/team.html:44
+#: velo/templates/results/team_standing.html:42
+#: velo/templates/team/applied.html:29 velo/templates/team/team_list.html:31
+msgid "Search"
+msgstr "Meklēt"
+
+#: velo/gallery/forms.py:244
+msgid "Show only agency videos"
+msgstr "Parādīt tikai aģentūras video"
+
+#: velo/gallery/forms.py:244
+msgid "Show only user videos"
+msgstr "Parādīt tikai lietotāju video"
+
+#: velo/gallery/tables.py:23
+msgid "There are no records"
+msgstr "Nav neviena ieraksta"
+
+#: velo/gallery/urls.py:11
+msgid "^video/$"
+msgstr "^video/$"
+
+#: velo/gallery/urls.py:12
+msgid "^video/add/$"
+msgstr "^video/pievienot/$"
+
+#: velo/gallery/urls.py:13
+msgid "^$"
+msgstr "^$"
+
+#: velo/gallery/urls.py:14
+msgid "^add/$"
+msgstr "^pievienot/$"
+
+#: velo/gallery/urls.py:15
+msgid "^(?P<album_pk>\\d+)/$"
+msgstr ""
+
+#: velo/gallery/urls.py:16
+msgid "^(?P<album_pk>\\d+)/(?P<pk>\\d+)/assign_numbers/$"
+msgstr "^(?P<album_pk>\\d+)/(?P<pk>\\d+)/pievienot_numurus/$"
+
+#: velo/gallery/urls.py:19
+msgid "^pick/$"
+msgstr "^izveleties/$"
+
+#: velo/gallery/urls.py:20
+msgid "^pick/(?P<album_pk>\\d+)/$"
+msgstr "^izveleties/(?P<album_pk>\\d+)/$"
+
+#: velo/gallery/views.py:192
+msgid "Uploaded file is not an image."
+msgstr "Augšupielādētais fails nav attēls."
+
+#: velo/gallery/views.py:194
+msgid "Please pick file"
+msgstr "Lūdzu izvēlieties failu"
+
+#: velo/staticpage/admin.py:15
+msgid "Advanced options"
+msgstr "Papildus parametri"
+
+#: velo/staticpage/forms.py:27
+#, python-format
+msgid "Staticpage with url %(url)s already exists for site %(site)s"
+msgstr ""
+
+#: velo/staticpage/models.py:13
+msgid "URL"
+msgstr ""
+
+#: velo/staticpage/models.py:16
+msgid ""
+"This value must contain only letters, numbers, dots, underscores, dashes, "
+"slashes or tildes."
+msgstr ""
+
+#: velo/staticpage/models.py:17
+msgid "title"
+msgstr ""
+
+#: velo/staticpage/models.py:18
+msgid "content"
+msgstr ""
+
+#: velo/staticpage/models.py:19
+msgid "enable comments"
+msgstr ""
+
+#: velo/staticpage/models.py:29
+msgid "flat page"
+msgstr ""
+
+#: velo/staticpage/models.py:30
+msgid "flat pages"
+msgstr ""
+
+#: velo/staticpage/views.py:35
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr ""
+
+#: velo/templates/account/email.html:6
+msgid "Account"
+msgstr ""
+
+#: velo/templates/account/email.html:9
+msgid "E-mail Addresses"
+msgstr ""
+
+#: velo/templates/account/email.html:11
+msgid "The following e-mail addresses are associated with your account:"
+msgstr ""
+
+#: velo/templates/account/email.html:32
+msgid "Verified"
+msgstr ""
+
+#: velo/templates/account/email.html:34
+msgid "Unverified"
+msgstr ""
+
+#: velo/templates/account/email.html:36
+msgid "Primary"
+msgstr ""
+
+#: velo/templates/account/email.html:51
+msgid "Make Primary"
+msgstr ""
+
+#: velo/templates/account/email.html:54
+msgid "Re-send Verification"
+msgstr ""
+
+#: velo/templates/account/email.html:57
+#: velo/templates/registration/form/participant_inline_form.html:16
+#: velo/templates/socialaccount/connections.html:50
+#: velo/templates/team/form/member_inline_form.html:16
+msgid "Remove"
+msgstr ""
+
+#: velo/templates/account/email.html:65
+msgid "Add E-mail Address"
+msgstr ""
+
+#: velo/templates/account/email.html:78 velo/templates/account/login.html:43
+#: velo/templates/account/password_reset.html:25
+#: velo/templates/account/signup.html:31
+msgid "E-mail address"
+msgstr ""
+
+#: velo/templates/account/email.html:87 velo/templates/account/login.html:46
+#: velo/templates/account/login.html:58
+#: velo/templates/account/password_change.html:29
+#: velo/templates/account/password_change.html:54
+#: velo/templates/account/password_change.html:74
+#: velo/templates/account/password_reset.html:34
+#: velo/templates/account/password_reset_from_key.html:34
+#: velo/templates/account/password_reset_from_key.html:54
+#: velo/templates/account/signup.html:40 velo/templates/account/signup.html:63
+#: velo/templates/account/signup.html:84
+msgid "This field is mandatory"
+msgstr ""
+
+#: velo/templates/account/email.html:88 velo/templates/account/login.html:47
+#: velo/templates/account/password_reset.html:35
+#: velo/templates/account/signup.html:41
+msgid "Please enter valid e-mail address!"
+msgstr ""
+
+#: velo/templates/account/email.html:100
+msgid "Add E-mail"
+msgstr ""
+
+#: velo/templates/account/email.html:123
+msgid "Do you really want to remove the selected e-mail address?"
+msgstr ""
+
+#: velo/templates/account/email_confirm.html:6
+#: velo/templates/account/email_confirm.html:10
+#: velo/templates/account/email_confirmed.html:6
+#: velo/templates/account/email_confirmed.html:10
+msgid "Confirm E-mail Address"
+msgstr ""
+
+#: velo/templates/account/email_confirm.html:16
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
+"address for user %(user_display)s."
+msgstr ""
+
+#: velo/templates/account/email_confirm.html:25
+msgid "Confirm"
+msgstr ""
+
+#: velo/templates/account/email_confirm.html:42
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is invalid. Please <a "
+"href=\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr ""
+
+#: velo/templates/account/email_confirmed.html:14
+#, python-format
+msgid ""
+"You have confirmed that <a href=\"mailto:%(email)s\">%(email)s</a> is an "
+"e-mail address for user %(user_display)s."
+msgstr ""
+
+#: velo/templates/account/login.html:8 velo/templates/account/login.html:16
+#: velo/templates/account/login.html:62
+msgid "Sign In"
+msgstr ""
+
+#: velo/templates/account/login.html:56 velo/templates/account/signup.html:55
+#: velo/templates/core/user_registration.html:33
+msgid "Password"
+msgstr ""
+
+#: velo/templates/account/login.html:71
+msgid "Forgot Password?"
+msgstr ""
+
+#: velo/templates/account/login.html:77
+msgid "Register"
+msgstr ""
+
+#: velo/templates/account/logout.html:5 velo/templates/account/logout.html:9
+#: velo/templates/account/logout.html:23
+msgid "Sign Out"
+msgstr ""
+
+#: velo/templates/account/logout.html:11
+msgid "Are you sure you want to sign out?"
+msgstr ""
+
+#: velo/templates/account/password_change.html:5
+#: velo/templates/account/password_change.html:8
+#: velo/templates/account/password_change.html:97
+#: velo/templates/account/password_reset_from_key.html:6
+#: velo/templates/account/password_reset_from_key.html:10
+#: velo/templates/account/password_reset_from_key.html:68
+#: velo/templates/account/password_reset_from_key_done.html:4
+#: velo/templates/account/password_reset_from_key_done.html:8
+#: velo/templates/core/user_registration.html:36
+msgid "Change Password"
+msgstr ""
+
+#: velo/templates/account/password_change.html:22
+msgid "Current Password"
+msgstr ""
+
+#: velo/templates/account/password_change.html:47
+#: velo/templates/account/password_reset_from_key.html:27
+msgid "New Password"
+msgstr ""
+
+#: velo/templates/account/password_change.html:66
+#: velo/templates/account/password_reset_from_key.html:46
+msgid "New Password (again)"
+msgstr ""
+
+#: velo/templates/account/password_change.html:75
+#: velo/templates/account/password_reset_from_key.html:55
+#: velo/templates/account/signup.html:85
+msgid "The two password fields didn't match."
+msgstr ""
+
+#: velo/templates/account/password_reset.html:7
+#: velo/templates/account/password_reset.html:10
+#: velo/templates/account/password_reset_done.html:6
+#: velo/templates/account/password_reset_done.html:9
+msgid "Password Reset"
+msgstr ""
+
+#: velo/templates/account/password_reset.html:15
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll send you"
+" an e-mail allowing you to reset it."
+msgstr ""
+
+#: velo/templates/account/password_reset.html:47
+msgid "Reset My Password"
+msgstr ""
+
+#: velo/templates/account/password_reset.html:60
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr ""
+
+#: velo/templates/account/password_reset_done.html:15
+msgid ""
+"We have sent you an e-mail. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+
+#: velo/templates/account/password_reset_from_key.html:10
+msgid "Bad Token"
+msgstr ""
+
+#: velo/templates/account/password_reset_from_key.html:14
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password "
+"reset</a>."
+msgstr ""
+
+#: velo/templates/account/password_reset_from_key.html:84
+#: velo/templates/account/password_reset_from_key_done.html:10
+msgid "Your password is now changed."
+msgstr ""
+
+#: velo/templates/account/password_set.html:6
+#: velo/templates/account/password_set.html:9
+#: velo/templates/account/password_set.html:14
+msgid "Set Password"
+msgstr ""
+
+#: velo/templates/account/signup.html:6
+msgid "Signup"
+msgstr ""
+
+#: velo/templates/account/signup.html:14
+#: velo/templates/account/signup.html:277
+msgid "Sign Up"
+msgstr ""
+
+#: velo/templates/account/signup.html:16
+#, python-format
+msgid ""
+"Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."
+msgstr ""
+
+#: velo/templates/account/signup.html:75
+msgid "Password (again)"
+msgstr ""
+
+#: velo/templates/account/signup.html:110
+msgid "I want to receive velo.lv news in email"
+msgstr ""
+
+#: velo/templates/account/signup.html:126
+#: velo/templates/core/user_registration.html:83
+#: velo/templates/registration/form/participant_inline_form.html:53
+#: velo/templates/results/team.html:113 velo/templates/team/applied.html:101
+#: velo/templates/team/form/member_inline_form.html:39
+msgid "First Name"
+msgstr "Vārds"
+
+#: velo/templates/account/signup.html:144
+#: velo/templates/core/user_registration.html:90
+#: velo/templates/registration/form/participant_inline_form.html:69
+#: velo/templates/results/team.html:114 velo/templates/team/applied.html:102
+#: velo/templates/team/form/member_inline_form.html:55
+msgid "Last Name"
+msgstr "Uzvārds"
+
+#: velo/templates/account/signup.html:161
+#: velo/templates/core/user_registration.html:97
+#: velo/templates/registration/application_pay.html:38
+#: velo/templates/registration/form/participant_inline_form.html:95
+#: velo/templates/team/form/member_inline_form.html:81
+msgid "Birthday"
+msgstr "Dzimšanas diena"
+
+#: velo/templates/account/signup.html:174
+#: velo/templates/account/signup.html:175
+msgid "Please enter correct day number"
+msgstr ""
+
+#: velo/templates/account/signup.html:188
+#: velo/templates/account/signup.html:189
+msgid "Please enter correct month number"
+msgstr ""
+
+#: velo/templates/account/signup.html:199
+msgid "YYYY"
+msgstr ""
+
+#: velo/templates/account/signup.html:202
+#: velo/templates/account/signup.html:203
+msgid "Please enter correct year number"
+msgstr ""
+
+#: velo/templates/account/signup.html:219
+#: velo/templates/core/user_registration.html:41
+#: velo/templates/team/member_detail.html:59
+msgid "Country"
+msgstr "Valsts"
+
+#: velo/templates/account/signup.html:260
+#: velo/templates/core/user_registration.html:111
+#: velo/templates/registration/form/participant_inline_form.html:144
+#: velo/templates/team/team_form.html:92
+msgid "Phone Number"
+msgstr "Telefona numurs"
+
+#: velo/templates/account/signup_closed.html:5
+#: velo/templates/account/signup_closed.html:8
+msgid "Sign Up Closed"
+msgstr ""
+
+#: velo/templates/account/signup_closed.html:10
+msgid "We are sorry, but the sign up is currently closed."
+msgstr ""
+
+#: velo/templates/account/verification_sent.html:5
+#: velo/templates/account/verification_sent.html:8
+#: velo/templates/account/verified_email_required.html:5
+#: velo/templates/account/verified_email_required.html:8
+msgid "Verify Your E-mail Address"
+msgstr ""
+
+#: velo/templates/account/verification_sent.html:10
+#, python-format
+msgid ""
+"We have sent an e-mail to <a href=\"mailto:%(email)s\">%(email)s</a> for "
+"verification. Follow the link provided to finalize the signup process. "
+"Please contact us if you do not receive it within a few minutes."
+msgstr ""
+
+#: velo/templates/account/verified_email_required.html:12
+msgid ""
+"This part of the site requires us to verify that\n"
+"        you are who you claim to be. For this purpose, we require that you\n"
+"        verify ownership of your e-mail address. "
+msgstr ""
+
+#: velo/templates/account/verified_email_required.html:16
+msgid ""
+"We have sent an e-mail to you for\n"
+"        verification. Please click on the link inside this e-mail. Please\n"
+"        contact us if you do not receive it within a few minutes."
+msgstr ""
+
+#: velo/templates/account/verified_email_required.html:20
+#, python-format
+msgid ""
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your "
+"e-mail address</a>."
+msgstr ""
+
+#: velo/templates/base.html:96
+msgid "Login"
+msgstr "Pieslēgties"
+
+#: velo/templates/base.html:113
+msgid "Profile"
+msgstr "Profils"
+
+#: velo/templates/base.html:117
+#: velo/templates/registration/application_my.html:13
+msgid "My Applications"
+msgstr "Mani pieteikumi"
+
+#: velo/templates/base.html:120 velo/templates/team/team_form.html:13
+#: velo/templates/team/team_list_my.html:13
+msgid "My Teams"
+msgstr "Manas komandas"
+
+#: velo/templates/base.html:123
+#: velo/templates/registration/company_application_detail.html:16
+#: velo/templates/registration/company_application_my.html:13
+msgid "My Company Applications"
+msgstr "Mani uzņēmuma pieteikumi"
+
+#: velo/templates/base.html:127
+msgid "Logout"
+msgstr "Atslēgties"
+
+#: velo/templates/base.html:173
+msgid "Competitions"
+msgstr "Sacensības"
+
+#: velo/templates/base.html:185
+msgid "Menu"
+msgstr "Saturs"
+
+#: velo/templates/base.html:192 velo/templates/team/team_detail.html:101
+msgid "Contacts"
+msgstr "Kontakti"
+
+#: velo/templates/base/_competition_supporters.html:6
+#: velo/templates/core/calendar_view.html:52 velo/templates/core/index.html:65
+msgid "Apply"
+msgstr "Pieteikties"
+
+#: velo/templates/base/_news_info.html:7
+msgid "Read more"
+msgstr "Lasīt vairāk"
+
+#: velo/templates/base/competition/_head_search_w_group.html:45
+#: velo/templates/registration/participant_list.html:50
+#: velo/templates/results/participant.html:71
+#: velo/templates/results/participant_standing.html:69
+msgid "All Groups"
+msgstr "Visas grupas"
+
+#: velo/templates/base/table.html:123
+msgid "Previous"
+msgstr "Atpakaļ"
+
+#: velo/templates/base/table.html:148
+msgid "Next"
+msgstr "Tālāk"
+
+#: velo/templates/core/competition_detail.html:38
+msgid "About Competition"
+msgstr "Par sacensībām"
+
+#: velo/templates/core/competition_detail.html:53
+msgid "Photo Galleries"
+msgstr "Foto galerijas"
+
+#: velo/templates/core/index.html:90
+msgid "Open Competition"
+msgstr "Atvērt sacensības"
+
+#: velo/templates/core/index.html:149
+msgid "News"
+msgstr "Jaunumi"
+
+#: velo/templates/core/maps.html:40
+msgid "View"
+msgstr "Skatīt"
+
+#: velo/templates/core/user_registration.html:9
+#: velo/templates/registration/application_my.html:9
+#: velo/templates/registration/company_application_create.html:9
+#: velo/templates/registration/company_application_detail.html:12
+#: velo/templates/registration/company_application_my.html:9
+#: velo/templates/team/team_form.html:9
+#: velo/templates/team/team_list_my.html:9
+msgid "My Profile"
+msgstr "Mans profils"
+
+#: velo/templates/core/user_registration.html:13
+msgid "My Information"
+msgstr "Mana informācija"
+
+#: velo/templates/core/user_registration.html:25
+#: velo/templates/registration/company_application_add.html:35
+#: velo/templates/registration/company_application_detail.html:34
+#: velo/templates/registration/form/participant_inline_form.html:128
+msgid "Email"
+msgstr "E-pasts"
+
+#: velo/templates/core/user_registration.html:28
+msgid "Change Email"
+msgstr "Mainīt e-pastu"
+
+#: velo/templates/core/user_registration.html:46
+msgid "City"
+msgstr "Pilsēta"
+
+#: velo/templates/core/user_registration.html:51
+#: velo/templates/registration/form/participant_inline_form.html:178
+msgid "Bike Brand"
+msgstr "Velo marka"
+
+#: velo/templates/core/user_registration.html:56
+msgid "Social Accounts"
+msgstr "Sociālie konti"
+
+#: velo/templates/core/user_registration.html:58
+msgid "Connect / Disconnect Social Accounts"
+msgstr "Pievienot / atvienot sociālos kontus"
+
+#: velo/templates/core/user_registration.html:69
+#: velo/templates/team/form/member_inline_form.html:127
+msgid "Profile Image"
+msgstr "Profile bilde"
+
+#: velo/templates/core/user_registration.html:77
+msgid "Background"
+msgstr "Apraksts"
+
+#: velo/templates/core/user_registration.html:131
+#: velo/templates/registration/application_update.html:100
+#: velo/templates/team/team_form.html:206
+msgid "Save"
+msgstr "Saglabāt"
+
+#: velo/templates/core/widgets/profile_image.html:19
+msgid "Change Image"
+msgstr "Mainīt attēlu"
+
+#: velo/templates/core/widgets/profile_image.html:21
+#: velo/templates/team/team_form.html:146
+#: velo/templates/team/team_form.html:167
+msgid "Upload image that is smaller than"
+msgstr ""
+
+#: velo/templates/news/news_list.html:42
+msgid "Previous Page"
+msgstr ""
+
+#: velo/templates/news/news_list.html:51
+msgid "Next Page"
+msgstr ""
+
+#: velo/templates/registration/_top_steps.html:14
+msgid "Basic information"
+msgstr ""
+
+#: velo/templates/registration/_top_steps.html:23
+msgid "Payment"
+msgstr ""
+
+#: velo/templates/registration/_top_steps.html:37
+msgid "Confirmation"
+msgstr ""
+
+#: velo/templates/registration/application_ok.html:16
+#: velo/templates/registration/application_pay.html:16
+#: velo/templates/registration/application_update.html:14
+msgid "Apply for competition"
+msgstr ""
+
+#: velo/templates/registration/application_ok.html:27
+msgid "Registration successful"
+msgstr ""
+
+#: velo/templates/registration/application_ok.html:34
+msgid "Thank you for applying!"
+msgstr ""
+
+#: velo/templates/registration/application_ok.html:35
+msgid ""
+"You will receive email with confirmation that you have successfuly applied."
+msgstr ""
+
+#: velo/templates/registration/application_ok.html:44
+msgid "To download invoice, press here."
+msgstr ""
+
+#: velo/templates/registration/application_ok.html:52
+msgid "Pay with Creditcard"
+msgstr ""
+
+#: velo/templates/registration/application_ok.html:58
+msgid "Update participant contact information"
+msgstr ""
+
+#: velo/templates/registration/application_pay.html:24
+msgid "Thank you! We have received the payment."
+msgstr ""
+
+#: velo/templates/registration/application_pay.html:37
+msgid "Full Name"
+msgstr ""
+
+#: velo/templates/registration/application_pay.html:39
+#: velo/templates/registration/company_application_detail.html:64
+#: velo/templates/registration/company_application_detail.html:134
+msgid "Team"
+msgstr ""
+
+#: velo/templates/registration/application_pay.html:40
+msgid "Price"
+msgstr ""
+
+#: velo/templates/registration/application_pay.html:41
+msgid "Insurance"
+msgstr ""
+
+#: velo/templates/registration/application_pay.html:70
+#, python-format
+msgid ""
+"\n"
+"                                                                %(counter)s participant\n"
+"                                                            "
+msgid_plural ""
+"\n"
+"                                                                %(counter)s participants\n"
+"                                                            "
+msgstr[0] ""
+msgstr[1] ""
+
+#: velo/templates/registration/application_pay.html:75
+msgid "Total"
+msgstr ""
+
+#: velo/templates/registration/application_pay.html:91
+msgid "Add or Update Participants"
+msgstr ""
+
+#: velo/templates/registration/application_pay.html:137
+msgid "Donate"
+msgstr ""
+
+#: velo/templates/registration/application_update.html:38
+#: velo/templates/team/team_detail.html:109
+#: velo/templates/team/team_form.html:67
+msgid "E-mail"
+msgstr ""
+
+#: velo/templates/registration/application_update.html:55
+msgid "E-mail Confirmation"
+msgstr ""
+
+#: velo/templates/registration/application_update.html:67
+msgid "To this email address confirmation email will be sent."
+msgstr ""
+
+#: velo/templates/registration/application_update.html:102
+#: velo/templates/registration/company_application_add.html:67
+msgid "Save & Pay"
+msgstr ""
+
+#: velo/templates/registration/company_application_add.html:14
+msgid "Add Company Team Member"
+msgstr ""
+
+#: velo/templates/registration/company_application_add.html:33
+#: velo/templates/registration/company_application_detail.html:32
+#: velo/templates/registration/form/participant_inline_form.html:161
+#: velo/templates/team/team_form.html:53
+msgid "Team Name"
+msgstr ""
+
+#: velo/templates/registration/company_application_add.html:37
+#: velo/templates/registration/company_application_detail.html:36
+#: velo/templates/team/team_form.html:106
+msgid "Description"
+msgstr ""
+
+#: velo/templates/registration/company_application_add.html:39
+#: velo/templates/registration/company_application_detail.html:38
+msgid "Public URL"
+msgstr ""
+
+#: velo/templates/registration/company_application_create.html:13
+msgid "Create Company Application"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:26
+msgid "Edit"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:43
+msgid "Company riders"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:56
+msgid "Add participant"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:67
+#: velo/templates/team/team_list_my.html:14
+msgid "New Team"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:69
+#: velo/templates/registration/company_application_detail.html:131
+msgid "Add to existing team"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:77
+#: velo/templates/registration/company_application_detail.html:81
+msgid "Pay for selected"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:103
+msgid "Create new team"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:106
+msgid "Distance"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:119
+msgid "Title"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:125
+msgid "Create team"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:146
+msgid "Add to Team"
+msgstr ""
+
+#: velo/templates/registration/company_application_my.html:23
+msgid "Create New"
+msgstr ""
+
+#: velo/templates/registration/form/participant_inline.html:30
+#: velo/templates/team/form/member_inline.html:30
+msgid "Add Participants"
+msgstr ""
+
+#: velo/templates/registration/form/participant_inline_form.html:9
+#: velo/templates/team/applied.html:117
+#: velo/templates/team/form/member_inline_form.html:9
+msgid "Participant"
+msgstr ""
+
+#: velo/templates/registration/form/participant_inline_form.html:24
+msgid "Competition Information"
+msgstr ""
+
+#: velo/templates/registration/form/participant_inline_form.html:43
+msgid "Participant Information"
+msgstr ""
+
+#: velo/templates/registration/form/participant_inline_form.html:208
+msgid "Social Security Number"
+msgstr ""
+
+#: velo/templates/registration/table/my_application_action.html:3
+msgid "Download Invoice"
+msgstr ""
+
+#: velo/templates/registration/table/my_application_action.html:7
+msgid "Pay"
+msgstr ""
+
+#: velo/templates/results/all_view.html:17
+msgid "Use filters to find results."
+msgstr ""
+
+#: velo/templates/results/all_view.html:20
+#: velo/templates/results/all_view.html:38
+msgid "Select Competition"
+msgstr ""
+
+#: velo/templates/results/all_view.html:30
+msgid "Select Year"
+msgstr ""
+
+#: velo/templates/results/all_view.html:42
+msgid "See Results"
+msgstr ""
+
+#: velo/templates/results/all_view.html:51
+msgid "Historic results"
+msgstr ""
+
+#: velo/templates/results/participant.html:22
+#: velo/templates/results/participant_standing.html:20
+#: velo/templates/results/team.html:18
+#: velo/templates/results/team_standing.html:16
+msgid "PARTICIPANTS"
+msgstr ""
+
+#: velo/templates/results/participant.html:27
+#: velo/templates/results/participant_standing.html:25
+#: velo/templates/results/team.html:23
+#: velo/templates/results/team_standing.html:21
+msgid "TEAMS"
+msgstr ""
+
+#: velo/templates/results/team.html:101 velo/templates/team/applied.html:91
+msgid "VIP"
+msgstr ""
+
+#: velo/templates/results/team.html:102
+#: velo/templates/team/member_detail.html:75
+msgid "Result"
+msgstr ""
+
+#: velo/templates/results/team.html:103 velo/templates/results/team.html:116
+#: velo/templates/team/member_detail.html:74
+msgid "Points"
+msgstr ""
+
+#: velo/templates/results/team.html:115 velo/templates/team/applied.html:103
+msgid "Year"
+msgstr ""
+
+#: velo/templates/socialaccount/connections.html:6
+msgid "Account Connections"
+msgstr ""
+
+#: velo/templates/socialaccount/connections.html:9
+msgid ""
+"You can sign in to your account using any of the following third party "
+"accounts:"
+msgstr ""
+
+#: velo/templates/socialaccount/connections.html:60
+msgid ""
+"You currently have no social network accounts connected to this account."
+msgstr ""
+
+#: velo/templates/socialaccount/connections.html:63
+msgid "Add a 3rd Party Account"
+msgstr ""
+
+#: velo/templates/socialaccount/snippets/provider_list.html:16
+#, python-format
+msgid "Enter with %(provider_name)s"
+msgstr ""
+
+#: velo/templates/team/applied.html:104
+msgid "Tips"
+msgstr ""
+
+#: velo/templates/team/applied.html:119
+msgid "Reserve"
+msgstr ""
+
+#: velo/templates/team/member_detail.html:20
+msgid "Team Information"
+msgstr ""
+
+#: velo/templates/team/member_detail.html:60
+msgid "Birth Year"
+msgstr ""
+
+#: velo/templates/team/member_detail.html:76
+msgid "Kind"
+msgstr ""
+
+#: velo/templates/team/member_detail.html:105
+msgid "All Team"
+msgstr ""
+
+#: velo/templates/team/team_detail.html:108
+msgid "Manager"
+msgstr ""
+
+#: velo/templates/team/team_detail.html:110
+msgid "Phone"
+msgstr ""
+
+#: velo/templates/team/team_detail.html:111
+msgid "Management"
+msgstr ""
+
+#: velo/templates/team/team_form.html:13
+msgid "Create Team"
+msgstr ""
+
+#: velo/templates/team/team_form.html:39
+msgid "Contact Person"
+msgstr ""
+
+#: velo/templates/team/team_form.html:120
+msgid "Management Information"
+msgstr ""
+
+#: velo/templates/team/team_form.html:138
+msgid "Upload Team Photo"
+msgstr ""

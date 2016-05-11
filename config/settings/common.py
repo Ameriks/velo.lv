@@ -17,7 +17,9 @@ APPS_DIR = ROOT_DIR.path('velo')
 
 env = environ.Env()
 
-
+LOCALE_PATHS = [
+    str(APPS_DIR.path('locale')),
+]
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------

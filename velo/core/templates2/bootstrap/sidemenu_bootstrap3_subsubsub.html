@@ -1,7 +1,0 @@
-{% load sitetree %}
-{% for item in sitetree_items %}
-    <li class="{% if item.is_current or item.in_current_branch %}active{% endif %} {% if item.has_children %}{% endif %}">
-        {% if item.hint %}<span class="badge badge-u">{{ item.hint }}</span>{% endif %}
-        <a href="{% sitetree_url for item %}">&nbsp;&nbsp; - &nbsp;&nbsp;{{ item.title_resolved }}</a>
-    </li>
-{% endfor %}

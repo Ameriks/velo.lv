@@ -1,7 +1,0 @@
-Lūdzu, apstipriniet savu e-pasta adresi apmeklējot šo saiti:
-
-{{ domain }}{% url 'accounts:email_confirmation_view' object.email_validation_code %}
-
-
-Jūsu,
-velo.lv

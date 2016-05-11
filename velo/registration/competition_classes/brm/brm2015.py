@@ -59,13 +59,13 @@ class Brm2015(CompetitionScriptBase):
         return item(str(self.competition), '#', url_as_pattern=False, in_menu=self.competition.is_in_menu, access_loggedin=True)
 
 
-    def build_menu(self):
+    def build_menu(self, lang):
         current_date = datetime.date.today()
         child_items = [
             item('Atbalstītāji', 'competition:supporters %i' % self.competition.id),
             item('Starta saraksts', 'competition:participant_list %i' % self.competition.id),
         ]
-        self.build_flat_pages(self.competition, child_items)
+        self.build_flat_pages(self.competition, child_items, lang)
         if self.competition.map_set.count():
             child_items.append(item('Kartes', 'competition:maps %i' % self.competition.id))
 
