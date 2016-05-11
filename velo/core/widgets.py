@@ -42,7 +42,7 @@ class ProfileImage(FileInput):
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
         try:
             final_attrs.update({'value': value.url})
-        except ValueError or AttributeError:
+        except (ValueError, AttributeError):
             final_attrs.update({'value': static('template/velo-2016/html/img/placeholders/velo-placeholder--1x1.svg')})
 
         return render_to_string('core/widgets/profile_image.html', final_attrs)

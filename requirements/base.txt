@@ -5,7 +5,7 @@
 wheel==0.29.0
 
 # Bleeding edge Django
-django==1.9.5
+django==1.9.6
 
 # Configuration
 django-environ==0.4.0
@@ -52,10 +52,10 @@ django-celery==3.1.17
 future==0.15.2
 
 requests==2.10.0
-django-mptt==0.8.3
+django-mptt==0.8.4
 django-countries==3.4.1
 
-django-tables2==1.1.6
+django-tables2==1.2.1
 django-tables2-reports==0.0.10
 django-extra-views==0.7.1
 Django-Select2==5.8.4

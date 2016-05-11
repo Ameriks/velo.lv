@@ -18,7 +18,7 @@
                 <div class="secondary-nav__inner border-right border-left">
 
 
-                    {% sitetree_menu from "mainmenu" include "this-children,this-siblings,level2" template "sitetree/competition.html"  %}
+                    {% sitetree_menu from "mainmenu" include "this-siblings" template "sitetree/competition.html"  %}
 
 
                     <div class="secondary-nav__icon">
@@ -31,7 +31,7 @@
         </nav>
 
         {% block content2 %}
-        <div class="w100">
+        <div class="w100 flex--1 flex">
             <div class="inner">
                 <div class="row border-right border-bottom no-border--480">
                     <div class="col-xl-17 col-l-15 col-m-24 bgc-dgray border-left no-border--480">

@@ -69,6 +69,9 @@ class CompetitionScriptBase(object):
         return 0
 
     def build_flat_pages(self, competition, items):
+        for page in competition.parent.staticpage_set.filter(is_published=True):
+            items.append(item(page.title, 'competition:staticpage %i %s' % (competition.id, page.url)))
+
         for page in competition.staticpage_set.filter(is_published=True):
             items.append(item(page.title, 'competition:staticpage %i %s' % (competition.id, page.url)))
 
@@ -148,12 +151,11 @@ class SEBCompetitionBase(CompetitionScriptBase):
     def build_menu(self):
         current_date = datetime.date.today()
         child_items = [
-            # item('Atbalstītāji', 'competition:supporters %i' % self.competition.id),
             item('Komandas', 'competition:team %i' % self.competition.id, children=[
                 item('{{ object }}', 'competition:team %i object.id' % self.competition.id, in_menu=False),
             ]),
             item('Kopvērtējums', 'competition:standings_list %i' % self.competition.id),
-            item('Komandu kopvērtējums', 'competition:team_standings_list %i' % self.competition.id)
+            item('Komandu kopvērtējums', 'competition:team_standings_list %i' % self.competition.id, in_menu=False)
         ]
         self.build_flat_pages(self.competition, child_items)
 
@@ -163,19 +165,27 @@ class SEBCompetitionBase(CompetitionScriptBase):
             if index < len(allchildren) and allchildren[index].competition_date > current_date:
                 continue
 
-            children = []
-            children.append(item('Starta saraksts', 'competition:participant_list %i' % child.id))
-            children.append(item('Pieteiktās komandas', 'competition:applied_teams_list %i' % child.id))
-            children.append(item('Kartes', 'competition:maps %i' % child.id))
+            children = [
+                item('Sacensības', 'competition:competition %i' % child.id, in_menu=False),
+                item('Komandas', 'competition:team %i' % child.id, children=[
+                    item('{{ object }}', 'competition:team %i object.id' % child.id, in_menu=False),
+                ]),
+                item('Kopvērtējums', 'competition:standings_list %i' % child.id),
+                item('Komandu kopvērtējums', 'competition:team_standings_list %i' % child.id, in_menu=False),
+                item('Starta saraksts', 'competition:participant_list %i' % child.id),
+                item('Pieteiktās komandas', 'competition:applied_teams_list %i' % child.id),
+                item('Kartes', 'competition:maps %i' % child.id),
+            ]
+
             self.build_flat_pages(child, children)
 
             if child.competition_date <= current_date + datetime.timedelta(days=1):
                 children.append(item('Rezultāti', 'competition:result_distance_list %i' % child.id))
-                children.append(item('Komandu rezultāti', 'competition:result_team_list %i' % child.id))
+                children.append(item('Komandu rezultāti', 'competition:result_team_list %i' % child.id, in_menu=False))
 
-            child_items.append(item(str(child), 'competition:competition %i' % child.id, url_as_pattern=True, children=children))
+            child_items.append(item(str(child), '#', children=children))
 
-        return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu, alias="level2" if self.competition.get_level() == 1 else "")
+        return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
 
     def get_startlist_table_class(self, distance=None):
         return ParticipantTable

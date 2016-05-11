@@ -9,8 +9,23 @@
     <div class="w100 bgc-dgray border-right border-bottom border-left">
         <div class="w100 bottom-margin--20"></div>
         <div class="inner">
-            <form method="get" action="" class="w100">
+            <form method="get" action="" class="w100 filter-form">
                 <div class="row row--gutters-20">
+
+
+                                        <div class="col-xl-12 col-m-24">
+                                <a href="{% url "competition:result_distance_list" competition.id %}" class="btn btn--50 btn--dgray-transparent btn--blue-hover btn--blue-active  bottom-margin--20">
+                                    {% trans "PARTICIPANTS" %}
+                                </a>
+                            </div>
+                            <div class="col-xl-12 col-m-24">
+                                <a href="{% url "competition:result_team_list" competition.id %}" class="btn btn--50 btn--dgray-transparent btn--blue-hover btn--blue-active active bottom-margin--20">
+                                    {% trans "TEAMS" %}
+                                </a>
+                            </div>
+
+
+
                     <div class="col-xl-14 col-s-24 bottom-margin--20">
                         <div class="right">
                             <button class="btn btn--50 btn--square-50 btn--dblue btn--blue-hover btn--blue-active left-minus-1">
@@ -117,11 +132,13 @@
 
                 {% endfor %}
 
-
+{% if object_list %}
                 </tbody></table></div></div></div>
+    {% endif %}
     </div>
     </div>
 
     </div>
+    <div class="w100 flex--1"></div>
 
 {% endblock content_left %}

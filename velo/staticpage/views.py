@@ -18,7 +18,7 @@ class StaticPageView(SetCompetitionContextMixin, DetailView):
         queryset = super(StaticPageView, self).get_queryset()
 
         if self.competition:
-            queryset = queryset.filter(competition=self.competition)
+            queryset = queryset.filter(competition__in=self.competition.get_ids())
 
         return queryset
 

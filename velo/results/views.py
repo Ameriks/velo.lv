@@ -29,7 +29,7 @@ class ResultAllView(TemplateView):
         context = super(ResultAllView, self).get_context_data(**kwargs)
 
         years = []
-        for year in range(2012, datetime.date.today().year + 1):
+        for year in range(2014, datetime.date.today().year + 1):
             years.append((year, _("Year %(year)i Results") % {"year": year}))
 
         competitions = Competition.objects.filter(competition_date__lt=timezone.now()).order_by('competition_date')
