@@ -1,2 +1,5 @@
 #!/bin/sh
+
+rm -f /tmp/celerybeat.pid
+
 s6-svscanctl -t /etc/s6

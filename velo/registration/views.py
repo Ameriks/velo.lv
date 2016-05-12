@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Count, Sum, Max
 from django.http import HttpResponseRedirect, Http404, HttpResponse
@@ -386,6 +387,7 @@ class ApplicationUpdate(SSLRequiredMixin, RequestFormKwargsMixin, NamedFormsetsM
         self.object = self.get_object()
 
         if self.object.created_by and self.object.created_by != request.user:
+            logout(request)
             messages.error(request, _(
                 "Currently logged in user doesn't have access to this application. Please, login with user that you used to create application."))
             return HttpResponseRedirect("%s?next=%s" % (reverse(settings.LOGIN_URL), request.path))
