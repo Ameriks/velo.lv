@@ -54,6 +54,7 @@ class CompetitionSupporter(models.Model):
         (10, _('Supporter')),
 
         (30, _('Partners')),
+        (34, _('Official Water')),
         (35, _('Official Energy Drink')),
         (40, _('Official Technical Partner')),
         (65, _('Official Prize Sponsor')),
