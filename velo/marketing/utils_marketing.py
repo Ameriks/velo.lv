@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from django.db.models import Count
 
-from io import StringIO
+from io import BytesIO
 import csv
 
 from velo.manager.models import TempDocument
@@ -63,7 +63,7 @@ def create_csv_seb(user=None):
     #     participant_email__in=this_year_not_payed).exclude(participant_email__in=last_year).values(
     #     'participant_email').annotate(c=Count('id')).order_by('-c'))
 
-    file_obj = StringIO()
+    file_obj = BytesIO()
     wrt = csv.writer(file_obj)
     wrt.writerow(['Email'])
     for email in this_year:
@@ -74,7 +74,7 @@ def create_csv_seb(user=None):
     obj.save()
     file_obj.close()
 
-    file_obj = StringIO()
+    file_obj = BytesIO()
     wrt = csv.writer(file_obj)
     wrt.writerow(['Email'])
     for email in this_year_not_payed:
@@ -85,7 +85,7 @@ def create_csv_seb(user=None):
     obj1.save()
     file_obj.close()
 
-    file_obj = StringIO()
+    file_obj = BytesIO()
     wrt = csv.writer(file_obj)
     wrt.writerow(['Email'])
     for email in last_year:
@@ -96,7 +96,7 @@ def create_csv_seb(user=None):
     obj2.save()
     file_obj.close()
 
-    file_obj = StringIO()
+    file_obj = BytesIO()
     wrt = csv.writer(file_obj)
     wrt.writerow(['Email'])
     for email in not_in_second_stage:

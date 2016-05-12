@@ -459,6 +459,6 @@ class ResultDiplomaPDF(DetailView):
             raise Http404
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename=%s.pdf' % self.object.participant.slug
-        response.write(file_obj.getvalue())
+        response.write(file_obj.read())
         file_obj.close()
         return response

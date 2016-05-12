@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from io import StringIO
+from io import BytesIO
 from difflib import get_close_matches
 from velo.registration.competition_classes.base_vb import VBCompetitionBase
 from velo.registration.models import Participant, ChangedName
@@ -92,7 +92,7 @@ class VB2016(VBCompetitionBase):
 
     def number_pdf(self, participant_id):
         participant = Participant.objects.get(id=participant_id)
-        output = StringIO()
+        output = BytesIO()
 
         c = canvas.Canvas(output, pagesize=A4)
         fill_page_with_image("media/competition/vestule/VBm_2015_vestule_ar_tekstu.jpg", c)
@@ -118,8 +118,8 @@ class VB2016(VBCompetitionBase):
         return output
 
     def generate_diploma(self, result):
-        output = StringIO()
-        path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
+        output = BytesIO()
+        path = 'velo/results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
         if not os.path.isfile(path):
             return Exception

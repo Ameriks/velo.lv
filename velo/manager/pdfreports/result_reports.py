@@ -8,7 +8,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer, PageBreak, Image as pdfImage
 from reportlab.lib.units import inch, cm
 from PIL import Image
-from io import StringIO
+from io import BytesIO
 import pytz
 
 from velo.core.models import Competition
@@ -53,7 +53,7 @@ class PDFReports(object):
         else:
             self.primary_competition = self.competition
 
-        self.output = StringIO()
+        self.output = BytesIO()
         self.doc = SimpleDocTemplate(self.output, pagesize=A4, topMargin=0.2 * inch, bottomMargin=0.8 * inch,
                                      leftMargin=0.2 * inch, rightMargin=0.2 * inch, showBoundary=0)
 

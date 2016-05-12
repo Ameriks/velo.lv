@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from io import StringIO
+from io import BytesIO
 from difflib import get_close_matches
 from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from velo.registration.competition_classes.base import RMCompetitionBase
@@ -85,7 +85,7 @@ class RM2016(RMCompetitionBase):
 
     def number_pdf(self, participant_id):
         participant = Participant.objects.get(id=participant_id)
-        output = StringIO()
+        output = BytesIO()
 
         c = canvas.Canvas(output, pagesize=A4)
         fill_page_with_image("media/competition/vestule/RVm_2015_vestule_ar_tekstu.jpg", c)
@@ -112,8 +112,8 @@ class RM2016(RMCompetitionBase):
 
 
     def generate_diploma(self, result):
-        output = StringIO()
-        path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
+        output = BytesIO()
+        path = 'velo/results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
         if not os.path.isfile(path):
             return Exception

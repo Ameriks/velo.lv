@@ -8,7 +8,7 @@ import math
 import csv
 from django.core.cache import cache
 from sitetree.utils import item
-from io import StringIO
+from io import BytesIO
 from velo.core.models import Competition, Choices, Log
 from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from velo.registration.competition_classes.base import CompetitionScriptBase
@@ -456,8 +456,8 @@ AND r.id = res2.id
             self.process_chip_result(chip.id, send_sms)
 
     def generate_diploma(self, result):
-        output = StringIO()
-        path = 'results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
+        output = BytesIO()
+        path = 'velo/results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
         if not os.path.isfile(path):
             return Exception

@@ -4,7 +4,7 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 import pytz
 import xlwt
-from io import StringIO
+from io import BytesIO
 
 from slugify import slugify
 
@@ -21,7 +21,7 @@ def create_standing_list(competition=None, competition_id=None):
         raise Exception('Expected at least one variable')
     if not competition:
         competition = Competition.objects.get(id=competition_id)
-    output = StringIO()
+    output = BytesIO()
     distances = competition.get_distances()
 
     wbk = xlwt.Workbook()
@@ -61,7 +61,7 @@ def payment_list(competition=None, competition_id=None):
         raise Exception('Expected at least one variable')
     if not competition:
         competition = Competition.objects.get(id=competition_id)
-    output = StringIO()
+    output = BytesIO()
 
     wbk = xlwt.Workbook()
 
@@ -103,7 +103,7 @@ def create_start_list(competition=None, competition_id=None):
 
     root_competition = competition.get_root()
 
-    output = StringIO()
+    output = BytesIO()
     distances = competition.get_distances()
 
     wbk = xlwt.Workbook()
@@ -161,7 +161,7 @@ def start_list_have_participated_this_year(competition=None, competition_id=None
     root_competition = competition.get_root()
     child_competitions = competition.get_siblings()
 
-    output = StringIO()
+    output = BytesIO()
     distances = competition.get_distances()
 
     wbk = xlwt.Workbook()
@@ -228,7 +228,7 @@ def create_donations_list(competition=None, competition_id=None):
 
     root_competition = competition.get_root()
 
-    output = StringIO()
+    output = BytesIO()
 
     wbk = xlwt.Workbook()
 
@@ -272,7 +272,7 @@ def team_member_list(competition=None, competition_id=None):
         raise Exception('Expected at least one variable')
     if not competition:
         competition = Competition.objects.get(id=competition_id)
-    output = StringIO()
+    output = BytesIO()
     distances = competition.get_distances().filter(can_have_teams=True)
 
     notpayed_pattern = xlwt.Pattern()
@@ -337,7 +337,7 @@ def create_team_list(competition=None, competition_id=None):
 
     distances = competition.get_distances().filter(can_have_teams=True)
 
-    output = StringIO()
+    output = BytesIO()
 
     notpayed_pattern = xlwt.Pattern()
     notpayed_pattern.pattern = xlwt.Pattern.SOLID_PATTERN

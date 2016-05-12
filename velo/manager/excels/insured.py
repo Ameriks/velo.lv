@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from django.template.defaultfilters import slugify
-from io import StringIO
+from io import BytesIO
 import xlwt
 
 from velo.core.models import Competition
@@ -16,7 +16,7 @@ def create_insured_list(competition=None, competition_id=None):
         competition = Competition.objects.get(id=competition_id)
 
     root_competition = competition.get_root()
-    output = StringIO()
+    output = BytesIO()
     distances = competition.get_distances()
 
     wbk = xlwt.Workbook()
