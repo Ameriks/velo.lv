@@ -57,8 +57,6 @@ class EC2016(CompetitionScriptBase):
         return ()
 
     def create_helper_results(self, participants):
-        if self.competition.level != 2:
-            return Exception('We allow creating helper results only for stages.')
 
         for participant in participants:
             helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
