@@ -13,7 +13,7 @@ def migrate_data(apps, schema_editor):
     velo.core.models.Competition.objects.filter(id=51).update(logo_svg="competition/51_seb-maratons.svg")
     velo.core.models.Competition.objects.filter(id=52).update(logo_svg="competition/51_seb-maratons.svg")
     velo.core.models.Competition.objects.filter(id=53).update(logo_svg="competition/51_seb-maratons.svg")
-    velo.core.models.Competition.objects.filter(id=54).update(logo_svg="competition/54_uec--white.svg")
+    velo.core.models.Competition.objects.filter(id=54).update(logo_svg="competition/51_seb-maratons.svg")
     velo.core.models.Competition.objects.filter(id=55).update(logo_svg="competition/51_seb-maratons.svg")
     velo.core.models.Competition.objects.filter(id=56).update(logo_svg="competition/51_seb-maratons.svg")
     velo.core.models.Competition.objects.filter(id=57).update(logo_svg="competition/51_seb-maratons.svg")
@@ -21,6 +21,7 @@ def migrate_data(apps, schema_editor):
     velo.core.models.Competition.objects.filter(id=60).update(logo_svg="competition/60_rigas-bernu-velomaratons.svg")
     velo.core.models.Competition.objects.filter(id=61).update(logo_svg="competition/61_rigas-velomaratons.svg")
     velo.core.models.Competition.objects.filter(id=62).update(logo_svg="competition/62_vb.svg")
+    velo.core.models.Competition.objects.filter(id=66).update(logo_svg="competition/54_uec--white.svg")
     cursor.execute("Update core_competition set processing_class='velo.' || processing_class where processing_class <> ''")
 
 

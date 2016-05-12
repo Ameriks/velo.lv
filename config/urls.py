@@ -13,7 +13,7 @@ from django.conf.urls.static import static
 from sitetree.sitetreeapp import register_dynamic_trees, compose_dynamic_tree
 from sitetree.sitetreeapp import register_i18n_trees
 
-from velo.core.sitetrees import sitetrees_lv, sitetrees_en, sitetrees_ru
+
 from velo.core.views import CalendarView, IndexView
 from velo.payment.views import ApplicationPayView, ApplicationOKView
 from velo.registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
@@ -29,6 +29,7 @@ admin.autodiscover()
 register_i18n_trees(['mainmenu', 'competition_admin', 'footermenu'])
 
 try:
+    from velo.core.sitetrees import sitetrees_lv, sitetrees_en, sitetrees_ru
     register_dynamic_trees((
         compose_dynamic_tree(sitetrees_lv, target_tree_alias='mainmenu_lv', parent_tree_item_alias='sacensibas'),
     ))

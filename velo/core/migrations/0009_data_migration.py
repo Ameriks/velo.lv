@@ -34,9 +34,11 @@ def migrate_data(apps, schema_editor):
                                                                                    name_ru="1-й этап")
     velo.core.models.Competition.objects.filter(id__in=[4, 19, 27, 40, 53]).update(name_en="2nd Stage",
                                                                                    name_ru="2-й этап")
-    velo.core.models.Competition.objects.filter(id__in=[5, 20, 28, 41]).update(name_en="3rd Stage", name_ru="3-й этап")
-    velo.core.models.Competition.objects.filter(id__in=[54, ]).update(name_en="UEC & 3rd Stage",
-                                                                      name_ru="UEC & 3-й этап")
+    velo.core.models.Competition.objects.filter(id__in=[5, 20, 28, 41, 54]).update(name_en="3rd Stage", name_ru="3-й этап")
+
+    velo.core.models.Competition.objects.filter(id__in=[66, ]).update(name_en="UEC MTB Marathon 2016",
+                                                                      name_ru="UCI MTB марафон 2016")
+
     velo.core.models.Competition.objects.filter(id__in=[6, 21, 29, 42, 55]).update(name_en="4th Stage",
                                                                                    name_ru="4-й этап")
     velo.core.models.Competition.objects.filter(id__in=[7, 22, 30, 43, 56]).update(name_en="5th Stage",
@@ -94,6 +96,9 @@ def migrate_data(apps, schema_editor):
                                                                       name_ru="Велопробег Балтийского пути 2014")
     velo.core.models.Competition.objects.filter(id__in=[49, ]).update(name_en="Baltics Bike Tour 'Baltic Chain' 2015",
                                                                       name_ru="Велопробег Балтийского пути 2015")
+
+    velo.core.models.Competition.objects.filter(id=54).update(is_in_menu=False)
+    velo.core.models.Competition.objects.filter(id=66).update(is_in_menu=True, processing_class='velo.registration.competition_classes.EC2016')
 
     velo.core.models.Competition.objects.filter(id__in=[51, 52, 53, 54, 55, 56, 57, 58]).update(
         description_lv="SEB MTB jau ilgus gadus ir lielākais un populārākais sporta sacensību seriāls Latvijā.",
