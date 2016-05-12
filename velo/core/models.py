@@ -320,7 +320,11 @@ class Competition(MPTTModel):
 
     def get_random_image(self):
         from velo.gallery.models import Photo
-        return Photo.objects.filter(album__competition__tree_id=self.tree_id, is_featured=False, album__gallery_date__year=2014).order_by('?').first()
+        photo = Photo.objects.filter(album__competition__tree_id=self.tree_id, is_featured=False, album__gallery_date__year=2015).order_by('?').first()
+        if photo:
+            return photo
+        else:
+            return Photo.objects.get(id=73105)
 
     @property
     def is_application_active(self):
