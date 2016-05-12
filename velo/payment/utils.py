@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 import json
 import datetime
-import urllib
+from urllib.parse import quote
 
 from velo.core.models import Insurance, Log
 from velo.payment.models import Payment
@@ -458,7 +458,7 @@ def validate_payment(payment, user=False, request=None):
     session = SessionWHeaders({'Authorization': 'ApiKey %s' % payment.channel.payment_channel.erekins_auth_key},
                               url="https://%s.e-rekins.lv" % prefix)
 
-    transaction_obj = session.get('/api/v1/transaction/?code=%s' % urllib.quote(payment.erekins_code))
+    transaction_obj = session.get('/api/v1/transaction/?code=%s' % quote(payment.erekins_code))
 
     transactions = transaction_obj.json()
     if transactions.get('meta').get('total_count') == 0:
