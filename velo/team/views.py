@@ -132,6 +132,7 @@ class MemberInline(GetClassNameMixin, InlineFormSet):
     formset_class = CustomBaseInlineFormSet
     form_class = MemberInlineForm
     competition = None
+    fields = MemberInlineForm.Meta.fields
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

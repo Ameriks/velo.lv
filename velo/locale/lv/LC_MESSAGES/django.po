@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-05-11 22:20+0300\n"
-"PO-Revision-Date: 2016-05-12 08:43+0137\n"
+"PO-Revision-Date: 2016-05-12 23:55+0137\n"
 "Last-Translator: b'Agris Ameriks <agris@pd.lv>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -965,7 +965,7 @@ msgstr "Izvēlēties distanci"
 
 #: velo/registration/forms.py:296
 msgid "Select Gender"
-msgstr "Izvēlēties vecumu"
+msgstr "Izvēlieties dzimumu"
 
 #: velo/registration/forms.py:420
 msgid "Birthday is required."
