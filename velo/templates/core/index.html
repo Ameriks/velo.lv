@@ -84,7 +84,7 @@
                                         >
                                     </figure>
                                     <div class="calendar-slider__acordeon-text editor-text flex--1 flex direction--column justify--center align-items--start">
-                                        <p>{{ item.description }}</p>
+                                        <p>{{ item.description|truncatewords_html:14|safe }}</p>
                                     </div>
                                     <a class="calendar-slider__btn btn btn--60 btn--white-transparent btn--no-borders left flex--important wrap--nowrap justify--space-between align-items--center" href="{% url "competition:competition" item.id %}">
                                         <span class="c-yellow">{% trans "Open Competition" %}</span>
