@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec cd /app && celery -A velo.taskapp worker -l INFO --autoscale=5,2
