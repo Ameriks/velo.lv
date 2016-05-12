@@ -1,0 +1,40 @@
+{% extends "base/email.html" %}
+{% block content %}
+    <p style="font-size:25px;">Apsveicam ar sekmīgu reģistrēšanos {{ application.competition.get_full_name }}.</p>
+
+    <table style="margin-top:20px;margin-bottom:20px;">
+        <thead>
+            <tr>
+                <td>Vārds Uzvārds</td>
+                <td>Dzimšanas gads</td>
+                <td>Komanda</td>
+                <td>Distance</td>
+                <td>Datums</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in application.participant_set.all %}
+                <tr>
+                    <td>{{ participant.full_name }}</td>
+                    <td>{{ participant.birthday.year }}</td>
+                    <td>{{ participant.team_name }}</td>
+                    <td>{{ participant.distance }}</td>
+                    <td>
+                        {% for competition in competitions %}
+                            {{ competition }} - {{ competition.competition_date|date:"Y-m-d" }}<br />
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><b>Dalībnieki veiksmīgi apmaksāti!</b></p>
+    <p>Jums ir iespēja labot dalībnieku kontaktinformāciju un pie dalībnieka norādīto komandu, apmeklējot šo saiti: <a href="{{ url }}">{{ url }}</a></p>
+
+    <p>Pastāstiet draugiem un kolēģiem, ka piedalīsieties šādā pasākumā. Viņi arī varētu gribēt piedalīties!</p>
+    <p>Ar cieņu,<br />Organizatoru komanda</p>
+    <br />
+    <h2>Jautājumi?</h2>
+    <p>Neskaidrību gadījumā sazinieties ar mums: pieteikumi@velo.lv</p>
+{% endblock content %}
