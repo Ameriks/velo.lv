@@ -101,15 +101,98 @@ def migrate_data(apps, schema_editor):
     velo.core.models.Competition.objects.filter(id=66).update(is_in_menu=True, processing_class='velo.registration.competition_classes.EC2016')
 
     velo.core.models.Competition.objects.filter(id__in=[51, 52, 53, 54, 55, 56, 57, 58]).update(
-        description_lv="SEB MTB jau ilgus gadus ir lielākais un populārākais sporta sacensību seriāls Latvijā.",
-        description_ru="SEB MTB в течение многих лет является самым крупным и наиболее популярная серия спортивного соревнования в Латвии.",
-        description_en="SEB MTB for many years is the largest and most popular sporting competition series in Latvia.")
+        description_lv="""<p>SEB MTB sacensību seriāla pirmsākumi meklējami 1997. gadā riteņbraukšanas tradīcijām bagātajā Latvijas mazpilsētā Smiltenē.</p>
+        <p>No 2002. gada tas nes SEB MTB maratona nosaukumu. Pašlaik tas ir viens no masveidīgākajiem MTB maratonu seriāliem Eiropā, jo katrā posmā piedalās 1800 – 2300 dalībnieki. Sacensības notiek 7 posmos, no aprīļa beigām līdz oktobra sākumam, dažādās Latvijas pilsētās.</p>
+        <p>Dalībniekiem tiek piedāvātas 4 dažādas distances šķēršļotā apvidū (meža ceļi, pļavu takas un ūdens šķēršļi) skaistākajos Latvijas novados:<br />
+        <ul>
+<li> distance (55 – 70 km),</li>
+<li>pusmaratona distance (35 – 45 km),</li>
+<li>Veselības distance (bez laika kontroles) (25 – 30 km),</li>
+<li>bērnu distances (500 m – 5 km).</li>
+</ul></p>
+<p>Katrā etapā tiek noteikti uzvarētāji gan individuālā, gan komandu vērtējumā, dažādās vecuma un dzimuma grupās. Vairāk informācijas meklējiet www.velo.lv sadaļā “Sacensību nolikums”.</p>
+<p>Sacensībās var piedalīties gan pieredzējuši sportisti, gan iesācēji. Obligāti nosacījumi – MTB velosipēds, aizsargķivere, drosme un neatlaidība veikt sev izvēlēto distanci. Lai startētu garākajā (maratona) distancē, nepieciešama savas valsts riteņbraukšanas federācijas izdota licence.</p>
+<br />
+<p>Distances:</p>
+<p><b>Toyota distance (55–60 km).</b> Trase marķēta šķēršļotā apvidū. Atļauts startēt 1999. gadā dzimušiem un vecākiem. Eiropas XCM čempionāta Siguldas posms ~100 km. Siguldas posmā atļauts startēt 1997. gadā dzimušiem un vecākiem.</p>
+<p><b>Virši-A distance (35–45 km).</b> Trase marķēta saīsinātā un vienkāršotākā veidā (lauku, zemes un mežu ceļi, takas, ūdens šķēršļi). Atļauts startēt 2001. gadā dzimušiem un vecākiem.</p>
+<p><b>Mammadaba Veselības distance (25–35 km)</b> bez laika kontroles. Atļauts startēt 2004. gadā dzimušiem un vecākiem. M-14 un W-14 vecuma grupām rezultāti tiek fiksēti posmā un kopvērtējumā. Šīm vecuma grupām dažos posmos (Smiltene, Vietalva, Talsi) programmā var tikt iekļauta MTB krosa (XCO) trase apļos.</p>
+<p><b>Bērnu sacensības</b> norisinās starta/finiša rajonā. 2012.–2008. gadā dzimušie brauc 400–800 m; 2007.–2005. gadā dzimušie brauc 1200–5000 m.</p>
+        """,
+        description_ru="""<p>Традиция велосипедных заездов была заложена в 1997 году, в небольшом Латвийском городе Смилтене. С 2002 года они называются SEB MTB марафон. </p>
+<p>Это один из крупнейших MTB марафонов в Европе, где в каждом этапе участвуют по 1800 – 2300 участников. Соревнования проходят в 7 этапах с конца апреля до начала октября в разных городах Латвии. Участникам предлагаются 4 разные дистанции по пересеченной местности (лесные дорожки, луговые тропинки, водные препятствия) в самых живописных местах Латвии:
+<br />
+<ul>
+<li>Марафонская дистанция – 55 – 70 км,</li>
+<li>Полумарафонская дистанция – 35 – 45 км,</li>
+<li>Дистанция здоровья (без контроля времени) – 25 – 30 км,</li>
+<li>Детские дистанции – (от 500 м до 5 км).</li>
+</ul>
 
-    velo.core.models.Competition.objects.filter(id__in=[60, 61, 62]).update(
-        description_lv="Lorem ipsum dolor sit amet, eos at hinc nostro deterruisset. Id natum complectitur intellegebat eos. Verterem nominati ut quo, pro vide oratio ut. Clita voluptatum ullamcorper mel ex.",
-        description_ru="Lorem ipsum dolor sit amet, eos at hinc nostro deterruisset. Id natum complectitur intellegebat eos. Verterem nominati ut quo, pro vide oratio ut. Clita voluptatum ullamcorper mel ex.",
-        description_en="Lorem ipsum dolor sit amet, eos at hinc nostro deterruisset. Id natum complectitur intellegebat eos. Verterem nominati ut quo, pro vide oratio ut. Clita voluptatum ullamcorper mel ex.")
+</p>
+<p>Победители каждого этапа определяются как индивидуально, так и в командном зачете, в различных возрастных группах, а также в зависимости от пола. Подробная информация на www.velo.lv, раздел Условия соревнований.
+</p>
+<p>В соревнованиях могут участвовать как опытные, так и начинающие спортсмены. Обязательные условия – велосипед МТВ, шлем, смелость и упорство для преодоления выбранной дистанции. Для участия в самой длинной дистанции марафона, необходима лицензия, выданная велосипедной федерацией своей страны.
+</p>
+<br />
+<p>Дистанция Toyota (55–60 км). Трасса размечена по пересеченной местности. Разрешен старт с 1999 года рождения и старше. Сигулдский участок ЧСМ чемпионата Европы ~100 км. В Сигулдском этапе можно участвовать с 1997 года рождения и старше.</p>
+<p>Дистанция Virši-A (35–45 км). Tрасса размечена в сокращенном и упрощенном виде (поля, земляные и лесные дорожки, тропы, водяные препятствия). Можно участвовать с 2001 года рождения и старше.</p>
+<p>Дистанция здоровья Mammadaba (25–35 км) без контроля времени. Можно участвовать с 2004 года рождения и старше. Для возрастных групп М-14 и W-14 фиксируются результаты этапа и в общем зачете. Для этой возрастной группы на различных участках (Смилтене, Виеталва, Талси) в программу может быть включена МТВ кроссовая (ХСО) трасса (круги). </p>
+<p>Детские соревнования проходят в районе старта/финиша, 2012-2008 г. рождения (400-800 м); 2007-2005 г. рождения (1200–5000 м).</p>
+        """,
+        description_en="""<p>The first race was held in 1997 in Smiltene – a small town rich in cycling traditions. Since 2002 it is named SEB MTB marathon. Today it is one of the largest series of MTB marathons in Europe with about 1800 – 2300 riders participating in each stage.</p>
+<p>The race takes place from late April to early October in 7 stages, in different Latvian towns. Participants have opportunity to choose among 4 distances in a rugged terrain (forest tracks, meadow paths, water obstacles) in the most picturesque regions of Latvia:
+<br />
+<ul>
+<li>Marathon distance – 55 – 70 km,</li>
+<li>Half marathon distance – 35 – 45 km,</li>
+<li>Health distance (no time calculating) – 25 – 30 km,</li>
+<li>Children distances (from 500 m – 5 km).</li>
 
+</ul>
+</p>
+<p>Each stage has its own winners, based on individual and team scores, in different age and gender groups. More information is available on www.velo.lv under section – Competition rules.
+</p>
+<p>The race welcomes both experienced athletes and beginners. They all must have an MTB bike, helmet, courage and determination to complete the distance they have chosen. To participate in the longest marathon distance, riders must have a licence issued by the cycling federation of their country.</p>
+<br />
+<p>Distances:</p>
+<p><b>Toyota distance (55–60 km).</b> The track is marked in a rugged terrain. Only riders born in 1999 and after are allowed to participate. European XCM championship Sigulda stage ~100 km. Riders born in 1997 and after are allowed to participate in Sigulda stage.</p>
+<p><b>Virši-A distance (35–45 km)</b> track is marked in shorter and simpler area (gravel roads, dirt roads and forest roads, tracks, water obstacles). Riders born in 2001 and after are allowed to participate.</p>
+<p><b>Mammadaba Health distance (25–35 km)</b> no time limit. Riders born in 2014 and after are allowed to participate. For M-14 and W-14 age groups results are recorded in each stage and in total score. MTB cross (XCO) track consisting of laps may be included in the cycling programme for this age group in some stages (Smiltene, Vietalva, Talsi). </p>
+<p><b>Children race</b> takes place in the start/finish area. Distances for children born in 2012–2008 (400–800 m); 2007–2005 (1200–5000 m).</p>
+        """)
+
+    # Bernu
+    velo.core.models.Competition.objects.filter(id__in=[60]).update(
+        description_lv="",
+        description_ru="",
+        description_en="")
+
+    # VB
+    velo.core.models.Competition.objects.filter(id__in=[62]).update(
+        description_lv="",
+        description_ru="",
+        description_en="")
+
+    # Rigas velomaratons
+    velo.core.models.Competition.objects.filter(id__in=[61]).update(
+        description_lv="""<p>Rīgas masveidīgākā velobrauciena tradīcija aizsākusies 1983. gadā. Šīs sacensības ir iemantojušas lielu popularitāti rīdzinieku vidū, un dalībnieku skaits tuvojas 4 tūkstošiem.</p>
+<p>Šo gadu laikā ir bijušas dažādas sacensību trases un distances. Šodien mēs varam lepoties ar to, ka sacensību starta un finiša vieta atrodas pašā Rīgas sirdī, netālu no Latvijas Republikas Valsts prezidenta pils. 16 km garais sacensību aplis pilnībā tiek slēgts transporta plūsmai.</p>
+<p>Rīgas velomaratona dienā riteņbraucēji kļūst par Rīgas ielu saimniekiem. Trase vijas pa Latvijas lielākās upes Daugavas abiem krastiem, un dalībniekiem jāšķērso divi brīnišķīgi tilti. Viens no trases posmiem vijas pa Rīgas vecpilsētas bruģi, kas braucienu padara sevišķi pievilcīgu un interesantu. Atkarībā no spējām un fiziskās sagatavotības dalībnieki var izvēlēties sev piemērotu distanci.</p>
+<p>Garākajā (maratona) distancē brauc trenēti sportisti un spēcīgi amatieri. Vecākiem cilvēkiem un iesācējiem tiek piedāvātas īsākas distances. Arvien populārāks kļūst ģimeņu brauciens, kurā vecāki ar saviem bērniem brauc 16 km apli, kas pilnībā slēgts transporta kustībai. Visa nepieciešamā informācija atrodama www.velo.lv sadaļā “Sacensību nolikums”.
+</p>
+        """,
+        description_ru="""<p>Самая массовая Рижская традиция велопробегов основана в 1983 году. Эти соревнования приобрели широкую популярность среди рижан, и число участников приближается к 4 000.</p>
+<p>За эти годы были разные трассы и дистанции. Сегодня мы можем гордиться тем, что старт и финиш соревнований находится в самом сердце Риги, неподалеку от дворца президента Латвии.</p>
+<p>Круг соревнований длиной в 16 км полностью закрыт для транспорта. В день Рижского веломарафона хозяевами улиц Риги становятся велосипедисты. Сама трасса проходит вдоль крупнейшей реки Латвии – по обоим берегам Даугавы, и участники пересекут два прекрасных моста.</p>
+<p>В трассу включен участок брусчатки в Старой Риге, что делает трассу особенно привлекательной и интересной. В зависимости от уровня подготовки участники могут выбрать наиболее подходящую дистанцию. По длинной дистанции поедут тренированные спортсмены и сильные участники. Для пожилых людей и начинающих предусмотрены более короткие дистанции. Все большую популярность набирают семейные поездки, где родители с детьми едут круг в 16 км, который полностью закрыт для транспортных средств. Вся необходимая информация есть на сайте www.velo.lv в разделе условия соревнований.</p>
+        """,
+        description_en="""<p>The tradition of the mass participation cycling event in Riga dates back to 1983. This ride is very popular among local residents of Riga and it gathers nearly 4000 participants.</p>
+<p>Over the years there have been different routes and distances. Today we are proud that the start and end point of the ride is in the very heart of Riga, near Riga Caste which is the official residence of the President of Latvia. </p>
+<p>The 16 kilometers long lap is completely closed for traffic. Only cyclists rule the city streets on the day of Riga Marathons. The route itself runs along both banks of the largest river of Latvia – Daugava and participants have to cross two beautiful bridges as well. The route also includes a stage across the pavement of Old Town which makes it particularly attractive and exciting.</p>
+<p>Participants may choose the best distance depending on their skills and fitness. The longest distance is suited to professional athletes and well-trained amateurs. Shorter distances are perfect for beginners and older people. Family rides are increasingly popular among parents and children. Families have an opportunity to complete the 16 kilometers long lap which is completely closed for traffic. All information is available on our website www.velo.lv under section - Marathon rules.
+</p>
+        """)
 
     TreeItem.objects.get(id=54).delete()
     TreeItem.objects.get(id=59).delete()

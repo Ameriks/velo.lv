@@ -134,7 +134,7 @@ class Payment(TimestampMixin, models.Model):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    channel = models.ForeignKey('payment.ActivePaymentChannel')
+    channel = models.ForeignKey('payment.ActivePaymentChannel', blank=True, null=True)
     erekins_code = models.CharField(max_length=100, blank=True)  # Erekins code
 
     total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)

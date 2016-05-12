@@ -30,11 +30,10 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-        calendar = list(Competition.objects.filter(competition_date__year=timezone.now().year).order_by(
-            'competition_date').select_related('parent'))
+        calendar = list(Competition.objects.filter(competition_date__year=timezone.now().year).select_related('parent').extra(select={'is_past': "core_competition.competition_date < now()::date  - interval '3 days'"}).order_by('is_past', 'competition_date', '-name_lv'))
         context.update({'calendar': calendar})
 
-        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date')[
+        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date', '-name_lv')[
                            :1]
         if not next_competition:
             next_competition = Competition.objects.order_by('-competition_date')[:1]

@@ -12,9 +12,9 @@ from django.utils.translation import ugettext_lazy as _
 from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML, Field
 from crispy_forms.helper import FormHelper
 
-from velo.payment.models import ActivePaymentChannel
+from velo.payment.models import ActivePaymentChannel, Payment
 from velo.payment.utils import create_application_invoice, create_application_bank_transaction, create_team_invoice, \
-    create_team_bank_transaction
+    create_team_bank_transaction, approve_payment
 from velo.payment.widgets import PaymentTypeWidget, DoNotRenderWidget
 from velo.registration.models import Application
 from velo.velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
@@ -51,16 +51,24 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                 instance.set_final_price()  # if donation have changed, then we need to recalculate,
                 # because instance is not yet saved and it means,
                 # that this function on model is not yet run.
-                active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
 
-                if active_payment_type.payment_channel.is_bill:
-                    instance.external_invoice_code, instance.external_invoice_nr = create_application_invoice(instance,
-                                                                                                              active_payment_type)
-                    self.success_url = reverse('application_ok', kwargs={'slug': instance.code})
-                    messages.info(self.request,
-                                  _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
+                if instance.final_price == 0:
+                    payment = Payment.objects.create(content_object=instance,
+                                                     total=instance.final_price,
+                                                     status=Payment.STATUSES.ok, )
+                    self.success_url = approve_payment(payment, self.request.user, self.request)
                 else:
-                    self.success_url = create_application_bank_transaction(instance, active_payment_type)
+
+                    active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
+
+                    if active_payment_type.payment_channel.is_bill:
+                        instance.external_invoice_code, instance.external_invoice_nr = create_application_invoice(instance,
+                                                                                                                  active_payment_type)
+                        self.success_url = reverse('application_ok', kwargs={'slug': instance.code})
+                        messages.info(self.request,
+                                      _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
+                    else:
+                        self.success_url = create_application_bank_transaction(instance, active_payment_type)
 
             except:
                 # TODO We need to catch exception and log it to sentry
@@ -147,7 +155,11 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         if self.instance.external_invoice_code:
             payments = payments.filter(payment_channel__is_bill=False)
 
-        self.fields['payment_type'].choices = [(obj.id, obj) for obj in payments]
+        if self.instance.final_price == 0:
+            self.fields['payment_type'].required = False
+            self.fields['payment_type'].widget = forms.HiddenInput()
+        else:
+            self.fields['payment_type'].choices = [(obj.id, obj) for obj in payments]
 
         self.fields['donation'].required = False
 
@@ -161,7 +173,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                     ),
                     Div(
                         Div(
-                            HTML(_("Payment method")),
+                            HTML(_("Payment method")) if self.instance.final_price > 0 else HTML(""),
                           css_class="fs14 fw700 uppercase w100 bottom-margin--30"
                         ),
                         Div(

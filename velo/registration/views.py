@@ -206,7 +206,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
 
             if team_member_count + len(participants) > max_team_members:
                 messages.info(request, _(
-                    'Maximum team member count in this competition is %s. Please select less participants to add to team.') % max_team_members)
+                    'Maximum team member count in this competition is %(count)s. Please select less participants to add to team.') % max_team_members)
                 return HttpResponseRedirect(
                     reverse('companyapplication', kwargs={'slug': self.companyapplication.code}))
 
