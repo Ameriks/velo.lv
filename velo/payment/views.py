@@ -231,7 +231,7 @@ class PaymentReturnView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        if self.object.status == Payment.STATUS_OK:
+        if self.object.status == Payment.STATUSES.ok:
             if self.object.content_type.model == 'application':
                 return HttpResponseRedirect(reverse('application_ok', kwargs={'slug': self.object.content_object.code}))
             elif self.object.content_type.model == 'team':

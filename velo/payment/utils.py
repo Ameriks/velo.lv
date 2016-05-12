@@ -383,7 +383,7 @@ def create_team_bank_transaction(team, active_payment_type):
                            channel=active_payment_type,
                            erekins_code=transaction.get('code'),
                            total=team.final_price,
-                           status=Payment.STATUS_PENDING, )
+                           status=Payment.STATUSES.pending, )
 
     return "https://%s.e-rekins.lv/bank/%s/" % (prefix, transaction.get('code'))
 
@@ -415,7 +415,7 @@ def create_application_bank_transaction(application, active_payment_type):
                            channel=active_payment_type,
                            erekins_code=transaction.get('code'),
                            total=application.final_price,
-                           status=Payment.STATUS_PENDING,
+                           status=Payment.STATUSES.pending,
                            donation=application.donation)
 
     return "https://%s.e-rekins.lv/bank/%s/" % (prefix, transaction.get('code'))
@@ -462,8 +462,8 @@ def validate_payment(payment, user=False, request=None):
 
     transactions = transaction_obj.json()
     if transactions.get('meta').get('total_count') == 0:
-        if payment.status != payment.STATUS_OK:
-            payment.status = payment.STATUS_ID_NOT_FOUND
+        if payment.status != payment.STATUSES.ok:
+            payment.status = payment.STATUSES.id_not_found
             payment.save()
             Log.objects.create(content_object=payment, action="TRANSACTION_VALIDATE",
                                message="Not found transaction id in e-rekins.lv", params={'code': payment.erekins_code})

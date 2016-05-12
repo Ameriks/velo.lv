@@ -77,7 +77,7 @@ def payment_list(competition=None, competition_id=None):
         sheet.write(row, col, value)
     row += 1
     for application in applications:
-        payments = application.payment_set.filter(status=Payment.STATUS_OK)
+        payments = application.payment_set.filter(status=Payment.STATUSES.ok)
         row_values = (
             application.id, application.created.date(), application.modified.date(), str(application.competition), application.get_payment_status_display(),
             application.legacy_id, application.company_name, application.external_invoice_nr, application.final_price,
@@ -247,7 +247,7 @@ def create_donations_list(competition=None, competition_id=None):
         participant = application.participant_set.all()[0]
         total_payed = 0.0
         total_count = 0
-        payments = application.payment_set.filter(status=Payment.STATUS_OK)
+        payments = application.payment_set.filter(status=Payment.STATUSES.ok)
 
         if payments:
             total_count = payments.count()

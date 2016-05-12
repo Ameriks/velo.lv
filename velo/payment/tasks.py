@@ -13,7 +13,7 @@ from velo.payment.utils import validate_payment
 
 @periodic_task(run_every=crontab(minute="*/10", ))
 def get_transaction_statuses():
-    payments = Payment.objects.filter(status__in=(Payment.STATUS_NEW, Payment.STATUS_PENDING),
+    payments = Payment.objects.filter(status__in=(Payment.STATUSES.new, Payment.STATUSES.pending),
                                       created__lt=(timezone.now() - datetime.timedelta(minutes=10)))
 
     for payment in payments:
