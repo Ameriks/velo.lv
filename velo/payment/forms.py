@@ -56,7 +56,8 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                     payment = Payment.objects.create(content_object=instance,
                                                      total=instance.final_price,
                                                      status=Payment.STATUSES.ok, )
-                    self.success_url = approve_payment(payment, self.request.user, self.request)
+                    approve_payment(payment, self.request.user, self.request)
+                    self.success_url = reverse('application_ok', kwargs={'slug': instance.code})
                 else:
 
                     active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
