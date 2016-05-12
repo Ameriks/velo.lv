@@ -378,9 +378,9 @@ THUMBNAIL_ALIASES = {
 }
 
 THUMBNAIL_OPTIMIZE_COMMAND = {
-    'png': '/usr/bin/optipng {filename}',
-    'gif': '/usr/bin/optipng {filename}',
-    'jpeg': '/usr/bin/jpegoptim --strip-all {filename}'
+    'png': '/usr/local/bin/optipng {filename}',
+    'gif': '/usr/local/bin/optipng {filename}',
+    'jpeg': '/usr/local/bin/jpegoptim --strip-all {filename}'
 }
 THUMBNAIL_BASEDIR = 'easy_thumbnails'
 THUMBNAIL_CHECK_CACHE_MISS = True
