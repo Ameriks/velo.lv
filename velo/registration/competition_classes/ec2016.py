@@ -61,73 +61,73 @@ class EC2016(CompetitionScriptBase):
         for participant in participants:
             helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
 
-        def process_chip_result(self, chip_id, sendsms=True):
-            """
-            Function processes chip result and recalculates all standings
-            """
-            chip = ChipScan.objects.get(id=chip_id)
-            distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
+    def process_chip_result(self, chip_id, sendsms=True):
+        """
+        Function processes chip result and recalculates all standings
+        """
+        chip = ChipScan.objects.get(id=chip_id)
+        distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
 
-            zero_minus_10secs = (
-            datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.timedelta(
-                seconds=10)).time()
-            if chip.time < zero_minus_10secs:
-                Log.objects.create(content_object=chip, action="Chip process", message="Chip scanned before start")
-                return False
+        zero_minus_10secs = (
+        datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.timedelta(
+            seconds=10)).time()
+        if chip.time < zero_minus_10secs:
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip scanned before start")
+            return False
 
-            Log.objects.create(content_object=chip, action="Chip process", message="Started")
+        Log.objects.create(content_object=chip, action="Chip process", message="Started")
 
-            delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(
-                datetime.date.today(), datetime.time(0, 0, 0, 0))
-            result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
+        delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(
+            datetime.date.today(), datetime.time(0, 0, 0, 0))
+        result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
 
-            if chip.is_blocked:  # If blocked, then remove result, recalculate standings, recalculate team results
-                raise NotImplementedError
-                results = Result.objects.filter(competition=chip.competition, number=chip.nr, time=result_time)
-                if results:
-                    result = results[0]
-                    participant = result.participant
-                    if result.standings_object:
-                        standing = result.standings_object
-                        result.delete()
-                        self.recalculate_standing(standing)  # Recalculate standings for this participant
-                        standing.save()
-                        if participant.team:  # If blocked participant was in a team, then recalculate team results.
-                            self.recalculate_team_result(team=participant.team)
-                    Log.objects.create(content_object=chip, action="Chip process", message="Processed blocked chip")
-                return None
-            elif chip.is_processed:
-                Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
-                return None
-
-            results = Result.objects.filter(competition=chip.competition, number=chip.nr)
+        if chip.is_blocked:  # If blocked, then remove result, recalculate standings, recalculate team results
+            raise NotImplementedError
+            results = Result.objects.filter(competition=chip.competition, number=chip.nr, time=result_time)
             if results:
-                Log.objects.create(content_object=chip, action="Chip process",
-                                   message="Chip ignored. Already have result")
+                result = results[0]
+                participant = result.participant
+                if result.standings_object:
+                    standing = result.standings_object
+                    result.delete()
+                    self.recalculate_standing(standing)  # Recalculate standings for this participant
+                    standing.save()
+                    if participant.team:  # If blocked participant was in a team, then recalculate team results.
+                        self.recalculate_team_result(team=participant.team)
+                Log.objects.create(content_object=chip, action="Chip process", message="Processed blocked chip")
+            return None
+        elif chip.is_processed:
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
+            return None
+
+        results = Result.objects.filter(competition=chip.competition, number=chip.nr)
+        if results:
+            Log.objects.create(content_object=chip, action="Chip process",
+                               message="Chip ignored. Already have result")
+        else:
+            participant = Participant.objects.filter(slug=chip.nr.participant_slug,
+                                                     competition_id__in=chip.competition.get_ids(),
+                                                     distance=chip.nr.distance, is_participating=True)
+
+            if participant:
+                result = Result.objects.create(competition=chip.competition, participant=participant[0],
+                                               number=chip.nr, time=result_time, )
+                result.set_avg_speed()
+                result.save()
+
+                self.assign_standing_places()
+
+                if sendsms and participant[
+                    0].is_competing and self.competition.competition_date == datetime.date.today():
+                    create_result_sms.apply_async(args=[result.id, ], countdown=120)
+
+                chip.is_processed = True
+                chip.save()
+
             else:
-                participant = Participant.objects.filter(slug=chip.nr.participant_slug,
-                                                         competition_id__in=chip.competition.get_ids(),
-                                                         distance=chip.nr.distance, is_participating=True)
+                Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
 
-                if participant:
-                    result = Result.objects.create(competition=chip.competition, participant=participant[0],
-                                                   number=chip.nr, time=result_time, )
-                    result.set_avg_speed()
-                    result.save()
-
-                    self.assign_standing_places()
-
-                    if sendsms and participant[
-                        0].is_competing and self.competition.competition_date == datetime.date.today():
-                        create_result_sms.apply_async(args=[result.id, ], countdown=120)
-
-                    chip.is_processed = True
-                    chip.save()
-
-                else:
-                    Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
-
-            print(chip)
+        print(chip)
 
     def get_result_table_class(self, distance, group=None):
         if group:
