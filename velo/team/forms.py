@@ -42,11 +42,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         if self.instance.id and not self.request.user.has_perm('team.change_member'):
             return self.instance.birthday
         else:
-            ssn = self.cleaned_data.get('ssn')
-            if self.cleaned_data.get('country') == 'LV' and ssn:
-                return bday_from_LV_SSN(self.cleaned_data.get('ssn'))
-            else:
-                return self.cleaned_data.get('birthday')
+            return self.cleaned_data.get('birthday')
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -109,7 +105,6 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         if self.instance.id and not self.request.user.has_perm('team.change_member'):
             self.fields['first_name'].widget.attrs['readonly'] = True
             self.fields['last_name'].widget.attrs['readonly'] = True
-            self.fields['ssn'].widget.attrs['readonly'] = True
             self.fields['country'].widget.attrs['readonly'] = True
             self.fields['birthday'].widget.attrs['readonly'] = True
             self.fields['gender'].widget.attrs['readonly'] = True
