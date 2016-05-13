@@ -304,7 +304,8 @@ class ApplicationCreate(SSLRequiredMixin, RequestFormKwargsMixin, CreateView):
                 self.object.created_by = request.user
             self.object.save()
             return HttpResponseRedirect(self.get_success_url())
-        return super(ApplicationCreate, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse("index"))
 
     def get_success_url(self):
         return reverse('application', kwargs={'slug': self.object.code})
