@@ -65,6 +65,15 @@ class ParticipantTable(ParticipantTableBase):
         order_by = ("primary_number")
 
 
+class ParticipantTableWCountry(ParticipantTableBase):
+    primary_number = tables.Column(verbose_name=_('Number'), default='-', accessor='primary_number')
+
+    class Meta(ParticipantTableBase.Meta):
+        fields = ("first_name", "last_name", "country", "bike_brand2", "group", 'primary_number')
+        sequence = ("primary_number", 'first_name', 'last_name', 'year', "country", 'group', 'team', 'bike_brand2',)
+        order_by = ("primary_number")
+
+
 class ParticipantTableWithPoints(ParticipantTable):
     calculated_total = tables.Column(verbose_name=_('Points'), accessor='calculated_total')
 

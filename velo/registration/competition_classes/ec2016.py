@@ -9,7 +9,7 @@ from velo.registration.competition_classes.base import CompetitionScriptBase
 from velo.registration.models import Application
 from django import forms
 from django.utils.translation import ugettext_lazy as _, activate
-from velo.registration.tables import ParticipantTable
+from velo.registration.tables import ParticipantTable, ParticipantTableWCountry
 from velo.results.models import HelperResults, ChipScan, DistanceAdmin, Result
 from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable
 from velo.results.tasks import create_result_sms
@@ -36,7 +36,7 @@ class EC2016(CompetitionScriptBase):
         }
 
     def get_startlist_table_class(self, distance=None):
-        return ParticipantTable
+        return ParticipantTableWCountry
 
     def _update_year(self, year):
         return year + 2
