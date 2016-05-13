@@ -16,6 +16,7 @@ from hashids import Hashids
 from slugify import slugify
 from model_utils import Choices as XChoices
 
+from config.settings.common import LANGUAGES
 from velo.core.models import Choices, CustomSlug, Log
 from velo.payment.models import Payment
 from velo.registration.utils import recalculate_participant
@@ -58,6 +59,8 @@ class Application(TimestampMixin, models.Model):
     final_price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
     params = JSONField(default={})
+
+    language = models.CharField(max_length=10, choices=LANGUAGES, default='lv')
 
     payment_set = GenericRelation(Payment)
 

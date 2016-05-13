@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 
 from celery.task import task
+from django.utils.translation import activate, ugettext_lazy as _
 from premailer import transform
 
 from velo.registration.models import Application
@@ -37,11 +38,12 @@ def send_success_email(application_id):
         'url': "{0}{1}".format(settings.MY_DEFAULT_DOMAIN, reverse('application', kwargs={'slug': application.code}))
     }
 
+    activate(application.language)
     template = transform(render_to_string('registration/email/success_email.html', context))
     template_txt = render_to_string('registration/email/success_email.txt', context)
 
     email_data = {
-        'subject': u'velo.lv dalībnieku pieteikums nr.%i' % application_id,
+        'subject': _('VELO.LV application #%i') % application_id,
         'message': template_txt,
         'from_email': settings.SERVER_EMAIL,
         'recipient_list': [application.email, ],

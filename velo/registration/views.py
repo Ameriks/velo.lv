@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.views.generic import CreateView, ListView, View, DetailView, TemplateView, UpdateView
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
 from django.conf import settings
 
 from django_tables2 import SingleTableView
@@ -298,7 +298,7 @@ class ApplicationCreate(SSLRequiredMixin, RequestFormKwargsMixin, CreateView):
     def get(self, request, *args, **kwargs):
         pick = kwargs.get('pick', None)
         if pick and Competition.objects.get(id=pick).is_application_active:
-            self.object = self.model(competition_id=pick)
+            self.object = self.model(competition_id=pick, language=get_language())
             if request.user.is_authenticated():
                 self.object.email = request.user.email
                 self.object.created_by = request.user
