@@ -19,6 +19,7 @@ from extra_views.advanced import BaseUpdateWithInlinesView
 
 from velo.core.formsets import CustomBaseInlineFormSet, OnlyAddBaseInlineFormSet
 from velo.core.models import Distance, Competition
+from velo.payment.utils import get_total
 from velo.registration.forms import ApplicationCreateForm, ApplicationUpdateForm, ParticipantInlineForm, \
     ParticipantInlineRestrictedForm, ParticipantInlineFullyRestrictedForm, CompanyApplicationCreateForm, \
     CompanyParticipantInlineForm, CompanyApplicationEmptyForm
@@ -156,6 +157,11 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
             new_application = Application.objects.create(competition=competition, email=self.companyapplication.email,
                                                          created_by=request.user, )
             for participant in participants:
+                price = None
+                total = get_total(competition, participant.distance_id, participant.birthday.year)
+                if total:
+                    price = total.get('price_obj', None)
+
                 new_application.participant_set.create(company_participant=participant,
                                                        competition=competition,
                                                        distance=participant.distance,
@@ -170,6 +176,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
                                                        phone_number=participant.phone_number,
                                                        team_name=self.companyapplication.team_name,
                                                        created_by=request.user,
+                                                       price=price
                                                        )
             return HttpResponseRedirect(reverse('application', kwargs={'slug': new_application.code}))
 
