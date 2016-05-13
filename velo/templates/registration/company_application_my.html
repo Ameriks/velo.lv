@@ -9,20 +9,28 @@
                     <span class="w100">{% trans "My Profile" %}</span>
                     <span class="w100 c-yellow">{{ user.email }}</span>
                 </h1>
-                <h2 class="heading heading--smaller w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
-                    <span class="w100">{% trans "My Company Applications" %}</span>
-                </h2>
+            <div class="inner">
+                <div class="w100 bgc-dgray border-right border-left ">
+                    <h2 class="heading heading--smaller w100 border-bottom fs21">
+                        <span>{% trans "My Company Applications" %}</span>
+                        <a href="{% url 'companyapplication' %}" class="btn btn--50 btn--white-transparent"
+                           style="float:right;">{% trans 'Create New' %}</a>
+                    </h2>
 
-                <div class="row">
-                <div class="col-xl-16 col-s-24">
-                    <p>Uzņēmuma pieteikums ir paredzēts lielākiem uzņēmumiem vai grupām, kurām ir nepieciešams ievadīt daudzu dalībnieku datus.</p>
-                    <p>Izveidojot uzņēmuma pieteikumu, Jūs iegūsiet publiski pieejamu interneta adresi, kuru būs iespējams izsūtīt darbiniekiem, kur viņiem pašiem būs iespēja pievienot informāciju par sevi.</p>
-                    <p>Pēc tam Jums būs iespējams pieteikt un apmaksāt izvēlētos dalībniekus.</p>
+                    <div class="w100">
+                        <div class="inner layouts-company-aplication-info-inner">
+                            <div class="w100 bottom-margin--20"></div>
+                            <div class="w100 editor-text bottom-margin--20">
+                            
+                                <p>{% blocktrans %}Corporate application is intended for larger companies or groups which require entering data of many participants.{% endblocktrans %}</p>
+                                <p>{% blocktrans %}When you create a corporate application, you will get a public web address to share with employees. Thus your employees will be able to add their personal data themselves.{% endblocktrans %}</p>
+                                <p>{% blocktrans %}Afterwards you can register participants and pay the participation fee for selected participants.{% endblocktrans %}</p>
+                            </div>
+                        </div>
+
                     </div>
-                <div class="col-xl-8 col-s-24">
-                    <a class="btn btn--50 btn--dblue btn--blue-hover btn--blue-active w100" href="{% url 'companyapplication' %}">{% trans 'Create New' %}</a>
                 </div>
-                    </div>
+            </div>
                 {% render_table table %}
 
 
