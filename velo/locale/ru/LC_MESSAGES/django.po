@@ -8,15 +8,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-13 13:27+0300\n"
+"POT-Creation-Date: 2016-05-14 00:28+0300\n"
 "PO-Revision-Date: 2016-05-13 13:31+0137\n"
 "Last-Translator: b'Agris Ameriks <agris@pd.lv>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Translated-Using: django-rosetta 0.7.11\n"
 
 #: config/urls.py:57
@@ -30,19 +32,22 @@ msgstr ""
 #: config/urls.py:59
 #, python-brace-format
 msgid ""
-"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-"
+"f]{12})/$"
 msgstr ""
 
 #: config/urls.py:60
 #, python-brace-format
 msgid ""
-"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pay/$"
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-"
+"f]{12})/pay/$"
 msgstr ""
 
 #: config/urls.py:61
 #, python-brace-format
 msgid ""
-"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-"
+"f]{12})/ok/$"
 msgstr ""
 
 #: config/urls.py:65
@@ -56,25 +61,29 @@ msgstr ""
 #: config/urls.py:67
 #, python-brace-format
 msgid ""
-"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$"
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]"
+"{4}-[0-9a-f]{12})/$"
 msgstr ""
 
 #: config/urls.py:68
 #, python-brace-format
 msgid ""
-"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/add/$"
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]"
+"{4}-[0-9a-f]{12})/add/$"
 msgstr ""
 
 #: config/urls.py:69
 #, python-brace-format
 msgid ""
-"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]"
+"{4}-[0-9a-f]{12})/ok/$"
 msgstr ""
 
 #: config/urls.py:70
 #, python-brace-format
 msgid ""
-"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/edit/$"
+"^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]"
+"{4}-[0-9a-f]{12})/edit/$"
 msgstr ""
 
 #: config/urls.py:73
@@ -151,6 +160,8 @@ msgstr ""
 #: velo/templates/registration/form/participant_inline_form.html:53
 #: velo/templates/results/team.html:113 velo/templates/team/applied.html:99
 #: velo/templates/team/form/member_inline_form.html:39
+#: velo/templates/team/team_apply.html:47
+#: velo/templates/team/team_apply_list.html:37
 msgid "First Name"
 msgstr ""
 
@@ -168,6 +179,8 @@ msgstr ""
 #: velo/templates/registration/form/participant_inline_form.html:69
 #: velo/templates/results/team.html:114 velo/templates/team/applied.html:100
 #: velo/templates/team/form/member_inline_form.html:55
+#: velo/templates/team/team_apply.html:48
+#: velo/templates/team/team_apply_list.html:38
 msgid "Last Name"
 msgstr ""
 
@@ -333,8 +346,10 @@ msgstr ""
 
 #: velo/core/models.py:153 velo/registration/models.py:302
 #: velo/team/models.py:32
-#: velo/templates/registration/company_application_add.html:37
-#: velo/templates/registration/company_application_detail.html:36
+#: velo/templates/registration/company_application_add.html:61
+#: velo/templates/registration/company_application_add.html:148
+#: velo/templates/registration/company_application_create.html:87
+#: velo/templates/registration/company_application_detail.html:54
 #: velo/templates/team/team_form.html:106
 msgid "Description"
 msgstr ""
@@ -424,8 +439,9 @@ msgstr ""
 #: velo/gallery/forms.py:204 velo/gallery/forms.py:285
 #: velo/registration/competition_classes/base.py:172
 #: velo/registration/models.py:33 velo/team/tables.py:39
-#: velo/templates/registration/company_application_add.html:31
-#: velo/templates/registration/company_application_detail.html:30
+#: velo/templates/registration/company_application_add.html:38
+#: velo/templates/registration/company_application_add.html:142
+#: velo/templates/registration/company_application_detail.html:36
 #: velo/templates/team/member_detail.html:73
 msgid "Competition"
 msgstr ""
@@ -531,16 +547,17 @@ msgstr ""
 #: velo/manager/forms.py:450 velo/registration/forms.py:86
 #: velo/templates/core/user_registration.html:131
 #: velo/templates/registration/application_update.html:100
-#: velo/templates/team/team_form.html:206
+#: velo/templates/registration/company_application_add.html:89
+#: velo/templates/registration/company_application_create.html:126
+#: velo/templates/team/team_form.html:212
 msgid "Save"
 msgstr ""
 
 #: velo/manager/forms.py:774 velo/manager/forms.py:779
 #: velo/manager/forms.py:781 velo/registration/forms.py:226
 #: velo/registration/forms.py:231 velo/registration/forms.py:233
-#: velo/registration/forms.py:409 velo/registration/forms.py:414
-#: velo/registration/forms.py:416 velo/velo/mixins/forms.py:72
-#: velo/velo/mixins/forms.py:77 velo/velo/mixins/forms.py:79
+#: velo/velo/mixins/forms.py:72 velo/velo/mixins/forms.py:77
+#: velo/velo/mixins/forms.py:79
 msgid "Invalid Social Security Number."
 msgstr ""
 
@@ -579,7 +596,7 @@ msgid "ID"
 msgstr ""
 
 #: velo/manager/tables/tables.py:248
-#: velo/templates/registration/company_application_detail.html:106
+#: velo/templates/registration/company_application_detail.html:242
 msgid "Distance"
 msgstr ""
 
@@ -623,34 +640,40 @@ msgid "There are no records."
 msgstr ""
 
 #: velo/manager/templates2/manager/team_apply_list.html:17
-#: velo/registration/tables.py:32 velo/results/tables.py:53
+#: velo/registration/tables.py:33 velo/results/tables.py:53
 #: velo/results/tables.py:81 velo/results/tables.py:113
 #: velo/results/tables.py:145 velo/results/tables.py:167
 #: velo/results/tables.py:210 velo/results/tables.py:277
 #: velo/results/tables.py:386 velo/templates/results/team.html:115
-#: velo/templates/team/applied.html:101
+#: velo/templates/team/applied.html:101 velo/templates/team/team_apply.html:49
+#: velo/templates/team/team_apply_list.html:39
 msgid "Year"
 msgstr ""
 
 #: velo/manager/templates2/manager/team_apply_list.html:18
+#: velo/templates/team/team_apply.html:50
+#: velo/templates/team/team_apply_list.html:40
 msgid "Type"
 msgstr ""
 
 #: velo/manager/templates2/manager/team_apply_list.html:19
-#: velo/results/models.py:195
+#: velo/results/models.py:195 velo/templates/team/team_apply_list.html:41
 msgid "Status"
 msgstr ""
 
 #: velo/manager/templates2/manager/team_apply_list.html:43
+#: velo/templates/team/team_apply_list.html:85
 msgid "Update Registration"
 msgstr ""
 
 #: velo/manager/templates2/manager/team_apply_list.html:46
+#: velo/templates/team/team_apply_list.html:95
 msgid "Team not applied for this competition"
 msgstr ""
 
 #: velo/manager/templates2/manager/team_apply_list.html:47
-#: velo/templates/account/login.html:77
+#: velo/templates/account/login.html:77 velo/templates/team/team_apply.html:74
+#: velo/templates/team/team_apply_list.html:105
 msgid "Register"
 msgstr ""
 
@@ -674,20 +697,8 @@ msgstr ""
 msgid "Invoice successfully created and sent to %(email)s"
 msgstr ""
 
-#: velo/payment/forms.py:177
+#: velo/payment/forms.py:177 velo/payment/forms.py:340
 msgid "Payment method"
-msgstr ""
-
-#: velo/payment/forms.py:268
-msgid "Payment Type"
-msgstr ""
-
-#: velo/payment/forms.py:342
-msgid "Final Price"
-msgstr ""
-
-#: velo/payment/forms.py:348
-msgid "Invoice Fields"
 msgstr ""
 
 #: velo/payment/models.py:103
@@ -745,15 +756,15 @@ msgstr ""
 #: velo/payment/utils.py:125
 #, python-format
 msgid ""
-"<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-margin"
-"--10'>Entry fee - <span>%(entry_fee)s€</span></div>"
+"<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-"
+"margin--10'>Entry fee - <span>%(entry_fee)s€</span></div>"
 msgstr ""
 
 #: velo/payment/utils.py:127
 #, python-format
 msgid ""
-"<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-margin"
-"--10'>Insurance fee - <span>%(insurance_fee)s€</span></div>"
+"<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-"
+"margin--10'>Insurance fee - <span>%(insurance_fee)s€</span></div>"
 msgstr ""
 
 #: velo/payment/utils.py:128
@@ -786,8 +797,8 @@ msgstr ""
 
 #: velo/payment/views.py:36
 msgid ""
-"<div class='fs14 fw700 c-white uppercase text-align--right'>Please enter all"
-" details</div>"
+"<div class='fs14 fw700 c-white uppercase text-align--right'>Please enter all "
+"details</div>"
 msgstr ""
 
 #: velo/payment/views.py:85
@@ -916,7 +927,7 @@ msgstr ""
 msgid "SSN is required."
 msgstr ""
 
-#: velo/registration/forms.py:240 velo/registration/forms.py:425
+#: velo/registration/forms.py:240 velo/registration/forms.py:418
 msgid "This distance not available for this participant."
 msgstr ""
 
@@ -928,12 +939,8 @@ msgstr ""
 msgid "Select Distance"
 msgstr ""
 
-#: velo/registration/forms.py:296
+#: velo/registration/forms.py:299
 msgid "Select Gender"
-msgstr ""
-
-#: velo/registration/forms.py:420
-msgid "Birthday is required."
 msgstr ""
 
 #: velo/registration/models.py:28
@@ -1002,14 +1009,14 @@ msgstr ""
 msgid "Female"
 msgstr ""
 
-#: velo/registration/models.py:102 velo/registration/tables.py:33
+#: velo/registration/models.py:102 velo/registration/tables.py:34
 #: velo/results/tables.py:55 velo/results/tables.py:84
 #: velo/results/tables.py:116 velo/results/tables.py:147
 #: velo/results/tables.py:169 velo/results/tables.py:213
 #: velo/results/tables.py:279 velo/results/tables.py:388
 #: velo/templates/registration/application_pay.html:39
-#: velo/templates/registration/company_application_detail.html:64
-#: velo/templates/registration/company_application_detail.html:134
+#: velo/templates/registration/company_application_detail.html:108
+#: velo/templates/registration/company_application_detail.html:288
 msgid "Team"
 msgstr ""
 
@@ -1030,10 +1037,15 @@ msgstr ""
 msgid "Gender"
 msgstr ""
 
+#: velo/registration/models.py:119 velo/registration/models.py:320
+msgid "Result will be sent to this phone number"
+msgstr ""
+
 #: velo/registration/models.py:120 velo/registration/models.py:321
 #: velo/team/models.py:38 velo/templates/core/user_registration.html:25
-#: velo/templates/registration/company_application_add.html:35
-#: velo/templates/registration/company_application_detail.html:34
+#: velo/templates/registration/company_application_add.html:46
+#: velo/templates/registration/company_application_add.html:146
+#: velo/templates/registration/company_application_detail.html:44
 #: velo/templates/registration/form/participant_inline_form.html:128
 msgid "Email"
 msgstr ""
@@ -1087,35 +1099,35 @@ msgstr ""
 msgid "YYYY-MM-DD"
 msgstr ""
 
-#: velo/registration/tables.py:25
+#: velo/registration/tables.py:26
 msgid "You haven't created any application."
 msgstr ""
 
-#: velo/registration/tables.py:52 velo/registration/tables.py:108
+#: velo/registration/tables.py:53 velo/registration/tables.py:117
 msgid "There are no participants"
 msgstr ""
 
-#: velo/registration/tables.py:59 velo/registration/tables.py:87
-#: velo/results/tables.py:58 velo/results/tables.py:83
-#: velo/results/tables.py:115
+#: velo/registration/tables.py:60 velo/registration/tables.py:69
+#: velo/registration/tables.py:97 velo/results/tables.py:58
+#: velo/results/tables.py:83 velo/results/tables.py:115
 msgid "Number"
 msgstr ""
 
-#: velo/registration/tables.py:68 velo/templates/results/team.html:103
+#: velo/registration/tables.py:78 velo/templates/results/team.html:103
 #: velo/templates/results/team.html:116
 #: velo/templates/team/member_detail.html:74
 msgid "Points"
 msgstr ""
 
-#: velo/registration/tables.py:77
+#: velo/registration/tables.py:87
 msgid "Passage"
 msgstr ""
 
-#: velo/registration/tables.py:86
+#: velo/registration/tables.py:96
 msgid "Last Year's Place"
 msgstr ""
 
-#: velo/registration/tables.py:125
+#: velo/registration/tables.py:134
 msgid "You haven't created any company application."
 msgstr ""
 
@@ -1124,65 +1136,65 @@ msgstr ""
 msgid "VELO.LV application #%i"
 msgstr ""
 
-#: velo/registration/views.py:139 velo/registration/views.py:144
+#: velo/registration/views.py:140 velo/registration/views.py:145
 msgid "Select at least one participant."
 msgstr ""
 
-#: velo/registration/views.py:152
+#: velo/registration/views.py:153
 msgid "Competition selected for payment is not available."
 msgstr ""
 
-#: velo/registration/views.py:183
+#: velo/registration/views.py:190
 msgid "Select team"
 msgstr ""
 
-#: velo/registration/views.py:194
+#: velo/registration/views.py:201
 msgid "Add team title."
 msgstr ""
 
-#: velo/registration/views.py:199
+#: velo/registration/views.py:206
 #, python-format
 msgid "Team with title %s already exists. Pick different title."
 msgstr ""
 
-#: velo/registration/views.py:207
+#: velo/registration/views.py:214
 msgid "Select participants in selected competition distance."
 msgstr ""
 
-#: velo/registration/views.py:213
+#: velo/registration/views.py:220
 #, python-format
 msgid ""
 "Maximum team member count in this competition is %(count)s. Please select "
 "less participants to add to team."
 msgstr ""
 
-#: velo/registration/views.py:228
+#: velo/registration/views.py:235
 msgid ""
-"All selected participants are already participants in teams. One participant"
-" can be in only one team."
+"All selected participants are already participants in teams. One participant "
+"can be in only one team."
 msgstr ""
 
-#: velo/registration/views.py:239
+#: velo/registration/views.py:246
 #, python-format
 msgid ""
 "Member %(first_name)s %(last_name)s is already registered in other team."
 msgstr ""
 
-#: velo/registration/views.py:376
+#: velo/registration/views.py:382
 msgid "Saved"
 msgstr ""
 
-#: velo/registration/views.py:385
+#: velo/registration/views.py:391
 msgid "Competition is in past. Cannot change application."
 msgstr ""
 
-#: velo/registration/views.py:396
+#: velo/registration/views.py:402
 msgid ""
 "Currently logged in user doesn't have access to this application. Please, "
 "login with user that you used to create application."
 msgstr ""
 
-#: velo/registration/views.py:565
+#: velo/registration/views.py:571
 msgid "Competition already passed. Cannot register to historic competitions."
 msgstr ""
 
@@ -1212,8 +1224,10 @@ msgid "Points Total"
 msgstr ""
 
 #: velo/results/tables.py:27
-#: velo/templates/registration/company_application_add.html:33
-#: velo/templates/registration/company_application_detail.html:32
+#: velo/templates/registration/company_application_add.html:42
+#: velo/templates/registration/company_application_add.html:144
+#: velo/templates/registration/company_application_create.html:41
+#: velo/templates/registration/company_application_detail.html:40
 #: velo/templates/registration/form/participant_inline_form.html:161
 #: velo/templates/team/team_form.html:53
 msgid "Team Name"
@@ -1340,7 +1354,8 @@ msgid "Team with such title already exist."
 msgstr ""
 
 #: velo/team/models.py:29
-#: velo/templates/registration/company_application_detail.html:119
+#: velo/templates/registration/company_application_detail.html:256
+#: velo/templates/team/team_pay.html:27
 msgid "Title"
 msgstr ""
 
@@ -1372,10 +1387,12 @@ msgstr ""
 #: velo/templates/registration/form/participant_inline_form.html:9
 #: velo/templates/team/applied.html:115
 #: velo/templates/team/form/member_inline_form.html:9
+#: velo/templates/team/team_apply.html:63
 msgid "Participant"
 msgstr ""
 
 #: velo/team/models.py:107 velo/templates/team/applied.html:117
+#: velo/templates/team/team_apply.html:65
 msgid "Reserve"
 msgstr ""
 
@@ -1401,17 +1418,17 @@ msgstr ""
 msgid "You haven't created any official team."
 msgstr ""
 
-#: velo/team/views.py:396
+#: velo/team/views.py:411
 #, python-format
 msgid "Too many team members marked as participants. MAX-%i"
 msgstr ""
 
-#: velo/team/views.py:398
+#: velo/team/views.py:413
 #, python-format
 msgid "Too many team members marked as reserve. MAX-%i"
 msgstr ""
 
-#: velo/team/views.py:418
+#: velo/team/views.py:433
 msgid "Successfuly saved."
 msgstr ""
 
@@ -1512,15 +1529,15 @@ msgstr ""
 #: velo/templates/account/email_confirm.html:42
 #, python-format
 msgid ""
-"This e-mail confirmation link expired or is invalid. Please <a "
-"href=\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+"This e-mail confirmation link expired or is invalid. Please <a href="
+"\"%(email_url)s\">issue a new e-mail confirmation request</a>."
 msgstr ""
 
 #: velo/templates/account/email_confirmed.html:14
 #, python-format
 msgid ""
-"You have confirmed that <a href=\"mailto:%(email)s\">%(email)s</a> is an "
-"e-mail address for user %(user_display)s."
+"You have confirmed that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-"
+"mail address for user %(user_display)s."
 msgstr ""
 
 #: velo/templates/account/login.html:8 velo/templates/account/login.html:16
@@ -1575,8 +1592,8 @@ msgstr ""
 
 #: velo/templates/account/password_reset.html:15
 msgid ""
-"Forgotten your password? Enter your e-mail address below, and we'll send you"
-" an e-mail allowing you to reset it."
+"Forgotten your password? Enter your e-mail address below, and we'll send you "
+"an e-mail allowing you to reset it."
 msgstr ""
 
 #: velo/templates/account/password_reset.html:47
@@ -1601,8 +1618,8 @@ msgstr ""
 #, python-format
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
-"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password "
-"reset</a>."
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
 msgstr ""
 
 #: velo/templates/account/password_reset_from_key.html:84
@@ -1699,8 +1716,8 @@ msgstr ""
 #: velo/templates/account/verified_email_required.html:20
 #, python-format
 msgid ""
-"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your "
-"e-mail address</a>."
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
+"mail address</a>."
 msgstr ""
 
 #: velo/templates/base.html:96
@@ -1722,8 +1739,7 @@ msgid "My Teams"
 msgstr ""
 
 #: velo/templates/base.html:123
-#: velo/templates/registration/company_application_detail.html:16
-#: velo/templates/registration/company_application_my.html:15
+#: velo/templates/registration/company_application_my.html:20
 msgid "My Company Applications"
 msgstr ""
 
@@ -1784,9 +1800,12 @@ msgstr ""
 
 #: velo/templates/core/user_registration.html:9
 #: velo/templates/registration/application_my.html:9
+#: velo/templates/registration/company_application_add.html:11
 #: velo/templates/registration/company_application_create.html:9
-#: velo/templates/registration/company_application_detail.html:12
+#: velo/templates/registration/company_application_detail.html:10
 #: velo/templates/registration/company_application_my.html:9
+#: velo/templates/team/team_apply.html:18
+#: velo/templates/team/team_apply_list.html:9
 #: velo/templates/team/team_form.html:9
 #: velo/templates/team/team_list_my.html:9
 msgid "My Profile"
@@ -1841,6 +1860,7 @@ msgid "Apply for competition"
 msgstr ""
 
 #: velo/templates/registration/application_ok.html:27
+#: velo/templates/registration/company_application_added.html:20
 msgid "Registration successful"
 msgstr ""
 
@@ -1877,16 +1897,19 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"                                                                %(counter)s participant\n"
+"                                                                %(counter)s "
+"participant\n"
 "                                                            "
 msgid_plural ""
 "\n"
-"                                                                %(counter)s participants\n"
+"                                                                %(counter)s "
+"participants\n"
 "                                                            "
 msgstr[0] ""
 msgstr[1] ""
 
 #: velo/templates/registration/application_pay.html:75
+#: velo/templates/team/team_pay.html:28 velo/templates/team/team_pay.html:49
 msgid "Total"
 msgstr ""
 
@@ -1900,10 +1923,13 @@ msgstr ""
 
 #: velo/templates/registration/application_pay.html:155
 #: velo/templates/registration/table/my_application_action.html:7
+#: velo/templates/team/team_apply_list.html:89
+#: velo/templates/team/team_pay.html:68
 msgid "Pay"
 msgstr ""
 
 #: velo/templates/registration/application_update.html:38
+#: velo/templates/registration/company_application_create.html:70
 #: velo/templates/team/team_detail.html:109
 #: velo/templates/team/team_form.html:67
 msgid "E-mail"
@@ -1918,67 +1944,93 @@ msgid "To this email address confirmation email will be sent."
 msgstr ""
 
 #: velo/templates/registration/application_update.html:102
-#: velo/templates/registration/company_application_add.html:67
+#: velo/templates/registration/company_application_add.html:182
 msgid "Save & Pay"
 msgstr ""
 
-#: velo/templates/registration/company_application_add.html:14
+#: velo/templates/registration/company_application_add.html:26
+#: velo/templates/registration/company_application_add.html:126
 msgid "Add Company Team Member"
 msgstr ""
 
-#: velo/templates/registration/company_application_add.html:39
-#: velo/templates/registration/company_application_detail.html:38
+#: velo/templates/registration/company_application_add.html:51
+#: velo/templates/registration/company_application_add.html:150
+#: velo/templates/registration/company_application_detail.html:49
 msgid "Public URL"
 msgstr ""
 
-#: velo/templates/registration/company_application_create.html:13
+#: velo/templates/registration/company_application_added.html:27
+msgid "Great! You have successfuly added participants to company application."
+msgstr ""
+
+#: velo/templates/registration/company_application_added.html:28
+msgid "What's next?"
+msgstr ""
+
+#: velo/templates/registration/company_application_added.html:28
+msgid ""
+"Company's responsible person (the one who created company application) now "
+"see new participants and she must take action so that you appear in start "
+"list. Until he/she takes action, you haven't really applied to competition."
+msgstr ""
+
+#: velo/templates/registration/company_application_create.html:19
 msgid "Create Company Application"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:26
+#: velo/templates/registration/company_application_create.html:116
+#: velo/templates/team/team_form.html:197
+msgid "Pay for"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:20
+msgid "Company Application"
+msgstr ""
+
+#: velo/templates/registration/company_application_detail.html:25
 msgid "Edit"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:43
+#: velo/templates/registration/company_application_detail.html:63
 msgid "Company riders"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:56
+#: velo/templates/registration/company_application_detail.html:82
 msgid "Add participant"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:67
+#: velo/templates/registration/company_application_detail.html:124
 #: velo/templates/team/team_list_my.html:14
 msgid "New Team"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:69
-#: velo/templates/registration/company_application_detail.html:131
+#: velo/templates/registration/company_application_detail.html:139
+#: velo/templates/registration/company_application_detail.html:281
 msgid "Add to existing team"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:77
-#: velo/templates/registration/company_application_detail.html:81
+#: velo/templates/registration/company_application_detail.html:169
+#: velo/templates/registration/company_application_detail.html:186
 msgid "Pay for selected"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:103
+#: velo/templates/registration/company_application_detail.html:235
 msgid "Create new team"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:125
+#: velo/templates/registration/company_application_detail.html:267
 msgid "Create team"
 msgstr ""
 
-#: velo/templates/registration/company_application_detail.html:146
+#: velo/templates/registration/company_application_detail.html:303
 msgid "Add to Team"
 msgstr ""
 
-#: velo/templates/registration/company_application_my.html:17
+#: velo/templates/registration/company_application_my.html:24
 msgid "Create New"
 msgstr ""
 
-#: velo/templates/registration/company_application_my.html:25
+#: velo/templates/registration/company_application_my.html:37
 msgid ""
 "Corporate application is intended for larger companies or groups which "
 "require entering data of many participants."
@@ -1986,17 +2038,17 @@ msgstr ""
 "Заявка предприятия предусмотрена для крупных предприятий или групп, которым "
 "необходимо вводить данные многих участников."
 
-#: velo/templates/registration/company_application_my.html:26
+#: velo/templates/registration/company_application_my.html:38
 msgid ""
 "When you create a corporate application, you will get a public web address "
 "to share with employees. Thus your employees will be able to add their "
 "personal data themselves."
 msgstr ""
-"Создав заявку предприятия, Вы получите публично доступный адрес в интернете,"
-" который можно будет отправлять работникам, где они сами смогут добавлять "
+"Создав заявку предприятия, Вы получите публично доступный адрес в интернете, "
+"который можно будет отправлять работникам, где они сами смогут добавлять "
 "информацию о себе."
 
-#: velo/templates/registration/company_application_my.html:27
+#: velo/templates/registration/company_application_my.html:39
 msgid ""
 "Afterwards you can register participants and pay the participation fee for "
 "selected participants."
@@ -2116,6 +2168,14 @@ msgstr ""
 msgid "All Team"
 msgstr ""
 
+#: velo/templates/team/team_apply.html:22
+msgid "apply to"
+msgstr ""
+
+#: velo/templates/team/team_apply_list.html:97
+msgid "Registration have finished."
+msgstr ""
+
 #: velo/templates/team/team_detail.html:108
 msgid "Manager"
 msgstr ""
@@ -2144,8 +2204,8 @@ msgstr ""
 msgid "Upload Shirt Photo"
 msgstr ""
 
-#: velo/templates/team/team_form.html:197
-msgid "Pay for"
+#: velo/templates/team/team_pay.html:14
+msgid "Pay for Team Profile"
 msgstr ""
 
 #: velo/velo/mixins/models.py:10

@@ -116,7 +116,7 @@ class Participant(TimestampMixin, models.Model):
 
     ssn = models.CharField(_('Social Security Number'), max_length=12, blank=True)
 
-    phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True, help_text="Uz šo telefona numuru tiks sūtīts rezultāts")
+    phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True, help_text=_("Result will be sent to this phone number"))
     email = models.EmailField(_('Email'), blank=True)
 
     send_email = models.BooleanField(_('Send Email'), default=True)
@@ -317,7 +317,7 @@ class CompanyParticipant(TimestampMixin, models.Model):
     birthday = models.DateField(_('Birthday'), blank=True, null=True)
     gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True)
     ssn = models.CharField(_('Social Security Number'), max_length=12, blank=True)
-    phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True, help_text="Uz šo telefona numuru tiks sūtīts rezultāts")
+    phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True, help_text=_("Result will be sent to this phone number"))
     email = models.EmailField(_('Email'), blank=True)
     country = CountryField(_('Country'), blank=True, null=True)
     bike_brand2 = models.CharField(_('Bike Brand'), max_length=20, blank=True)
