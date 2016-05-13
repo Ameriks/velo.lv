@@ -287,7 +287,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.fields['team_name'].widget.attrs.update({'class': 'team-typeahead'})
         self.fields['team_name'].initial = competition.params_dict.get('default_team', "")
-        self.fields['team_name'].help_text = competition.params_dict.get('default_team_help', "")
+        self.fields['team_name'].help_text = competition.params_dict.get('default_team_help_%s' % get_language(), competition.params_dict.get('default_team_help', ""))
 
         for field_name in ['distance', 'first_name', 'last_name', 'gender', 'country', 'birthday']:
             self.fields[field_name].required = True
