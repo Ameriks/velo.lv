@@ -1,9 +1,26 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Page Not found{% endblock %}
+{% block title %}{% trans "Page Not found" %}{% endblock %}
 
 {% block content %}
-<h1>Page Not found</h1>
+    <div class="w100">
+        <div class="inner">
+            <div class="w100 no-border--480 bottom-padding--80">
+                <div class="inner no-padding--480">
+                    <div class="row">
+                        <div class="col-xl-5 col-l-24"></div>
+                        <div class="col-xl-14 col-l-24">
+                            <div class="w100 bottom-margin--50"></div>
+                            <h1>404 {% trans "Page Not found" %}</h1>
+                            <div class="w100 bottom-margin--20"></div>
+                            <p>{% trans "This is not the page you were looking for." %}</p>
+                        </div>
+                        <div class="col-xl-5 col-l-24"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p>This is not the page you were looking for.</p>
-{% endblock content %}
+{% endblock %}

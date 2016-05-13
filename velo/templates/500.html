@@ -1,11 +1,29 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Server Error{% endblock %}
+{% block title %}{% trans "Server Error" %}{% endblock %}
 
 {% block content %}
-<h1>Ooops!!! 500</h1>
+    <div class="w100">
+        <div class="inner">
+            <div class="w100 no-border--480 bottom-padding--80">
+                <div class="inner no-padding--480">
+                    <div class="row">
+                        <div class="col-xl-5 col-l-24"></div>
+                        <div class="col-xl-14 col-l-24">
+                            <div class="w100 bottom-margin--50"></div>
+                            <h1>Ooops!!! 500</h1>
+                            <div class="w100 bottom-margin--20"></div>
+                            <h2>{% trans "Looks like something went wrong!" %}</h2>
+                            <div class="w100 bottom-margin--20"></div>
+                            <p>{% blocktrans %}We track these errors automatically, but if the problem persists feel free to contact us.
+                                In the meantime, try refreshing.{% endblocktrans %}</p>
+                        </div>
+                        <div class="col-xl-5 col-l-24"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h3>Looks like something went wrong!</h3>
-
-<p>We track these errors automatically, but if the problem persists feel free to contact us. In the meantime, try refreshing.</p>
-{% endblock content %}
+{% endblock %}
