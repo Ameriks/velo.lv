@@ -282,6 +282,9 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
                                                               distances]
 
+        if len(distances) == 1:
+            self.fields['distance'].initial = distances[0].id
+
         if get_language() == 'lv':
             self.fields['country'].initial = 'LV'
 
