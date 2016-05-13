@@ -32,13 +32,12 @@
         {% thumbnail supporter.logo.image 420x215 as logo %}
 
         {# todo: Add support for <a> in CSS #}
-        {#                            {% if supporter.supporter.url %}<a target="_blank" href="{{ supporter.supporter.url }}">{% endif %}#}
-        <figure class="sponsors__image img-wrapper {% if supporter.support_level < 90 %}sponsors__image--small{% endif %} img-wrapper">
+                                    <a class="sponsors__image  " target="_blank" href="{% if supporter.supporter.url %}{{ supporter.supporter.url }}{% else %}#{% endif %}">
+        <figure class="img-wrapper {% if supporter.support_level < 90 %}sponsors__image--small{% endif %}">
             <img data-load-on="768" onload="imgLoaded(this)" src="
                     {% if supporter.logo.svg_logo %}{{ supporter.logo.svg_logo.url }}{% else %}{{ logo.url }}{% endif %}"
                  alt="{{ supporter.supporter }}">
-        </figure>
-        {#                            {% if supporter.supporter.url %}</a>{% endif %}#}
+        </figure></a>
 
     {% endfor %}
     </div>
