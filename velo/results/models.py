@@ -154,7 +154,6 @@ class DistanceAdmin(models.Model):
     distance = models.ForeignKey('core.Distance')
     zero = models.TimeField(default=datetime.time(00, 00), help_text='HH:MM:SS')
     distance_actual = models.IntegerField(blank=True, null=True)
-    gpx = models.FileField(upload_to=_get_gpx_upload_path, blank=True, null=True)
 
     def __str__(self):
         return '%s - %s' % (self.competition.get_full_name, self.distance)

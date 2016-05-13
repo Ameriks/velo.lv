@@ -10,7 +10,6 @@ from velo.registration.views import ParticipantList, TeamJsonList, ParticipantSe
     DataForExternalAll, BikeBrandJsonList
 from velo.results.views import ResultList, SebStandingResultList, SebTeamResultList, SebTeamResultStandingList, \
     TeamResultsByTeamName, ResultDiplomaPDF, TeamResultsByTeamNameBetweenDistances
-from velo.supporter.views import CompetitionSupporters, CompetitionIframeSupporters
 from velo.team.views import TeamAppliedView, TeamListView, TeamView, TeamMemberProfileView
 
 urlpatterns = [
@@ -21,16 +20,9 @@ urlpatterns = [
                        url(_(r'^(?P<pk>\d+)/maps/$'), MapView.as_view(), name='maps'),
                        url(_(r'^maps/gpx/(?P<pk2>\d+)/$'), MapGPXDownloadView.as_view(), name='map_gpx'),
 
-                       url(_(r'^(?P<pk>\d+)/supporters/$'), CompetitionSupporters.as_view(), name='supporters'),
-
                        url(_(r'^(?P<pk>\d+)/team/$'), TeamListView.as_view(), name='team'),
                        url(_(r'^(?P<pk>\d+)/team/(?P<pk2>\d+)/$'), TeamView.as_view(), name='team'),
                        url(_(r'^(?P<pk>\d+)/team/(?P<pk2>\d+)/(?P<pk3>\d+)/$'), TeamMemberProfileView.as_view(), name='team_member'),
-
-                       url(_(r'^(?P<pk>\d+)/supporters/iframe/$'), CompetitionIframeSupporters.as_view(),
-                           name='supporters_embeded'),
-                       url(_(r'^(?P<pk>\d+)/supporters/iframe/(?P<level>\d+)/$'), CompetitionIframeSupporters.as_view(),
-                           name='supporters_embeded'),
 
                        url(_(r'^(?P<pk>\d+)/standings/$'), SebStandingResultList.as_view(), name='standings_list'),
                        url(_(r'^(?P<pk>\d+)/standings/teams/$'), SebTeamResultStandingList.as_view(),

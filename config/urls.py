@@ -20,7 +20,6 @@ from velo.registration.views import ApplicationUpdate, ApplicationCreate, Compan
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
     CompanyApplicationUpdate, ParticipantPDF
 from velo.results.views import ResultAllView
-from velo.supporter.views import AgencySupporters
 from velo.velo.views import CustomAutoResponseView, cached_javascript_catalog
 
 admin.autodiscover()
@@ -79,7 +78,6 @@ urlpatterns = i18n_patterns(
     url(_(r'^mk/'), include('velo.marketing.urls', namespace='marketing')),
     url(r'^manager/', include('velo.manager.urls', namespace='manager')),
     url(_(r'^competition/'), include('velo.velo.urls_competition', namespace='competition')),
-    url(_(r'^supporters/'), AgencySupporters.as_view(), name="agency_supporters"),
     url(_(r'^calendar/'), CalendarView.as_view(), name="calendar"),
     url(_(r'^account/'), include('velo.core.urls', namespace='account')),
     url(_(r'^account/'), include('allauth.urls')),
