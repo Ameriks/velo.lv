@@ -189,15 +189,21 @@
                             </div>
                             <div class="col-xl-24 border-top">
                                 <div class="row">
-                                    <div class="col-xl-15 col-m-14 col-s-24">
+                                    <div class="col-xl-9 col-m-10 col-s-24">
 
                                         {% if next_competition %}
-                                            <button type="submit" name="submit_pay" class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">
+                                            <button type="submit" name="submit_pay" value="1" class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">
                                                 <div class="btn__flex">
                                                     {% trans "Pay for" %} {{ next_competition }}
+                                                <svg class="left-margin--15 icon">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                                </svg>
                                                 </div>
                                             </button>
                                         {% endif %}
+
+                                    </div>
+                                    <div class="col-xl-6 col-m-5 col-s-24">
 
                                     </div>
                                     <div class="col-xl-9 col-m-10 col-s-24">

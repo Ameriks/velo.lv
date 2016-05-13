@@ -16,6 +16,7 @@ import datetime
 
 from velo.core.formsets import CustomBaseInlineFormSet
 from velo.core.models import Competition
+from velo.payment.utils import get_total
 from velo.registration.models import Participant, Application
 from velo.team.forms import MemberInlineForm, TeamForm
 from velo.team.models import Team, Member, MemberApplication
@@ -236,14 +237,20 @@ class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
                 next_competition = next_competition[0]
                 application = Application.objects.create(competition=next_competition, email=request.user.email)
                 for member in self.object.member_set.filter(status=Member.STATUS_ACTIVE):
+                    price = None
+                    total = get_total(next_competition, self.object.distance_id, member.birthday.year)
+                    if total:
+                        price = total.get('price_obj', None)
                     application.participant_set.create(first_name=member.first_name,
                                                        last_name=member.last_name,
                                                        country=member.country,
                                                        birthday=member.birthday,
                                                        ssn=member.ssn,
+                                                       gender=member.gender,
                                                        competition=next_competition,
                                                        distance=self.object.distance,
                                                        team_name=self.object.title,
+                                                       price=price
                                                        )
                 return HttpResponseRedirect(reverse('application', kwargs={'slug': application.code}))
 
@@ -295,11 +302,18 @@ class TeamApplyList(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMix
                 if not competition_id in member_ids:
                     member_ids.update({competition_id: []})
                 member_ids.get(competition_id).append(member_id)
-            key = member_ids.keys()[0]
+            key = list(member_ids.keys())[0]
+            competition = Competition.objects.get(id=key)
 
             application = Application.objects.create(competition_id=key, email=request.user.email)
             for member_id in member_ids.get(key):
                 member = self.object.member_set.get(id=member_id)
+
+                price = None
+                total = get_total(competition, self.object.distance_id, member.birthday.year)
+                if total:
+                    price = total.get('price_obj', None)
+
                 application.participant_set.create(first_name=member.first_name,
                                                    last_name=member.last_name,
                                                    country=member.country,
@@ -309,6 +323,7 @@ class TeamApplyList(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMix
                                                    competition_id=key,
                                                    distance=self.object.distance,
                                                    team_name=self.object.title,
+                                                   price=price,
                                                    )
 
             return HttpResponseRedirect(reverse('application', kwargs={'slug': application.code}))

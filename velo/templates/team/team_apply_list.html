@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load staticfiles django_tables2 i18n sitetree crispy_forms_tags form_helper %}
+
+{% block content %}
+    <div class="w100 flex">
+        <div class="inner flex">
+            <div class="w100 border-right border-left border-bottom flex direction--column">
+                <h1 class="heading w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
+                    <span class="w100">{% trans "My Profile" %}</span>
+                    <span class="w100 c-yellow">{{ user.email }}</span>
+                </h1>
+                <h2 class="heading heading--smaller w100 border-bottom fs21">
+                    <span>{{ object }}</span>
+                </h2>
+
+                <form method="post" action="" class="w100 bgc-dgray js-form">
+                    {% csrf_token %}
+                    <div class="w100">
+                        <div class="inner no-padding--560">
+                            <div class="row row--gutters-20">
+
+                                <div class="w100 bottom-margin--20"></div>
+
+                                {% for competition, members in competitions %}
+                                    <div class="col-xl-12 col-l-24 col-m-12 col-s-24 flex direction--column justify--start align-items--stretch">
+                                        <div class="card border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
+                                            <div class="flex--1">
+                                                <div class="card__info">
+                                                    <h2 class="card__heading">{{ competition.get_full_name }}</h2>
+                                                </div>
+                                            </div>
+                                            {% if members %}
+                                                <div>
+                                                    <table class="table-block">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>{% trans 'First Name' %}</th>
+                                                            <th>{% trans 'Last Name' %}</th>
+                                                            <th>{% trans 'Year' %}</th>
+                                                            <th>{% trans 'Type' %}</th>
+                                                            <th>{% trans 'Status' %}</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for member in members %}
+                                                            <tr>
+                                                                <td>{{ member.member.first_name }}</td>
+                                                                <td>{{ member.member.last_name }}</td>
+                                                                <td>{{ member.member.birthday.year }}</td>
+                                                                <td>{{ member.get_kind_display }}</td>
+                                                                <td class="text-align--right">
+                                                                    {% if member.participant %}
+                                                                        {% if member.participant.is_participating %}
+                                                                            OK
+                                                                        {% else %}
+                                                                            NOT OK
+                                                                        {% endif %}
+                                                                    {% else %}
+
+                                                                        <div class="checkbox checkbox--no-float">
+                                                                            <input class="checkbox__input" type="checkbox" name="pay_member" value="{{ competition.id }}__{{ member.member.id }}" id="selection-checkbox-{{ record.id }}">
+                                                                            <label for="selection-checkbox-{{ record.id }}" class="checkbox__label">
+                                                                                <div class="flex wrap--nowrap direction--row justify--start align-items--center">
+                                                                                    <svg class="checkbox__graphic checkbox__graphic--default icon">
+                                                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#checkbox--default"></use>
+                                                                                    </svg>
+                                                                                    <svg class="checkbox__graphic checkbox__graphic--checked icon">
+                                                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#checkbox--checked"></use>
+                                                                                    </svg>
+                                                                                </div>
+                                                                            </label>
+                                                                        </div>
+
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                {% if not competition.is_past_due %}
+                                                    <div class="w100">
+                                                        <div class="col-sm-3" style="float:left;"><a
+                                                                href="{% url 'account:team_apply_list' object.id competition.id %}"
+                                                                class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">{% trans 'Update Registration' %}</a>
+                                                        </div>
+                                                        <div class="col-sm-3" style="float:right;">
+                                                            <button type="submit"
+                                                                    class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">{% trans 'Pay' %}</button>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="editor-text inner">
+                                                    <p>{% trans 'Team not applied for this competition' %}</p>
+                                                    {% if competition.is_past_due %}
+                                                        <p>{% trans 'Registration have finished.' %}</p>
+                                                    {% endif %}
+
+                                                </div>
+                                                <div class="w100 bottom-margin--20"></div>
+                                                {% if not competition.is_past_due %}
+                                                    <div>
+                                                        <a href="{% url 'account:team_apply_list' object.id competition.id %}"
+                                                           class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100 c-white">{% trans 'Register' %}</a>
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
