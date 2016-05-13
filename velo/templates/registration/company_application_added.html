@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load staticfiles i18n sitetree crispy_forms_tags velomath %}
+
+{% block content %}
+
+    <div class="w100 flex">
+        <div class="inner flex">
+            <div class="w100 border-right border-left no-border--560">
+                <div class="inner no-padding--560">
+                    <div class="row">
+                        <div class="col-xl-2 col-s-24"></div>
+                        <div class="col-xl-20 col-s-24">
+
+                            <div class="w100 border-right border-left no-border--480 flex--1 flex direction--column justify--center align-items--center">
+                                <div class="inner no-padding--480">
+                                    <div class="row">
+                                        <div class="col-xl-7 col-l-6 col-m-4 col-s-24"></div>
+                                        <div class="col-xl-10 col-l-12 col-m-16 col-s-24">
+                                            <div class="w100 bottom-margin--50"></div>
+                                            <div class="fs30 fw700 uppercase w100 text-align--center bottom-margin--30">{% trans "Registration successful" %}</div>
+                                            <div class="fs70 c-yellow w100 text-align--center bottom-margin--15">
+                                                <svg class="icon">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                         xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#velo"></use>
+                                                </svg>
+                                            </div>
+                                            <div class="fs14 fw700 lh15 uppercase c-yellow w100 text-align--center bottom-margin--30">{% blocktrans %}Great! You have successfuly added participants to company application.{% endblocktrans %}</div>
+                                            <div class="fs14 fw700 lh15 uppercase c-white w100 text-align--center bottom-margin--20">{% trans "What's next?" %}<br />{% blocktrans %}Company's responsible person (the one who created company application) now see new participants and she must take action so that you appear in start list. Until he/she takes action, you haven't really applied to competition.{% endblocktrans %}</div>
+
+
+                                            <div class="w100 bottom-margin--20">
+                                                <div class="row row--gutters-50">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

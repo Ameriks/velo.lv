@@ -398,30 +398,20 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     def clean(self):
         cleaned_data = self.cleaned_data
 
-        ssn = cleaned_data.get('ssn', '')
-        country = cleaned_data.get('country')
-        birthday = cleaned_data.get('birthday', '')
-        distance = cleaned_data.get('distance', '')
-
-        if country == 'LV':
-            try:
-                if not ssn or not len(ssn) == 11:
-                    self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
-                checksum = 1
-                for i in range(10):
-                    checksum -= int(ssn[i]) * int("01060307091005080402"[i * 2:i * 2 + 2])
-                if not int(checksum - math.floor(checksum / 11) * 11) == int(ssn[10]):
-                    self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
-            except:
-                self._errors.update({'ssn': [_("Invalid Social Security Number."), ]})
-
-        else:
-            if not birthday:
-                self._errors.update({'birthday': [_("Birthday is required."), ]})
+        birthday = cleaned_data.get('birthday', None)
+        distance = cleaned_data.get('distance', None)
 
         if birthday and distance:
-            total = get_total(self.instance.application.competition, distance.id, birthday.year)
-            if not total:
+
+            competition = self.instance.application.competition
+            if competition.complex_payment_enddate:
+                competition = competition.get_children().filter(competition_date__gte=timezone.now())
+                if competition:
+                    competition = competition[0]
+
+            prices = competition.price_set.filter(till_year__gte=birthday.year,
+                                                  from_year__lte=birthday.year, distance=distance)
+            if not prices:
                 self._errors.update({'distance': [_("This distance not available for this participant."), ]})
 
         return cleaned_data
@@ -442,7 +432,7 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.fields['country'].required = True
         self.fields['gender'].required = True
-
+        self.fields['birthday'].required = True
         self.fields['distance'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True

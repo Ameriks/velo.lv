@@ -64,8 +64,11 @@
 
   $(function() {
     window.ENV.formsets = formset($('.django-inline-form'));
-    return $(".filter-form select").on("change", function(evt) {
+    $(".filter-form select").on("change", function(evt) {
       return $(this).parents("form").submit();
+    });
+    return $('th.selection input[type=checkbox]').on('change', function() {
+      return $('tr td:nth-child(1) input[type=checkbox]', $(this).parents('table')).prop("checked", $(this).prop("checked"));
     });
   });
 

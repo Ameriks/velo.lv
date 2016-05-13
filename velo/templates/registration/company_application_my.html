@@ -11,17 +11,29 @@
                 </h1>
             <div class="inner">
                 <div class="w100 bgc-dgray border-right border-left ">
-                    <h2 class="heading heading--smaller w100 border-bottom fs21">
-                        <span>{% trans "My Company Applications" %}</span>
-                        <a href="{% url 'companyapplication' %}" class="btn btn--50 btn--white-transparent"
-                           style="float:right;">{% trans 'Create New' %}</a>
-                    </h2>
+
+
+
+                <div class="row border-bottom">
+                                <div class="col-xl-18 col-m-16">
+                                    <p class="heading heading--smaller w100 fs21 flex wrap--nowrap direction--column justify--start align-items--center">
+                                        <span class="w100">{% trans "My Company Applications" %}</span>
+                                    </p>
+                                </div>
+                                <div class="col-xl-6 col-m-8 border-left">
+                                    <a href="{% url 'companyapplication' %}" class="btn btn--50 btn--white-transparent btn--no-borders">{% trans 'Create New' %}</a>
+                                </div>
+                            </div>
+
+
+
+
 
                     <div class="w100">
                         <div class="inner layouts-company-aplication-info-inner">
                             <div class="w100 bottom-margin--20"></div>
                             <div class="w100 editor-text bottom-margin--20">
-                            
+
                                 <p>{% blocktrans %}Corporate application is intended for larger companies or groups which require entering data of many participants.{% endblocktrans %}</p>
                                 <p>{% blocktrans %}When you create a corporate application, you will get a public web address to share with employees. Thus your employees will be able to add their personal data themselves.{% endblocktrans %}</p>
                                 <p>{% blocktrans %}Afterwards you can register participants and pay the participation fee for selected participants.{% endblocktrans %}</p>

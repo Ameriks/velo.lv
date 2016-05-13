@@ -2084,6 +2084,41 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         });
     }    
 })();
+(function(){
+    var scrollBanner = document.querySelector('.js-scroll-banner');
+    
+    if($(scrollBanner).length){
+        $('html').addClass('overflow--hidden');
+        
+        $(scrollBanner).on('mousewheel DOMMouseScroll', function(e){
+            if ($(this)[0].scrollHeight !== $(this).outerHeight()) {
+                var e0 = e.originalEvent,
+                    delta = e0.wheelDelta || -e0.detail;
+
+                this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+                e.preventDefault();
+            }
+        });
+
+        $(scrollBanner).on('scroll', function(e){
+            if (scrollBanner.offsetHeight + scrollBanner.scrollTop >= scrollBanner.scrollHeight) {
+                setTimeout(function(){
+                    $('html').removeClass('overflow--hidden');
+                    $(scrollBanner).off('mousewheel DOMMouseScroll');
+                    $(scrollBanner).remove();
+                }, 100);
+            }
+        });
+
+        $('.js-scroll-banner-scroll-end').on('click', function(e){
+            e.preventDefault();
+
+            $(scrollBanner).stop().animate({
+                scrollTop: scrollBanner.scrollHeight
+            }, 1600);
+        });
+    }
+})();
 (function () {
     var cursorXStartPosition;
     var cursorXCurrentPosition;
@@ -2127,7 +2162,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 svg4everybody();
 (function(){
     $('.video__iframe').unveil();
-    $('img').unveil();
+    $('img').unveil(200);
 })();
 /**
  * jQuery Formset 1.3-pre
@@ -2543,8 +2578,11 @@ svg4everybody();
 
   $(function() {
     window.ENV.formsets = formset($('.django-inline-form'));
-    return $(".filter-form select").on("change", function(evt) {
+    $(".filter-form select").on("change", function(evt) {
       return $(this).parents("form").submit();
+    });
+    return $('th.selection input[type=checkbox]').on('change', function() {
+      return $('tr td:nth-child(1) input[type=checkbox]', $(this).parents('table')).prop("checked", $(this).prop("checked"));
     });
   });
 

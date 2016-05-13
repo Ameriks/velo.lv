@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load staticfiles i18n sitetree crispy_forms_tags %}
+{% load staticfiles i18n sitetree django_tables2 form_helper %}
 
 {% block content %}
     <div class="w100 flex">
@@ -9,12 +9,134 @@
                     <span class="w100">{% trans "My Profile" %}</span>
                     <span class="w100 c-yellow">{{ user.email }}</span>
                 </h1>
-                <h2 class="heading heading--smaller w100 border-bottom fs21 flex wrap--nowrap direction--column justify--start align-items--center">
-                    <span class="w100">{% trans "Create Company Application" %}</span>
-                </h2>
+                <div class="inner">
+                    <div class="w100 bgc-dgray border-right border-left ">
 
 
-                {% crispy form %}
+                        <div class="row border-bottom">
+                            <div class="col-xl-18 col-m-16">
+                                <p class="heading heading--smaller w100 fs21 flex wrap--nowrap direction--column justify--start align-items--center">
+                                    <span class="w100">{% trans "Create Company Application" %}</span>
+                                </p>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+                <div class="inner">
+
+                    <form method="post" action="" class="w100 bgc-dgray js-form" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="w100">
+                            <div class="inner no-padding--560">
+                                <div class="row row--gutters-50">
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--15">
+                                            <label
+                                                    for="{{ form.team_name.auto_id }}"
+                                                    class="input-field-label  js-placeholder"
+                                            >{% trans "Team Name" %} *</label>
+                                            {{ form.team_name|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                                            {% if form.team_name.help_text or form.team_name.errors %}
+                                                <p id="{{ form.team_name.auto_id }}-error" class="error">
+                                                    {% for error in form.team_name.errors %}{{ error }}{% empty %}
+                                                        {{ form.team_name.help_text }}{% endfor %}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--20">
+                                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                                            {{ form.competition|add_extra_classes:"select" }}
+                                            {% if form.competition.help_text or form.competition.errors %}
+                                                <p id="{{ form.competition.auto_id }}-error" class="error">
+                                                    {% for error in form.competition.errors %}{{ error }}{% empty %}
+                                                        {{ form.competition.help_text }}{% endfor %}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--20">
+                                            <label
+                                                    for="{{ form.email.auto_id }}"
+                                                    class="input-field-label  js-placeholder"
+                                            >{% trans "E-mail" %}</label>
+                                            {{ form.email|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                                            {% if form.email.help_text or form.email.errors %}
+                                                <p id="{{ form.email.auto_id }}-error" class="error">
+                                                    {% for error in form.email.errors %}{{ error }}{% empty %}
+                                                        {{ form.email.help_text }}{% endfor %}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-s-24">
+                                    </div>
+
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--20">
+                                            <label
+                                                    for="{{ form.description.auto_id }}"
+                                                    class="input-field-label  js-placeholder"
+                                            >{% trans "Description" %}</label>
+                                            {{ form.description|add_extra_classes:"input-field if--50 if--dark input-field--textarea  js-placeholder-up" }}
+                                            {% if form.description.help_text or form.description.errors %}
+                                                <p id="{{ form.description.auto_id }}-error" class="error">
+                                                    {% for error in form.description.errors %}{{ error }}{% empty %}
+                                                        {{ form.description.help_text }}{% endfor %}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12 col-s-24">
+                                    </div>
+                                    {% if object.id %}
+                                    <div class="col-xl-12 col-m-24">
+                                        {% include "wd_forms/new/checkbox.html" with field=form.change_public_url %}
+                                    </div>
+                                {% endif %}
+
+
+                                </div>
+                            </div>
+                            <div class="col-xl-24 border-top">
+                                <div class="row">
+                                    <div class="col-xl-15 col-m-14 col-s-24">
+
+                                        {% if next_competition %}
+                                            <button type="submit" name="submit_pay"
+                                                    class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">
+                                                <div class="btn__flex">
+                                                    {% trans "Pay for" %} {{ next_competition }}
+                                                </div>
+                                            </button>
+                                        {% endif %}
+
+                                    </div>
+                                    <div class="col-xl-9 col-m-10 col-s-24">
+                                        <button type="submit"
+                                                class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">
+                                            <div class="btn__flex">
+                                                {% trans "Save" %}
+                                                <svg class="left-margin--15 icon">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                         xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
 
 
             </div>
@@ -23,3 +145,4 @@
 
 
 {% endblock %}
+

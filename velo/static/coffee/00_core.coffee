@@ -44,3 +44,6 @@ $ ->
 
   $(".filter-form select"). on "change", (evt) ->
     $(this).parents("form").submit()
+
+  $('th.selection input[type=checkbox]').on 'change', ->
+      $('tr td:nth-child(1) input[type=checkbox]', $(this).parents('table')).prop("checked", $(this).prop("checked"))

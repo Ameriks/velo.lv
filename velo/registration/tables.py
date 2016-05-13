@@ -9,6 +9,7 @@ import django_tables2 as tables
 import itertools
 
 from velo.registration.models import Participant, Application, CompanyParticipant
+from velo.velo.tables import CustomCheckBoxColumn, CustomSelectionCheckBoxColumn
 
 
 class ApplicationTable(tables.Table):
@@ -96,8 +97,7 @@ class ParticipantTableWithLastYearPlace(ParticipantTable):
 
 
 class CompanyParticipantTable(tables.Table):
-    selection = tables.CheckBoxColumn(accessor="pk", orderable=False)
-
+    selection = CustomSelectionCheckBoxColumn(orderable=False)
     class Meta:
         model = CompanyParticipant
         attrs = {"class": "table-block"}
