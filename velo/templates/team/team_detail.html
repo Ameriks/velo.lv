@@ -22,7 +22,7 @@
                                         <div class="w100">
                                             <figure class="brief__hero brief-hover-layer img-wrapper">
                                                 <img
-                                                    data-src="{% static "template/velo-2016/html/userfiles/1by1.jpg" %}"
+                                                    data-src="{% if member.image %}{{ member.image.thumb.url }}{% else %}{% static "template/velo-2016/html/img/placeholders/velo-placeholder--1x1.svg" %}{% endif %}"
                                                     onload="imgLoaded(this)"
                                                 >
                                                 <div class="brief-hover-top-layer brief-hover-top-layer--hero">

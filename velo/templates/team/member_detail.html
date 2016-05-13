@@ -43,7 +43,7 @@
         <div class="col-xl-10 col-s-24 border-right no-border--480">
             <figure class="w100 img-wrapper">
                 <img
-                    data-src="{% static "template/velo-2016/html/userfiles/1by1.jpgg" %}"
+                    data-src="{% if object.image %}{{ object.image.thumb.url }}{% else %}{% static "template/velo-2016/html/img/placeholders/velo-placeholder--1x1.svg" %}{% endif %}"
                     onload="imgLoaded(this)"
                     class="w100"
                 >
@@ -51,7 +51,7 @@
         </div>
         <div class="col-xl-14 col-s-24">
             <h2 class="heading heading--smaller heading--padding-20 w100 border-bottom fs21 flex wrap--nowrap direction--column justify--center align-items--start">
-                Andris Alps
+                {{ object.first_name }} {{ object.last_name }}
             </h2>
             <div class="w100 bottom-margin--20"></div>
             <div class="inner no-padding--480">

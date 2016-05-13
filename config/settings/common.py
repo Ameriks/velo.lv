@@ -374,6 +374,11 @@ THUMBNAIL_ALIASES = {
     },
     'news': {
 
+    },
+    'team.Member': {
+        'thumb': {
+            'size': (400, 400), 'crop': True
+        }
     }
 }
 
