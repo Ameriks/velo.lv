@@ -82,7 +82,8 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         if instance.payment_status < Application.PAY_STATUS.waiting:
             instance.payment_status = Application.PAY_STATUS.waiting
 
-        instance.params = self.cleaned_data
+        instance.params = dict(self.cleaned_data)
+        instance.params.pop("donation")
 
         if commit:
             instance.save()
