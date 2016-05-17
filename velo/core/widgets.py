@@ -91,7 +91,7 @@ class SplitDateWidget(Widget):
         select_html = s.render(self.month_field % name, month_val, local_attrs)
         output.append('<div class="col-xl-8">%s</div>' % select_html)
 
-        day_choices = [(0, 'DD'), ] + [(i, i) for i in range(1, 31)]
+        day_choices = [(0, 'DD'), ] + [(i, i) for i in range(1, 32)]
         local_attrs['id'] = self.day_field % id_
         s = Select(choices=day_choices)
         select_html = s.render(self.day_field % name, day_val, local_attrs)
