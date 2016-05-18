@@ -49,7 +49,7 @@ THIRD_PARTY_APPS = (
     'djcelery',
     'ckeditor',
     'impersonate',
-
+    'markdownx',
 
     'allauth',  # registration
     'allauth.account',  # registration
@@ -98,6 +98,17 @@ MIDDLEWARE_CLASSES = (
 MIGRATION_MODULES = {
     'sites': 'velo.contrib.sites.migrations'
 }
+
+
+
+MARKDOWNX_MARKDOWNIFY_FUNCTION = 'markdownx.utils.markdownify' # Default function that compiles markdown using defined extensions. Using custom function can allow you to pre-process or post-process markdown text. See below for more info.
+
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+    'markdown.extensions.nl2br',
+    'markdown.extensions.smarty',
+]
+MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {}
 
 
 # DEBUG

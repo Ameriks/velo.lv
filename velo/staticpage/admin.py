@@ -3,15 +3,16 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+from markdownx.admin import MarkdownxModelAdmin
 
 from velo.staticpage.models import StaticPage
 from velo.staticpage.forms import StaticPageForm
 
 
-class StaticPageAdmin(admin.ModelAdmin):
+class StaticPageAdmin(MarkdownxModelAdmin):
     form = StaticPageForm
     fieldsets = (
-        (None, {'fields': ('url', 'title', 'content', 'is_published', 'competition')}),
+        (None, {'fields': ('url', 'title', 'content', 'content_md', 'is_published', 'competition')}),
         (_('Advanced options'), {'classes': ('collapse',), 'fields': ('enable_comments', 'language', 'ordering')}),
     )
     list_display = ('url', 'title', 'competition', 'language', 'is_published', 'ordering')

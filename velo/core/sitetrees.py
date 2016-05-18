@@ -14,8 +14,3 @@ def sitetrees_build(lang):
         else:
             items.append(item(str(competition), '#', url_as_pattern=False, children=children))
     return tree('dynamic_competition', items=items),
-
-sitetrees_lv = sitetrees_build('lv')
-sitetrees_en = sitetrees_build('en')
-sitetrees_ru = sitetrees_build('ru')
-

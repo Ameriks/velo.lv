@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+from django.core.cache import cache
 from django.db.utils import ProgrammingError
 from django.conf import settings
 from django.conf.urls import patterns, include, url
@@ -12,8 +13,9 @@ from django.conf.urls.static import static
 
 from sitetree.sitetreeapp import register_dynamic_trees, compose_dynamic_tree
 from sitetree.sitetreeapp import register_i18n_trees
+from sitetree import sitetreeapp
 
-
+from velo.core.sitetrees import sitetrees_build
 from velo.core.views import CalendarView, IndexView
 from velo.payment.views import ApplicationPayView, ApplicationOKView
 from velo.registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
@@ -24,26 +26,20 @@ from velo.velo.views import CustomAutoResponseView, cached_javascript_catalog
 
 admin.autodiscover()
 
-
-register_i18n_trees(['mainmenu', 'competition_admin', 'footermenu'])
-
-try:
-    from velo.core.sitetrees import sitetrees_lv, sitetrees_en, sitetrees_ru
-    register_dynamic_trees((
-        compose_dynamic_tree(sitetrees_lv, target_tree_alias='mainmenu_lv', parent_tree_item_alias='sacensibas'),
-    ))
-    register_dynamic_trees((
-        compose_dynamic_tree(sitetrees_en, target_tree_alias='mainmenu_en', parent_tree_item_alias='sacensibas'),
-    ))
-    register_dynamic_trees((
-        compose_dynamic_tree(sitetrees_ru, target_tree_alias='mainmenu_ru', parent_tree_item_alias='sacensibas'),
-    ))
-    register_dynamic_trees((
-        compose_dynamic_tree('velo.manager', target_tree_alias='mainmenu_lv', parent_tree_item_alias='manager'),
-    ))
-except ProgrammingError:
-    print('Seems that migrations should be run.')
-
+def register_sitetrees():
+    sitetreeapp._DYNAMIC_TREES.clear()
+    cache.delete('sitetrees')
+    register_i18n_trees(['mainmenu', 'competition_admin', 'footermenu'])
+    try:
+        register_dynamic_trees((
+            compose_dynamic_tree(sitetrees_build('lv'), target_tree_alias='mainmenu_lv', parent_tree_item_alias='sacensibas'),
+            compose_dynamic_tree(sitetrees_build('en'), target_tree_alias='mainmenu_en', parent_tree_item_alias='sacensibas'),
+            compose_dynamic_tree(sitetrees_build('ru'), target_tree_alias='mainmenu_ru', parent_tree_item_alias='sacensibas'),
+            compose_dynamic_tree('velo.manager', target_tree_alias='mainmenu_lv', parent_tree_item_alias='manager'),
+        ), reset_cache=True)
+    except ProgrammingError:
+        print('Seems that migrations should be run.')
+register_sitetrees()
 
 
 js_info_dict = {
@@ -98,6 +94,7 @@ urlpatterns += [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 
     url(r"^json/fields/auto.json$", CustomAutoResponseView.as_view(), name="django_select2_central_json"),
+    url(r'^markdownx/', include('markdownx.urls')),
     ]
 
 if settings.DEBUG:

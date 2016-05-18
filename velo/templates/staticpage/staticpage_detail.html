@@ -5,9 +5,14 @@
 {% block content_left %}
     <article class="article">
     <div class="article__text editor-text">
-    {% cache 60 staticpage_staticpage_detail LANGUAGE_CODE object.id %}
+
+    {% cache 86400 staticpage_staticpage_detail LANGUAGE_CODE object.id %}
     {% spaceless %}
-        {{ content|safe }}
+        {% if object.content_md %}
+            {{ object.get_contentmd|safe }}
+        {% else %}
+            {{ content|safe }}
+        {% endif %}
     {{ block.super }}
     {% endspaceless %}
     {% endcache %}
