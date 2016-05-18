@@ -734,18 +734,18 @@ class RMCompetitionBase(CompetitionScriptBase):
         current_date = datetime.date.today() + datetime.timedelta(days=1)
         child_items = [
             # item('Atbalstītāji', 'competition:supporters %i' % self.competition.id),
-            item('Komandas', 'competition:team %i' % self.competition.id, children=[
+            item(_("Teams"), 'competition:team %i' % self.competition.id, children=[
                 item('{{ object }}', 'competition:team %i object.id' % self.competition.id, in_menu=False),
             ]),
-            item('Starta saraksts', 'competition:participant_list %i' % self.competition.id),
+            item(_('Start List'), 'competition:participant_list %i' % self.competition.id),
         ]
         self.build_flat_pages(self.competition, child_items, lang)
         if self.competition.map_set.count():
-            child_items.append(item('Kartes', 'competition:maps %i' % self.competition.id))
+            child_items.append(item(_("Maps"), 'competition:maps %i' % self.competition.id))
 
         if self.competition.competition_date <= current_date:
-            child_items.append(item('Rezultāti', 'competition:result_distance_list %i' % self.competition.id))
-            child_items.append(item('Komandu rezultāti', 'competition:result_team_by_name %i' % self.competition.id))
+            child_items.append(item(_("Results"), 'competition:result_distance_list %i' % self.competition.id))
+            child_items.append(item(_("Team Results"), 'competition:result_team_by_name %i' % self.competition.id))
         return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
 
     def number_ranges(self):

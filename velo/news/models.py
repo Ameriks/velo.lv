@@ -64,10 +64,6 @@ class News(StatusMixin, TimestampMixin, models.Model):
     intro_content = RichTextField()
     content = RichTextField(blank=True)
 
-    tmp_string = models.CharField(max_length=255, blank=True)
-
-    legacy_id = models.IntegerField(null=True, blank=True)
-
     objects = NewsManagerPublished()
 
     def __str__(self):
