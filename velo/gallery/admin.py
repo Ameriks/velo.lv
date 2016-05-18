@@ -47,7 +47,7 @@ class VideoAdmin(admin.ModelAdmin):
     # form = StaticPageForm
     add_form = VideoAddForm
     fieldsets = (
-        (None, {'fields': ('kind', 'video_id', 'title', 'channel_title', 'published_at', 'competition')}),
+        (None, {'fields': ('status', 'kind', 'video_id', 'title', 'channel_title', 'published_at', 'competition')}),
         ('Advanced options', {'classes': ('collapse',), 'fields': ('view_count', 'is_featured', 'is_agency_video', 'ordering', 'image_maxres', 'image')}),
     )
     add_fieldsets = (
@@ -57,7 +57,7 @@ class VideoAdmin(admin.ModelAdmin):
         }),
     )
     list_display = ('id', 'title', 'competition', 'kind', 'video_id', 'status', 'is_featured', 'is_agency_video')
-    list_filter = ('is_agency_video', 'competition', 'is_featured', 'kind')
+    list_filter = ('status', 'is_agency_video', 'competition', 'is_featured', 'kind')
     search_fields = ('title', )
     ordering = ('-id', )
 
