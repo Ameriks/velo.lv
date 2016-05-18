@@ -1,5 +1,7 @@
-{% load i18n thumbnail staticfiles %}
+{% load i18n thumbnail staticfiles cache %}
+{% get_current_language as LANGUAGE_CODE %}
 
+{% cache 1200 competition_supporters LANGUAGE_CODE competition.id %}
 
 {% if competition.is_application_active %}
     <a href="{% url 'application' competition.id %}" class="btn btn--60 btn--theme btn--blue-hover btn--blue-active w100 flex--important wrap--nowrap direction--row justify--space-between align-items--center">
@@ -9,7 +11,6 @@
         </svg>
     </a>
 {% endif %}
-
 
 <div class="sponsors">
     {% if competition.logo_svg %}
@@ -41,4 +42,4 @@
 
     {% endfor %}
     </div>
-
+{% endcache %}

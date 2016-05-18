@@ -60,13 +60,13 @@
                 <div class="w100">
                     <div class="row row--gutters-20">
 
-                        {% for gallery in galleries %}
+                        {% for gallery_id, gallery_image in galleries %}
 
                             <div class="col-xl-8 col-l-8 col-m-8 col-s-12 col-xs-24 flex direction--column justify--start align-items--stretch">
-                                <a href="{% url "gallery:album" gallery.id %}" class="brief border-top border-right border-bottom border-left bottom-margin--20">
+                                <a href="{% url "gallery:album" gallery_id %}" class="brief border-top border-right border-bottom border-left bottom-margin--20">
                                     <div class="w100">
                                         <figure class="brief__hero brief-hover-layer img-wrapper loaded loaded">
-                                            <img onload="imgLoaded(this)" src="{{ gallery.primary_image.image.thumb.url }}">
+                                            <img onload="imgLoaded(this)" src="{{ gallery_image }}">
                                             <div class="brief-hover-top-layer brief-hover-top-layer--hero">
                                                 <div class="table">
                                                     <div class="table-cell text-align--center">
@@ -97,7 +97,7 @@
             <div class="w100 bottom-margin--20"></div>
             <div class="inner no-padding--480">
                 <div class="video video--16x9 bottom-margin--20">
-                    <iframe class="video__iframe" src="{{ video.url_embed }}" data-src="{{ video.url_embed }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                    <iframe class="video__iframe" src="{{ video }}" data-src="{{ video }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
                 </div>
             </div>
         </div>

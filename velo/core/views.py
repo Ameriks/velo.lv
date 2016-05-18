@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils.translation import get_language
 from django.views.generic import TemplateView, DetailView, ListView, RedirectView, UpdateView
@@ -8,6 +9,7 @@ from django.utils import timezone
 
 from django_downloadview import ObjectDownloadView
 from braces.views import LoginRequiredMixin
+from easy_thumbnails.alias import aliases
 
 from velo.core.forms import UserProfileForm
 from velo.core.models import Competition, Map, User
@@ -76,17 +78,27 @@ class CompetitionDetail(SetCompetitionContextMixin, DetailView):
         context.update({'calendar': calendar})
 
         # Showing 6 albums from current type of competition, first showing albums from current competition
-        albums = Album.objects.filter(competition__tree_id=self.object.tree_id, is_processed=True).extra(select={
-            'is_current': "CASE WHEN competition_id = %s Then true ELSE false END"
-        }, select_params=(self.object.id,)).order_by('-is_current', '-gallery_date', '-id')[:6]
+        cache_key = 'competition_detail_albums_%i' % self.competition.id
+        albums = cache.get(cache_key, None)
+        if albums is None:
+            albums_query = Album.objects.filter(competition__tree_id=self.object.tree_id, is_processed=True).extra(select={
+                'is_current': "CASE WHEN competition_id = %s Then true ELSE false END"
+            }, select_params=(self.object.id,)).order_by('-is_current', '-gallery_date', '-id')[:6]
+            albums = [(obj.id,  obj.primary_image.image.get_thumbnail(aliases.get('thumb', target=obj.primary_image.image), silent_template_exception=True).url) for obj in albums_query]
+            cache.set(cache_key, albums)
         context.update({'galleries': albums})
 
         # Showing latest featured video in current/parent competition
-        try:
-            video = Video.objects.filter(competition_id__in=self.object.get_ids()) \
-                .filter(status=1, is_featured=True).order_by('-id')[0]
-        except IndexError:
-            video = None
+        cache_key = 'competition_detail_video_%i' % self.competition.id
+        video = cache.get(cache_key, None)
+        if video is None:
+            try:
+                video = Video.objects.filter(competition_id__in=self.object.get_ids()) \
+                    .filter(status=1, is_featured=True).order_by('-id')[0].url_embed
+                cache.set(cache_key, video)
+            except IndexError:
+                cache.set(cache_key, False)
+                video = None
         context.update({'video': video})
 
         # Supporters
@@ -116,6 +128,16 @@ class MapView(SetCompetitionContextMixin, ListView):
 
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Supporters
+        context.update({'supporters': CompetitionSupporter.objects \
+                       .filter(competition_id__in=self.competition.get_ids()) \
+                       .order_by('-support_level', 'ordering', '-label') \
+                       .select_related('supporter')
+                        })
+        return context
 
 class CalendarView(CacheControlMixin, TemplateView):
     template_name = 'core/calendar_view.html'
