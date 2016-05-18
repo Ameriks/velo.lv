@@ -60,7 +60,7 @@ def get_video_info(_id):
         #   scope=YOUTUBE_READONLY_SCOPE)
         #
 
-        storage = Storage("velo/gallery/youtube-oauth2.json")
+        storage = Storage("config/youtube-oauth2.json")
         credentials = storage.get()
 
         youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
