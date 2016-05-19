@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.core.urlresolvers import reverse
@@ -52,9 +53,7 @@ class NewsManagerPublished(models.Manager):
 @python_2_unicode_compatible
 class News(StatusMixin, TimestampMixin, models.Model):
 
-    LANGUAGE_CHOICES = (("lv", "Latviski"), ("en", "English"))
-
-    language = models.CharField("Language", max_length=20, db_index=True, default='lv', choices=LANGUAGE_CHOICES)
+    language = models.CharField("Language", max_length=20, db_index=True, default='lv', choices=settings.LANGUAGES)
 
     title = models.CharField("Title", max_length=255)
     slug = models.SlugField("Slug", unique=True)
