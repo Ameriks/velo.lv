@@ -1,0 +1,28 @@
+You have successfully registered for the competition {{ application.competition.get_full_name }} organized by Igo Japiņš sports agency!
+
+{% for participant in application.participant_set.all %}
+{{ forloop.counter }}. {{ participant.full_name }} ({{ participant.birthday.year }}) {{ participant.team_name }} {{ participant.distance }}
+{% endfor %}
+
+Competition dates:
+{% for competition in competitions %}
+    {{ competition }} - {{ competition.competition_date|date:"Y-m-d" }}
+{% endfor %}
+
+Your participation fee has been successfully paid!
+
+
+You may edit the contact information and selected team of the participants by clicking on the ling below: {{ url }}
+
+Tell your friends and colleagues about the race and encourage them to join us!
+
+
+Questions and suggestions
+If you have made any mistake while filling the registration form or your registration attempt was unsuccessful, please contact the organizers: pieteikumi@velo.lv You are welcome to email us your suggestions to help us improve the application procedure and registration for the race.
+
+
+See you at the cycling race all over Latvia!
+
+
+Yours sincerely,
+Igo Japiņš sports agency

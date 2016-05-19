@@ -1,0 +1,45 @@
+{% extends "base/email.html" %}
+{% block content %}
+    <p style="font-size:25px;">Поздравляем с регистрацией в соревновании {{ application.competition.get_full_name }}, организованном агентством соревнований Иго Лапиньша</p>
+
+    <table style="margin-top:20px;margin-bottom:20px;">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Birthday</td>
+                <td>Team</td>
+                <td>Distance</td>
+                <td>Date</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in application.participant_set.all %}
+                <tr>
+                    <td>{{ participant.full_name }}</td>
+                    <td>{{ participant.birthday.year }}</td>
+                    <td>{{ participant.team_name }}</td>
+                    <td>{{ participant.distance }}</td>
+                    <td>
+                        {% for competition in competitions %}
+                            {{ competition }} - {{ competition.competition_date|date:"Y-m-d" }}<br />
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><b>Участие в соревновании успешно оплачено!</b></p>
+    <p>Вы можете исправить контактную информацию участника и указать команду. Чтобы изменить контактную информацию или команду, пройдите по ссылке:  <a href="{{ url }}">{{ url }}</a></p>
+
+    <p>Расскажите об участии в соревновании своим друзьям и коллегам, которые тоже могли бы к нам присоединиться!</p>
+
+
+    <h2>Вопросы и предложения</h2>
+    <p>Если у вас возникли проблемы при заполнении регистрационной формы или регистрация не была успешной, свяжитесь с организаторами: pieteikumi@velo.lv. Мы будем ждать электронные письма с предложениями, которые помогут нам улучшить ход подачи заявок и регистрацию для участия в соревнованиях.</p>
+
+    <h2>Встречаемся на соревнованиях по велосипедному спорту по всей Латвии!</h2>
+
+    <p>С уважением,<br />Спортивное агентство Иго Лапиньша "Igo Japiņa sporta aģentūra"</p>
+
+{% endblock content %}

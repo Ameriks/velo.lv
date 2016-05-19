@@ -1,0 +1,45 @@
+{% extends "base/email.html" %}
+{% block content %}
+    <p style="font-size:25px;">You have successfully registered for the competition {{ application.competition.get_full_name }} organized by Igo Japiņš sports agency!</p>
+
+    <table style="margin-top:20px;margin-bottom:20px;">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Birthday</td>
+                <td>Team</td>
+                <td>Distance</td>
+                <td>Date</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in application.participant_set.all %}
+                <tr>
+                    <td>{{ participant.full_name }}</td>
+                    <td>{{ participant.birthday.year }}</td>
+                    <td>{{ participant.team_name }}</td>
+                    <td>{{ participant.distance }}</td>
+                    <td>
+                        {% for competition in competitions %}
+                            {{ competition }} - {{ competition.competition_date|date:"Y-m-d" }}<br />
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><b>Your participation fee has been successfully paid!</b></p>
+    <p>You may edit the contact information and selected team of the participants by clicking on the ling below: <a href="{{ url }}">{{ url }}</a></p>
+
+    <p>Tell your friends and colleagues about the race and encourage them to join us!</p>
+
+
+    <h2>Questions and suggestions</h2>
+    <p>If you have made any mistake while filling the registration form or your registration attempt was unsuccessful, please contact the organizers: pieteikumi@velo.lv You are welcome to email us your suggestions to help us improve the application procedure and registration for the race.</p>
+
+    <h2>See you at the cycling race all over Latvia!</h2>
+
+    <p>Yours sincerely,<br />Igo Japiņš sports agency</p>
+
+{% endblock content %}

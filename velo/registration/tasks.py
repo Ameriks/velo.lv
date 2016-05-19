@@ -39,8 +39,8 @@ def send_success_email(application_id):
     }
 
     activate(application.language)
-    template = transform(render_to_string('registration/email/success_email.html', context))
-    template_txt = render_to_string('registration/email/success_email.txt', context)
+    template = transform(render_to_string('registration/email/success_email_%s.html' % application.language, context))
+    template_txt = render_to_string('registration/email/success_email_%s.txt' % application.language, context)
 
     email_data = {
         'subject': _('VELO.LV application #%i') % application_id,
