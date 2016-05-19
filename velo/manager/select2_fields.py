@@ -9,107 +9,141 @@
 # from velo.utils import load_class
 # import datetime
 #
-#
-# class NumberMixin(object):
-#     max_results = 30
-#     search_fields = ['number__icontains', ]
-#     get_empty_results = True
-#
-#     def extra_data_from_instance(self, obj):
-#         return {
-#             'distance_id': obj.distance_id,
-#         }
-#
-#     def prepare_qs_params(self, request, search_term, search_fields):
-#         distance_id = request.GET.get('distance_id', None)
-#         group = None
-#         if distance_id:
-#             distance = Distance.objects.get(id=request.GET.get('distance_id'))
-#             class_ = load_class(distance.competition.processing_class)
-#             processing_class = class_(distance.competition.id)
-#             group = processing_class.get_group_for_number_search(distance.id, request.GET.get('gender', ''), request.GET.get('birthday', None))
-#
-#         if search_term:
-#             qs = super(NumberMixin, self).prepare_qs_params(request, search_term, search_fields)
-#         else:
-#             qs = {'or': [], 'and': {}}
-#         qs['and'].update({'participant_slug': ''})
-#         if distance_id:
-#             qs['and'].update({'distance_id': distance_id})
-#         if group:
-#             qs['and'].update({'group': group})
-#
-#         competition_id = request.GET.get('competition_id', None)
-#         if competition_id:
-#             competition = Competition.objects.get(id=competition_id)
-#             qs['and'].update({'distance__competition_id__in': competition.get_ids()})
-#
-#         return qs
-#
-#
-# class NumberChoice(NumberMixin, AutoModelSelect2Field):
-#     queryset = Number.objects.all()
-#
-#
-# class NumberChoices(NumberMixin, AutoModelSelect2MultipleField):
-#     queryset = Number.objects.all()
-#
-#
-#
-# class NumberAllChoices(AutoModelSelect2Field):
-#     max_results = 10
-#     queryset = Number.objects.all()
-#     search_fields = ['number__icontains', ]
-#     get_empty_results = False
-#
-#     def prepare_qs_params(self, request, search_term, search_fields):
-#         competition = None
-#         competition_id = request.GET.get('competition_id', None)
-#         if competition_id:
-#             competition = Competition.objects.get(id=competition_id)
-#
-#         if search_term:
-#             qs = super(NumberAllChoices, self).prepare_qs_params(request, search_term, search_fields)
-#         else:
-#             qs = {'or': [], 'and': {}}
-#
-#         if competition:
-#             qs['and'].update({'competition_id__in': competition.get_ids()})
-#
-#         return qs
-#
-#
-#
-#
-# class UserChoices(AutoModelSelect2Field):
-#     max_results = 10
-#     queryset = User.objects.all()
-#     search_fields = ['first_name__icontains', 'last_name__icontains', 'ssn__icontains', 'full_name__icontains', ]
-#     get_empty_results = False
-#
-#     def label_from_instance(self, obj):
-#         return '%s (id:%i) %s' % (smart_str(obj), obj.id, obj.last_login.date())
-#
-#
-# class ParticipantChoices(AutoModelSelect2Field):
-#     max_results = 10
-#     queryset = Participant.objects.all()
-#     search_fields = ['slug__icontains', ]
-#     get_empty_results = False
-#
-#     def prepare_qs_params(self, request, search_term, search_fields):
-#         competition = None
-#         competition_id = request.GET.get('competition_id', None)
-#         if competition_id:
-#             competition = Competition.objects.get(id=competition_id)
-#
-#         if search_term:
-#             search_term = slugify(search_term).upper()
-#             qs = super(ParticipantChoices, self).prepare_qs_params(request, search_term, search_fields)
-#         else:
-#             qs = {'or': [], 'and': {}}
-#
-#         if competition:
-#             qs['and'].update({'competition_id__in': competition.get_ids()})
-#
-#         return qs
+from django_select2.forms import ModelSelect2Widget, ModelSelect2MultipleWidget
+from slugify import slugify
+
+from velo.core.models import Distance, Competition, User
+from velo.registration.models import Number, Participant
+from velo.velo.utils import load_class
+
+
+class NumberMixin(object):
+    max_results = 30
+    search_fields = ['number__icontains', ]
+    get_empty_results = True
+
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        attrs = super().build_attrs(extra_attrs=extra_attrs, **kwargs)
+        attrs['class'] += '-number'
+        return attrs
+
+    def extra_data_from_instance(self, obj, context=None):
+        return {
+            'distance_id': obj.distance_id,
+        }
+
+    def filter_queryset(self, term, queryset=None, context=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        distance_id = gender = bday = None
+        if context:
+            competition_id, distance_id, gender, bday = context.split("~~~")
+        else:
+            # Something wrong. We shouldn't show any numbers
+            competition_id = -1
+
+        group = None
+
+        if distance_id:
+            distance = Distance.objects.get(id=distance_id)
+            class_ = load_class(distance.competition.processing_class)
+            processing_class = class_(distance.competition.id)
+            group = processing_class.get_group_for_number_search(distance.id, gender, bday)
+
+        queryset = queryset.filter(participant_slug='')
+
+        if competition_id:
+            competition = Competition.objects.get(id=competition_id)
+            queryset = queryset.filter(distance__competition_id__in=competition.get_ids())
+
+        if distance_id:
+            queryset = queryset.filter(distance_id=distance_id)
+        if group:
+            queryset = queryset.filter(group=group)
+
+        if term == '':
+            return queryset
+        else:
+            return super().filter_queryset(term, queryset)
+
+
+class NumberChoice(NumberMixin, ModelSelect2Widget):
+    model = Number
+
+
+class NumberChoices(NumberMixin, ModelSelect2MultipleWidget):
+    model = Number
+
+
+class NumberAllChoices(ModelSelect2Widget):
+    model = Number
+    search_fields = ['number__icontains', ]
+    get_empty_results = False
+
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        attrs = super().build_attrs(extra_attrs=extra_attrs, **kwargs)
+        attrs['class'] += '-number'
+        return attrs
+
+    def filter_queryset(self, term, queryset=None, context=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        if context:
+            competition_id, distance_id, gender, bday = context.split("~~~")
+        else:
+            # Something wrong. We shouldn't show any numbers
+            competition_id = -1
+
+        if competition_id:
+            competition = Competition.objects.get(id=competition_id)
+            queryset = queryset.filter(distance__competition_id__in=competition.get_ids())
+
+        if term == '':
+            return queryset
+        else:
+            return super().filter_queryset(term, queryset)
+
+
+
+class UserChoices(ModelSelect2Widget):
+    max_results = 10
+    model = User
+    search_fields = ['first_name__icontains', 'last_name__icontains', 'ssn__icontains', 'full_name__icontains', ]
+    get_empty_results = False
+
+    def label_from_instance(self, obj):
+        return '%s (id:%i) %s' % (str(obj), obj.id, obj.last_login.date())
+
+
+class ParticipantChoices(ModelSelect2Widget):
+    max_results = 10
+    model = Participant
+    search_fields = ['slug__icontains', ]
+    get_empty_results = False
+
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        attrs = super().build_attrs(extra_attrs=extra_attrs, **kwargs)
+        attrs['class'] += '-number'
+        return attrs
+
+    def filter_queryset(self, term, queryset=None, context=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        if context:
+            competition_id, distance_id, gender, bday = context.split("~~~")
+        else:
+            # Something wrong. We shouldn't show any numbers
+            competition_id = -1
+
+        if competition_id:
+            competition = Competition.objects.get(id=competition_id)
+            queryset = queryset.filter(distance__competition_id__in=competition.get_ids())
+
+        if term == '':
+            return queryset
+        else:
+            search_term = slugify(term).upper()
+            return super().filter_queryset(search_term, queryset)

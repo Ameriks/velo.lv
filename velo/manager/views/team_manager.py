@@ -24,7 +24,7 @@ __all__ = [
 
 class ManageTeamApplyList(ManagerPermissionMixin, SetCompetitionContextMixin, DetailView):
     model = Team
-    template_name = 'manager/team_apply_list.html'
+    template_name = 'bootstrap/manager/team_apply_list.html'
     pk_url_kwarg = 'pk2'
 
     def get_context_data(self, **kwargs):
@@ -54,7 +54,7 @@ class ManageTeamApplyList(ManagerPermissionMixin, SetCompetitionContextMixin, De
 class ManageTeams(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Team
     table_class = ManageTeamTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         queryset = super(ManageTeams, self).get_queryset()
@@ -73,7 +73,7 @@ class ManageTeams(ManagerPermissionMixin, SingleTableViewWithRequest):
 class ManageAppliedTeamMembersList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = MemberApplication
     table_class = ManageMemberApplicationTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         queryset = super(ManageAppliedTeamMembersList, self).get_queryset()
@@ -90,7 +90,7 @@ class ManageAppliedTeamMembersList(ManagerPermissionMixin, SingleTableViewWithRe
 class ManageTeamList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Team
     table_class = ManageTeamApplyTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         queryset = super(ManageTeamList, self).get_queryset()
@@ -140,7 +140,7 @@ class ManageTeamUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, Reque
     inlines = [ManageTeamMemberInline, ]
     inlines_names = ['member']
     form_class = ManageTeamForm
-    template_name = 'manager/team_form.html'
+    template_name = 'bootstrap/manager/team_form.html'
 
     def get_success_url(self):
         return reverse('manager:applied_team_list', kwargs={'pk': self.kwargs.get('pk')})

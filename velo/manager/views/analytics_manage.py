@@ -20,7 +20,7 @@ __all__ = [
 class PayedAmountNotEqualView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Application
     table_class = ManageApplicationTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
     table_pagination = False
 
     def get_queryset(self):
@@ -43,7 +43,7 @@ class PayedAmountNotEqualView(ManagerPermissionMixin, SingleTableViewWithRequest
 class MultipleSameSlugView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Participant
     table_class = ManageParticipantTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         double_participants = Participant.objects.filter(is_participating=True,
@@ -62,7 +62,7 @@ class MultipleSameSlugView(ManagerPermissionMixin, SingleTableViewWithRequest):
 class DifferNumberSlugView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Participant
     table_class = ManageParticipantDifferSlugTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         child_ids = [competition.id for competition in self.competition.parent.get_children()] + [
@@ -80,7 +80,7 @@ class DifferNumberSlugView(ManagerPermissionMixin, SingleTableViewWithRequest):
 class MatchParticipantToNumberView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Number
     table_class = ManageParticipantToNumberTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         queryset = super(MatchParticipantToNumberView, self).get_queryset()
@@ -95,7 +95,7 @@ class MatchParticipantToNumberView(ManagerPermissionMixin, SingleTableViewWithRe
 class MultipleNumbersView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Participant
     table_class = ManageParticipantTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         multiple_numbers = Number.objects.filter(competition_id__in=self.competition.get_ids()).exclude(
@@ -113,7 +113,7 @@ class MultipleNumbersView(ManagerPermissionMixin, SingleTableViewWithRequest):
 class ResultAssignedToInactiveParticipant(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Result
     table_class = ManageResultNonParticipantTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         queryset = super(ResultAssignedToInactiveParticipant, self).get_queryset()
@@ -126,7 +126,7 @@ class ResultAssignedToInactiveParticipant(ManagerPermissionMixin, SingleTableVie
 class FindNumberView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Participant
     table_class = ManageFindNumberViewTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         queryset = super(FindNumberView, self).get_queryset()
@@ -139,7 +139,7 @@ class FindNumberView(ManagerPermissionMixin, SingleTableViewWithRequest):
 class MatchResultParticipantView(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = HelperResults
     table_class = HelperResultsMatchViewTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         queryset = super(MatchResultParticipantView, self).get_queryset()

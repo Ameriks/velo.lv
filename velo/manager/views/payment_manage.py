@@ -19,7 +19,7 @@ __all__ = [
 class ManagePriceList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Price
     table_class = ManagePriceTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     @property
     def add_link(self):
@@ -35,7 +35,7 @@ class ManagePriceList(ManagerPermissionMixin, SingleTableViewWithRequest):
 class ManagePriceCreate(ManagerPermissionMixin, CreateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = Price
-    template_name = 'manager/form.html'
+    template_name = 'bootstrap/manager/form.html'
     form_class = PriceForm
 
     def get_success_url(self):
@@ -46,7 +46,7 @@ class ManagePriceCreate(ManagerPermissionMixin, CreateViewWithCompetition):
 class ManagePriceUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = Price
-    template_name = 'manager/form.html'
+    template_name = 'bootstrap/manager/form.html'
     form_class = PriceForm
 
     def get_success_url(self):

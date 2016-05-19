@@ -72,6 +72,7 @@
 
 </div>
 <div class="site">
+{% block header %}
 <header class="main-header border-bottom">
     <div class="inner">
         <div class="main-header__inner w100 h100 border-left flex wrap--nowrap direction--row justify--start align-items--center">
@@ -132,9 +133,20 @@
                             <a href="{% url 'companyapplication_list' %}" class="profile-nav__link">{% trans "My Company Applications" %}</a>
                         </li>
 
+                        {% if user.is_staff %}
                             <li class="profile-nav__item">
-                                <a href="{% url 'account_logout' %}" class="profile-nav__link">{% trans "Logout" %}</a>
+                                <a href="{% url 'admin:index' %}" class="profile-nav__link">{% trans "Administrator" %}</a>
                             </li>
+                            {% if perms.registration.add_number %}
+                                <li class="profile-nav__item">
+                                    <a href="{% url 'manager:competition_list' %}" class="profile-nav__link">{% trans "Manager" %}</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+
+                        <li class="profile-nav__item">
+                            <a href="{% url 'account_logout' %}" class="profile-nav__link">{% trans "Logout" %}</a>
+                        </li>
                     </ul>
                 </nav>
 
@@ -165,7 +177,7 @@
         </div>
     </div>
 </header>
-
+{% endblock header %}
 <main>
 
       {% block content %}
@@ -173,6 +185,7 @@
 
 </main>
 
+{% block footer %}
 <footer class="main-footer bgc-dgray">
     {% include 'base/_sponsors.html' %}
     <div class="main-footer__bottom w100 border-top">
@@ -243,6 +256,7 @@
     </div>
 
 </footer>
+{% endblock footer %}
 </div>
 
 <script src="{% static "vendor/bower_components/jquery/dist/jquery.min.js" %}"></script>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load i18n staticfiles sitetree %}{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <title>Igo Japiņa sporta aģentūra</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="{% static "vendor/bower_components/bootstrap-min-only/bootstrap.min.css" %}">
+
+    {% block css %}
+    {% endblock %}
+    <script type="text/javascript" src="{% static "vendor/bower_components/jquery/dist/jquery.min.js" %}"></script>
+</head>
+
+<body>
+
+<div class="wrapper" style="background-color: #f7f7f7 !important;">
+
+    {% block header %}
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">velo.lv Manager</a>
+            </div>
+
+
+        </div>
+    </nav>
+{% endblock header %}
+    {% block breadcrumbs %}
+        <div class="breadcrumbs">
+            <div class="container">
+                <h1 class="pull-left">{% block title %}{% endblock %}</h1>
+                {% sitetree_breadcrumbs from "mainmenu" template "bootstrap/menu/breadcrumbs_bootstrap3.html" %}
+            </div><!--/container-->
+        </div>
+    {% endblock %}
+
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <div class="alert alert-success {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+<script type="text/javascript"
+        src="{% static "vendor/bower_components/bootstrap-min-only/bootstrap.min.js" %}"></script>
+<script src="{% static "vendor/bower_components/jquery-unveil/jquery.unveil.min.js" %}"></script>
+
+<script>
+    $(function () {
+        $("img").unveil();
+
+    });
+</script>
+
+
+{% block js %}
+{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% extends 'bootstrap/base/base_empty.html' %}
+{% load staticfiles %}
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block js %}
+
+    {{ block.super }}
+
+    <script>
+        function sendValue(id, url)
+        {
+            if (window.opener === null) {
+                alert("Kļūda");
+            } else {
+                window.opener.updateValue(id, url);
+                window.close();
+            }
+        }
+
+    </script>
+{% endblock %}
+
+
+{% block main %}
+
+<div class="container content">
+    <div>
+        {% for object in object_list %}
+            {% if forloop.counter0|divisibleby:3 %}
+                </div>
+                <div class="row" style="margin-bottom:20px;">
+            {% endif %}
+
+                <div class="col-sm-4 sm-margin-bottom-30">
+                    <a href="#" data-size="{{ object.width }}x{{ object.height }}" onclick="sendValue({{ object.id }}, '{{ object.image.img.url }}'); return false;">
+                        <span><img class="img-responsive" src="{% if forloop.counter < 20 %}{{ object.image.thumb.url }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" data-src="{{ object.image.thumb.url }}" alt="{% firstof object.description object.filename %}"></span>
+                    </a>
+                </div>
+
+            {% if forloop.last %}
+                </div>
+            {% endif %}
+
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

@@ -202,7 +202,7 @@ class ManageNumberTable(tables.Table):
 
 
 class ManageCompetitionTable(tables.Table):
-    name = tables.TemplateColumn(template_name='manager/competition_list_name.html')
+    name = tables.TemplateColumn(template_name='bootstrap/manager/competition_list_name.html')
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')

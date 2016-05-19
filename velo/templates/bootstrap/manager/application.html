@@ -1,0 +1,12 @@
+{% extends 'bootstrap/manager/base.html' %}
+{% load django_tables2 crispy_forms_tags %}
+
+{% block main %}
+    {% include 'bootstrap/manager/application_inner.html' %}
+    <div class="row margin-bottom-20">
+        <div class="col-xs-12">
+            <a href="{% url 'manager:application_list' competition.id %}" class="btn btn-primary">Atpakaļ</a>
+        </div>
+    </div>
+
+{% endblock %}

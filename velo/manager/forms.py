@@ -15,6 +15,7 @@ import requests
 
 from velo.core.models import Competition, Distance, Insurance
 # from velo.manager.select2_fields import NumberChoices, UserChoices, NumberChoice, ParticipantChoices, NumberAllChoices
+from velo.manager.select2_fields import NumberChoices, UserChoices, NumberAllChoices, ParticipantChoices
 from velo.manager.tasks import update_results_for_participant
 from velo.manager.widgets import PhotoPickWidget
 from velo.news.models import News
@@ -86,6 +87,7 @@ class InvoiceCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+        # self.helper.
         self.helper.layout = Layout(
             Row(
                 Column(
@@ -443,7 +445,7 @@ class ManageTeamForm(TeamForm):
                 Column(
                     Fieldset(
                         'Dalībnieki',
-                        HTML('{% load crispy_forms_tags %}{% crispy member member.form.helper %}'),
+                        HTML('{% load crispy_forms_tags %}{% crispy member member.form.helper "bootstrap3" %}'),
                     ),
                     css_class='col-xs-12'
                 ),
@@ -611,6 +613,7 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
         model = Participant
         widgets = {
             'is_participating': forms.HiddenInput,
+            'primary_number': NumberChoices,
         }
         fields = (
             'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'is_participating',
@@ -730,29 +733,19 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
 
 
 class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
-    # registrant = UserChoices(required=False)
-    # numbers = NumberChoices(required=False, widget=AutoHeavySelect2MultipleWidget(select2_options={
-    #     'ajax': {
-    #         'dataType': 'json',
-    #         'quietMillis': 100,
-    #         'data': '*START*django_select2.runInContextHelper(get_participant_params, selector)*END*',
-    #         'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
-    #     },
-    #     "minimumResultsForSearch": 0,
-    #     "minimumInputLength": 0,
-    #     "closeOnSelect": True
-    # }))
+    numbers = forms.MultipleChoiceField(widget=NumberChoices, required=False, choices=())
 
     reset_group = False
+
     class Meta:
         model = Participant
         fields = (
             'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'slug', 'is_participating', 'is_paying', 'insurance',
             'team', 'team_name', 'ssn', 'phone_number', 'email', 'send_email', 'send_sms', 'country', 'city',
             'bike_brand2', 'occupation', 'where_heard', 'group', 'registrant', 'price', 'comment', 'registration_dt')
-
-    class Media:
-        js = ('plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js')
+        widgets = {
+            'registrant': UserChoices,
+        }
 
     def clean_email(self):
         value = self.cleaned_data.get('email', '')
@@ -866,7 +859,9 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['price'].choices = [(u'', u'------'), ] + prices
 
         if self.instance.id:
-            self.fields['numbers'].initial = [number.id for number in self.instance.numbers()]
+            numbers = self.instance.numbers()
+            self.fields['numbers'].widget.choices = [(obj.id, str(obj)) for obj in numbers]
+            self.fields['numbers'].initial = [obj.id for obj in numbers]
         else:
             self.fields['competition'].initial = self.request_kwargs.get('pk')
             self.fields['country'].initial = 'LV'
@@ -980,22 +975,14 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
     #     "closeOnSelect": True
     # }))
     zero_time = forms.TimeField(label="Zero Time", required=False, widget=forms.TimeInput(format='%H:%M:%S.%f'))
-    # number = NumberAllChoices(required=False, widget=AutoHeavySelect2Widget(select2_options={
-    #     'ajax': {
-    #         'dataType': 'json',
-    #         'quietMillis': 100,
-    #         'data': '*START*django_select2.runInContextHelper(get_result_params, selector)*END*',
-    #         'results': '*START*django_select2.runInContextHelper(django_select2.process_results, selector)*END*',
-    #     },
-    #     "minimumResultsForSearch": 0,
-    #     "minimumInputLength": 0,
-    #     "closeOnSelect": True
-    # }))
+
     class Meta:
         model = Result
         fields = ('competition', 'participant', 'time', 'status', 'leader', 'zero_time', 'number')  # 'number',
         widgets = {
             'time': forms.TimeInput(format='%H:%M:%S.%f'),
+            'number': NumberAllChoices,
+            'participant': ParticipantChoices,
         }
 
     class Media:
@@ -1054,7 +1041,7 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
             Row(
                Fieldset(
                     'Apļi',
-                    HTML('{% load crispy_forms_tags %}{% crispy lap lap.form.helper %}'),
+                    HTML('{% load crispy_forms_tags %}{% crispy lap lap.form.helper "bootstrap3" %}'),
                 ),
             Row(
                 Column(Submit('submit', 'Saglabāt'), css_class='col-sm-2'),

@@ -1,0 +1,9 @@
+{% extends 'bootstrap/manager/base.html' %}
+{% load crispy_forms_tags staticfiles %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block main %}
+    {% crispy form form.helper "bootstrap3" %}
+{% endblock %}

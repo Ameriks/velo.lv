@@ -17,7 +17,7 @@ class ManageNewsList(PermissionRequiredMixin, LoginRequiredMixin, SingleTableVie
     permission_required = "news.add_news"
     model = News
     table_class = ManageNewsTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     @property
     def add_link(self):
@@ -28,7 +28,7 @@ class ManageNewsUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateViewWi
     permission_required = "news.change_news"
     pk_url_kwarg = 'pk2'
     model = News
-    template_name = 'manager/news.html'
+    template_name = 'bootstrap/manager/news.html'
     form_class = NewsForm
 
     def get_success_url(self):
@@ -39,7 +39,7 @@ class ManageNewsCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateViewWi
     permission_required = "news.add_news"
     pk_url_kwarg = 'pk2'
     model = News
-    template_name = 'manager/news.html'
+    template_name = 'bootstrap/manager/news.html'
     form_class = NewsForm
 
     def get_success_url(self):

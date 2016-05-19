@@ -19,7 +19,7 @@ __all__ = [
 class ManageNumberList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Number
     table_class = ManageNumberTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     search_form = None
 
@@ -68,7 +68,7 @@ class ManageNumberList(ManagerPermissionMixin, SingleTableViewWithRequest):
 class ManageNumberUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, UpdateView):
     pk_url_kwarg = 'pk_number'
     model = Number
-    template_name = 'manager/participant_form.html'
+    template_name = 'bootstrap/manager/participant_form.html'
     form_class = NumberForm
 
     def get_success_url(self):

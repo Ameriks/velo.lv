@@ -169,7 +169,7 @@ class AlbumPickListView(SearchMixin, PermissionRequiredMixin, LoginRequiredMixin
     model = Album
     table_class = AlbumTable
     permission_required = "gallery.add_photo"
-    template_name = 'gallery/album_picklist.html'
+    template_name = 'bootstrap/gallery/album_picklist.html'
     created_instance = None
 
     def get_context_data(self, **kwargs):
@@ -206,7 +206,7 @@ class AlbumPickListView(SearchMixin, PermissionRequiredMixin, LoginRequiredMixin
 class PhotoPickListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
     model = Photo
     allow_empty = False
-    template_name = 'gallery/photo_picklist.html'
+    template_name = 'bootstrap/gallery/photo_picklist.html'
     permission_required = "gallery.add_photo"
 
     def get_queryset(self):

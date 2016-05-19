@@ -17,7 +17,7 @@ __all__ = [
 class ManageDistanceAdminList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = DistanceAdmin
     table_class = ManageDistanceAdminTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_queryset(self):
         queryset = super(ManageDistanceAdminList, self).get_queryset()
@@ -29,7 +29,7 @@ class ManageDistanceAdminList(ManagerPermissionMixin, SingleTableViewWithRequest
 class ManageDistanceAdminUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, UpdateView):
     pk_url_kwarg = 'pk2'
     model = DistanceAdmin
-    template_name = 'manager/participant_form.html'
+    template_name = 'bootstrap/manager/participant_form.html'
     form_class = DistanceAdminForm
 
     def get_success_url(self):

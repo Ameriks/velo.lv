@@ -28,7 +28,7 @@ __all__ = [
 class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, DetailView):
     model = Application
     pk_url_kwarg = 'pk2'
-    template_name = 'manager/application.html'
+    template_name = 'bootstrap/manager/application.html'
 
     invoice_form = None
 
@@ -74,7 +74,7 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
 class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Application
     table_class = ManageApplicationTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     search_form = None
 
@@ -113,7 +113,7 @@ class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
 class ManageParticipantList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Participant
     table_class = ManageParticipantTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     search_form = None
 
@@ -163,7 +163,7 @@ class ManageParticipantList(ManagerPermissionMixin, SingleTableViewWithRequest):
 class ManageParticipantUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
     pk_url_kwarg = 'pk_participant'
     model = Participant
-    template_name = 'manager/participant_form.html'
+    template_name = 'bootstrap/manager/participant_form.html'
     form_class = ParticipantForm
 
     def get_success_url(self):
@@ -176,7 +176,7 @@ class ManageParticipantUpdate(ManagerPermissionMixin, UpdateViewWithCompetition)
 class ManageParticipantCreate(ManagerPermissionMixin, CreateViewWithCompetition):
     pk_url_kwarg = 'pk_participant'
     model = Participant
-    template_name = 'manager/participant_form.html'
+    template_name = 'bootstrap/manager/participant_form.html'
     form_class = ParticipantCreateForm
 
     def get_success_url(self):
@@ -213,7 +213,7 @@ class ManageParticipantIneseCreate(ManageParticipantCreate):
 class ManagePreNumberAssignList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = PreNumberAssign
     table_class = PreNumberAssignTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     @property
     def add_link(self):
@@ -230,7 +230,7 @@ class ManagePreNumberAssignList(ManagerPermissionMixin, SingleTableViewWithReque
 class ManagePreNumberAssignUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = PreNumberAssign
-    template_name = 'manager/form.html'
+    template_name = 'bootstrap/manager/form.html'
     form_class = PreNumberAssignForm
 
     def get_success_url(self):
@@ -240,7 +240,7 @@ class ManagePreNumberAssignUpdate(ManagerPermissionMixin, UpdateViewWithCompetit
 class ManagePreNumberAssignCreate(ManagerPermissionMixin, CreateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = PreNumberAssign
-    template_name = 'manager/form.html'
+    template_name = 'bootstrap/manager/form.html'
     form_class = PreNumberAssignForm
 
     def get_success_url(self):
@@ -250,7 +250,7 @@ class ManagePreNumberAssignCreate(ManagerPermissionMixin, CreateViewWithCompetit
 class ChangedNameList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = ChangedName
     table_class = ChangedNameTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     @property
     def add_link(self):
@@ -260,7 +260,7 @@ class ChangedNameList(ManagerPermissionMixin, SingleTableViewWithRequest):
 class ChangedNameUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = ChangedName
-    template_name = 'manager/form.html'
+    template_name = 'bootstrap/manager/form.html'
     form_class = ChangedNameForm
 
     def get_success_url(self):
@@ -270,7 +270,7 @@ class ChangedNameUpdate(ManagerPermissionMixin, UpdateViewWithCompetition):
 class ChangedNameCreate(ManagerPermissionMixin, CreateViewWithCompetition):
     pk_url_kwarg = 'pk2'
     model = ChangedName
-    template_name = 'manager/form.html'
+    template_name = 'bootstrap/manager/form.html'
     form_class = ChangedNameForm
 
     def get_success_url(self):

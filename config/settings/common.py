@@ -48,6 +48,7 @@ THIRD_PARTY_APPS = (
     'mptt',
     'djcelery',
     'ckeditor',
+    'ckeditor_uploader',
     'impersonate',
     'markdownx',
 
@@ -217,7 +218,7 @@ TEMPLATES = [
 
 # See: http://django-crispy-forms.readthedocs.org/en/latest/install.html#template-packs
 CRISPY_TEMPLATE_PACK = 'wd_forms'
-CRISPY_ALLOWED_TEMPLATE_PACKS = ('wd_forms', )
+CRISPY_ALLOWED_TEMPLATE_PACKS = ('wd_forms', 'bootstrap3')
 
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -306,7 +307,7 @@ HASH_ALPHABET = 'abcdefghjkmnprstuvwxyzABCDEFGHJKMNPRSTUVWXYZ23456789'
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_IMAGE_BACKEND = "pillow"
-CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'
+# CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',

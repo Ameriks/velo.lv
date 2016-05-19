@@ -1,0 +1,20 @@
+{% extends 'bootstrap/manager/base.html' %}
+{% load django_tables2 crispy_forms_tags %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block main %}
+    {% if add_link %}
+        <div class="row well">
+            <div class="col-sm-12">
+                <a href="{{ add_link }}" class="btn btn-primary pull-right">ADD</a>
+            </div>
+        </div>
+    {% endif %}
+    {% if search_form %}
+        {% crispy search_form search_form.helper "bootstrap3" %}
+    {% endif %}
+    {% render_table table %}
+{% endblock %}

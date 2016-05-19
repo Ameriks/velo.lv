@@ -1,0 +1,82 @@
+{% load crispy_forms_tags %}
+
+<form method="post" class="margin-bottom-20">
+    {% csrf_token %}
+
+    <p>Pieteikums #{{ object.id }} ({{ object.code }}).</p>
+    <p>Pieteikuma statuss: {{ object.get_payment_status_display }}</p>
+
+    <p>Dalībnieki:</p>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>Sacensības</td>
+                <td>Distance</td>
+                <td>Dalībnieks</td>
+                <td>Dz.gads</td>
+                <td>Vai piedalās?</td>
+                <td>Cena</td>
+                <td>Apdrošināšana</td>
+                <td>Numurs</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for participant in application.participant_set.all %}
+            <tr class="{% if not participant.is_participating %}danger{% endif %}">
+                <td>{{ participant.competition }}</td>
+                <td>{{ participant.distance }}</td>
+                <td><a href="{% url 'manager:participant' competition.id participant.id %}">{{ participant.full_name }}</a></td>
+                <td>{{ participant.birthday.year }}</td>
+                <td>{{ participant.is_participating }}</td>
+                <td>{{ participant.price }}</td>
+                <td>{{ participant.insurance }}</td>
+                <td>{{ participant.primary_number }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if payments %}
+        <p>Maksājumu informācija:</p>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td>Maksājuma ID</td>
+                    <td>Maksājuma kanāls</td>
+                    <td>Kopējā summa</td>
+                    <td>Statuss</td>
+                    <td>Izveidots</td>
+                    <td>Izmainīts</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for obj in payments %}
+                <tr class="{% if obj.status != 30 %}danger{% endif %}">
+                    <td>{{ obj.id }}</td>
+                    <td>{{ obj.channel }}</td>
+                    <td>{{ obj.total }} €</td>
+                    <td>{{ obj.get_status_display }}</td>
+                    <td>{{ obj.created }}</td>
+                    <td>{{ obj.modified }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <p>Kopējā summa: {{ object.final_price }} €.</p>
+    {% if object.external_invoice_nr %}
+    <p>Rēķina numurs: <a href="https://www.e-rekins.lv/d/i/{{ object.external_invoice_code }}/">{{ object.external_invoice_nr }}</a>.</p>
+    {% endif %}
+
+    {% if object.payment_status != object.PAY_STATUS_PAYED %}
+    <button class="btn btn-primary" type="submit" name="action" value="mark_as_payed">Atzīmēt, ka pieteikums apmaksāts</button>
+    {% else %}
+    <p>Jau atzīmēts, kā samakstāts.</p>
+    {% endif %}
+    </form>
+
+<form method="post" class="margin-bottom-20">
+    {% crispy invoice_form invoice_form.helper "bootstrap3" %}
+    <button class="btn btn-primary pull-right" type="submit" name="action" value="create_invoice">Izveidot rēķinu</button>
+</form>

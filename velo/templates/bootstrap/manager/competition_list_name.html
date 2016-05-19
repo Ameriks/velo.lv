@@ -1,0 +1,4 @@
+{% if row.record.level > 0 %}
+<i data-icon="&#xe07b;" class="level-{{ record.level }}"></i>&nbsp;
+{% endif %}
+<a href="{% url 'manager:competition' record.id %}">{{ record.name }}</a>

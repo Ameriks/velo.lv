@@ -16,9 +16,9 @@ class AlbumTable(GetRequestTableKwargs, tables.Table):
 
     class Meta:
         model = Album
-        attrs = {"class": "table-block"}
+        attrs = {"class": "table"}
         fields = ("id", "title", "gallery_date", 'photographer', 'competition', 'is_internal', 'is_agency')
         per_page = 100
-        template = "base/table.html"
+        template = "bootstrap/table.html"
         empty_text = _("There are no records")
         order_by = ['-gallery_date', ]

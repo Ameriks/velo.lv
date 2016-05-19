@@ -93,7 +93,7 @@ urlpatterns += [
     url(r'^impersonate/', include('impersonate.urls')),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 
-    url(r"^json/fields/auto.json$", CustomAutoResponseView.as_view(), name="django_select2_central_json"),
+    url(r"^json/fields/auto.json$", CustomAutoResponseView.as_view(), name="django_select2-json"),
     url(r'^markdownx/', include('markdownx.urls')),
     ]
 

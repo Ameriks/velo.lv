@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.utils import timezone
 from django.core.urlresolvers import reverse
@@ -62,7 +63,7 @@ class News(StatusMixin, TimestampMixin, models.Model):
     published_on = models.DateTimeField(default=timezone.now)
 
     intro_content = RichTextField()
-    content = RichTextField(blank=True)
+    content = RichTextUploadingField(blank=True)
 
     objects = NewsManagerPublished()
 

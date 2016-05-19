@@ -25,7 +25,7 @@ __all__ = ['ManageResultList', 'ManageResultUpdate', 'ManageResultCreate', 'Mana
 class ManageResultList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Result
     table_class = ManageResultTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
     def get_context_data(self, **kwargs):
         context = super(ManageResultList, self).get_context_data(**kwargs)
@@ -88,7 +88,7 @@ class ManagLapResultInline(InlineFormSet):
 class ManageResultUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
     pk_url_kwarg = 'pk2'
     model = Result
-    template_name = 'manager/form.html'
+    template_name = 'bootstrap/manager/form.html'
     form_class = ResultForm
     inlines = [ManagLapResultInline, ]
     inlines_names = ['lap']
@@ -100,7 +100,7 @@ class ManageResultUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, Req
 class ManageResultCreate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, NamedFormsetsMixin, CreateWithInlinesView):
     pk_url_kwarg = 'pk2'
     model = Result
-    template_name = 'manager/form.html'
+    template_name = 'bootstrap/manager/form.html'
     form_class = ResultForm
     inlines = [ManagLapResultInline, ]
     inlines_names = ['lap']
@@ -111,7 +111,7 @@ class ManageResultCreate(ManagerPermissionMixin, SetCompetitionContextMixin, Req
 
 
 class ManageResultReports(ManagerPermissionMixin, SetCompetitionContextMixin, TemplateView):
-    template_name = 'manager/result_reports.html'
+    template_name = 'bootstrap/manager/result_reports.html'
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get('action')
@@ -131,13 +131,13 @@ class ManageResultReports(ManagerPermissionMixin, SetCompetitionContextMixin, Te
 class ManageUrlSyncList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = UrlSync
     table_class = UrlSyncTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
 
 class ManageUrlSyncUpdate(ManagerPermissionMixin, SetCompetitionContextMixin, RequestFormKwargsMixin, UpdateView):
     pk_url_kwarg = 'pk2'
     model = UrlSync
-    template_name = 'manager/participant_form.html'
+    template_name = 'bootstrap/manager/participant_form.html'
     form_class = UrlSyncForm
 
     def get_success_url(self):

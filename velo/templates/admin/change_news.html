@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+
+        function updateValue(id, url)
+        {
+            document.getElementById("id_image").value = id;
+            document.getElementById("id_image_img").src=url;
+        }
+        function openGalleryPopup() {
+            window.open('{% url "gallery:album_pick" %}', 'gallerypopup', 'width=800,toolbar=1,resizable=1,scrollbars=yes,height=400,top=100,left=100');
+        }
+    </script>
+
+{% endblock %}

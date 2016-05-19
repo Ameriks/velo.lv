@@ -55,7 +55,7 @@ class IncomeObject(object):
 
 
 class ManageApplicationExternalPay(ManageApplication):
-    template_name = 'manager/external_application_update.html'
+    template_name = 'bootstrap/manager/external_application_update.html'
 
     @method_decorator(xframe_options_exempt)
     def post(self, request, *args, **kwargs):
@@ -66,12 +66,12 @@ class ManageApplicationExternalPay(ManageApplication):
 class ManageCompetitionList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Competition
     table_class = ManageCompetitionTable
-    template_name = 'manager/table.html'
+    template_name = 'bootstrap/manager/table.html'
 
 
 class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin, DetailView):
     model = Competition
-    template_name = 'manager/competition_detail.html'
+    template_name = 'bootstrap/manager/competition_detail.html'
 
     def post(self, request, *args, **kwargs):
         self.competition = Competition.objects.get(id=kwargs.get('pk'))
