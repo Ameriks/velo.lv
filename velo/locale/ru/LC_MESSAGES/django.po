@@ -1566,7 +1566,7 @@ msgid ""
 "address for user %(user_display)s."
 msgstr ""
 "Пожалуйста, подтвердите, что <a href=\"mailto:%(email)s\">%(email)s</a> "
-"является адресом пользователя."
+"является адресом пользователя %(user_display)s."
 
 #: velo/templates/account/email_confirm.html:25
 msgid "Confirm"
