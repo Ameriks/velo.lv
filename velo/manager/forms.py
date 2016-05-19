@@ -787,12 +787,12 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         if commit:
             # Process numbers. Remove link to old number. assign link to new number. Set new primary number.
             numbers = self.cleaned_data.get('numbers')
-            self.instance.numbers().exclude(id__in=[nr.id for nr in numbers]).update(participant_slug='cancelled-%s' % self.instance.slug)
-            numbers.update(participant_slug=self.instance.slug)
+            self.instance.numbers().exclude(id__in=numbers).update(participant_slug='cancelled-%s' % self.instance.slug)
+            Number.objects.filter(id__in=numbers).update(participant_slug=self.instance.slug)
             if not numbers:
                 self.instance.primary_number = None
             else:
-                self.instance.primary_number = numbers.order_by('-number')[0]
+                self.instance.primary_number = Number.objects.filter(id__in=numbers).order_by('-number')[0]
 
 
         obj = super(ParticipantForm, self).save(commit)
@@ -860,7 +860,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         if self.instance.id:
             numbers = self.instance.numbers()
-            self.fields['numbers'].widget.choices = [(obj.id, str(obj)) for obj in numbers]
+            self.fields['numbers'].choices = [(obj.id, str(obj)) for obj in Number.objects.filter(competition_id__in=competition_ids)]
             self.fields['numbers'].initial = [obj.id for obj in numbers]
         else:
             self.fields['competition'].initial = self.request_kwargs.get('pk')
