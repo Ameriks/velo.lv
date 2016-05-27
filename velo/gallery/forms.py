@@ -24,7 +24,7 @@ from velo.gallery.models import Video, Photo, Album
 # from velo.gallery.select2_fields import PhotoNumberChoices
 from velo.gallery.utils import youtube_video_id, sync_album
 from velo.velo.mixins.forms import RequestKwargModelFormMixin
-
+import environ
 
 
 class AssignNumberForm(RequestKwargModelFormMixin, forms.Form):
@@ -153,7 +153,7 @@ class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
     def get_members(self, zip):
         parts = []
         for name in zip.namelist():
-            name = name.decode('utf-8')
+            name = name
             if name.startswith('__MACOSX'):
                 continue
             if not name.endswith('/'):
@@ -164,7 +164,7 @@ class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
             prefix = '/'.join(prefix) + '/'
         offset = len(prefix)
         for zipinfo in zip.infolist():
-            name = zipinfo.filename.decode('utf-8')
+            name = zipinfo.filename
 
             if name.startswith('__MACOSX'):
                 continue
@@ -180,7 +180,7 @@ class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         year = obj.gallery_date.year
         gallery_folder = slugify('%s-%s' % (obj.id, obj.title))
-        gallery_path = settings.MEDIA_ROOT.child('gallery').child(str(year)).child(gallery_folder)
+        gallery_path = str(environ.Path(settings.MEDIA_ROOT).path('gallery').path(str(year)).path(gallery_folder))
         if not os.path.exists(gallery_path):
             os.makedirs(gallery_path)
 
