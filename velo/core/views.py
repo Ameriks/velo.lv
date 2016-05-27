@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+import time
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils.translation import get_language
@@ -44,6 +45,12 @@ class IndexView(TemplateView):
         context.update({'front_photo': Photo.objects.filter(album_id=144)[0]})
 
         context.update({'news_list': News.objects.published().filter(language=get_language())[:4]})
+
+        showed_index_banner = self.request.session.get('showed_index_banner', None)
+        current_time = int(time.time())
+        if not showed_index_banner or int(showed_index_banner) + 60*5 < current_time:
+            context.update({'show_banner': True})
+            self.request.session['showed_index_banner'] = current_time
 
         slide_to = 0
         active_indexes = []
