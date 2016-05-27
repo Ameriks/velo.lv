@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+from functools import partial
 from urllib.parse import urlparse, parse_qs
 
 import os
@@ -33,6 +34,14 @@ def youtube_video_id(value):
     return None
 
 
+def md5sum(filename):
+    with open(filename, mode='rb') as f:
+        d = hashlib.md5()
+        for buf in iter(partial(f.read, 128), b''):
+            d.update(buf)
+    return d.hexdigest()
+
+
 def sync_album(album_id):
     album = Album.objects.get(id=album_id)
     for root, _, files in os.walk(album.folder):
@@ -40,8 +49,8 @@ def sync_album(album_id):
             if f[-3:].lower() != 'jpg' and f[-4:].lower() != 'jpeg':
                 continue
             fullpath = os.path.join(root, f)
-            md5 = hashlib.md5(open(fullpath).read()).hexdigest()
-            photo, created = album.photo_set.get_or_create(md5=md5, defaults={'image': fullpath[6:]})
+            md5 = md5sum(fullpath)
+            photo, created = album.photo_set.get_or_create(md5=md5, defaults={'image': fullpath[11:]})
 
             if not album.primary_image:
                 album.primary_image = photo

@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.bootstrap import StrictButton, Tab, TabHolder
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Div, HTML
+from crispy_forms.layout import Layout, Row, Div, HTML, Field
 import datetime
 import re
 import zipfile
@@ -20,11 +20,13 @@ import os
 #from django_select2 import AutoHeavySelect2MultipleWidget
 
 from velo.core.models import Competition
+from velo.core.widgets import SplitDateWidget
 from velo.gallery.models import Video, Photo, Album
 # from velo.gallery.select2_fields import PhotoNumberChoices
 from velo.gallery.utils import youtube_video_id, sync_album
 from velo.velo.mixins.forms import RequestKwargModelFormMixin
 import environ
+from django.utils import timezone
 
 
 class AssignNumberForm(RequestKwargModelFormMixin, forms.Form):
@@ -112,42 +114,58 @@ class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
     zip_file = forms.FileField(label=_('Zip File'), help_text=_('ZIP File containing photos'), required=True)
     class Meta:
         model = Album
-        fields = ['title', 'gallery_date', 'photographer', 'competition', 'description']
+        fields = ['title', 'gallery_date', 'photographer', 'competition', ]
+        widgets = {
+            'gallery_date': SplitDateWidget,
+        }
 
     def __init__(self, *args, **kwargs):
         super(AddPhotoAlbumForm, self).__init__(*args, **kwargs)
         competitions = Competition.objects.filter(competition_date__year=datetime.datetime.now().year)
         self.fields['competition'].choices = ((obj.id, obj.get_full_name) for obj in competitions)
 
+        self.fields['gallery_date'].label = ""
+        self.fields['gallery_date'].initial = timezone.now()
+
         if self.request.user.is_authenticated():
             self.fields['photographer'].initial = self.request.user.full_name
 
         self.helper = FormHelper()
-        self.helper.form_tag = True
+        self.helper.form_tag = False
         self.helper.layout = Layout(
-                    Row(
-                        Div(
-                            'title',
-                            css_class='col-sm-6'
-                        ),
-                        Div(
-                            'photographer',
-                            css_class='col-sm-6'
-                        ),
-                    ),
-                    Row(
-                        Div(
+                            Div(
+                                Div(
+                                    Field(
+                                        "title",
+                                        css_class="input-field if--50 if--dark js-placeholder-up"
+                                    ),
+                                    css_class="input-wrap w100 bottom-margin--15"
+                                ),
+                                css_class="col-xl-8 col-m-12 col-s-24"
+                            ),
+                            Div(
+                                Div(
+                                    Field(
+                                        "photographer",
+                                        css_class="input-field if--50 if--dark js-placeholder-up"
+                                    ),
+                                    css_class="input-wrap w100 bottom-margin--15"
+                                ),
+                                css_class="col-xl-8 col-m-12 col-s-24"
+                            ),
                             'competition',
-                            css_class='col-sm-6'
-                        ),
-                        Div(
-                            'gallery_date',
-                            css_class='col-sm-6'
-                        ),
-                    ),
-                    'description',
-                    'zip_file',
-                        StrictButton('Add', css_class="btn-primary search-button-margin", type="submit"),
+                            Div(
+                                Div(
+                                    HTML('<label for="id_gallery_date" class="js-placeholder ">Gallery date</label>'),
+                                    Field(
+                                        "gallery_date",
+                                        wrapper_class="row"
+                                    ),
+                                    css_class="row row--gutters-20"
+                                ),
+                                css_class="w100"
+                            ),
+                            'zip_file',
         )
 
     def get_members(self, zip):
@@ -184,7 +202,7 @@ class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
         if not os.path.exists(gallery_path):
             os.makedirs(gallery_path)
 
-        obj.folder = 'media/gallery/%i/%s' % (year, gallery_folder)
+        obj.folder = 'velo/media/gallery/%i/%s' % (year, gallery_folder)
         obj.save()
 
         zip_file = self.cleaned_data.get('zip_file')

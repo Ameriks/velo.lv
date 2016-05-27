@@ -159,7 +159,7 @@ class VideoCreateView(RequestFormKwargsMixin, CreateView):
 class PhotoAlbumCreateView(RequestFormKwargsMixin, CreateView):
     model = Album
     form_class = AddPhotoAlbumForm
-    template_name = 'gallery/video_form.html'
+    template_name = 'gallery/gallery_add_form.html'
 
     def get_success_url(self):
         return reverse('gallery:album')

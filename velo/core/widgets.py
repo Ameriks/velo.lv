@@ -60,7 +60,7 @@ class SplitDateWidget(Widget):
         # years is an optional list/tuple of years to use in the "year" select box.
         self.attrs = attrs or {}
         self.required = required
-        self.years = range(1915, datetime.date.today().year)
+        self.years = range(1915, datetime.date.today().year+1)
 
     def render(self, name, value, attrs=None):
         try:

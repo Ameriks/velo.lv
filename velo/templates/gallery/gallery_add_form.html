@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load thumbnail crispy_forms_tags i18n staticfiles %}
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block content %}
+    <div class="w100">
+        <div class="inner">
+            <div class="w100 border-right border-left no-border--480 bottom-padding--80">
+                <div class="inner no-padding--480">
+                    <div class="row">
+                        <div class="col-xl-5 col-l-24"></div>
+                        <div class="col-xl-14 col-l-24">
+                            <div class="w100 bottom-margin--50"></div>
+                            <h1 class="ti fs30 fw700 uppercase w100 bottom-margin--15">{% trans "Add new gallery" %}</h1>
+                            <form class="w100  js-form" method="POST" action="./" enctype="multipart/form-data">
+                                {% crispy form %}
+
+                                <div class="row row--gutters-20">
+                                    <div class="col-xl-12 col-s-24">
+                                        <button class="btn btn--50 btn--blue btn--blue-hover btn--blue-active flex--important direction--row justify--space-between align-items--center w100">
+                                            {% trans "Upload" %}
+                                            <svg class="icon">
+                                                <use
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                    xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+
+
+                            </form>
+                        </div>
+                    <div class="col-xl-5 col-l-24"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+{% endblock %}
