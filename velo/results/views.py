@@ -55,7 +55,10 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
     template_name = 'results/participant.html'
 
     def get_table_class(self):
-        return self.get_competition_class().get_result_table_class(self.distance, self.request.GET.get('group', None))
+        try:
+            return self.get_competition_class().get_result_table_class(self.distance, self.request.GET.get('group', None))
+        except ValueError as e:
+            raise Http404()
 
     def get(self, *args, **kwargs):
         self.set_competition(kwargs.get('pk'))
