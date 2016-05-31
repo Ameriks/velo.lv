@@ -2433,7 +2433,8 @@ main {
   border-color: #f9e103;
   background-color: transparent;
   transition: background-color 0.3s, border-color 0.3s;
-  padding: 4px; }
+  padding: 4px;
+  display: inline-block; }
 
 .check-button__image {
   width: 100%;
@@ -2449,7 +2450,8 @@ main {
   left: 0;
   right: 0;
   bottom: 0;
-  margin: auto; }
+  margin: auto;
+  pointer-events: none; }
 
 .check-button__input:checked + .check-button__label {
   border-color: #098dce;
