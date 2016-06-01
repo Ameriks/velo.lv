@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
 from django.core.validators import RegexValidator
@@ -8,7 +9,6 @@ from django.core.urlresolvers import get_script_prefix
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import iri_to_uri
 from django.conf import settings
-from ckeditor.fields import RichTextField
 from markdownx.models import MarkdownxField
 import markdown
 
@@ -21,7 +21,7 @@ class StaticPage(models.Model):
                            db_index=True,
                            validators=[RegexValidator(r'^[-\w/\.~]+$', _("This value must contain only letters, numbers, dots, underscores, dashes, slashes or tildes."))])
     title = models.CharField(_('title'), max_length=200)
-    content = RichTextField(_('content'), blank=True)
+    content = RichTextUploadingField(_('content'), blank=True)
     content_md = MarkdownxField(blank=True)
 
     enable_comments = models.BooleanField(_('enable comments'), default=False)
