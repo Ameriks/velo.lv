@@ -11,7 +11,7 @@ from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 from velo.registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
 from velo.results.models import SebStandings, HelperResults, ChipScan, DistanceAdmin, Result
-from velo.results.tables import ResultDistanceTable, ResultDistanceCheckpointTable
+from velo.results.tables import ResultDistanceTable, ResultDistanceCheckpointTable, ResultXCODistanceCheckpointTable
 
 
 class Seb2016(SEBCompetitionBase):
@@ -386,6 +386,9 @@ class Seb2016(SEBCompetitionBase):
         print(chip)
 
     def get_result_table_class(self, distance, group=None):
+        if self.competition_index == 3 and distance.id == self.SPORTA_DISTANCE_ID and not group:
+            return ResultXCODistanceCheckpointTable
+
         if distance.id != self.BERNU_DISTANCE_ID and not group:
             return ResultDistanceCheckpointTable
 

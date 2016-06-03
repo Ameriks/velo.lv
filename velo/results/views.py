@@ -107,6 +107,15 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
                         'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
                     },
                 )
+        elif self.competition.id in (54, 66) and self.distance.id in (49, 48):
+            queryset = queryset.extra(
+                select={
+                    'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+                    'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
+                    'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
+                    'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+                },
+            )
 
         elif self.competition.id == 45 or self.competition.parent_id == 51:
             queryset = queryset.extra(
@@ -114,6 +123,7 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
                     'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
                 },
             )
+
 
         queryset = queryset.select_related('competition', 'participant__distance', 'participant',
                                            'participant__bike_brand',

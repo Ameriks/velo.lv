@@ -6,17 +6,19 @@ from sitetree.utils import item
 
 from velo.core.models import Log
 from velo.registration.competition_classes.base import CompetitionScriptBase
-from velo.registration.models import Application
+from velo.registration.models import Application, Participant
 from django import forms
 from django.utils.translation import ugettext_lazy as _, activate
 from velo.registration.tables import ParticipantTable, ParticipantTableWCountry
-from velo.results.models import HelperResults, ChipScan, DistanceAdmin, Result
-from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable
+from velo.results.models import HelperResults, ChipScan, DistanceAdmin, Result, LapResult
+from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable, ResultXCODistanceCheckpointTable, \
+    ResultGroupTable
 from velo.results.tasks import create_result_sms
 
 
 class EC2016(CompetitionScriptBase):
     SPORTA_DISTANCE_ID = 48
+    competition_index = 1
 
     @property
     def groups(self):
@@ -75,65 +77,86 @@ class EC2016(CompetitionScriptBase):
             Log.objects.create(content_object=chip, action="Chip process", message="Chip scanned before start")
             return False
 
+        if chip.nr.number > 350:  # Skip all results that have number > 300 those are from public ride.
+            return False
+
         Log.objects.create(content_object=chip, action="Chip process", message="Started")
 
         delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(
             datetime.date.today(), datetime.time(0, 0, 0, 0))
         result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
 
-        if chip.is_blocked:  # If blocked, then remove result, recalculate standings, recalculate team results
-            raise NotImplementedError
-            results = Result.objects.filter(competition=chip.competition, number=chip.nr, time=result_time)
-            if results:
-                result = results[0]
-                participant = result.participant
-                if result.standings_object:
-                    standing = result.standings_object
-                    result.delete()
-                    self.recalculate_standing(standing)  # Recalculate standings for this participant
-                    standing.save()
-                    if participant.team:  # If blocked participant was in a team, then recalculate team results.
-                        self.recalculate_team_result(team=participant.team)
-                Log.objects.create(content_object=chip, action="Chip process", message="Processed blocked chip")
+
+        result_time_5back = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(minutes=5)).time()
+        if result_time_5back > result_time:
+            result_time_5back = datetime.time(0,0,0)
+        result_time_5forw = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta + datetime.timedelta(minutes=5)).time()
+
+        seconds = result_time.hour * 60 * 60 + result_time.minute * 60 + result_time.second
+
+        # Do not process if finished in 10 minutes.
+        if seconds < 10 * 60 or chip.time < distance_admin.zero: # 10 minutes
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip result less than 10 minutes. Ignoring.")
             return None
-        elif chip.is_processed:
+
+        if chip.is_processed:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
 
-        results = Result.objects.filter(competition=chip.competition, number=chip.nr)
-        if results:
-            Log.objects.create(content_object=chip, action="Chip process",
-                               message="Chip ignored. Already have result")
-        else:
-            participant = Participant.objects.filter(slug=chip.nr.participant_slug,
-                                                     competition_id__in=chip.competition.get_ids(),
-                                                     distance=chip.nr.distance, is_participating=True)
+        participant = Participant.objects.get(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
 
-            if participant:
-                result = Result.objects.create(competition=chip.competition, participant=participant[0],
-                                               number=chip.nr, time=result_time, )
+        participant_in_seb = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=(54, 51), distance_id=49, is_participating=True)
+
+        result, created = Result.objects.get_or_create(competition=chip.competition, number=chip.nr, participant=participant)
+
+        result_seb = None
+        if participant_in_seb:
+            result_seb, created = Result.objects.get_or_create(competition_id=54, number=chip.nr, participant=participant_in_seb[0])
+
+
+        already_exists_result = LapResult.objects.filter(result=result, time__gte=result_time_5back,
+                                                         time__lte=result_time_5forw)
+
+        if already_exists_result:
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip double scanned.")
+        elif result.time:
+            Log.objects.create(content_object=chip, action="Chip process", message="Result already set.")
+        else:
+            laps_done = result.lapresult_set.count()
+            result.lapresult_set.create(index=(laps_done + 1), time=result_time)
+            if result_seb:
+                result_seb.lapresult_set.create(index=(laps_done + 1), time=result_time)
+
+            if (participant.gender == 'M' and laps_done == 5) or (participant.gender == 'W' and laps_done == 3):
+                Log.objects.create(content_object=chip, action="Chip process", message="DONE. Lets assign avg speed.")
+                result.time = result_time
                 result.set_avg_speed()
                 result.save()
 
-                self.assign_standing_places()
+                result_seb.time = result_time
+                result_seb.set_avg_speed()
+                result_seb.save()
 
-                if sendsms and participant[
-                    0].is_competing and self.competition.competition_date == datetime.date.today():
+                self.assign_standing_places()
+                # Recalculate SEB places and
+
+                if participant.is_competing and self.competition.competition_date == datetime.date.today() and sendsms:
                     create_result_sms.apply_async(args=[result.id, ], countdown=120)
 
-                chip.is_processed = True
-                chip.save()
-
-            else:
-                Log.objects.create(content_object=chip, action="Chip error", message="Participant not found")
+        chip.is_processed = True
+        chip.save()
 
         print(chip)
+
+    def assign_standing_places(self):
+        self.assign_result_place()
+        self.reset_cache_results()
 
     def get_result_table_class(self, distance, group=None):
         if group:
             return ResultRMGroupTable
         else:
-            return ResultRMDistanceTable
+            return ResultXCODistanceCheckpointTable
 
     def build_menu(self, lang):
         activate(lang)
@@ -152,47 +175,3 @@ class EC2016(CompetitionScriptBase):
     def build_manager_menu(self):
         return item(str(self.competition), 'manager:competition %i' % self.competition.id,
                     in_menu=self.competition.is_in_menu, access_loggedin=True)
-
-    def assign_result_place(self):
-        """
-        Assign result place based on result time. Optimized to use raw SQL.
-        """
-        cursor = connection.cursor()
-
-        # First assign distance place
-        cursor.execute("""
-UPDATE
-    results_result r
-SET
-    result_distance = res2.distance_row_nr,
-    result_group = res2.group_row_nr
-FROM
-(
-Select res.id, result_distance, res.competition_id, res.time, p.is_competing,
-row_number() OVER (PARTITION BY nr.distance_id ORDER BY nr.distance_id, res.status, res.time) as distance_row_nr,
-row_number() OVER (PARTITION BY nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time) as group_row_nr
-FROM results_result As res
-INNER JOIN registration_number nr ON res.number_id = nr.id
-INNER JOIN registration_participant p ON res.participant_id = p.id
-WHERE p.is_competing is true and res.time IS NOT NULL
-) res2
-WHERE res2.competition_id = %s and res2.time IS NOT NULL and res2.is_competing is true
-AND r.id = res2.id
-""", [self.competition_id, ])
-        # Then unset places to others
-        cursor.execute("""
-UPDATE
-    results_result r
-SET
-    result_distance = NULL,
-    result_group = NULL
-FROM
-(
-Select res.id, result_distance, res.competition_id, res.time, p.is_competing
-FROM results_result As res
-INNER JOIN registration_number nr ON res.number_id = nr.id
-INNER JOIN registration_participant p ON res.participant_id = p.id
-) res2
-WHERE res2.competition_id = %s and (res2.time IS NULL or res2.is_competing is false)
-AND r.id = res2.id
-""", [self.competition_id, ])

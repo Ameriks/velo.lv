@@ -16,7 +16,7 @@ from velo.results.models import SebStandings, TeamResultStandings
 __all__ = [
     'ResultChildrenGroupTable', 'ResultGroupTable', 'ResultDistanceTable', 'ResultDistanceStandingTable',
     'ResultGroupStandingTable', 'ResultChildrenGroupStandingTable', 'ResultTeamStandingTable',
-    'ResultDistanceCheckpointTable'
+    'ResultDistanceCheckpointTable', 'ResultXCODistanceCheckpointTable'
 ]
 
 LEADER_TOOLTIP = ' <span class="label rounded label-%s"><span class="tooltips" data-icon="&#xe006;" data-toggle="tooltip" data-original-title="%s"></span></span>'
@@ -268,6 +268,32 @@ class ResultDistanceCheckpointTable(ResultDistanceTable):
         sequence = (
         "result_distance", "number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2', 'l1', 'time',
         'points_distance', 'status')
+
+
+class ResultXCODistanceCheckpointTable(ResultDistanceTable):
+    l1 = tables.Column(empty_values=(), verbose_name=_('C1'), accessor="l1")
+    l2 = tables.Column(empty_values=(), verbose_name=_('C2'), accessor="l2")
+    l3 = tables.Column(empty_values=(), verbose_name=_('C3'), accessor="l3")
+    l4 = tables.Column(empty_values=(), verbose_name=_('C4'), accessor="l4")
+
+    def render_l1(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    def render_l2(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    def render_l3(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    def render_l4(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    class Meta(ResultDistanceTable.Meta):
+        order_by = ("time", "l4", "l3", "l2", "l1")
+        sequence = (
+        "result_distance", "number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2', 'l1', 'l2', 'l3', 'l4', 'time',
+        'points_distance', 'status')
+
 
 
 class ResultRMDistanceTable(tables.Table):
