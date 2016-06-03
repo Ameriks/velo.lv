@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.utils import timezone
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, activate
 
 import json
 import datetime
@@ -275,6 +275,7 @@ def create_application_invoice(application, active_payment_type, action="send"):
 
     items = []
     for participant in application.participant_set.all():
+        activate(application.language)
         if application.invoice_show_names:
             description = "Dalības maksa %(competition)s - %(distance)s - %(full_name)s (%(year)i)" % {
                 "competition": application.competition.get_full_name,

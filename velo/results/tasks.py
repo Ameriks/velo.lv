@@ -7,7 +7,7 @@ from celery.schedules import crontab
 from celery.task import periodic_task
 from django.conf import settings
 import requests
-from io import BytesIO
+from io import StringIO
 from urllib.parse import urlencode
 import uuid
 from velo.core.models import Log, Competition
@@ -129,7 +129,7 @@ def fetch_results(_id):
         if resp.status_code != 200:
             return
 
-        buf = BytesIO(resp.content)
+        buf = StringIO(resp.text)
         file_lines = tuple(buf.readlines())
         lines_to_process = file_lines[processed_line:]
         for line in lines_to_process:

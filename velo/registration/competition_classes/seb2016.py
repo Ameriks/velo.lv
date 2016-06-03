@@ -227,6 +227,8 @@ class Seb2016(SEBCompetitionBase):
         for participant in participants:
             helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
 
+            current = helper.calculated_total
+
             if participant.distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
                 continue
 
@@ -290,14 +292,21 @@ class Seb2016(SEBCompetitionBase):
                         total_points += points
                     else:
                         skipped_count += 1
+
                 if participated_count:
-                    helper.calculated_total = float(total_points) / float(participated_count)
-                    if skipped_count == 1:
-                        helper.calculated_total /= 1.15
-                    elif skipped_count == 2:
-                        helper.calculated_total /= 1.25
-                    elif skipped_count > 2:
+                    avg = float(total_points) / float(participated_count)
+                    if skipped_count in (1, 2):
+                        total_points += avg / 1.15
+                        participated_count += 1
+
+                    if skipped_count == 2:
+                        total_points += avg / 1.25
+                        participated_count += 1
+
+                    if skipped_count > 2:
                         helper.calculated_total = total_points / (participated_count + (skipped_count - 2))
+                    else:
+                        helper.calculated_total = float(total_points) / float(participated_count)
                 else:
                     helper.calculated_total = 0.0
             elif not participant.primary_number:

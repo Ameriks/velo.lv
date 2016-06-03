@@ -32,7 +32,7 @@ class EC2016(CompetitionScriptBase):
         Returns number ranges for each distance.
         """
         return {
-            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 300, 'group': ''}, ],
+            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
         }
 
     def get_startlist_table_class(self, distance=None):

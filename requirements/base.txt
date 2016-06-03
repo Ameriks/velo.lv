@@ -10,11 +10,11 @@ django==1.9.6
 # Configuration
 django-environ==0.4.0
 django-secure==1.0.1
-whitenoise==3.1
+whitenoise==3.2
 
 
 # Forms
-django-braces==1.8.1
+django-braces==1.9.0
 django-crispy-forms==1.6.0
 django-floppyforms==1.6.2
 
@@ -40,7 +40,7 @@ django-autoslug==1.9.3
 pytz==2016.4
 
 # Redis support
-django-redis==4.4.2
+django-redis==4.4.3
 redis>=2.10.5
 
 
@@ -58,13 +58,13 @@ django-countries==3.4.1
 django-tables2==1.2.1
 django-tables2-reports==0.0.10
 django-extra-views==0.7.1
-Django-Select2==5.8.4
+Django-Select2==5.8.5
 django-sitetree==1.5.1
 django-rosetta==0.7.11
 
 django-grappelli==2.8.1
 easy-thumbnails==2.3
-xlwt==1.0.0
+xlwt==1.1.1
 reportlab==3.3.0
 
 pwgen==0.7
