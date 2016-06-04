@@ -309,6 +309,10 @@ class Seb2016(SEBCompetitionBase):
                         helper.calculated_total = float(total_points) / float(participated_count)
                 else:
                     helper.calculated_total = 0.0
+
+                if current_standing.distance.kind == 'T' and participant.distance.kind == 'S' and helper.calculated_total > 0:
+                    helper.calculated_total /= 10.0
+
             elif not participant.primary_number:
                 matches = get_close_matches(participant.slug, prev_slugs)
                 if matches:
@@ -357,6 +361,10 @@ class Seb2016(SEBCompetitionBase):
         if chip.is_processed:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
+
+        if chip.nr < 500 and self.competition_index == 3:
+            # We are not processing any numbers that are less than 500 in 3rd stage, as they are calculated in XCO competition.
+            return False
 
         if chip.url_sync.kind == 'FINISH':
             return super(Seb2016, self).process_chip_result(chip_id, sendsms)

@@ -779,7 +779,7 @@ class ParticipantForm(CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelFo
             if not numbers:
                 self.instance.primary_number = None
             else:
-                self.instance.primary_number = numbers.order_by('-number')[0]
+                self.instance.primary_number = Number.objects.filter(id__in=numbers).order_by('-number')[0]
 
 
         obj = super(ParticipantForm, self).save(commit)

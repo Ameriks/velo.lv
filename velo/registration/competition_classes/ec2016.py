@@ -34,7 +34,7 @@ class EC2016(CompetitionScriptBase):
         Returns number ranges for each distance.
         """
         return {
-            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
+            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 351, 'group': ''}, ],
         }
 
     def get_startlist_table_class(self, distance=None):
@@ -86,7 +86,6 @@ class EC2016(CompetitionScriptBase):
             datetime.date.today(), datetime.time(0, 0, 0, 0))
         result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
 
-
         result_time_5back = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(minutes=5)).time()
         if result_time_5back > result_time:
             result_time_5back = datetime.time(0,0,0)
@@ -113,7 +112,6 @@ class EC2016(CompetitionScriptBase):
         if participant_in_seb:
             result_seb, created = Result.objects.get_or_create(competition_id=54, number=chip.nr, participant=participant_in_seb[0])
 
-
         already_exists_result = LapResult.objects.filter(result=result, time__gte=result_time_5back,
                                                          time__lte=result_time_5forw)
 
@@ -122,26 +120,86 @@ class EC2016(CompetitionScriptBase):
         elif result.time:
             Log.objects.create(content_object=chip, action="Chip process", message="Result already set.")
         else:
-            laps_done = result.lapresult_set.count()
-            result.lapresult_set.create(index=(laps_done + 1), time=result_time)
-            if result_seb:
-                result_seb.lapresult_set.create(index=(laps_done + 1), time=result_time)
+            if participant.gender == 'M':
+                if chip.url_sync.kind == 'FINISH':
+                    split1 = result.lapresult_set.filter(index=2)
+                    split2 = result.lapresult_set.filter(index=4)
+                    split3 = result.lapresult_set.filter(index=5)
 
-            if (participant.gender == 'M' and laps_done == 5) or (participant.gender == 'W' and laps_done == 3):
-                Log.objects.create(content_object=chip, action="Chip process", message="DONE. Lets assign avg speed.")
-                result.time = result_time
+                    if not split1:
+                        result.lapresult_set.create(index=2, time=result_time)
+                        if result_seb:
+                            result_seb.lapresult_set.create(index=2, time=result_time)
+                    elif not split2:
+                        result.lapresult_set.create(index=4, time=result_time)
+                        if result_seb:
+                            result_seb.lapresult_set.create(index=4, time=result_time)
+                    elif not split3:
+                        result.lapresult_set.create(index=5, time=result_time)
+                        if result_seb:
+                            result_seb.lapresult_set.create(index=5, time=result_time)
+                else:
+                    split1 = result.lapresult_set.filter(index=1)
+                    split2 = result.lapresult_set.filter(index=3)
+
+                    if not split1:
+                        result.lapresult_set.create(index=1, time=result_time)
+                        if result_seb:
+                            result_seb.lapresult_set.create(index=1, time=result_time)
+                    elif not split2:
+                        result.lapresult_set.create(index=3, time=result_time)
+                        if result_seb:
+                            result_seb.lapresult_set.create(index=3, time=result_time)
+            else:
+                # WOMEN
+                if chip.url_sync.kind == 'FINISH':
+                    split1 = result.lapresult_set.filter(index=2)
+                    split2 = result.lapresult_set.filter(index=3)
+
+                    if not split1:
+                        result.lapresult_set.create(index=2, time=result_time)
+                        if result_seb:
+                            result_seb.lapresult_set.create(index=2, time=result_time)
+                    elif not split2:
+                        result.lapresult_set.create(index=3, time=result_time)
+                        if result_seb:
+                            result_seb.lapresult_set.create(index=3, time=result_time)
+
+                else:
+                    split1 = result.lapresult_set.filter(index=1)
+
+                    if not split1:
+                        result.lapresult_set.create(index=1, time=result_time)
+                        if result_seb:
+                            result_seb.lapresult_set.create(index=1, time=result_time)
+
+            # FINAL RESULT CALC:
+            if participant.gender == 'M':
+                final_result = result.lapresult_set.filter(index=5)
+            else:
+                final_result = result.lapresult_set.filter(index=3)
+
+            if final_result:
+                final_result = final_result[0]
+                Log.objects.create(content_object=chip, action="Chip process",
+                                   message="DONE. Lets assign avg speed.")
+                result.time = final_result.time
                 result.set_avg_speed()
                 result.save()
 
-                result_seb.time = result_time
+                result_seb.time = final_result.time
                 result_seb.set_avg_speed()
                 result_seb.save()
 
                 self.assign_standing_places()
-                # Recalculate SEB places and
+
+                # Recalculate standing places in SEB also.
+                from .seb2016 import Seb2016
+                _class = Seb2016(competition_id=54)
+                _class.assign_standing_places()
 
                 if participant.is_competing and self.competition.competition_date == datetime.date.today() and sendsms:
-                    create_result_sms.apply_async(args=[result.id, ], countdown=120)
+                    create_result_sms.apply_async(args=[result.id, ], countdown=240)
 
         chip.is_processed = True
         chip.save()
