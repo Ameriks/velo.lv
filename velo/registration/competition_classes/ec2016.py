@@ -198,14 +198,15 @@ class EC2016(CompetitionScriptBase):
                 Log.objects.create(content_object=chip, action="Chip process",
                                    message="DONE. Lets assign avg speed.")
                 if not m18 and not hidden_result:
-                    result.time = final_result.time
+                    if not result.time:
+                        result.time = final_result.time
                     result.set_avg_speed()
                     result.save()
                     self.assign_standing_places()
 
                 if result_seb:
-
-                    result_seb.time = final_result.time
+                    if not result_seb.time:
+                        result_seb.time = final_result.time
                     result_seb.set_all()
                     result_seb.save()
 
@@ -244,7 +245,7 @@ class EC2016(CompetitionScriptBase):
         ]
         self.build_flat_pages(self.competition, child_items, lang)
 
-        if self.competition.competition_date <= current_date:
+        if self.competition.competition_date <= current_date + datetime.timedelta(days=1):
             child_items.append(item(_("Results"), 'competition:result_distance_list %i' % self.competition.id))
 
         return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
