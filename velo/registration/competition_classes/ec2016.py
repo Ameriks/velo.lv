@@ -13,7 +13,7 @@ from velo.registration.tables import ParticipantTable, ParticipantTableWCountry
 from velo.results.models import HelperResults, ChipScan, DistanceAdmin, Result, LapResult
 from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable, ResultXCODistanceCheckpointTable, \
     ResultGroupTable
-from velo.results.tasks import create_result_sms
+from velo.results.tasks import create_result_sms, recalculate_standing_for_result
 
 
 class EC2016(CompetitionScriptBase):
@@ -63,6 +63,9 @@ class EC2016(CompetitionScriptBase):
         for participant in participants:
             helper, created = HelperResults.objects.get_or_create(competition=self.competition, participant=participant)
 
+    def recalculate_all_standings(self):
+        pass
+
     def process_chip_result(self, chip_id, sendsms=True):
         """
         Function processes chip result and recalculates all standings
@@ -105,12 +108,20 @@ class EC2016(CompetitionScriptBase):
         participant = Participant.objects.get(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
 
         participant_in_seb = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=(54, 51), distance_id=49, is_participating=True)
-
-        result, created = Result.objects.get_or_create(competition=chip.competition, number=chip.nr, participant=participant)
-
-        result_seb = None
+        result = result_seb = None
+        m18 = False
+        hidden_result = False
         if participant_in_seb:
             result_seb, created = Result.objects.get_or_create(competition_id=54, number=chip.nr, participant=participant_in_seb[0])
+            if result_seb.participant.group == 'M-18':
+                result = result_seb
+                m18 = True
+            if not participant.is_competing:
+                hidden_result = True
+                result = result_seb
+
+        if not result:
+            result, created = Result.objects.get_or_create(competition=chip.competition, number=chip.nr, participant=participant)
 
         already_exists_result = LapResult.objects.filter(result=result, time__gte=result_time_5back,
                                                          time__lte=result_time_5forw)
@@ -120,7 +131,10 @@ class EC2016(CompetitionScriptBase):
         elif result.time:
             Log.objects.create(content_object=chip, action="Chip process", message="Result already set.")
         else:
-            if participant.gender == 'M':
+            if m18:
+                m18_final_result = result_seb.lapresult_set.create(index=0, time=result_time)
+                # There are no splits for those participants as they are riding public ride with sport numbers.
+            elif participant.gender == 'M':
                 if chip.url_sync.kind == 'FINISH':
                     split1 = result.lapresult_set.filter(index=2)
                     split2 = result.lapresult_set.filter(index=4)
@@ -128,15 +142,15 @@ class EC2016(CompetitionScriptBase):
 
                     if not split1:
                         result.lapresult_set.create(index=2, time=result_time)
-                        if result_seb:
+                        if result_seb and not hidden_result:
                             result_seb.lapresult_set.create(index=2, time=result_time)
                     elif not split2:
                         result.lapresult_set.create(index=4, time=result_time)
-                        if result_seb:
+                        if result_seb and not hidden_result:
                             result_seb.lapresult_set.create(index=4, time=result_time)
                     elif not split3:
                         result.lapresult_set.create(index=5, time=result_time)
-                        if result_seb:
+                        if result_seb and not hidden_result:
                             result_seb.lapresult_set.create(index=5, time=result_time)
                 else:
                     split1 = result.lapresult_set.filter(index=1)
@@ -144,62 +158,69 @@ class EC2016(CompetitionScriptBase):
 
                     if not split1:
                         result.lapresult_set.create(index=1, time=result_time)
-                        if result_seb:
+                        if result_seb and not hidden_result:
                             result_seb.lapresult_set.create(index=1, time=result_time)
                     elif not split2:
                         result.lapresult_set.create(index=3, time=result_time)
-                        if result_seb:
+                        if result_seb and not hidden_result:
                             result_seb.lapresult_set.create(index=3, time=result_time)
             else:
                 # WOMEN
                 if chip.url_sync.kind == 'FINISH':
                     split1 = result.lapresult_set.filter(index=2)
-                    split2 = result.lapresult_set.filter(index=3)
+                    split2 = result.lapresult_set.filter(index=5)
 
                     if not split1:
                         result.lapresult_set.create(index=2, time=result_time)
-                        if result_seb:
+                        if result_seb and not hidden_result:
                             result_seb.lapresult_set.create(index=2, time=result_time)
                     elif not split2:
-                        result.lapresult_set.create(index=3, time=result_time)
-                        if result_seb:
-                            result_seb.lapresult_set.create(index=3, time=result_time)
+                        result.lapresult_set.create(index=5, time=result_time)
+                        if result_seb and not hidden_result:
+                            result_seb.lapresult_set.create(index=5, time=result_time)
 
                 else:
                     split1 = result.lapresult_set.filter(index=1)
 
                     if not split1:
                         result.lapresult_set.create(index=1, time=result_time)
-                        if result_seb:
+                        if result_seb and not hidden_result:
                             result_seb.lapresult_set.create(index=1, time=result_time)
 
             # FINAL RESULT CALC:
-            if participant.gender == 'M':
-                final_result = result.lapresult_set.filter(index=5)
+            if m18:
+                final_result = [m18_final_result, ]  # final_result is already set above.
             else:
-                final_result = result.lapresult_set.filter(index=3)
+                final_result = result.lapresult_set.filter(index=5)
 
             if final_result:
                 final_result = final_result[0]
                 Log.objects.create(content_object=chip, action="Chip process",
                                    message="DONE. Lets assign avg speed.")
-                result.time = final_result.time
-                result.set_avg_speed()
-                result.save()
+                if not m18 and not hidden_result:
+                    result.time = final_result.time
+                    result.set_avg_speed()
+                    result.save()
+                    self.assign_standing_places()
 
-                result_seb.time = final_result.time
-                result_seb.set_avg_speed()
-                result_seb.save()
+                import pdb;
+                pdb.set_trace()
+                if result_seb:
 
-                self.assign_standing_places()
+                    result_seb.time = final_result.time
+                    result_seb.set_all()
+                    result_seb.save()
 
-                # Recalculate standing places in SEB also.
-                from .seb2016 import Seb2016
-                _class = Seb2016(competition_id=54)
-                _class.assign_standing_places()
+                    recalculate_standing_for_result.delay(54, result_seb.id)
 
-                if participant.is_competing and self.competition.competition_date == datetime.date.today() and sendsms:
-                    create_result_sms.apply_async(args=[result.id, ], countdown=240)
+                    # Recalculate standing places in SEB also.
+                    from .seb2016 import Seb2016
+                    _class = Seb2016(competition_id=54)
+                    _class.assign_result_place()
+
+                if not m18: # We will not send to m-18, because results will not be correct.
+                    if participant.is_competing and self.competition.competition_date == datetime.date.today() and sendsms:
+                        create_result_sms.apply_async(args=[result.id, ], countdown=240)
 
         chip.is_processed = True
         chip.save()

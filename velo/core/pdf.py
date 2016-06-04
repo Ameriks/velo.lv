@@ -144,6 +144,8 @@ class ParagraphStyle(PropertySet):
         'borderRadius': None,
         'allowWidows': 1,
         'allowOrphans': 0,
+        'justifyLastLine': 0,
+        'justifyBreaks': 0,
         'textTransform':None,   #uppercase lowercase (captitalize not yet) or None or absent
         'endDots':None,         #dots on the last line of left/right justified paras
                                 #string or object with text and optional fontName, fontSize, textColor & backColor

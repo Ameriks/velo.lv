@@ -346,11 +346,16 @@ class PDFReports(object):
                                                styles["Heading2"])],
                                     ['', 'Numurs', 'Vārds', 'Uzvārds', 'Gads', 'Laiks', 'Vieta', 'Punkti']]
 
+                # in case there are laps, there could be missing time yet.
+                time = item.get('team__member__memberapplication__participant__result__time', None)
+                if time:
+                    time = time.replace(microsecond=0)
+
                 team_members.append(
                     ['', item.get('team__member__memberapplication__participant__primary_number__number'),
                      item.get('team__member__first_name'), item.get('team__member__last_name'),
                      str(item.get('team__member__birthday').year),
-                     item.get('team__member__memberapplication__participant__result__time').replace(microsecond=0),
+                     time,
                      item.get('team__member__memberapplication__participant__result__result_distance'),
                      item.get('team__member__memberapplication__participant__result__points_distance')]
                 )

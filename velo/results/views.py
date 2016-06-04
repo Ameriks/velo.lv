@@ -76,7 +76,7 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
         queryset = super(ResultList, self).get_queryset()
 
         if self.distance:
-            queryset = queryset.filter(number__distance=self.distance)
+            queryset = queryset.filter(participant__distance=self.distance)
 
         if self.request.GET.get('group', None):
             queryset = queryset.filter(participant__group=self.request.GET.get('group', None))

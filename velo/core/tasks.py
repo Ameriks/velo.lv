@@ -52,7 +52,7 @@ class LogErrorsTask(Task):
         if len(existing_task):
             existing_task = existing_task[0]
             existing_task.failures += 1
-            existing_task.updated_at = task.updated_at
+            existing_task.updated_at = failed_task.updated_at
             existing_task.save(force_update=True,
                                update_fields=('updated_at', 'failures'))
         else:
