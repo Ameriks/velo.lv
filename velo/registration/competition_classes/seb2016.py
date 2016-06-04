@@ -310,8 +310,12 @@ class Seb2016(SEBCompetitionBase):
                 else:
                     helper.calculated_total = 0.0
 
-                if current_standing.distance.kind == 'T' and participant.distance.kind == 'S' and helper.calculated_total > 0:
-                    helper.calculated_total /= 10.0
+                standings = SebStandings.objects.filter(competition=current_competition,
+                                                       participant_slug=participant.slug).order_by('-distance_total')
+                if standings.count() == 1:
+                    standings = standings[0]
+                    if standings.distance.kind == 'T' and participant.distance.kind == 'S' and helper.calculated_total > 0:
+                        helper.calculated_total /= 10.0
 
             elif not participant.primary_number:
                 matches = get_close_matches(participant.slug, prev_slugs)
