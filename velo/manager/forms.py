@@ -731,8 +731,7 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
         )
 
 
-
-class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
+class ParticipantForm(CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
     numbers = forms.MultipleChoiceField(widget=NumberChoices, required=False, choices=())
 
     reset_group = False
@@ -742,22 +741,10 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         fields = (
             'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'slug', 'is_participating', 'is_paying', 'insurance',
             'team', 'team_name', 'ssn', 'phone_number', 'email', 'send_email', 'send_sms', 'country', 'city',
-            'bike_brand2', 'occupation', 'where_heard', 'group', 'registrant', 'price', 'comment', 'registration_dt')
+            'bike_brand2', 'occupation', 'where_heard', 'group', 'registrant', 'price', 'comment', 'registration_dt', 'is_competing', )
         widgets = {
             'registrant': UserChoices,
         }
-
-    def clean_email(self):
-        value = self.cleaned_data.get('email', '')
-        if len(value) > 0:
-            resp = requests.get('https://api.mailgun.net/v2/address/validate',
-                                params={'api_key': 'pubkey-7049tobos-x721ipc8b3dp68qzxo3ri5', 'address': value}).json()
-            if not resp.get('is_valid', False):
-                msg = 'Invalid email address.'
-                if resp.get('did_you_mean'):
-                    msg = msg + ' ' + 'Did you mean:' + resp.get('did_you_mean')
-                raise forms.ValidationError(msg, code='invalid_email')
-        return value
 
     def clean_ssn(self):
         value = self.cleaned_data['ssn'].replace("-", "").strip()
@@ -792,7 +779,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
             if not numbers:
                 self.instance.primary_number = None
             else:
-                self.instance.primary_number = Number.objects.filter(id__in=numbers).order_by('-number')[0]
+                self.instance.primary_number = numbers.order_by('-number')[0]
 
 
         obj = super(ParticipantForm, self).save(commit)
@@ -880,6 +867,8 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.fields['country'].required = True
         self.fields['birthday'].required = True
 
+        self.fields['is_competing'].label = "Rezultātus vajag?"
+
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.layout = Layout(
@@ -945,7 +934,7 @@ class ParticipantForm(RequestKwargModelFormMixin, forms.ModelForm):
             Fieldset(
                 'Pārējie',
                 Column('slug', 'registration_dt', css_class='col-sm-4'),
-                Column('registrant', css_class='col-sm-4'),
+                Column('registrant', 'is_competing', css_class='col-sm-4'),
                 Column('group', css_class='col-sm-4'),
             ),
             Div(
