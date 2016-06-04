@@ -203,8 +203,6 @@ class EC2016(CompetitionScriptBase):
                     result.save()
                     self.assign_standing_places()
 
-                import pdb;
-                pdb.set_trace()
                 if result_seb:
 
                     result_seb.time = final_result.time
