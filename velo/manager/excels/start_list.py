@@ -142,7 +142,7 @@ def create_start_list(competition=None, competition_id=None):
                 index, item.id, str(item.primary_number), item.slug, str(item.competition), str(item.distance), item.last_name,
                 item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, str(item.is_competing), item.group, donation, total_entry_fee, total_insurance_fee, final_price,
                 str(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, str(item.country), item.team_name, str(item.bike_brand2) if item.bike_brand2 else '',
-                item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res.calculated_total, res.passage_assigned)
+                item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res.calculated_total, res.passage_assigned if res.passage_assigned else "")
 
             for col, value in enumerate(row_values):
                 sheet.write(row, col, value)
