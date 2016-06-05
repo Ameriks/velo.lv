@@ -598,6 +598,7 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
 
 
 class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmailMixin, forms.ModelForm):
+    numbers = forms.MultipleChoiceField(widget=NumberChoices, required=False, choices=())
     # primary_number = NumberChoice(required=False, widget=AutoHeavySelect2Widget(select2_options={
     #     'ajax': {
     #         'dataType': 'json',
@@ -613,12 +614,12 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
         model = Participant
         widgets = {
             'is_participating': forms.HiddenInput,
-            'primary_number': NumberChoices,
+            # 'primary_number': NumberChoices,
         }
         fields = (
             'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'is_participating',
-            'ssn', 'phone_number', 'email',  'country', 'team_name',
-            'primary_number')
+            'ssn', 'phone_number', 'email',  'country', 'team_name',)
+            # 'primary_number')
 
     class Media:
         js = ('plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js')
@@ -645,9 +646,6 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
 
         return self.cleaned_data
 
-
-
-
     def save(self, commit=True):
         # If this is new record, then create slug.
         if not self.instance.id:
@@ -655,10 +653,13 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
 
         if commit:
             # Process numbers. Remove link to old number. assign link to new number. Set new primary number.
-            number = self.cleaned_data.get('primary_number')
-            if number:
-                number.participant_slug = self.instance.slug
-                number.save()
+            numbers = self.cleaned_data.get('numbers')
+            self.instance.numbers().exclude(id__in=numbers).update(participant_slug='cancelled-%s' % self.instance.slug)
+            Number.objects.filter(id__in=numbers).update(participant_slug=self.instance.slug)
+            if not numbers:
+                self.instance.primary_number = None
+            else:
+                self.instance.primary_number = Number.objects.filter(id__in=numbers).order_by('-number')[0]
 
         return super(ParticipantCreateForm, self).save(commit)
 
@@ -681,6 +682,9 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
 
         self.fields['distance'].choices = [('', '------')] + [(distance.id, str(distance)) for distance in distances]
 
+        self.fields['numbers'].choices = [(obj.id, str(obj)) for obj in
+                                          Number.objects.filter(competition_id__in=competition_ids)]
+
         self.fields['competition'].initial = self.request_kwargs.get('pk')
         self.fields['country'].initial = 'LV'
         self.fields['is_participating'].initial = True
@@ -701,7 +705,7 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
                     Column('competition', css_class='col-sm-3'),
                 ),
                 Row(
-                    Column('primary_number', css_class='col-sm-3'),
+                    Column('numbers', css_class='col-sm-3'),
                     Column('distance', css_class='col-sm-3'),
                     Column('country', css_class='col-sm-3'),
                 ),
