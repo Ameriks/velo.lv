@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 import requests
 import unicodedata
-import urllib
+from urllib.parse import urlencode
 import uuid
 from velo.core.models import Competition
 from velo.marketing.models import SMS
@@ -149,7 +149,7 @@ def send_test():
         'destinationAddress': '37126461101',
         'text': str(uuid.uuid4()),
     }
-    resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urllib.urlencode(sms_obj)))
+    resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urlencode(sms_obj)))
 
 def send_smses():
     smses = SMS.objects.filter(is_processed=False)[:100]
@@ -166,7 +166,7 @@ def send_smses():
         if settings.DEBUG:
             logger.info('Sent SMS %s to %s' % (sms.text, sms.phone_number))
         else:
-            resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urllib.urlencode(sms_obj)))
+            resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urlencode(sms_obj)))
             sms.response = resp.content
         sms.is_processed = True
         sms.save()
