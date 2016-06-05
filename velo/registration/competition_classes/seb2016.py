@@ -366,7 +366,7 @@ class Seb2016(SEBCompetitionBase):
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
 
-        if chip.nr < 500 and self.competition_index == 3:
+        if chip.nr.number < 500 and self.competition_index == 3:
             # We are not processing any numbers that are less than 500 in 3rd stage, as they are calculated in XCO competition.
             return False
 
