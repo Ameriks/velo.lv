@@ -289,7 +289,7 @@ class ResultXCODistanceCheckpointTable(ResultDistanceTable):
         return self._lap_render(value)
 
     class Meta(ResultDistanceTable.Meta):
-        order_by = ("time", "l4", "l3", "l2", "l1")
+        order_by = ("group", "time", "l4", "l3", "l2", "l1")
         sequence = (
         "result_distance", "number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2', 'l1', 'l2', 'l3', 'l4', 'time',
         'points_distance', 'status')
