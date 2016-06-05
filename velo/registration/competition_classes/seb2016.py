@@ -6,12 +6,13 @@ from django.db.models import Sum
 from django.utils import timezone
 from velo.core.models import Log
 from velo.registration.competition_classes.base import SEBCompetitionBase
-from velo.registration.models import Application, ChangedName, PreNumberAssign, Number
+from velo.registration.models import Application, ChangedName, PreNumberAssign, Number, Participant, UCICategory
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 from velo.registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
 from velo.results.models import SebStandings, HelperResults, ChipScan, DistanceAdmin, Result
-from velo.results.tables import ResultDistanceTable, ResultDistanceCheckpointTable, ResultXCODistanceCheckpointTable
+from velo.results.tables import ResultDistanceTable, ResultDistanceCheckpointTable, ResultXCODistanceCheckpointTable, \
+    ResultXCODistanceCheckpointSEBTable
 
 
 class Seb2016(SEBCompetitionBase):
@@ -399,9 +400,14 @@ class Seb2016(SEBCompetitionBase):
 
     def get_result_table_class(self, distance, group=None):
         if self.competition_index == 3 and distance.id == self.SPORTA_DISTANCE_ID and not group:
-            return ResultXCODistanceCheckpointTable
+            return ResultXCODistanceCheckpointSEBTable
 
         if distance.id != self.BERNU_DISTANCE_ID and not group:
             return ResultDistanceCheckpointTable
 
         return super(Seb2016, self).get_result_table_class(distance, group)
+
+    def setup(self):
+        uci = UCICategory.objects.filter(category="CYCLING FOR ALL", birthday__gte="1982-01-01", birthday__lt="1998-01-01")
+        for u in uci:
+            Participant.objects.filter(distance_id=49, is_participating=True, slug=u.slug, gender="M").update(group='M 19-34 CFA')

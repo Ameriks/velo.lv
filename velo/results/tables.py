@@ -16,7 +16,7 @@ from velo.results.models import SebStandings, TeamResultStandings
 __all__ = [
     'ResultChildrenGroupTable', 'ResultGroupTable', 'ResultDistanceTable', 'ResultDistanceStandingTable',
     'ResultGroupStandingTable', 'ResultChildrenGroupStandingTable', 'ResultTeamStandingTable',
-    'ResultDistanceCheckpointTable', 'ResultXCODistanceCheckpointTable'
+    'ResultDistanceCheckpointTable', 'ResultXCODistanceCheckpointTable', 'ResultXCODistanceCheckpointSEBTable'
 ]
 
 LEADER_TOOLTIP = ' <span class="label rounded label-%s"><span class="tooltips" data-icon="&#xe006;" data-toggle="tooltip" data-original-title="%s"></span></span>'
@@ -293,6 +293,11 @@ class ResultXCODistanceCheckpointTable(ResultDistanceTable):
         sequence = (
         "result_distance", "number", 'first_name', 'last_name', 'year', 'group', 'team', 'bike_brand2', 'l1', 'l2', 'l3', 'l4', 'time',
         'points_distance', 'status')
+
+class ResultXCODistanceCheckpointSEBTable(ResultXCODistanceCheckpointTable):
+
+    class Meta(ResultXCODistanceCheckpointTable.Meta):
+        order_by = ("time", "l4", "l3", "l2", "l1")
 
 
 
