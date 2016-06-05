@@ -110,6 +110,12 @@ class EC2016(CompetitionScriptBase):
         if participant.gender == 'F':
             result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(seconds=15*60 + 10)).time()
 
+            result_time_5back = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(seconds=15*60 + 10) - datetime.timedelta(minutes=5)).time()
+            if result_time_5back > result_time:
+                result_time_5back = datetime.time(0,0,0)
+            result_time_5forw = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(seconds=15*60 + 10) + datetime.timedelta(minutes=5)).time()
+
+
         participant_in_seb = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=(54, 51), distance_id=49, is_participating=True)
         result = result_seb = None
         m18 = False
