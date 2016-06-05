@@ -431,6 +431,12 @@ class ResultRMGroupTable(tables.Table):
         else:
             return '-'
 
+    def render_time(self, value, record, *args, **kwargs):
+        if value:
+            return str(value.strftime("%H:%M:%S"))
+        else:
+            return "-"
+
     class Meta:
         model = Participant
         attrs = {"class": "table-block"}
