@@ -125,7 +125,7 @@ class UrlSync(PeriodicTask):
 
     def save(self, *args, **kwargs):
         self.name = "Sync_%f" % time.time()
-        self.task = "results.tasks.fetch_results"
+        self.task = "velo.results.tasks.fetch_results"
         self.crontab, created = CrontabSchedule.objects.get_or_create(minute='*', hour='*', day_of_week="*", day_of_month="*", month_of_year="*")
         super(UrlSync, self).save(*args, **kwargs)
         self.args = "[%i]" % self.id
