@@ -107,6 +107,9 @@ class EC2016(CompetitionScriptBase):
 
         participant = Participant.objects.get(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
 
+        if participant.gender == 'W':
+            result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(seconds=15*60 + 10)).time()
+
         participant_in_seb = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=(54, 51), distance_id=49, is_participating=True)
         result = result_seb = None
         m18 = False
