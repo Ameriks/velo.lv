@@ -262,3 +262,104 @@ class EC2016(CompetitionScriptBase):
     def build_manager_menu(self):
         return item(str(self.competition), 'manager:competition %i' % self.competition.id,
                     in_menu=self.competition.is_in_menu, access_loggedin=True)
+
+    def setup(self):
+
+        counter = 0
+        seb_toyota_pp = Participant.objects.filter(is_participating=True, competition_id__in=(54, 51), distance_id=49)
+        for p in seb_toyota_pp:
+            ec_pp = Participant.objects.filter(is_participating=True, competition_id=66, distance_id=48, slug=p.slug)
+            if not ec_pp:
+                Participant.objects.create(competition_id=66, distance_id=48, team_name=p.team_name,
+                                           is_participating=p.is_participating, is_competing=False,
+                                           first_name=p.first_name, last_name=p.last_name, birthday=p.birthday,
+                                           slug=p.slug, gender=p.gender, ssn=p.ssn, phone_number=p.phone_number,
+                                           email=p.email, send_email=p.send_email, send_sms=p.send_sms,
+                                           country=p.country, city=p.city, bike_brand2=p.bike_brand2, )
+                print(p)
+                counter += 1
+
+        ec_pp = Participant.objects.filter(is_participating=True, competition_id=66, distance_id=48, is_competing=False)
+        for p in ec_pp:
+            toy = Participant.objects.filter(is_participating=True, competition_id__in=(54, 51), distance_id=49, slug=p.slug)
+            if toy:
+                hp = HelperResults.objects.get(participant=toy[0], competition_id=54)
+                HelperResults.objects.filter(participant=p, competition_id=66).update(calculated_total=hp.calculated_total)
+
+        from velo.results.models import Result
+        import datetime
+        # FIX Women results.
+        all_results = Result.objects.filter(competition_id__in=[66, 54], number__distance_id=48, participant__gender='F')
+        for r in all_results:
+            if r.time:
+                r.time = (datetime.datetime.combine(datetime.date.today(), r.time) - datetime.timedelta(seconds=15 * 60 + 10)).time()
+                r.save()
+            for l in r.lapresult_set.all():
+                l.time = (datetime.datetime.combine(datetime.date.today(), l.time) - datetime.timedelta(seconds=15 * 60 + 10)).time()
+                l.save()
+
+    def assign_result_place(self):
+        """
+        Assign result place based on result time. Optimized to use raw SQL.
+        """
+        cursor = connection.cursor()
+
+        # First assign distance place
+        cursor.execute("""
+        UPDATE
+            results_result r
+        SET
+            result_distance = res2.distance_row_nr,
+            result_group = res2.group_row_nr
+        FROM
+        (
+        Select res.id, result_distance, res.competition_id, res.time, p.is_competing, p.last_name,
+        row_number() OVER (PARTITION BY nr.distance_id ORDER BY nr.distance_id, res.status, res.time) as distance_row_nr,
+        row_number() OVER (PARTITION BY nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time) as group_row_nr
+        FROM results_result As res
+        INNER JOIN registration_number nr ON res.number_id = nr.id
+        INNER JOIN registration_participant p ON res.participant_id = p.id
+        WHERE p.is_competing is true and res.time IS NOT NULL and p.group = 'M Elite' and res.competition_id=%s
+        ) res2
+        WHERE res2.competition_id = %s and res2.time IS NOT NULL and res2.is_competing is true
+        AND r.id = res2.id
+        """, [self.competition_id, self.competition_id, ])
+
+        cursor.execute("""
+        UPDATE
+            results_result r
+        SET
+            result_distance = res2.distance_row_nr,
+            result_group = res2.group_row_nr
+        FROM
+        (
+            Select res.id, result_distance, res.competition_id, res.time, p.is_competing, p.last_name,
+            row_number() OVER (PARTITION BY nr.distance_id ORDER BY nr.distance_id, res.status, res.time) as distance_row_nr,
+            row_number() OVER (PARTITION BY nr.distance_id, p.group ORDER BY nr.distance_id, p.group, res.status, res.time) as group_row_nr
+            FROM results_result As res
+            INNER JOIN registration_number nr ON res.number_id = nr.id
+            INNER JOIN registration_participant p ON res.participant_id = p.id
+            WHERE p.is_competing is true and res.time IS NOT NULL and p.group = 'W Elite' and res.competition_id=%s
+        ) res2
+        WHERE res2.competition_id = %s and res2.time IS NOT NULL and res2.is_competing is true
+        AND r.id = res2.id
+        """, [self.competition_id, self.competition_id, ])
+
+
+        # Then unset places to others
+        cursor.execute("""
+        UPDATE
+            results_result r
+        SET
+            result_distance = NULL,
+            result_group = NULL
+        FROM
+        (
+        Select res.id, result_distance, res.competition_id, res.time, p.is_competing
+        FROM results_result As res
+        INNER JOIN registration_number nr ON res.number_id = nr.id
+        INNER JOIN registration_participant p ON res.participant_id = p.id
+        ) res2
+        WHERE res2.competition_id = %s and (res2.time IS NULL or res2.is_competing is false)
+        AND r.id = res2.id
+        """, [self.competition_id, ])
