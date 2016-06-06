@@ -62,6 +62,10 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
 
     def get(self, *args, **kwargs):
         self.set_competition(kwargs.get('pk'))
+
+        if not self.competition:
+            raise Http404
+
         self.set_distances(have_results=True)  # Based on self.competition
         self.set_distance(self.request.GET.get('distance', None))
 
@@ -141,7 +145,10 @@ class SebStandingResultList(SetCompetitionContextMixin, SingleTableView):
     template_name = 'results/participant_standing.html'
 
     def get_table_class(self):
-        return self.get_competition_class().get_standing_table_class(self.distance, self.request.GET.get('group', None))
+        try:
+            return self.get_competition_class().get_standing_table_class(self.distance, self.request.GET.get('group', None))
+        except:
+            raise Http404
 
     def get(self, *args, **kwargs):
         self.set_competition(kwargs.get('pk'))
