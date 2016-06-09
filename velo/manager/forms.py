@@ -1007,7 +1007,10 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         if self.instance.id:
             distance = self.instance.number.distance
-            self.fields['calculate_time_field'].widget.attrs['zero_time'] = self.instance.competition.distanceadmin_set.get(distance=distance).zero
+            try:
+                self.fields['calculate_time_field'].widget.attrs['zero_time'] = self.instance.competition.distanceadmin_set.get(distance=distance).zero
+            except:
+                pass
         else:
             self.fields['competition'].initial = self.request_kwargs.get('pk')
 
