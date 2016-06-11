@@ -5,7 +5,7 @@
 wheel==0.29.0
 
 # Bleeding edge Django
-django==1.9.6
+django==1.9.7
 
 # Configuration
 django-environ==0.4.0
@@ -55,7 +55,7 @@ requests==2.10.0
 django-mptt==0.8.4
 django-countries==3.4.1
 
-django-tables2==1.2.1
+django-tables2==1.2.2
 django-tables2-reports==0.0.10
 django-extra-views==0.7.1
 Django-Select2==5.8.5
@@ -64,11 +64,11 @@ django-rosetta==0.7.11
 
 django-grappelli==2.8.1
 easy-thumbnails==2.3
-xlwt==1.1.1
+xlwt==1.1.2
 reportlab==3.3.0
 
 pwgen==0.7
-premailer==2.11.0
+premailer==3.0.0
 django-impersonate>=0.9.2
 
 pyinotify==0.9.6

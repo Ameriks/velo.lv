@@ -42,7 +42,7 @@ CACHES = {
 MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 INSTALLED_APPS += ('debug_toolbar', )
 
-INTERNAL_IPS = ('127.0.0.1', '10.0.2.2', '172.16.13.1', '192.168.99.1')
+INTERNAL_IPS = ('127.0.0.1', '10.0.2.2', '172.16.13.1', '192.168.99.12')
 
 DEBUG_TOOLBAR_CONFIG = {
     'DISABLE_PANELS': [
@@ -69,8 +69,8 @@ INSTALLED_APPS += (
 CELERY_ALWAYS_EAGER = True
 
 
-MY_DEFAULT_DOMAIN = 'http://192.168.58.128:58000'
-SHORT_BASE_URL = 'http://192.168.58.128:58000/s/'
+MY_DEFAULT_DOMAIN = 'http://dev.docker.local:48000'
+SHORT_BASE_URL = 'http://dev.docker.local:48000/s/'
 
 ALWAYS_SSL_PAGES = [
             "^%s" % ADMIN_URL,
