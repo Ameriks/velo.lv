@@ -159,7 +159,7 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
         self.fields['email2'].initial = self.instance.email
 
     def save(self, commit=True):
-        if self.cleaned_data.get('can_send_newsletters') and settings.MAIN_LIST_ID:
+        if self.cleaned_data.get('can_send_newsletters') and settings.MAIN_LIST_ID and commit:
             subscribe.delay(self.cleaned_data.get('email', ''))
         return super().save(commit)
 
