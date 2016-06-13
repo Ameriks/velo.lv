@@ -173,7 +173,7 @@ class CalendarView(CacheControlMixin, TemplateView):
         cache_key = 'banners_calendar_%s' % get_language()
         side_banner = cache.get(cache_key, None)
         if side_banner is None:
-            side_banner = Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.gallery_side, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width')
+            side_banner = Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.calendar, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width')
             cache.set(cache_key, side_banner, 60*30)  # Cache for 30 minutes
 
         if side_banner:
