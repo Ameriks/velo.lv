@@ -21,7 +21,7 @@ class BannerForm(forms.ModelForm):
 
     class Meta:
         model = Banner
-        fields = ("title", "competition", "location", "width", "height", "kind", "converted", "banner_url", "banner", "url", "ordering", "show_start", "show_end", "language")
+        fields = ("status", "title", "competition", "location", "width", "height", "kind", "converted", "banner_url", "banner", "url", "ordering", "show_start", "show_end", "language")
 
     def save(self, commit=True):
         if self.cleaned_data.get('zip_file'):
