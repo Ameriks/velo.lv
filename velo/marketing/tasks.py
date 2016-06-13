@@ -8,6 +8,7 @@ from velo.core.tasks import LogErrorsTask
 def subscribe(email):
     resp = requests.post("https://sendy.velo.lv/subscribe", data={
         "email": email,
-        "list": settings.MAIN_LIST_ID
+        "list": settings.MAIN_LIST_ID,
+        "boolean": True,
     })
     print(resp.content)
