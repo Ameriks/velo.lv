@@ -65,6 +65,8 @@ class NewsDetailView(NewsMixin, DetailView):
         if side_banner and len(side_banner) > 1:
             shuffle(side_banner)
             side_banner = side_banner[:3]
+
+        if side_banner:
             Banner.objects.filter(id__in=[obj.get('id') for obj in side_banner]).update(view_count=F('view_count') + 1)
 
         context.update({

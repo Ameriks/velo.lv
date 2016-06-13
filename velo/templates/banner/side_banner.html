@@ -3,11 +3,11 @@
     <div class="banner bottom-margin--20">
 
         {% if banner.kind == 20 %}
-            <iframe src="{{ banner.banner_url }}" frameborder="0"
+            <iframe src="{{ banner.banner_url }}" frameborder="0" scrolling="no"
                     class="scroll-banner__banner-content" style="width:{{ banner.width }}px;height:{{ banner.height }}px;">
             </iframe>
         {% elif banner.kind == 10 %}
-            <iframe src="{% url "advert:banner" banner.id %}" frameborder="0"
+            <iframe src="{% url "advert:banner" banner.id %}" frameborder="0" scrolling="no"
                     class="scroll-banner__banner-content" style="width:{{ banner.width }}px;height:{{ banner.height }}px;">
             </iframe>
         {% elif banner.kind == 30 %}
