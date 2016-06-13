@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.utils import timezone
+from django.db.models import Count, F
 
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from PIL import Image
@@ -38,7 +39,7 @@ class AlbumListView(ListView):
         context = super(AlbumListView, self).get_context_data(**kwargs)
         context.update({'search_form': self.get_search_form()})
 
-        cache_key = 'banners_gallery_' % get_language()
+        cache_key = 'banners_gallery_%s' % get_language()
         side_banner = cache.get(cache_key, None)
         if side_banner is None:
             side_banner = Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.gallery_side, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width')
@@ -46,6 +47,7 @@ class AlbumListView(ListView):
 
         if side_banner:
             side_banner = random.choice(side_banner)
+            Banner.objects.filter(id=side_banner.get('id')).update(view_count=F('view_count') + 1)
 
         context.update({
             'side_banner': [side_banner, ],

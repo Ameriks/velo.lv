@@ -56,7 +56,7 @@ class NewsDetailView(NewsMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        cache_key = 'banners_news_' % get_language()
+        cache_key = 'banners_news_%s' % get_language()
         side_banner = cache.get(cache_key, None)
         if side_banner is None:
             side_banner = list(Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.news, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width'))
