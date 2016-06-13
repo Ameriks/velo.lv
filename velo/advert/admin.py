@@ -42,6 +42,7 @@ class BannerForm(forms.ModelForm):
             cache.delete("banners_news_%s" % code)
             cache.delete("banners_calendar_%s" % code)
             cache.delete("banners_top_%s" % code)
+            cache.delete("banners_gallery_%s" % code)
 
         return super().save(commit)
 
