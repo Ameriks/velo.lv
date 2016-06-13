@@ -3,10 +3,10 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 from django.conf.urls import url
 
-from velo.advert.views import FlashBannerView, FlashBannerRedirectView
+from .views import BannerView, BannerRedirectView
 
 
 urlpatterns = [
-                       url(r'^f/(?P<pk>\d+)/$', FlashBannerView.as_view(), name='flash'),
-                       url(r'^f/(?P<pk>\d+)/r/$', FlashBannerRedirectView.as_view(), name='flash_redirect'),
+                       url(r'^f/(?P<pk>\d+)/$', BannerView.as_view(), name='banner'),
+                       url(r'^f/(?P<pk>\d+)/r/$', BannerRedirectView.as_view(), name='banner_redirect'),
 ]

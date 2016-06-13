@@ -191,28 +191,8 @@
 
 
 {% block footer %}
-        {% if show_banner %}
-            <div class="scroll-banner  js-scroll-banner">
-            <div class="scroll-banner__scroll-area">
-                <div class="scroll-banner__content">
-                    <figure class="scroll-banner__banner">
-                        <iframe src="https://velo.lv/media/adverts/banner/toyota_1366x450/" frameborder="0" class="scroll-banner__banner-content" width="1366" height="450">
 
-                        </iframe>
-                    </figure>
-                    <div class="scroll-banner__scroll-down-placeholder">
-                        <div class="scroll-banner__scroll-down  js-scroll-banner-scroll-end">
-                            <svg class="scroll-banner__scroll-down-icon icon">
-                                <use
-                                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow-3--down"></use>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
+            {% include "banner/top_banner.html" %}
 
     {{ block.super }}
 

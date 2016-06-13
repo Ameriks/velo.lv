@@ -1,0 +1,21 @@
+{% for banner in side_banner %}
+
+    <div class="banner bottom-margin--20">
+
+        {% if banner.kind == 20 %}
+            <iframe src="{{ banner.banner_url }}" frameborder="0"
+                    class="scroll-banner__banner-content" style="width:{{ banner.width }}px;height:{{ banner.height }}px;">
+            </iframe>
+        {% elif banner.kind == 10 %}
+            <iframe src="{% url "advert:banner" banner.id %}" frameborder="0"
+                    class="scroll-banner__banner-content" style="width:{{ banner.width }}px;height:{{ banner.height }}px;">
+            </iframe>
+        {% elif banner.kind == 30 %}
+            <a href="{% url "advert:banner_redirect" banner.id %}" target="_blank">
+                <img src="/media/{{ banner.banner }}" alt="Toyota" width="{{ banner.width }}" style="max-width:160px;"/>
+            </a>
+        {% endif %}
+
+    </div>
+
+{% endfor %}

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+import random
 import time
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
@@ -12,6 +13,7 @@ from django_downloadview import ObjectDownloadView
 from braces.views import LoginRequiredMixin
 from easy_thumbnails.alias import aliases
 
+from velo.advert.models import Banner
 from velo.core.forms import UserProfileForm
 from velo.core.models import Competition, Map, User
 from velo.gallery.models import Album, Video, Photo
@@ -49,7 +51,16 @@ class IndexView(TemplateView):
         showed_index_banner = self.request.session.get('showed_index_banner', None)
         current_time = int(time.time())
         if not showed_index_banner or int(showed_index_banner) + 60*5 < current_time:
-            context.update({'show_banner': True})
+            cache_key = 'banners_top_' % get_language()
+            banner_top = cache.get(cache_key, None)
+            if banner_top is None:
+                banner_top = Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.top, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width')
+                cache.set(cache_key, banner_top, 60*30)  # Cache for 30 minutes
+
+            if banner_top:
+                banner_top = random.choice(banner_top)
+
+            context.update({'banner_top': banner_top})
             self.request.session['showed_index_banner'] = current_time
 
         slide_to = 0
@@ -157,9 +168,22 @@ class CalendarView(CacheControlMixin, TemplateView):
         this_year = Competition.objects.filter(competition_date__year=now.year).order_by(
             'competition_date').select_related('parent')
 
+
+        cache_key = 'banners_calendar_' % get_language()
+        side_banner = cache.get(cache_key, None)
+        if side_banner is None:
+            side_banner = Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.gallery_side, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width')
+            cache.set(cache_key, side_banner, 60*30)  # Cache for 30 minutes
+
+        if side_banner:
+            side_banner = random.choice(side_banner)
+
         context.update({
             'this_year': this_year,
+            'side_banner': [side_banner, ],
         })
+
+
 
         return context
 

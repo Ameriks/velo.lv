@@ -1,0 +1,33 @@
+{% load staticfiles %}
+{% if banner_top %}
+    <div class="scroll-banner  js-scroll-banner">
+        <div class="scroll-banner__scroll-area">
+            <div class="scroll-banner__content">
+                <figure class="scroll-banner__banner" style="height:450px;">
+                    {% if banner_top.kind == 20 %}
+                        <iframe src="{{ banner_top.banner_url }}" frameborder="0"
+                                class="scroll-banner__banner-content" style="width:100%;height:100%;">
+                        </iframe>
+                    {% elif banner_top.kind == 10 %}
+                        <iframe src="{% url "advert:banner" banner_top.id %}" frameborder="0"
+                                class="scroll-banner__banner-content" style="width:100%;height:100%;">
+                        </iframe>
+                    {% elif banner_top.kind == 30 %}
+                        <a href="{% url "advert:banner_redirect" banner.id %}">
+                            <img data-src="/media/{{ banner.banner }}" onload="imgLoaded(this)" class="scroll-banner__banner-content" />
+                        </a>
+                    {% endif %}
+                </figure>
+                <div class="scroll-banner__scroll-down-placeholder">
+                    <div class="scroll-banner__scroll-down  js-scroll-banner-scroll-end">
+                        <svg class="scroll-banner__scroll-down-icon icon">
+                            <use
+                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow-3--down"></use>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

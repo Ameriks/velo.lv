@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+import random
+
 from django.contrib import messages
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
+from django.utils import timezone
 
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from PIL import Image
 import datetime
 import uuid
 
+from velo.advert.models import Banner
 from velo.gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm, AddPhotoAlbumForm, GallerySearchForm
 from velo.gallery.models import Photo, Album, PhotoNumber, Video
 from velo.velo.mixins.views import RequestFormKwargsMixin, SearchMixin, SingleTableViewWithRequest
@@ -32,6 +37,20 @@ class AlbumListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(AlbumListView, self).get_context_data(**kwargs)
         context.update({'search_form': self.get_search_form()})
+
+        cache_key = 'banners_gallery_' % get_language()
+        side_banner = cache.get(cache_key, None)
+        if side_banner is None:
+            side_banner = Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.gallery_side, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width')
+            cache.set(cache_key, side_banner, 60*30)  # Cache for 30 minutes
+
+        if side_banner:
+            side_banner = random.choice(side_banner)
+
+        context.update({
+            'side_banner': [side_banner, ],
+        })
+
         return context
 
     def get_queryset(self):

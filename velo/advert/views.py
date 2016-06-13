@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.conf import settings
+from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.views.generic import DetailView
 
-from velo.advert.models import FlashBanner
+from .models import Banner
 from velo.velo.mixins.views import CacheControlMixin
 
 
-class FlashBannerView(CacheControlMixin, DetailView):
+class BannerView(CacheControlMixin, DetailView):
     cache_timeout = 60*60
-    model = FlashBanner
+    model = Banner
 
     def rebuild_html(self):
         html = self.object.converted.replace('https://www.gstatic.com/swiffy/v6.0', '{0}plugins/swiffy'.format(settings.STATIC_URL))
@@ -33,14 +31,16 @@ document.addEventListener('visibilitychange', function(event) {
         return html
 
     def get_context_data(self, **kwargs):
-        context = super(FlashBannerView, self).get_context_data(**kwargs)
-        context.update({'html': self.rebuild_html()})
+        context = super().get_context_data(**kwargs)
+        if self.object.converted:
+            context.update({'html': self.rebuild_html()})
         return context
 
 
-class FlashBannerRedirectView(DetailView):
-    model = FlashBanner
+class BannerRedirectView(DetailView):
+    model = Banner
 
     def get(self, request, *args, **kwargs):
         object = self.get_object()
+        Banner.objects.filter(id=object.id).update(click_count=F('click_count') + 1)
         return HttpResponseRedirect(object.url)

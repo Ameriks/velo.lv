@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_tables2 import SingleTableView
 import datetime
 
-from velo.advert.models import FlashBanner
+from velo.advert.models import Banner
 from velo.core.models import Competition, Distance
 from velo.velo.utils import load_class
 
@@ -53,7 +53,7 @@ class SetCompetitionContextMixin(object):
     def get_banners(self):
         if not self.competition:
             return None
-        return FlashBanner.objects.filter(status=1).filter(competition__in=self.competition.get_ids())
+        return Banner.objects.filter(status=1).filter(competition__in=self.competition.get_ids())
 
     def set_competition(self, pk):
         if self.competition:
