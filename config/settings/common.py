@@ -411,3 +411,5 @@ ALWAYS_SSL_PAGES = []
 SHORTEN_MODELS = {
     'n': 'news.news',
 }
+
+MAIN_LIST_ID = env('MAIN_LIST_ID', default=None)

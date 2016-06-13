@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django import forms
-from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, get_language
+from django.conf import settings
 
-from crispy_forms.bootstrap import FieldWithButtons, StrictButton
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Fieldset, HTML, Column, Submit, Div, Field
+from crispy_forms.layout import Layout, Row, Column, Submit
 import math
 import uuid
 
@@ -20,6 +16,7 @@ from velo.registration.models import Application, Participant, CompanyApplicatio
 from velo.registration.widgets import CompetitionWidget
 from velo.velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin, CleanEmailMixin
 from velo.velo.utils import bday_from_LV_SSN
+from velo.marketing.tasks import subscribe
 
 
 class CompanyApplicationCreateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
@@ -143,7 +140,7 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
                 "data-rule-email": True,
                 "data-msg-required": _("This field is required."),
                 "data-msg-email": _("Please enter valid email address!"),
-              }),
+            }),
         }
 
     def clean_email2(self):
@@ -161,6 +158,10 @@ class ApplicationUpdateForm(GetClassNameMixin, CleanEmailMixin, RequestKwargMode
         self.fields['email'].required = True
         self.fields['email2'].initial = self.instance.email
 
+    def save(self, commit=True):
+        if self.cleaned_data.get('can_send_newsletters') and settings.MAIN_LIST_ID:
+            subscribe.delay(self.cleaned_data.get('email', ''))
+        return super().save(commit)
 
 
 class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
@@ -187,7 +188,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     def clean_insurance(self):
         insurance = self.cleaned_data.get('insurance', "")
         if insurance != "":
-            return self.application.competition.get_insurances().filter(status=Insurance.STATUS_ACTIVE).get(id=insurance)
+            return self.application.competition.get_insurances().filter(status=Insurance.STATUS_ACTIVE).get(
+                id=insurance)
         return None
 
     def clean_birthday(self):
@@ -235,7 +237,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                 self._errors.update({'ssn': [_("SSN is required."), ]})
 
         if birthday and distance and self.instance.application.payment_status == self.application.PAY_STATUS.not_payed:
-            total = get_total(self.instance.application.competition, distance.id, birthday.year, insurance.id if insurance else None)
+            total = get_total(self.instance.application.competition, distance.id, birthday.year,
+                              insurance.id if insurance else None)
             if not total:
                 self._errors.update({'distance': [_("This distance not available for this participant."), ]})
 
@@ -269,8 +272,9 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         insurances = competition.get_insurances().filter(status=Insurance.STATUS_ACTIVE)
 
         if insurances:
-            self.fields['insurance'].choices = [('', _("Select Insurance"))] + [(insurance.id, str(insurance)) for insurance
-                                                                   in insurances]
+            self.fields['insurance'].choices = [('', _("Select Insurance"))] + [(insurance.id, str(insurance)) for
+                                                                                insurance
+                                                                                in insurances]
 
             if self.instance.insurance_id:
                 self.fields['insurance'].initial = self.instance.insurance_id
@@ -280,7 +284,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['insurance'].widget = forms.HiddenInput()
 
         self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
-                                                              distances]
+                                                                          distances]
 
         if len(distances) == 1:
             self.fields['distance'].initial = distances[0].id
@@ -290,7 +294,9 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         self.fields['team_name'].widget.attrs.update({'class': 'team-typeahead'})
         self.fields['team_name'].initial = competition.params_dict.get('default_team', "")
-        self.fields['team_name'].help_text = competition.params_dict.get('default_team_help_%s' % get_language(), competition.params_dict.get('default_team_help', ""))
+        self.fields['team_name'].help_text = competition.params_dict.get('default_team_help_%s' % get_language(),
+                                                                         competition.params_dict.get(
+                                                                             'default_team_help', ""))
 
         for field_name in ['distance', 'first_name', 'last_name', 'gender', 'country', 'birthday']:
             self.fields[field_name].required = True
@@ -449,12 +455,10 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         self.helper.layout = Layout()
 
 
-
 class CompanyApplicationEmptyForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelForm):
     class Meta:
         model = CompanyApplication
         fields = ()
-
 
     def get_app_label(self):
         return "registration/application"
