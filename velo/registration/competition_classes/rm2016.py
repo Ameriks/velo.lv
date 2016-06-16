@@ -40,14 +40,14 @@ class RM2016(RMCompetitionBase):
         Returns number ranges for each distance.
         """
         return {
-            self.SPORTA_DISTANCE_ID: [{'start': 201, 'end': 500, 'group': ''}, ],
+            self.SPORTA_DISTANCE_ID: [{'start': 200, 'end': 500, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 3600, 'group': ''}, ],
             self.TAUTAS1_DISTANCE_ID: [{'start': 3601, 'end': 4200, 'group': ''}, ],
         }
 
     def passages(self):
         return {
-            self.SPORTA_DISTANCE_ID: [(1, 201, 400, 0), (2, 401, 500, 0)],
+            self.SPORTA_DISTANCE_ID: [(1, 200, 400, 0), (2, 401, 500, 0)],
             self.TAUTAS_DISTANCE_ID: [
                                     (1, 2001, 2200, 15),
                                     (2, 2201, 2400, 20),
