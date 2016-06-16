@@ -35,7 +35,7 @@ class Seb2014(SEBCompetitionBase):
         }
 
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
         if distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.BERNU_DISTANCE_ID):
             return ''

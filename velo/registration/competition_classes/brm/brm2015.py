@@ -36,7 +36,7 @@ class Brm2015(CompetitionScriptBase):
             self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 71, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
         }
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
 
         # If participates younger children, then assign 2012 group

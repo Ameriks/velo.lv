@@ -4,7 +4,7 @@ from io import BytesIO
 from difflib import get_close_matches
 from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from velo.registration.competition_classes.base import RMCompetitionBase
-from velo.registration.models import Number, Participant, ChangedName
+from velo.registration.models import Number, Participant, ChangedName, UCICategory
 from velo.results.models import Result, HelperResults
 
 from reportlab.lib.pagesizes import A4
@@ -27,7 +27,7 @@ class RM2016(RMCompetitionBase):
         Returns defined groups for each competition type.
         """
         return {
-            self.SPORTA_DISTANCE_ID: ('M-18', 'W-18', 'M Elite', 'W', 'M-35', 'M-40', 'M-45', 'M-50', 'M-55', ),
+            self.SPORTA_DISTANCE_ID: ('M-18', 'W-18', 'M Elite', 'M 19-34 CFA',  'W', 'M-35', 'M-40', 'M-45', 'M-50', 'M-55', ),
             self.TAUTAS_DISTANCE_ID: ('T M-16', 'T W-16', 'T M', 'T W', ),
             self.TAUTAS1_DISTANCE_ID: ('T1 M', 'T1 W',)
         }
@@ -35,12 +35,14 @@ class RM2016(RMCompetitionBase):
     def _update_year(self, year):
         return year + 2
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
         if distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             return ''
         elif distance_id == self.SPORTA_DISTANCE_ID:
             if gender == 'M':
+                if participant and (self._update_year(1995) >= year >= self._update_year(1980)) and UCICategory.objects.filter(category="CYCLING FOR ALL", slug=participant.slug):
+                    return 'M 19-34 CFA'
                 if self._update_year(1997) >= year >= self._update_year(1996):
                     return 'M-18'
                 elif self._update_year(1995) >= year >= self._update_year(1980):

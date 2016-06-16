@@ -37,7 +37,7 @@ class RM2014(RMCompetitionBase):
     GIMENU_DISTANCE_ID = 30
 
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
         if distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             return ''

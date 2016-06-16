@@ -43,7 +43,7 @@ class EC2016(CompetitionScriptBase):
     def _update_year(self, year):
         return year + 2
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         if gender == 'M':
             return 'M Elite'
         else:

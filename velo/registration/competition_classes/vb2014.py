@@ -29,7 +29,7 @@ class VB2014(VBCompetitionBase):
             self.TAUTAS_DISTANCE_ID: ('T M', 'T W', )
         }
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
         if distance_id not in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             return ''

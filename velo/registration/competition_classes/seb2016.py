@@ -92,11 +92,13 @@ class Seb2016(SEBCompetitionBase):
     def _update_year(self, year):
         return year + 2
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
         if distance_id == self.SPORTA_DISTANCE_ID:
             if gender == 'M':
-                if year in (self._update_year(1997), self._update_year(1996)):
+                if participant and (self._update_year(1995) >= year >= self._update_year(1980)) and UCICategory.objects.filter(category="CYCLING FOR ALL", slug=participant.slug):
+                    return 'M 19-34 CFA'
+                elif year in (self._update_year(1997), self._update_year(1996)):
                     return 'M-18'
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'M Elite'

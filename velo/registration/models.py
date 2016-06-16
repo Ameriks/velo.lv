@@ -179,7 +179,7 @@ class Participant(TimestampMixin, models.Model):
 
     def set_group(self):
         if not self.group and self.is_participating:
-            self.group = self.get_competition_class().assign_group(self.distance_id, self.gender, self.birthday)
+            self.group = self.get_competition_class().assign_group(self.distance_id, self.gender, self.birthday, participant=self)
 
     def save(self, *args, **kwargs):
         prev_participant = None

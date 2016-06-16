@@ -38,7 +38,7 @@ class CompetitionScriptBase(object):
         self.competition = competition or Competition.objects.get(id=competition_id)
         self.competition_id = self.competition.id
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         raise NotImplementedError()
 
     def number_ranges(self):
@@ -767,7 +767,7 @@ class RMCompetitionBase(CompetitionScriptBase):
             self.TAUTAS_DISTANCE_ID: ('T M', 'T W', )
         }
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         return NotImplementedError
 
     def build_manager_menu(self):

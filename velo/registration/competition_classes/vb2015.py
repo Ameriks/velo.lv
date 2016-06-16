@@ -33,7 +33,7 @@ class VB2015(VBCompetitionBase):
     def _update_year(self, year):
         return year + 1
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
         if distance_id not in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             return ''

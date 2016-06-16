@@ -91,7 +91,7 @@ class Seb2015(SEBCompetitionBase):
     def _update_year(self, year):
         return year + 1
 
-    def assign_group(self, distance_id, gender, birthday):
+    def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
         if distance_id == self.SPORTA_DISTANCE_ID:
             if gender == 'M':
