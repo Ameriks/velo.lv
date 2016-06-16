@@ -50,7 +50,7 @@ def send_number_email(competition, participants=None, application=None):
         'message': template_txt,
         'from_email': settings.SERVER_EMAIL,
         'recipient_list': [email, ],
-        'html': template,
+        'html_message': template,
     }
     send_mail(**email_data)
 
@@ -112,14 +112,14 @@ def send_sms_to_family_participant(participant):
 
 def initial_send_numbers_to_all_participants():
     # TODO: Filter. If participant is only one in application, then send only one email.
-    competition = Competition.objects.get(id=48)
-    applications = Application.objects.filter(competition_id=48).filter(participant__is_participating=True).order_by('id')
+    competition = Competition.objects.get(id=61)
+    applications = Application.objects.filter(competition_id=61).filter(participant__is_participating=True).order_by('id')
     applications = applications.distinct()
 
     for application in applications:
             send_number_email(competition, application=application)
 
-    participants = Participant.objects.filter(competition_id=48, is_participating=True, is_sent_number_email=False).exclude(primary_number=None).order_by('primary_number__number')
+    participants = Participant.objects.filter(competition_id=61, is_participating=True, is_sent_number_email=False).exclude(primary_number=None).order_by('primary_number__number')
     for participant in participants:
         if participant.application:
             if participant.application.participant_set.filter(is_participating=True).count() == 1:
