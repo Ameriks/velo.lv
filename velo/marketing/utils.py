@@ -44,6 +44,7 @@ def send_number_email(competition, participants=None, application=None):
     template = transform(render_to_string('registration/email/%s/number_email.html' % competition.skin, context))
     template_txt = render_to_string('registration/email/%s/number_email.txt' % competition.skin, context)
 
+    activate('lv')
     if len(participants) == 1:
         subject = u'Reģistrācijas apliecinājums - %s - %s' % (competition.get_full_name, participants[0].full_name)
     else:
