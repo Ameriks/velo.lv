@@ -94,7 +94,7 @@ class VB2015(VBCompetitionBase):
         output = BytesIO()
 
         c = canvas.Canvas(output, pagesize=A4)
-        fill_page_with_image("media/competition/vestule/VBm_2015_vestule_ar_tekstu.jpg", c)
+        fill_page_with_image("velo/media/competition/vestule/VBm_2015_vestule_ar_tekstu.jpg", c)
 
         c.setFont(_baseFontNameB, 18)
         c.drawString(5.5*cm, 20.05*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))

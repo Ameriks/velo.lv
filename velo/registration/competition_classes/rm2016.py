@@ -2,6 +2,9 @@
 from __future__ import unicode_literals
 from io import BytesIO
 from difflib import get_close_matches
+
+from django.utils.translation import activate
+
 from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from velo.registration.competition_classes.base import RMCompetitionBase
 from velo.registration.models import Number, Participant, ChangedName, UCICategory
@@ -30,6 +33,36 @@ class RM2016(RMCompetitionBase):
             self.SPORTA_DISTANCE_ID: ('M-18', 'W-18', 'M Elite', 'M 19-34 CFA',  'W', 'M-35', 'M-40', 'M-45', 'M-50', 'M-55', ),
             self.TAUTAS_DISTANCE_ID: ('T M-16', 'T W-16', 'T M', 'T W', ),
             self.TAUTAS1_DISTANCE_ID: ('T1 M', 'T1 W',)
+        }
+
+    def number_ranges(self):
+        """
+        Returns number ranges for each distance.
+        """
+        return {
+            self.SPORTA_DISTANCE_ID: [{'start': 201, 'end': 500, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 3600, 'group': ''}, ],
+            self.TAUTAS1_DISTANCE_ID: [{'start': 3601, 'end': 4200, 'group': ''}, ],
+        }
+
+    def passages(self):
+        return {
+            self.SPORTA_DISTANCE_ID: [(1, 201, 400, 0), (2, 401, 500, 0)],
+            self.TAUTAS_DISTANCE_ID: [
+                                    (1, 2001, 2200, 10),
+                                    (2, 2201, 2400, 20),
+                                    (3, 2401, 2600, 20),
+                                    (4, 2601, 2800, 5),
+                                    (5, 2801, 3000, 5),
+                                    (6, 3001, 3200, 5),
+                                    (7, 3201, 3400, 5),
+                                    (8, 3401, 3600, 5),
+                                    ],
+            self.TAUTAS1_DISTANCE_ID: [
+                (1, 3601, 3800, 5),
+                (2, 3801, 4000, 5),
+                (3, 4001, 4200, 5),
+            ],
         }
 
     def _update_year(self, year):
@@ -75,7 +108,7 @@ class RM2016(RMCompetitionBase):
                 elif year <= self._update_year(1997):
                     return 'T W'
 
-        elif distance_id == self.TAUTAS_DISTANCE_ID:
+        elif distance_id == self.TAUTAS1_DISTANCE_ID:
             if gender == 'M':
                 return 'T1 M'
             else:
@@ -84,28 +117,28 @@ class RM2016(RMCompetitionBase):
         print('here I shouldnt be...')
         raise Exception('Invalid group assigning. {0} {1} {2}'.format(gender, distance_id, birthday))
 
-
     def number_pdf(self, participant_id):
+        activate('lv')
         participant = Participant.objects.get(id=participant_id)
         output = BytesIO()
 
         c = canvas.Canvas(output, pagesize=A4)
-        fill_page_with_image("media/competition/vestule/RVm_2015_vestule_ar_tekstu.jpg", c)
+        fill_page_with_image("velo/media/competition/vestule/RVm_2016_vestule_ar_tekstu.jpg", c)
 
         c.setFont(_baseFontNameB, 18)
-        c.drawString(5*cm, 20*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
-        c.drawString(5*cm, 18*cm, str(participant.distance))
+        c.drawString(5*cm, 19.7*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
+        c.drawString(5*cm, 17.7*cm, str(participant.distance))
 
 
         if participant.primary_number:
             c.setFont(_baseFontNameB, 35)
-            c.drawString(15*cm, 18.5*cm, str(participant.primary_number))
+            c.drawString(15*cm, 18.6*cm, str(participant.primary_number))
         elif participant.distance_id == self.GIMENU_DISTANCE_ID:
             c.setFont(_baseFontNameB, 25)
-            c.drawString(15*cm, 18.5*cm, "Amway")
+            c.drawString(14.5*cm, 18.6*cm, "Ģimeņu br.")
         else:
             c.setFont(_baseFontNameB, 25)
-            c.drawString(15*cm, 18.5*cm, "-")
+            c.drawString(15*cm, 18.6*cm, "-")
 
         c.showPage()
         c.save()
