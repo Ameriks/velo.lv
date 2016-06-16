@@ -8,6 +8,9 @@ import requests
 import unicodedata
 from urllib.parse import urlencode
 import uuid
+
+from django.utils.translation import activate
+
 from velo.core.models import Competition
 from velo.marketing.models import SMS
 from velo.registration.models import Participant, Application
@@ -20,6 +23,7 @@ logger = logging.getLogger('marketing')
 # TODO: Rebuild this all
 
 def send_number_email(competition, participants=None, application=None):
+    activate('lv')
     if application:
         email = application.email
         participants = application.participant_set.filter(is_participating=True)
