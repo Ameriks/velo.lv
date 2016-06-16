@@ -49,7 +49,7 @@ class RM2016(RMCompetitionBase):
         return {
             self.SPORTA_DISTANCE_ID: [(1, 201, 400, 0), (2, 401, 500, 0)],
             self.TAUTAS_DISTANCE_ID: [
-                                    (1, 2001, 2200, 10),
+                                    (1, 2001, 2200, 15),
                                     (2, 2201, 2400, 20),
                                     (3, 2401, 2600, 20),
                                     (4, 2601, 2800, 5),
@@ -70,7 +70,7 @@ class RM2016(RMCompetitionBase):
 
     def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
-        if distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+        if distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.TAUTAS1_DISTANCE_ID):
             return ''
         elif distance_id == self.SPORTA_DISTANCE_ID:
             if gender == 'M':
