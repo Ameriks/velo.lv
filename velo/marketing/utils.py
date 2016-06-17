@@ -82,7 +82,7 @@ def send_sms_to_participant(participant):
 
     full_name = unicodedata.normalize('NFKD', participant.full_name).encode('ascii', 'ignore').decode('ascii')
 
-    sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=u"{0}, Jusu starta numurs ir {1} Vienibas brauciena. Iznemiet to EXPO centra 04.-05.09 ELKOR PLAZA Brivibas 201 uzradot so SMS".format(full_name, str(participant.primary_number)))
+    sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=u"{0}, Jusu starta numurs ir {1} Toyota Rigas Velomaratona. Iznemiet to EXPO centra 17.-18.06 SPICE Lielirbes 29, uzradot so SMS".format(full_name, str(participant.primary_number)))
 
     Participant.objects.filter(id=participant.id).update(is_sent_number_sms=True)
 
@@ -108,7 +108,7 @@ def send_sms_to_family_participant(participant):
     print('Sending to %s' % number)
 
     full_name = unicodedata.normalize('NFKD', participant.full_name).encode('ascii', 'ignore').decode('ascii')
-    sms_txt = u"Sveiki, {0}! Jums ir pieskirts starta numurs AMWAY Gimenes brauciena. Iznemiet to EXPO centra 29.-30.05 ELKOR PLAZA Brivibas 201 uzradot so SMS".format(full_name)[:160]
+    sms_txt = u"Sveiki, {0}! Jums ir pieskirts starta numurs Gimenes brauciena. Iznemiet to EXPO centra 17.-18.06 SPICE Lielirbes 29, uzradot so SMS".format(full_name)[:160]
     sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=sms_txt)
 
     Participant.objects.filter(id=participant.id).update(is_sent_number_sms=True)
@@ -122,7 +122,8 @@ def initial_send_numbers_to_all_participants():
     applications = applications.distinct()
 
     for application in applications:
-            send_number_email(competition, application=application)
+        send_number_email(competition, application=application)
+        application.participant_set.all().update(is_sent_number_email=True)
 
     participants = Participant.objects.filter(competition_id=61, is_participating=True, is_sent_number_email=False).exclude(primary_number=None).order_by('primary_number__number')
     for participant in participants:
@@ -137,7 +138,7 @@ def initial_send_numbers_to_all_participants():
 
 
 def send_numbers_to_all_participants_sms():
-    participants = Participant.objects.filter(competition_id=48, is_participating=True, is_sent_number_sms=False).exclude(primary_number=None).order_by('primary_number__number')
+    participants = Participant.objects.filter(competition_id=61, is_participating=True, is_sent_number_sms=False).exclude(primary_number=None).order_by('primary_number__number')
     for participant in participants:
         send_sms_to_participant(participant)
 
