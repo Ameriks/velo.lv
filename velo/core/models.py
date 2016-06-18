@@ -254,6 +254,8 @@ class Competition(MPTTModel):
 
     description = models.TextField(blank=True)
 
+    use_official_team_results = models.BooleanField(default=True)
+
     class MPTTMeta:
         order_insertion_by = ['competition_date', 'id']
 

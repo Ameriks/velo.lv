@@ -1,14 +1,20 @@
 # coding=utf-8
 from __future__ import unicode_literals
+
+import datetime
 from io import BytesIO
 from difflib import get_close_matches
 
 from django.utils.translation import activate
 
+from velo.core.models import Log
 from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
 from velo.registration.competition_classes.base import RMCompetitionBase
 from velo.registration.models import Number, Participant, ChangedName, UCICategory
-from velo.results.models import Result, HelperResults
+from velo.results.models import Result, HelperResults, ChipScan, DistanceAdmin, LapResult
+from velo.results.tables import ResultRMGroupTable, ResultRM2016SportsDistanceTable, ResultRMTautaDistanceTable, \
+    ResultRMDistanceTable
+from velo.results.tasks import create_result_sms
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm
@@ -209,6 +215,85 @@ class RM2016(RMCompetitionBase):
                     helper.matches_slug = matches[0]
 
             helper.save()
+
+    def process_chip_result(self, chip_id, sendsms=True):
+        """
+        Function processes chip result and recalculates all standings
+        """
+        chip = ChipScan.objects.get(id=chip_id)
+        distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
+
+        Log.objects.create(content_object=chip, action="Chip process", message="Started")
+
+        delta = datetime.datetime.combine(datetime.date.today(), distance_admin.zero) - datetime.datetime.combine(datetime.date.today(), datetime.time(0,0,0,0))
+        result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
+
+
+        result_time_5back = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta - datetime.timedelta(minutes=5)).time()
+        if result_time_5back > result_time:
+            result_time_5back = datetime.time(0,0,0)
+        result_time_5forw = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta + datetime.timedelta(minutes=5)).time()
+
+
+        seconds = result_time.hour * 60 * 60 + result_time.minute * 60 + result_time.second
+
+        # Do not process if finished in 10 minutes.
+        if seconds < 10 * 60 or chip.time < distance_admin.zero: # 10 minutes
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip result less than 10 minutes. Ignoring.")
+            return None
+
+        if chip.is_processed:
+            Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
+            return None
+
+
+        participants = chip.nr.participant_set.all()
+
+        if not participants:
+            Log.objects.create(content_object=chip, action="Chip process", message="Number not assigned to anybody. Ignoring.")
+            return None
+        else:
+            participant = participants[0]
+
+        if participant.is_competing:
+
+            result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant, number=chip.nr)
+
+            already_exists_result = LapResult.objects.filter(result=result, time__gte=result_time_5back, time__lte=result_time_5forw)
+            if already_exists_result:
+                Log.objects.create(content_object=chip, action="Chip process", message="Chip double scanned.")
+            else:
+                laps_done = result.lapresult_set.count()
+                result.lapresult_set.create(index=(laps_done+1), time=result_time)
+                if (chip.nr.distance_id == self.SPORTA_DISTANCE_ID and laps_done == 4) or (chip.nr.distance_id == self.TAUTAS_DISTANCE_ID and laps_done == 1) or (chip.nr.distance_id == self.TAUTAS1_DISTANCE_ID and laps_done == 0):
+                    Log.objects.create(content_object=chip, action="Chip process", message="DONE. Lets assign avg speed.")
+                    result.time = result_time
+                    result.set_avg_speed()
+                    result.save()
+
+                    self.assign_standing_places()
+
+                    if self.competition.competition_date == datetime.date.today() and sendsms:
+                        create_result_sms.apply_async(args=[result.id, ], countdown=120)
+
+
+        chip.is_processed = True
+        chip.save()
+
+        print(chip)
+
+
+    def get_result_table_class(self, distance, group=None):
+        if group:
+            return ResultRMGroupTable
+        else:
+            if distance.id == self.SPORTA_DISTANCE_ID:
+                return ResultRM2016SportsDistanceTable
+            elif distance.id == self.TAUTAS_DISTANCE_ID:
+                return ResultRMTautaDistanceTable
+            else:
+                return ResultRMDistanceTable
+
 
     def pre_competition_run(self):
         t = Team.objects.filter(distance__competition=self.competition)

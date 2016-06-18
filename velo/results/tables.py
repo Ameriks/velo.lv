@@ -410,6 +410,39 @@ class ResultRMSportsDistanceTable(ResultRMDistanceTable):
         template = "base/table.html"
 
 
+class ResultRM2016SportsDistanceTable(ResultRMDistanceTable):
+    l1 = tables.Column(empty_values=(), verbose_name=_('L1'), accessor="l1")
+    l2 = tables.Column(empty_values=(), verbose_name=_('L2'), accessor="l2")
+    l3 = tables.Column(empty_values=(), verbose_name=_('L3'), accessor="l3")
+    l4 = tables.Column(empty_values=(), verbose_name=_('L4'), accessor="l4")
+    result_distance = tables.Column(accessor='result_distance', default='-')
+
+    def render_l1(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    def render_l2(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    def render_l3(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    def render_l4(self, value, record, *args, **kwargs):
+        return self._lap_render(value)
+
+    class Meta:
+        model = Participant
+        attrs = {"class": "table-block"}
+        fields = ("number", "status")  # all_numbers
+        sequence = (
+        "result_distance", "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'l1', 'l2', 'l3', 'l4',
+        'time', 'status')
+        empty_text = _("There are no results")
+        order_by = ("time", "l4", "l3", "l2", "l1")
+        # ordering = ('created')
+        per_page = 200
+        template = "base/table.html"
+
+
 class ResultRMGroupTable(tables.Table):
     result_group = tables.Column(empty_values=(), verbose_name='#', accessor="result_group")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")

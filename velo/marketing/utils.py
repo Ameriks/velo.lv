@@ -142,7 +142,7 @@ def send_numbers_to_all_participants_sms():
     for participant in participants:
         send_sms_to_participant(participant)
 
-    # participants = Participant.objects.filter(competition_id=34, is_participating=True, is_sent_number_sms=False, distance_id=30).order_by('created')
+    # participants = Participant.objects.filter(competition_id=61, is_participating=True, is_sent_number_sms=False, distance_id=56).order_by('created')
     # for participant in participants:
     #     send_sms_to_family_participant(participant)
 
