@@ -38,13 +38,15 @@
                                         <option value="" disabled selected>{% trans "Select Competition" %}</option>
                                     </select>
                                 </div>
-                                <button class="btn btn--50 btn--disabled flex--important wrap--nowrap direction--row justify--space-between align-items--center w100  js-form-results-btn" disabled>
-                                    {% trans "See Results" %}
-                                    <svg class="icon">
-                                        <use
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
-                                    </svg>
+                                <button class="btn btn--50 w100 js-form-results-btn btn--blue btn--blue-hover btn--blue-active" disabled>
+                                    <div class="btn__flex">
+                                        {% trans "See Results" %}
+                                        <svg class="icon">
+                                            <use
+                                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                        </svg>
+                                    </div>
                                 </button>
                             </form>
                             <div class="w100 bottom-margin--50"></div>

@@ -151,12 +151,14 @@
                                                 <div class="col-xl-15 col-m-14 col-s-24"></div>
                                                 <div class="col-xl-9 col-m-10 col-s-24">
                                                     <button type="submit"
-                                                            class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100 flex--important wrap--nowrap justify--space-between align-items--center">
+                                                            class="btn btn--50 w100 js-form-results-btn btn--blue btn--blue-hover btn--blue-active">
+                                                    <div class="btn__flex">
                                                         {% if object.final_price == 0 %}{% trans "Apply" %}{% else %}{% trans "Pay" %}{% endif %}
                                                         <svg class="left-margin--15 icon">
                                                             <use xmlns:xlink="http://www.w3.org/1999/xlink"
                                                                  xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
                                                         </svg>
+                                                    </div>
                                                     </button>
                                                 </div>
                                             </div>
