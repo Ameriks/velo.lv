@@ -82,9 +82,6 @@
 
                 {% for object in object_list %}
 
-
-
-
                     {% ifchanged object.0 %}
                         {% counter start=2 silent=True assign="team_counter" %}
                         {% if forloop.counter0 %}
@@ -96,10 +93,12 @@
                         <div class="card border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
                         <div class="flex--1">
                             <div class="card__info">
-                                <h2 class="card__heading">{{ object.3 }}
-                                    {% if object.2 %}{% trans "VIP" %}{% endif %}</h2>
-                            {% trans "Result" %}: {{ team_counter|add:"-1" }}<br />
-                            {% trans "Time" %}: {% firstof object.11 '-' %}
+                                <h2 class="card__heading bottom-margin--20">{{ object.3 }}</h2>
+
+                                <div class="card__heading2">
+                                    <div style="float:left;">{% trans "Result" %}: {{ team_counter|add:"-1" }}</div>
+                                    <div style="float:right;">{% trans "Time" %}: {% firstof object.11 '-' %}</div>
+                                </div>
                             </div>
                         </div>
 

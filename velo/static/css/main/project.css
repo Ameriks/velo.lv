@@ -3580,6 +3580,13 @@ img.brief__video-thumbnail {
   line-height: 1.2;
   padding: 0px 30px; }
 
+.card__heading2 {
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  padding: 0px 30px; }
+
 .card__image {
   overflow: hidden; }
 

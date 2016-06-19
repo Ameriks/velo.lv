@@ -97,10 +97,12 @@
                         <div class="card border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
                         <div class="flex--1">
                             <div class="card__info">
-                                <h2 class="card__heading">{{ object.1 }}
-                                    {% if object.2 %}{% trans "VIP" %}{% endif %}</h2>
-                            {% trans "Result" %}: {{ team_counter|add:"-1" }}<br />
-                            {% trans "Points" %}: {% firstof object.3 '-' %}
+                                <h2 class="card__heading bottom-margin--20">{{ object.1 }} {% if object.2 %}<span style="float:right;">{% trans "VIP" %}</span>{% endif %}</h2>
+                                <div class="card__heading2">
+                                    <div style="float:left;">{% trans "Result" %}: {{ team_counter|add:"-1" }}</div>
+                                    <div style="float:right;">{% trans "Points" %}: {% firstof object.3 '-' %}</div>
+                                </div>
+
                             </div>
                         </div>
 
