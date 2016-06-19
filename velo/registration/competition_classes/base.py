@@ -585,7 +585,7 @@ AND r.id = res2.id
 
     def assign_passage(self, reset=False):
         if self.competition.level != 2:
-            return Exception('We allow assigning passages only for stages.')
+            raise Exception('We allow assigning passages only for stages.')
 
         if reset:
             HelperResults.objects.filter(competition=self.competition).update(passage_assigned=None)
@@ -634,7 +634,7 @@ AND r.id = res2.id
         update_helper_result_table(self.competition_id, update=True)
 
         if self.competition.level != 2:
-            return Exception('We allow assigning numbers only for stages.')
+            raise Exception('We allow assigning numbers only for stages.')
 
         if reassign:
             Number.objects.filter(competition_id__in=self.competition.get_ids()).update(participant_slug='', number_text='')

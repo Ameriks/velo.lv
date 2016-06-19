@@ -122,7 +122,7 @@ class VB2016(VBCompetitionBase):
         path = 'velo/results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
 
         if not os.path.isfile(path):
-            return Exception
+            raise Exception
 
         c = canvas.Canvas(output, pagesize=A4)
 

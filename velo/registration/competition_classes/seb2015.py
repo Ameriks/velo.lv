@@ -184,7 +184,7 @@ class Seb2015(SEBCompetitionBase):
 
     def create_helper_results(self, participants):
         if self.competition.level != 2:
-            return Exception('We allow creating helper results only for stages.')
+            raise Exception('We allow creating helper results only for stages.')
 
 
         # participants = participants.filter(distance_id__in=(self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID))
