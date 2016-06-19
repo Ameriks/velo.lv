@@ -481,12 +481,12 @@ class ResultDiplomaPDF(DetailView):
         if self.object.competition.processing_class:
             _class = load_class(self.object.competition.processing_class)
         else:
-            raise Http404
+            return Http404
         try:
             processing_class = _class(self.object.competition_id)
             file_obj = processing_class.generate_diploma(self.object)
         except:
-            raise Http404
+            return Http404
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename=%s.pdf' % self.object.participant.slug
         response.write(file_obj.read())
