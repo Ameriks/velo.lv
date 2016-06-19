@@ -247,7 +247,7 @@ class RM2016(RMCompetitionBase):
             return None
 
 
-        participants = chip.nr.participant_set.all()
+        participants = Participant.objects.filter(competition_id__in=self.competition.get_ids(), is_participating=True, slug=chip.nr.participant_slug, distance=chip.nr.distance)
 
         if not participants:
             Log.objects.create(content_object=chip, action="Chip process", message="Number not assigned to anybody. Ignoring.")
