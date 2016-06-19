@@ -265,9 +265,16 @@ class RM2016(RMCompetitionBase):
             else:
                 laps_done = result.lapresult_set.count()
                 result.lapresult_set.create(index=(laps_done+1), time=result_time)
+
+                # Fix lap index
+                for index, lap in enumerate(result.lapresult_set.order_by('time'), start=1):
+                    lap.index = index
+                    lap.save()
+
                 if (chip.nr.distance_id == self.SPORTA_DISTANCE_ID and laps_done == 4) or (chip.nr.distance_id == self.TAUTAS_DISTANCE_ID and laps_done == 1) or (chip.nr.distance_id == self.TAUTAS1_DISTANCE_ID and laps_done == 0):
                     Log.objects.create(content_object=chip, action="Chip process", message="DONE. Lets assign avg speed.")
-                    result.time = result_time
+                    last_laptime = result.lapresult_set.order_by('-time')[0]
+                    result.time = last_laptime.time
                     result.set_avg_speed()
                     result.save()
 
