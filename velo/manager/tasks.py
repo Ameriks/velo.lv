@@ -112,7 +112,7 @@ def result_process(competition_id, action, user_id):
     competition_class = class_(competition=competition)
 
     if action == 'process_unprocessed':
-        for chip in competition.chipscan_set.filter(is_processed=False):
+        for chip in competition.chipscan_set.filter(is_processed=False).order_by('time'):
             competition_class.process_chip_result(chip.id)
         return True
 
