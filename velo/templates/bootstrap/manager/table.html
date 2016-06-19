@@ -16,5 +16,10 @@
     {% if search_form %}
         {% crispy search_form search_form.helper "bootstrap3" %}
     {% endif %}
+    {% if object_list.form %}
+        <div class="hidden-print">
+            {% crispy object_list.form %}
+        </div>
+    {% endif %}
     {% render_table table %}
 {% endblock %}

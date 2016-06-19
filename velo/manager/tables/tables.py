@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -11,7 +8,7 @@ from django_tables2.utils import A
 
 from velo.core.models import Competition
 from velo.payment.models import Price
-from velo.results.models import DistanceAdmin, Result, UrlSync
+from velo.results.models import DistanceAdmin, UrlSync
 from velo.team.models import MemberApplication, Team
 from velo.velo.mixins.table import GetRequestTableKwargs
 from velo.velo.tables import CustomCheckBoxColumn
@@ -241,36 +238,6 @@ class ManageMemberApplicationTable(GetRequestTableKwargs, tables.Table):
         order_by = ("title", "kind")
         per_page = 100
         template = "bootstrap/table.html"
-
-
-class ManageResultTable(tables.Table):
-    id = LinkColumn('manager:result', args=[A('competition_id'), A('id')], accessor="id", verbose_name=_('ID'), )
-    distance = tables.Column(verbose_name=_('Distance'), accessor='participant.distance')
-    first_name = tables.Column(verbose_name=_('First Name'), accessor='participant.first_name')
-    last_name = tables.Column(verbose_name=_('Last Name'), accessor='participant.last_name')
-    group = tables.Column(verbose_name=_('Group'), accessor='participant.group')
-    time = tables.Column(verbose_name=_('Time'), accessor='time')
-
-    def render_last_name(self, record, **kwargs):
-        url = reverse('manager:participant',
-                      kwargs={'pk': self.request_kwargs.get('pk'), 'pk_participant': record.participant_id})
-        return mark_safe('<a href="%s">%s</a>' % (url, record.participant.last_name))
-
-    class Meta:
-        model = Result
-        attrs = {"class": "table table-striped table-hover"}
-        fields = ("competition", "number", "avg_speed", "points_group", "points_distance", "status")
-        sequence = ('id', 'competition', 'distance', 'number', 'first_name', 'last_name', 'time', 'avg_speed', 'group',
-                    'points_group', 'points_distance', 'status')
-        empty_text = _("There are no results")
-        # order_by = ("-created")
-        per_page = 100
-        template = "bootstrap/table.html"
-
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        self.request_kwargs = kwargs.pop('request_kwargs')
-        super(ManageResultTable, self).__init__(*args, **kwargs)
 
 
 class ManageApplicationTable(GetRequestTableKwargs, tables.Table):

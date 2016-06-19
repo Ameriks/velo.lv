@@ -1,0 +1,18 @@
+{% extends 'bootstrap/manager/table.html' %}
+{% load django_tables2 crispy_forms_tags %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block main %}
+    {{ block.super }}
+
+    <div class="well">
+        <h4>Actions:</h4>
+        <form action="" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary" name="action" value="process_unprocessed">Process unprocessed chips</button>
+        </form>
+    </div>
+{% endblock %}

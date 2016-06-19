@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "manager.js",
+  "sourceRoot": "",
+  "sources": [
+    "manager.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,CAAA,CAAE,SAAA;WACE,CAAA,CAAE,mBAAF,CAAsB,CAAC,EAAvB,CAA0B,OAA1B,EAAmC,SAAC,KAAD;AAC/B,UAAA;MAAA,IAAA,GAAO,KAAK,CAAC;MACb,IAAA,GAAO,CAAA,CAAE,IAAF,CAAO,CAAC,OAAR,CAAgB,MAAhB;MACP,CAAA,CAAE,0FAAF,EAA8F,IAA9F,CAAmG,CAAC,GAApG,CAAwG,EAAxG;aACA;IAJ+B,CAAnC;EADF,CAAF;AAAA"
+}

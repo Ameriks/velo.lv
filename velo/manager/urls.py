@@ -9,7 +9,7 @@ from velo.manager.views import ManageParticipantList, ManageCompetitionList, Man
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
     ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView, ManagePriceList, ManagePriceCreate, ManagePriceUpdate, \
-    MatchResultParticipantView, ManageNewsList, ManageNewsCreate, ManageNewsUpdate
+    MatchResultParticipantView, ManageNewsList, ManageNewsCreate, ManageNewsUpdate, ManageChipScanList
 from velo.manager.views.participant_manage import ManagePreNumberAssignList, ManagePreNumberAssignUpdate, \
     ManagePreNumberAssignCreate, ChangedNameList, ChangedNameCreate, ChangedNameUpdate
 from velo.manager.views.results_manage import ManageResultList, ManageResultUpdate
@@ -50,6 +50,11 @@ urlpatterns = [
                        url(r'^competition/(?P<pk>\d+)/result/$', ManageResultList.as_view(), name='result_list'),
                        url(r'^competition/(?P<pk>\d+)/result/(?P<pk2>\d+)/$', ManageResultUpdate.as_view(), name='result'),
                        url(r'^competition/(?P<pk>\d+)/result/add/$', ManageResultCreate.as_view(), name='result'),
+
+                       url(r'^competition/(?P<pk>\d+)/chipscan/$', ManageChipScanList.as_view(), name='chipscan_list'),
+
+
+
 
                        url(r'^competition/(?P<pk>\d+)/result/reports/$', ManageResultReports.as_view(), name='result_reports'),
                        url(r'^competition/(?P<pk>\d+)/application/$', ManageApplicationList.as_view(), name='application_list'),

@@ -31,7 +31,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">velo.lv Manager</a>
+                <a class="navbar-brand" href="{% url "manager:competition_list" %}">velo.lv Manager</a>
             </div>
 
 
@@ -63,7 +63,7 @@
 <script type="text/javascript"
         src="{% static "vendor/bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
 <script src="{% static "vendor/bower_components/jquery-unveil/jquery.unveil.min.js" %}"></script>
-
+<script src="{% static "coffee/manager.js" %}"></script>
 <script>
     $(function () {
         $("img").unveil();

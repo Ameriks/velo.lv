@@ -11,15 +11,16 @@ from django.views.generic import UpdateView, TemplateView
 from extra_views import NamedFormsetsMixin, UpdateWithInlinesView, InlineFormSet, CreateWithInlinesView
 
 from velo.core.formsets import CustomBaseInlineFormSet
+from velo.manager.filter import ChipScanFilter
 from velo.manager.forms import ResultListSearchForm, ResultForm, ManageLapResultForm, UrlSyncForm
-from velo.manager.tables import ManageResultTable
+from velo.manager.tables import ManageResultTable, ManageChipScanTable
 from velo.manager.tables.tables import UrlSyncTable
 from velo.manager.views.participant_manage import ManagerPermissionMixin
-from velo.results.models import Result, LapResult, UrlSync
+from velo.results.models import Result, LapResult, UrlSync, ChipScan
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, RequestFormKwargsMixin
-from velo.manager.tasks import generate_pdfreport
+from velo.manager.tasks import generate_pdfreport, result_process
 
-__all__ = ['ManageResultList', 'ManageResultUpdate', 'ManageResultCreate', 'ManageResultReports', 'ManageUrlSyncList', 'ManageUrlSyncUpdate']
+__all__ = ['ManageResultList', 'ManageResultUpdate', 'ManageResultCreate', 'ManageResultReports', 'ManageUrlSyncList', 'ManageUrlSyncUpdate', 'ManageChipScanList']
 
 
 class ManageResultList(ManagerPermissionMixin, SingleTableViewWithRequest):
@@ -62,6 +63,32 @@ class ManageResultList(ManagerPermissionMixin, SingleTableViewWithRequest):
             )
 
         return queryset.select_related('competition', 'participant', 'number', 'participant__distance')
+
+
+class ManageChipScanList(ManagerPermissionMixin, SingleTableViewWithRequest):
+    model = ChipScan
+    table_class = ManageChipScanTable
+    template_name = 'bootstrap/manager/results/chipscan_table.html'
+    filter_class = ChipScanFilter
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset._qs = queryset.qs.filter(competition_id__in=self.competition.get_ids())
+
+        return queryset
+
+    def post(self, request, *args, **kwargs):
+        self.set_competition(kwargs.get('pk'))
+
+        action = request.POST.get('action')
+
+        if action in ('process_unprocessed', ):
+            result_process.delay(kwargs.get('pk'), action, request.user.id)
+            messages.info(request, 'Unprocessed chips are being processed')
+        else:
+            raise Http404
+
+        return HttpResponseRedirect(reverse('manager:chipscan_list', kwargs={'pk': kwargs.get('pk')}))
 
 
 class ManagLapResultInline(InlineFormSet):

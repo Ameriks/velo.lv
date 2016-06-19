@@ -123,6 +123,9 @@ class UrlSync(PeriodicTask):
     kind = models.CharField(max_length=30, default='FINISH')
     index = models.IntegerField(blank=True, null=True)
 
+    def __str__(self):
+        return "#%s %s" % (self.id, self.kind)
+
     def save(self, *args, **kwargs):
         self.name = "Sync_%f" % time.time()
         self.task = "velo.results.tasks.fetch_results"

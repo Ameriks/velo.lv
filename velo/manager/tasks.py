@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 
 import celery
 
-from velo.core.models import User
+from velo.core.models import User, Competition
 from velo.core.tasks import LogErrorsTask
 from velo.manager.models import TempDocument
 from velo.manager.pdfreports import PDFReports
@@ -103,3 +103,17 @@ def generate_pdfreport(competition_id, action, user_id):
               html_message='Atskaite atrodama šeit: <a href="{0}{1}">{0}{1}</a>'.format(settings.MY_DEFAULT_DOMAIN, obj.doc.url))
 
     return True
+
+
+@celery.task(base=LogErrorsTask)
+def result_process(competition_id, action, user_id):
+    competition = Competition.objects.get(id=competition_id)
+    class_ = load_class(competition.processing_class)
+    competition_class = class_(competition=competition)
+
+    if action == 'process_unprocessed':
+        for chip in competition.chipscan_set.filter(is_processed=False):
+            competition_class.process_chip_result(chip.id)
+        return True
+
+    return False
