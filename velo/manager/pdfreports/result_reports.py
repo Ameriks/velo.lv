@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from django.db import connection
+from django.utils.translation import activate
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -42,6 +43,7 @@ class PDFReports(object):
     processing_class = None
 
     def __init__(self, competition=None, competition_id=None):
+        activate('lv')
         if not competition and not competition_id:
             raise Exception('Expected at least one variable')
         if not competition:
