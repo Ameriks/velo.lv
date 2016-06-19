@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-05-14 00:28+0300\n"
-"PO-Revision-Date: 2016-05-14 00:31+0137\n"
+"PO-Revision-Date: 2016-06-19 10:16+0137\n"
 "Last-Translator: b'Agris Ameriks <agris@pd.lv>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2187,7 +2187,7 @@ msgstr "VIP"
 #: velo/templates/results/team.html:102
 #: velo/templates/team/member_detail.html:75
 msgid "Result"
-msgstr "Rezultāti"
+msgstr "Rezultāts"
 
 #: velo/templates/socialaccount/connections.html:6
 msgid "Account Connections"

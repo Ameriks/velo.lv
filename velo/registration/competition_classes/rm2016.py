@@ -307,3 +307,7 @@ class RM2016(RMCompetitionBase):
                     p.save()
             except:
                 print('Not %s' % member.slug)
+
+        uci = UCICategory.objects.filter(category="CYCLING FOR ALL", birthday__gte="1982-01-01", birthday__lt="1998-01-01")
+        for u in uci:
+            Participant.objects.filter(distance_id=self.SPORTA_DISTANCE_ID, is_participating=True, slug=u.slug, gender="M").update(group='M 19-34 CFA')
