@@ -351,8 +351,6 @@ SERVER_EMAIL = "webmaster@mans.velo.lv"
 MY_DEFAULT_DOMAIN = 'https://velo.lv'
 SHORT_BASE_URL = 'http://velo.lv/s/'
 
-MAILGUN_ACCESS_KEY = env('MAILGUN_ACCESS_KEY')
-
 REPLACE_AUTH_USER_ADMIN = False
 
 USER_FIELDS = ['email', ]

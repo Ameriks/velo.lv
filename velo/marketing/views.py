@@ -34,15 +34,6 @@ def mailgun_verify(api_key, token, timestamp, signature):
         digestmod=hashlib.sha256).hexdigest()
 
 
-@csrf_exempt
-def mailgun_webhook(request):
-    if not mailgun_verify(settings.MAILGUN_ACCESS_KEY, request.POST.get('token'), request.POST.get('timestamp'),
-                          request.POST.get('signature')):
-        return HttpResponse()
-    event = Log.from_mailgun_request(request)
-    return HttpResponse()
-
-
 class TestEmailTemplate(SuperuserRequiredMixin, TemplateView):
     template_name = 'registration/email/rm2015/number_email.html'
 

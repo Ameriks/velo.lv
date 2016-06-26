@@ -238,7 +238,7 @@ class Participant(TimestampMixin, models.Model):
         obj = super(Participant, self).save(*args, **kwargs)
 
         if not self.code_short and self.id:
-            hashids = Hashids(salt=settings.SECRET_KEY2, min_length=7, alphabet=settings.HASH_ALPHABET)
+            hashids = Hashids(salt=settings.SECRET_KEY, min_length=7, alphabet=settings.HASH_ALPHABET)
             self.code_short = hashids.encode(self.id)
             self.save()
 

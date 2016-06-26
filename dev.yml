@@ -1,8 +1,6 @@
 postgres:
-  image: postgres
+  build: compose/postgres
   volumes:
-    # If you are using boot2docker, postgres data has to live in the VM for now until #581 is fixed
-    # for more info see here: https://github.com/boot2docker/boot2docker/issues/581
     - /var/lib/postgresql/data
   ports:
       - "0.0.0.0:5432:5432"
@@ -21,19 +19,19 @@ django:
   links:
     - postgres
   environment:
-    - PGSQL_PASS=postgres
-    - DJANGO_SETTINGS_MODULE=config.settings.local_db
-    - MAILGUN_ACCESS_KEY=changeme
-    - SMS_PASSWORD=changeme
-    - SMS_USERNAME=changeme
-    - SOCIAL_AUTH_FACEBOOK_SECRET=changeme
-    - SOCIAL_AUTH_TWITTER_SECRET=changeme
-    - SOCIAL_AUTH_DRAUGIEM_KEY=changeme
-    - RABBITMQ_PASS=changeme
-    - AWS_ACCESS_KEY_ID=changeme
-    - AWS_SECRET_ACCESS_KEY=changeme
-    - ADMIN_URL=changeme
     - C_FORCE_ROOT=true
-    - VIMEO_KEY=changeme
-    - VIMEO_SECRET=changeme
-    - VIMEO_TOKEN=changeme
+    - SECRET_KEY=CHANGEME
+    - SMS_PASSWORD=CHANGEME
+    - SMS_USERNAME=CHANGEME
+    - SOCIAL_AUTH_FACEBOOK_SECRET=CHANGEME
+    - SOCIAL_AUTH_TWITTER_SECRET=CHANGEME
+    - SOCIAL_AUTH_DRAUGIEM_KEY=CHANGEME
+    - AWS_ACCESS_KEY_ID=CHANGEME
+    - AWS_SECRET_ACCESS_KEY=CHANGEME
+    - DJANGO_ADMIN_URL=admin/
+    - DJANGO_SETTINGS_MODULE=config.settings.local
+    - VIMEO_KEY=CHANGEME
+    - VIMEO_SECRET=CHANGEME
+    - VIMEO_TOKEN=CHANGEME
+    - DATABASE_URL=postgis://velolv:velolv@postgres/velolv
+    - MAIN_LIST_ID=CHANGEME

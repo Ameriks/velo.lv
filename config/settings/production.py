@@ -24,7 +24,6 @@ from .common import *  # noqa
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Raises ImproperlyConfigured exception if DJANGO_SECRET_KEY not in os.environ
 SECRET_KEY = env("SECRET_KEY")
-SECRET_KEY2 = env('SECRET_KEY2')  # For short URLS
 
 
 # This ensures that Django will be able to detect a secure connection
@@ -171,19 +170,3 @@ SESSION_COOKIE_DOMAIN = '.velo.lv'
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-
-
-ALWAYS_SSL_PAGES = [
-            "^%s" % ADMIN_URL,
-            "^/manager",
-            "^/admin",
-            ".*\.json$",
-            "^/lv/pieteikums",
-            "^/lv/uznemuma_pieteikums",
-            "^/lv/maksajums",
-            "^/lv/konts",
-            "^/en/application",
-            "^/en/company_application",
-            "^/en/payment",
-            "^/en/accounts",
-            ]

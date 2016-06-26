@@ -17,7 +17,6 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 THUMBNAIL_DEBUG = True
 
 SECRET_KEY = env("DJANGO_SECRET_KEY", default='CHANGEME!!!7z0c)k$qd19(@)@_qmg(dgxnmsr!dd&f8^s&2_avzww+u)s0x)')
-SECRET_KEY2 = env('SECRET_KEY2', default='CHANGEME!!!7z0c)k$qd19(@)@_qmg(dgxnmsr!dd&f8^s&2_avzww+u)s0x)')  # For short URLS
 
 
 # Mail settings
@@ -71,20 +70,5 @@ CELERY_ALWAYS_EAGER = True
 
 MY_DEFAULT_DOMAIN = 'http://dev.docker.local:48000'
 SHORT_BASE_URL = 'http://dev.docker.local:48000/s/'
-
-ALWAYS_SSL_PAGES = [
-            "^%s" % ADMIN_URL,
-            "^/manager",
-            "^/admin",
-            ".*\.json$",
-            "^/lv/pieteikums",
-            "^/lv/uznemuma_pieteikums",
-            "^/lv/maksajums",
-            "^/lv/konts",
-            "^/en/application",
-            "^/en/company_application",
-            "^/en/payment",
-            "^/en/accounts",
-            ]
 
 SITETREE_RAISE_ITEMS_ERRORS_ON_DEBUG = False
