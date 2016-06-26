@@ -1,0 +1,382 @@
+location /diplomas {
+    return 404;
+}
+location /index.php {
+    return 404;
+}
+location /administrator/index.php {
+    return 404;
+}
+location /lv/kautkas/f {
+    return 404;
+}
+
+location /plugins/ {
+    return 404;
+}
+location /templates/ {
+    return 404;
+}
+location /data/sys/ {
+    return 404;
+}
+location /data/user/ {
+    return 404;
+}
+location /modules {
+    return 404;
+}
+location /images {
+    return 404;
+}
+location /cache {
+    return 404;
+}
+
+location /new/ {
+    return 404;
+}
+
+location /hwdvideos/ {
+    return 404;
+}
+
+location /lv/pieteikums/$ {
+  return 301 https://velo.lv/lv/;
+}
+
+location /lv/konts/pieslegties/ {
+  return 301 https://velo.lv/lv/konts/login/;
+}
+
+
+location /lv/sacensibas/maps/gpx/73/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/98/;
+}
+location /lv/sacensibas/maps/gpx/74/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/99/;
+}
+location /lv/sacensibas/maps/gpx/75/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/100/;
+}
+
+
+location /lv/sacensibas/maps/gpx/69/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/91/;
+}
+location /lv/sacensibas/maps/gpx/70/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/92/;
+}
+location /lv/sacensibas/maps/gpx/71/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/93/;
+}
+
+
+location /lv/sacensibas/maps/gpx/65/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/85/;
+}
+location /lv/sacensibas/maps/gpx/66/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/86/;
+}
+location /lv/sacensibas/maps/gpx/67/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/87/;
+}
+
+
+
+location /lv/sacensibas/maps/gpx/62/ { return 301 https://velo.lv/lv/sacensibas/kartes/gpx/82/; }
+location /lv/sacensibas/maps/gpx/63/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/81/;
+}
+location /lv/sacensibas/maps/gpx/64/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/80/;
+}
+
+
+location /lv/sacensibas/maps/gpx/54/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/75/;
+}
+location /lv/sacensibas/maps/gpx/55/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/76/;
+}
+location /lv/sacensibas/maps/gpx/56/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/77/;
+}
+
+location /lv/sacensibas/maps/gpx/50/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/71/;
+}
+location /lv/sacensibas/maps/gpx/51/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/72/;
+}
+location /lv/sacensibas/maps/gpx/52/ {
+    return 301 https://velo.lv/lv/sacensibas/kartes/gpx/73/;
+}
+
+
+
+location /s/nB { return 301 https://velo.lv/lv/jaunumi/indulis-bekmanis-saglaba-liderkreklu-sig-117-2012/; }
+location /s/nC { return 301 https://velo.lv/lv/jaunumi/aicinam-uz-latvijas-velosipedistu-vienib-118-2012/; }
+location /s/nD { return 301 https://velo.lv/lv/jaunumi/aicinajums-uz-ritenu-paradi-visi-uz-ripu-122-2012/; }
+location /s/nE { return 301 https://velo.lv/lv/jaunumi/sezonas-nosleguma-balle-sigulda-124-2012/; }
+location /s/nF { return 301 https://velo.lv/lv/jaunumi/latvijas-gada-balva-sporta-2011-129-2012/; }
+location /s/nG { return 301 https://velo.lv/lv/jaunumi/2013gada-sacensibu-kalendars-04042013-310-2012/; }
+location /s/nH { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-nosleguma-apbalvosana-308-2012/; }
+location /s/nI { return 301 https://velo.lv/lv/jaunumi/par-trases-izmainam-seb-mtb-7-posma-123-2012/; }
+location /s/nJ { return 301 https://velo.lv/lv/jaunumi/sestdien-24septembri-seb-maratonu-sezona-125-2012/; }
+location /s/nK { return 301 https://velo.lv/lv/jaunumi/nedelas-nogale-sigulda-finise-seb-mtb-10-126-2012/; }
+location /s/nL { return 301 https://velo.lv/lv/jaunumi/nosleguma-pasakums-sigulda-127-2012/; }
+location /s/nM { return 301 https://velo.lv/lv/jaunumi/seb-mtb-2011gada-sezonas-uzvaretaji-alan-128-2012/; }
+location /s/nN { return 301 https://velo.lv/lv/jaunumi/uzsak-pieteiksanos-seb-kalnu-divritenu-m-153-2012/; }
+location /s/nO { return 301 https://velo.lv/lv/jaunumi/igo-japins-iesaka-10-iemesli-kapec-ietei-156-2012/; }
+location /s/nP { return 301 https://velo.lv/lv/jaunumi/igo-japina-blogs-198-2012/; }
+location /s/nQ { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-1posma-trasi-170-2012/; }
+location /s/nR { return 301 https://velo.lv/lv/jaunumi/jaunums-seb-mtb-maratona-dalibnieku-edin-175-2012/; }
+location /s/nS { return 301 https://velo.lv/lv/jaunumi/detalizeti-trasu-apskati-179-2012/; }
+location /s/nV { return 301 https://velo.lv/lv/jaunumi/sasniegts-jauns-dalibnieku-rekordskaits--183-2012/; }
+location /s/nW { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-2posma-trasi-187-2012/; }
+location /s/nX { return 301 https://velo.lv/lv/jaunumi/latvijas-mtb-cempionats-xcm-2012-13maija-196-2012/; }
+location /s/nY { return 301 https://velo.lv/lv/jaunumi/igo-japina-atbilde-201-2012/; }
+location /s/n0 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-sigulda-uzvar-andris-vosekalns-a-207-2012/; }
+location /s/n1 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-sigulda-video-212-2012/; }
+location /s/n2 { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-3posma-trasi-236-2012/; }
+location /s/n4 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratons-3posms-cesis-254-2012/; }
+location /s/n5 { return 301 https://velo.lv/lv/jaunumi/video-2-257-2012/; }
+location /s/n6 { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-4posma-trasi-260-2012/; }
+location /s/n7 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-vietalva-gaidama-spraig-265-2012/; }
+location /s/n8 { return 301 https://velo.lv/lv/jaunumi/satiksmes-ierobezojumi-266-2012/; }
+location /s/n9 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-vietalva-uzvar-sorokins-un-ardav-267-2012/; }
+location /s/na { return 301 https://velo.lv/lv/jaunumi/4posms-vietalva-video-269-2012/; }
+location /s/nb { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-tukuma-trasi-270-2012/; }
+location /s/nd { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-tukuma-uzvar-sorokins-u-274-2012/; }
+location /s/nf { return 301 https://velo.lv/lv/jaunumi/tukuma-video-277-2012/; }
+location /s/ng { return 301 https://velo.lv/lv/jaunumi/sestdien-iepazisanas-ar-smiltenes-trasi-300-2012/; }
+location /s/ni { return 301 https://velo.lv/lv/jaunumi/noslegusies-populara-kalnu-divritenu-ser-305-2012/; }
+location /s/nj { return 301 https://velo.lv/lv/jaunumi/seb-mtb-2012-smiltene-noslegums-306-2012/; }
+location /s/nk { return 301 https://velo.lv/lv/jaunumi/japins-tipiskakas-velobrauceju-kludas-ne-214-2012/; }
+location /s/nl { return 301 https://velo.lv/lv/jaunumi/tele2-rigas-velomaratona-otrais-trenina--219-2012/; }
+location /s/nm { return 301 https://velo.lv/lv/jaunumi/mums-ir-nepieciesama-tava-palidziba-223-2012/; }
+location /s/nn { return 301 https://velo.lv/lv/jaunumi/japina-ieteikumi-drosai-brauksanai-velom-224-2012/; }
+location /s/no { return 301 https://velo.lv/lv/jaunumi/igo-japins-iesaka-225-2012/; }
+location /s/np { return 301 https://velo.lv/lv/jaunumi/rigas-velomaratona-laika-pilseta-gaidami-226-2012/; }
+location /s/nq { return 301 https://velo.lv/lv/jaunumi/numuru-sanemsana-227-2012/; }
+location /s/nr { return 301 https://velo.lv/lv/jaunumi/noderiga-informacija-tele2-rigas-velomar-229-2012/; }
+location /s/ns { return 301 https://velo.lv/lv/jaunumi/tele2-rigas-velomaratona-dalibnieku-reko-232-2012/; }
+location /s/nt { return 301 https://velo.lv/lv/jaunumi/tele2-rigas-velomaratona-oficialais-vide-233-2012/; }
+location /s/nv { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-vienibas-brauciena-mtb-tr-119-2012/; }
+location /s/nw { return 301 https://velo.lv/lv/jaunumi/vienibas-braucienam-registrejusies-jau-3-120-2012/; }
+location /s/nx { return 301 https://velo.lv/lv/jaunumi/registreties-vienibas-velobraucienam-var-258-2012/; }
+location /s/ny { return 301 https://velo.lv/lv/jaunumi/vienibas-brauciena-organizatori-aicina-u-279-2012/; }
+location /s/nz { return 301 https://velo.lv/lv/jaunumi/neatliec-pieteiksanos-vienibas-brauciena-281-2012/; }
+location /s/nBA { return 301 https://velo.lv/lv/jaunumi/svetdien-sigulda-norisinasies-mtb-trases-288-2012/; }
+location /s/nBB { return 301 https://velo.lv/lv/jaunumi/informacija-vienibas-brauciena-dalibniek-292-2012/; }
+location /s/nBC { return 301 https://velo.lv/lv/jaunumi/noderiga-informacija-vienibas-brauciena--293-2012/; }
+location /s/nBD { return 301 https://velo.lv/lv/jaunumi/vienibas-brauciens-parspejis-visus-iepri-294-2012/; }
+location /s/nBE { return 301 https://velo.lv/lv/jaunumi/vienibas-brauciena-video-297-2012/; }
+location /s/nBF { return 301 https://velo.lv/lv/jaunumi/popularaja-rigas-velomaratona-piedalas-3-579-2014/; }
+location /s/nBG { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-vietalvas-posma-rietumu-589-2014/; }
+location /s/nBH { return 301 https://velo.lv/lv/jaunumi/atklaj-11-seb-mtb-sezonu-163-2012/; }
+location /s/nBI { return 301 https://velo.lv/lv/jaunumi/japins-tele2-rigas-velomaratona-trase-so-171-2012/; }
+location /s/nBJ { return 301 https://velo.lv/lv/jaunumi/seb-mtb-posmam-cesis-valmiera-pieteikusi-176-2012/; }
+location /s/nBK { return 301 https://velo.lv/lv/jaunumi/sakusies-pieteiksanas-vislatvijas-vienib-417-2013/; }
+location /s/nBL { return 301 https://velo.lv/lv/jaunumi/bikernieku-sporta-kompleksa-saksies-vien-464-2013/; }
+location /s/nBM { return 301 https://velo.lv/lv/jaunumi/valsts-prezidents-andris-berzins-atbalst-475-2013/; }
+location /s/nBN { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-vienibas-velobrauciena-mt-478-2013/; }
+location /s/nBO { return 301 https://velo.lv/lv/jaunumi/gatavojies-vienibas-braucienam-ipasa-vel-481-2013/; }
+location /s/nBP { return 301 https://velo.lv/lv/jaunumi/iznem-savu-vienibas-velobrauciena-numuru-483-2013/; }
+location /s/nBQ { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciena-lieliskos-laika-a-484-2013/; }
+location /s/nBR { return 301 https://velo.lv/lv/jaunumi/registracija-seb-mtb-maratonam-2013-324-2013/; }
+location /s/nBS { return 301 https://velo.lv/lv/jaunumi/ziemigie-laika-apstakli-ievies-divas-kor-334-2013/; }
+location /s/nBT { return 301 https://velo.lv/lv/jaunumi/seb-ibankas-50-atlaide-tiek-atjaunota-336-2013/; }
+location /s/nBU { return 301 https://velo.lv/lv/jaunumi/viens-ir-uzvaret-parejos-pavisam-kas-cit-345-2013/; }
+location /s/nBV { return 301 https://velo.lv/lv/jaunumi/izaicini-sevi-seb-mtb-rigas-posma-347-2013/; }
+location /s/nBW { return 301 https://velo.lv/lv/jaunumi/piedalies-vesturiskos-notikumos-362-2013/; }
+location /s/nBX { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-sezonas-nosleguma-apbal-510-2013/; }
+location /s/nBY { return 301 https://velo.lv/lv/jaunumi/12-seb-mtb-maratona-sezona-jaunas-emocij-515-2013/; }
+location /s/nBZ { return 301 https://velo.lv/lv/jaunumi/2013gada-seb-mtb-maratona-sezonas-videoa-516-2013/; }
+location /s/nB0 { return 301 https://velo.lv/lv/jaunumi/2014gada-sacensibu-kalendars-523-2014/; }
+location /s/nB1 { return 301 https://velo.lv/lv/jaunumi/registresanas-seb-mtb-maratonam-2013-331-2013/; }
+location /s/nB2 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-1posms-332-2013/; }
+location /s/nB3 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-1posma-norise-333-2013/; }
+location /s/nB4 { return 301 https://velo.lv/lv/jaunumi/5-maija-iepazisanas-ar-seb-mtb-maratona--358-2013/; }
+location /s/nB5 { return 301 https://velo.lv/lv/jaunumi/pirmo-reizi-vesture-norisinas-seb-mtb-ri-361-2013/; }
+location /s/nB6 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratonam-pirmajam-posmam-cesis--365-2013/; }
+location /s/nB7 { return 301 https://velo.lv/lv/jaunumi/teju-2700-dalibnieki-starte-seb-mtb-pirm-367-2013/; }
+location /s/nB9 { return 301 https://velo.lv/lv/jaunumi/seb-2013-1posma-video-apskats-373-2013/; }
+location /s/nBa { return 301 https://velo.lv/lv/jaunumi/izmainas-trases-apskates-laikos-393-2013/; }
+location /s/nBb { return 301 https://velo.lv/lv/jaunumi/aizraujosaja-siguldas-trase-norisinasies-398-2013/; }
+location /s/nBc { return 301 https://velo.lv/lv/jaunumi/seb-mtb-siguldas-posma-un-latvijas-cempi-402-2013/; }
+location /s/nBe { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-3posma-trasi-409-2013/; }
+location /s/nBf { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-tresais-posms-gleznaina-418-2013/; }
+location /s/nBh { return 301 https://velo.lv/lv/jaunumi/provizoriskie-3posma-rezultati-427-2013/; }
+location /s/nBi { return 301 https://velo.lv/lv/jaunumi/4posma-cesis-trase-440-2013/; }
+location /s/nBj { return 301 https://velo.lv/lv/jaunumi/nedelas-nogale-cesis-norisinasies-seb-mt-445-2013/; }
+location /s/nBk { return 301 https://velo.lv/lv/jaunumi/seb-mtb-cesu-posma-startes-ari-saramotin-448-2013/; }
+location /s/nBm { return 301 https://velo.lv/lv/jaunumi/seb-mtb-cesu-posms-pulce-rekordlielu-dal-451-2013/; }
+location /s/nBn { return 301 https://velo.lv/lv/jaunumi/cesu-posma-video-apskats-455-2013/; }
+location /s/nBo { return 301 https://velo.lv/lv/jaunumi/smiltene-uznems-seb-mtb-maratona-piekto--458-2013/; }
+location /s/nBp { return 301 https://velo.lv/lv/jaunumi/seb-mtb-smiltenes-posma-gaidama-viena-no-463-2013/; }
+location /s/nBr { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-tukuma-trasi-487-2013/; }
+location /s/nBs { return 301 https://velo.lv/lv/jaunumi/lielaka-ritenbrauksanas-sacensibu-serial-490-2013/; }
+location /s/nBt { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-vares-laimet-100-litrus-492-2013/; }
+location /s/nBu { return 301 https://velo.lv/lv/jaunumi/pirms-dodies-uz-seb-mtb-maratonu-tukuma--493-2013/; }
+location /s/nBw { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-tukuma-posma-uzvara-nei-497-2013/; }
+location /s/nBx { return 301 https://velo.lv/lv/jaunumi/2013gada-tele2-rigas-velomaratons-plano--357-2013/; }
+location /s/nBy { return 301 https://velo.lv/lv/jaunumi/tele2-rigas-velomaratona-trenini-363-2013/; }
+location /s/nBz { return 301 https://velo.lv/lv/jaunumi/sovakar-bikerniekos-sakas-tele2-rigas-ve-370-2013/; }
+location /s/nCA { return 301 https://velo.lv/lv/jaunumi/tele2-veikala-merkela-iela-ieprieks-vare-390-2013/; }
+location /s/nCB { return 301 https://velo.lv/lv/jaunumi/tele2-rigas-velomaratona-lieliskos-laika-391-2013/; }
+location /s/nCC { return 301 https://velo.lv/lv/jaunumi/azartiskas-cinas-aizvadits-spices-bernu--386-2013/; }
+location /s/nCD { return 301 https://velo.lv/lv/jaunumi/norisinasies-spices-bernu-mini-velomarto-379-2013/; }
+location /s/nCE { return 301 https://velo.lv/lv/jaunumi/viegli-nebus-536-2014/; }
+location /s/nCF { return 301 https://velo.lv/lv/jaunumi/informacija-seb-mtb-maratona-dalibniekie-582-2014/; }
+location /s/nCG { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-seb-mtb-maratona-1posma-t-542-2014/; }
+location /s/nCJ { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-2014-1posma-video-apska-550-2014/; }
+location /s/nCK { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-seb-mtb-maratona-3posma-t-581-2014/; }
+location /s/nCL { return 301 https://velo.lv/lv/jaunumi/vietalvas-posma-videoapskats-2014-591-2014/; }
+location /s/nCM { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-vietalvas-posma-zimelis-746-2015/; }
+location /s/nCN { return 301 https://velo.lv/lv/jaunumi/uci-serijas-seb-mtb-maratona-siguldas-po-604-2014/; }
+location /s/nCO { return 301 https://velo.lv/lv/jaunumi/sigulda-uznems-uci-serijas-seb-mtb-marat-593-2014/; }
+location /s/nCP { return 301 https://velo.lv/lv/jaunumi/dalibnieku-servisa-piedavajums-seb-mtb-m-600-2014/; }
+location /s/nCS { return 301 https://velo.lv/lv/jaunumi/notiks-iepazisanas-ar-seb-mtb-maratona-k-608-2014/; }
+location /s/nCT { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-kuldigas-posma-trasu-sh-610-2014/; }
+location /s/nCU { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-kuldigas-posma-triumfe--613-2014/; }
+location /s/nCV { return 301 https://velo.lv/lv/jaunumi/5posms-kuldiga-videoapskats-614-2014/; }
+location /s/nCW { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-cesu-posma-kritiens-nel-622-2014/; }
+location /s/nCX { return 301 https://velo.lv/lv/jaunumi/notiks-iepazisanas-ar-seb-mtb-maratona-c-616-2014/; }
+location /s/nCY { return 301 https://velo.lv/lv/jaunumi/svariga-informacija-dalibniekiem-par-seb-618-2014/; }
+location /s/nCZ { return 301 https://velo.lv/lv/jaunumi/mainiti-seb-mtb-maratona-starta-laiki-619-2014/; }
+location /s/nC0 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-6posma-cesis-videoapska-624-2014/; }
+location /s/nC1 { return 301 https://velo.lv/lv/jaunumi/uzmanibu-dalibniekiem-numurs-arkartas-ga-643-2014/; }
+location /s/nC2 { return 301 https://velo.lv/lv/jaunumi/lidz-ceturtdienai-pagarinata-iepriekseja-644-2014/; }
+location /s/nC3 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-tukuma-posma-triumfe-bl-647-2014/; }
+location /s/nC4 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-tukuma-posma-gaidama-aizraujosa--639-2014/; }
+location /s/nC6 { return 301 https://velo.lv/lv/jaunumi/ar-apbalvosanas-balliti-noslegta-13-seb--664-2014/; }
+location /s/nC7 { return 301 https://velo.lv/lv/jaunumi/igo-japina-sporta-agenturas-sacensibu-ka-670-2015/; }
+location /s/nC8 { return 301 https://velo.lv/lv/jaunumi/aptauja-seb-mtb-maratona-dalibniekiem-pa-675-2014/; }
+location /s/nC9 { return 301 https://velo.lv/lv/jaunumi/uzdavini-draugam-vai-darba-kolektivam-da-685-2014/; }
+location /s/nCa { return 301 https://velo.lv/lv/jaunumi/atbilzu-apkopojums-par-pareju-seb-mtb-ma-688-2015/; }
+location /s/nCb { return 301 https://velo.lv/lv/jaunumi/sakusies-registracija-masveidigajam-riga-555-2014/; }
+location /s/nCc { return 301 https://velo.lv/lv/jaunumi/informacija-rigas-velomaratona-dalibniek-578-2014/; }
+location /s/nCd { return 301 https://velo.lv/lv/jaunumi/31rigas-velomaratona-videoapskats-580-2014/; }
+location /s/nCe { return 301 https://velo.lv/lv/jaunumi/pagarinata-pieteiksanas-un-jauna-numuru--570-2014/; }
+location /s/nCf { return 301 https://velo.lv/lv/jaunumi/satiksmes-ierobezojumi-rigas-velomaraton-577-2014/; }
+location /s/nCg { return 301 https://velo.lv/lv/jaunumi/sakusies-pieteiksanas-gada-lielakajam-ve-595-2014/; }
+location /s/nCh { return 301 https://velo.lv/lv/jaunumi/pirmdien-notiks-pieteiksanas-maksas-main-606-2014/; }
+location /s/nCi { return 301 https://velo.lv/lv/jaunumi/japins-vienibas-brauciena-sadzedzinasim--623-2014/; }
+location /s/nCj { return 301 https://velo.lv/lv/jaunumi/satiksmes-ierobezojumi-24-latvijas-riten-630-2014/; }
+location /s/nCk { return 301 https://velo.lv/lv/jaunumi/iznem-savu-vienibas-velobrauciena-dalibn-634-2014/; }
+location /s/nCl { return 301 https://velo.lv/lv/jaunumi/sigulda-lieliska-gaisotne-aizvadits-24-l-637-2014/; }
+location /s/nCm { return 301 https://velo.lv/lv/jaunumi/pateicibas-vienibas-velobrauciena-iesais-638-2014/; }
+location /s/nCn { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciena-si-gada-sauklis-s-615-2014/; }
+location /s/nCo { return 301 https://velo.lv/lv/jaunumi/iepazisanas-ar-vienibas-brauciena-mtb-tr-633-2014/; }
+location /s/nCp { return 301 https://velo.lv/lv/jaunumi/informacija-seb-mtb-dalibniekiem-un-koma-716-2015/; }
+location /s/nCq { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-ietvaros-norisinasies-e-703-2015/; }
+location /s/nCr { return 301 https://velo.lv/lv/jaunumi/pilna-spara-sakusies-registracija-lielak-706-2015/; }
+location /s/nCs { return 301 https://velo.lv/lv/jaunumi/sestdien-notiks-seb-mtb-maratona-1-posma-713-2015/; }
+location /s/nCt { return 301 https://velo.lv/lv/jaunumi/seb-mtb-1-posms-video-tiesraide-lmt-stra-715-2015/; }
+location /s/nCu { return 301 https://velo.lv/lv/jaunumi/svetdien-ar-posmu-no-cesim-lidz-valmiera-718-2015/; }
+location /s/nCv { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-14-sezona-atklata-ar-te-720-2015/; }
+location /s/nCw { return 301 https://velo.lv/lv/jaunumi/lidz-ceturtdienai-pagarinata-iepriekseja-722-2015/; }
+location /s/nCx { return 301 https://velo.lv/lv/jaunumi/vosekalns-un-ardava-kuldigas-dublos-izci-724-2015/; }
+location /s/nCy { return 301 https://velo.lv/lv/jaunumi/sestdien-notiks-seb-mtb-maratona-vietalv-740-2015/; }
+location /s/nCz { return 301 https://velo.lv/lv/jaunumi/sovakar-nosledzas-pieteiksanas-seb-mtb-m-741-2015/; }
+location /s/nDA { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-3-posma-un-sadraudzibas-743-2015/; }
+location /s/nDB { return 301 https://velo.lv/lv/jaunumi/latvijas-cempionata-mtb-maratona-nolikum-745-2015/; }
+location /s/nDC { return 301 https://velo.lv/lv/jaunumi/turpinas-pieteiksanas-aizraujosajam-seb--748-2015/; }
+location /s/nDD { return 301 https://velo.lv/lv/jaunumi/uci-mtb-marathon-series-seb-mtb-marathon-751-2015/; }
+location /s/nDE { return 301 https://velo.lv/lv/jaunumi/ceturtdienas-vakara-nosledzas-ieprieksej-752-2015/; }
+location /s/nDF { return 301 https://velo.lv/lv/jaunumi/teju-2000-velomilu-piedalas-uci-serijas--754-2015/; }
+location /s/nDG { return 301 https://velo.lv/lv/jaunumi/svetdien-notiks-seb-mtb-maratona-smilten-758-2015/; }
+location /s/nDH { return 301 https://velo.lv/lv/jaunumi/sakas-registracija-iecienitajam-elkor-ri-711-2015/; }
+location /s/nDI { return 301 https://velo.lv/lv/jaunumi/elkor-rigas-velomaratona-dalibniekus-sag-728-2015/; }
+location /s/nDJ { return 301 https://velo.lv/lv/jaunumi/slavenibu-zurija-elkor-rigas-velomaraton-729-2015/; }
+location /s/nDK { return 301 https://velo.lv/lv/jaunumi/sabiedriba-pazistamas-personibas-piedali-731-2015/; }
+location /s/nDL { return 301 https://velo.lv/lv/jaunumi/iznem-savu-elkor-rigas-velomaratona-dali-735-2015/; }
+location /s/nDM { return 301 https://velo.lv/lv/jaunumi/elkor-rigas-velomaratons-pulce-teju-3500-737-2015/; }
+location /s/nDN { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciena-rikotaji-cer-labo-756-2015/; }
+location /s/nDO { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-smiltenes-posma-dienas--760-2015/; }
+location /s/nDP { return 301 https://velo.lv/lv/jaunumi/iepazisti-seb-mtb-maratona-smiltenes-pos-762-2015/; }
+location /s/nDQ { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciena-rikotaji-aicina-i-759-2015/; }
+location /s/nDR { return 301 https://velo.lv/lv/jaunumi/baltijas-cels-spiesta-karta-bez-latvijas-761-2015/; }
+location /s/nDS { return 301 https://velo.lv/lv/jaunumi/pazinojums-seb-mtb-maratona-dalibniekiem-763-2015/; }
+location /s/nDU { return 301 https://velo.lv/lv/jaunumi/brugis-plavas-takas-upes-skersosana-seb-mtb-marato/; }
+location /s/nDV { return 301 https://velo.lv/lv/jaunumi/preimanis-dramatiska-cina-izcina-uzvaru-seb-mtb-sm/; }
+location /s/nDW { return 301 https://velo.lv/lv/jaunumi/svetdien-notiks-oficialais-seb-mtb-maratona-talsu/; }
+location /s/nDX { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciena-organizatori-aicina-svinet/; }
+location /s/nDY { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratons-ar-specigako-dalibnieku-sastavu/; }
+location /s/nDZ { return 301 https://velo.lv/lv/jaunumi/latvija-nakamnedel-norisinasies-starptautiska-balt/; }
+location /s/nD0 { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciena-organizatori-aicina-svinet-/; }
+location /s/nD1 { return 301 https://velo.lv/lv/jaunumi/ritenbrauksanas-cienitaji-riga-aicinati-izbraukt-1/; }
+location /s/nD2 { return 301 https://velo.lv/lv/jaunumi/pirmaja-seb-mtb-maratona-talsu-posma-lieliska-atmo/; }
+location /s/nD3 { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciena-piedalisies-ari-pasaules-ri/; }
+location /s/nD4 { return 301 https://velo.lv/lv/jaunumi/krekli/; }
+location /s/nD5 { return 301 https://velo.lv/lv/jaunumi/vb/; }
+location /s/nD6 { return 301 https://velo.lv/lv/jaunumi/vv/; }
+location /s/nD7 { return 301 https://velo.lv/lv/jaunumi/30-augusta-sigulda-notiks-vienibas-velobrauciena-m/; }
+location /s/nD8 { return 301 https://velo.lv/lv/jaunumi/vienibas-braucieniem-registrejusies-jau-teju-4000-/; }
+location /s/nD9 { return 301 https://velo.lv/lv/jaunumi/igo__/; }
+location /s/nDa { return 301 https://velo.lv/lv/jaunumi/zinibu-diena-piesakies-vienibas-velobraucienam-par/; }
+location /s/nDb { return 301 https://velo.lv/lv/jaunumi/valsts-prezidents-raimonds-vejonis-piedalisies-lat/; }
+location /s/nDc { return 301 https://velo.lv/lv/jaunumi/svariga-informacija-vienibas-velobrauciena-itera-s/; }
+location /s/nDd { return 301 https://velo.lv/lv/jaunumi/ceru-gimene-vienibas-brauciens-ir-lieliska-iespeja/; }
+location /s/nDe { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciena-diena-pasazieru-vilciens-no/; }
+location /s/nDf { return 301 https://velo.lv/lv/jaunumi/piektdien-un-sestdien-pie-universalveikala-elkor-p/; }
+location /s/nDg { return 301 https://velo.lv/lv/jaunumi/satiksmes-ierobezojumi-un-autostavietu-shemas-vien/; }
+location /s/nDh { return 301 https://velo.lv/lv/jaunumi/vienibas-velobrauciens-pulce-jaunu-rekordu-kops-ne/; }
+location /s/nDi { return 301 https://velo.lv/lv/jaunumi/pateiciba-25-latvijas-ritenbrauceju-vienibas-brauc/; }
+location /s/nDj { return 301 https://velo.lv/lv/jaunumi/ikviens-aktivas-atputas-cienitajs-sestdien-aicinat/; }
+location /s/nDk { return 301 https://velo.lv/lv/jaunumi/ikskile-uznems-verieniga-seb-mtb-maratona-sezonas-/; }
+location /s/nDl { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-ikskiles-posma-skandi-motors-dist/; }
+location /s/nDm { return 301 https://velo.lv/lv/jaunumi/spraiga-situacija-skandi-motors-distances-kopverte/; }
+location /s/nDn { return 301 https://velo.lv/lv/jaunumi/jakovels-purnins-un-zviedris-sadalis-labako-trijni/; }
+location /s/nDo { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-ikskiles-posma-vietas-iekartojums/; }
+location /s/nDp { return 301 https://velo.lv/lv/jaunumi/svariga-informacija-par-noklusanu-seb-mtb-maratona/; }
+location /s/nDq { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-ikskiles-posma-uzvar-petersons-ko/; }
+location /s/nDr { return 301 https://velo.lv/lv/jaunumi/pateiciba-2015-gada-seb-mtb-maratona-sezona-iesais/; }
+location /s/nDs { return 301 https://velo.lv/lv/jaunumi/rietumu-delfin-ritenbrauceji-kazahstana-sacentisie/; }
+location /s/nDt { return 301 https://velo.lv/lv/jaunumi/becis-izcina-skaistu-uzvaru-un-vertigus-uci-punktu/; }
+location /s/nDu { return 301 https://velo.lv/lv/jaunumi/smukulis-pievienojas-specigajai-astana-komandai/; }
+location /s/nDv { return 301 https://velo.lv/lv/jaunumi/rietumu-delfin-viri-noslegusi-tour-of-china-1-velo/; }
+location /s/nDw { return 301 https://velo.lv/lv/jaunumi/gatis-smukulis-nakamaja-sezona-velos-sevi-no-visla/; }
+location /s/nDx { return 301 https://velo.lv/lv/jaunumi/liepins-pelna-bonusa-sekundes-vaitukus-un-becis-la/; }
+location /s/nDy { return 301 https://velo.lv/lv/jaunumi/latvijas-sporta-panakums-15-gadi-kops-romana-vains/; }
+location /s/nDz { return 301 https://velo.lv/lv/jaunumi/becis-desmitais-tour-of-china-2-velobrauciena-cetu/; }
+location /s/nEA { return 301 https://velo.lv/lv/jaunumi/latvija-uci-eiropas-ranga-21-vieta-skujins-joproja/; }
+location /s/nEB { return 301 https://velo.lv/lv/jaunumi/neilands-kina-izcina-augsto-piekto-vietu-labaka-ja/; }
+location /s/nEC { return 301 https://velo.lv/lv/jaunumi/latvijas-ritenbrauksanas-federacija-pauz-dzilu-noz/; }
+location /s/nED { return 301 https://velo.lv/lv/jaunumi/skujins-klust-par-treso-latvieti-pasaules-ture-pie/; }
+location /s/nEE { return 301 https://velo.lv/lv/jaunumi/neilands-becis-un-smirnovs-labako-trijnieka-tour-d/; }
+location /s/nEF { return 301 https://velo.lv/lv/jaunumi/28-novembri-albert-hotel-norisinasies-seb-mtb-mara/; }
+location /s/nEG { return 301 https://velo.lv/lv/jaunumi/pruss-klust-par-tour-of-borneo-lideri-voseklans-pa/; }
+location /s/nEH { return 301 https://velo.lv/lv/jaunumi/gavars-treneris-saka-ka-nauda-gul-zeme-jamak-ta-pa/; }
+location /s/nEI { return 301 https://velo.lv/lv/jaunumi/igo-japins-sanem-siguldas-novada-goda-cilveka-balv/; }
+location /s/nEJ { return 301 https://velo.lv/lv/jaunumi/2016-gada-sacensibu-kalendars/; }
+location /s/nEK { return 301 https://velo.lv/lv/jaunumi/sacensibu-kalendars-2016/; }
+location /s/nEL { return 301 https://velo.lv/lv/jaunumi/gada-notikums-tautas-sporta-2015/; }
+location /s/nEM { return 301 https://velo.lv/lv/jaunumi/sakas-registracija-seb-mtb-maratonam-2016/; }
+location /s/nEN { return 301 https://velo.lv/lv/jaunumi/raivis-zimelis-eiropas-cempionata-latviesiem-kopej/; }
+location /s/nEO { return 301 https://velo.lv/lv/jaunumi/pieci-ieteikumi-pirms-kalnu-ritenbrauksanas-sezona/; }
+location /s/nEP { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-pirmssezonas-pasakums-5aprili/; }
+location /s/nEQ { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-jaunais-partneris-toyota-ar-videi/; }
+location /s/nER { return 301 https://velo.lv/lv/jaunumi/eiropas-cempionata-zime-starte-seb-mtb-maratona-ju/; }
+location /s/nES { return 301 https://velo.lv/lv/jaunumi/piesakies-seb-mtb-un-palidzi-sos-bernu-ciematiem/; }
+location /s/nET { return 301 https://velo.lv/lv/jaunumi/iepazisti-seb-mtb-maratona-pirma-posma-distanci/; }
+location /s/nEU { return 301 https://velo.lv/lv/jaunumi/seb-mtb-1-posma-laika-bus-satiksmes-ierobezojumi-c/; }
+location /s/nEV { return 301 https://velo.lv/lv/jaunumi/seb-mtb-finisa-valmiera-stiprinies-ar-lakto-pro/; }
+location /s/nEW { return 301 https://velo.lv/lv/jaunumi/svariga-informacija-sacensibu-dalibniekiem/; }
+location /s/nEX { return 301 https://velo.lv/lv/jaunumi/iebrauc-as-virsi-a-un-sanem-atlaidi-degvielai/; }
+location /s/nEY { return 301 https://velo.lv/lv/jaunumi/seb-mtb-1posma-gaidams-kupls-brauceju-pulks/; }
+location /s/nEZ { return 301 https://velo.lv/lv/jaunumi/lidzjutiba/; }
+location /s/nE0 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-jubilejas-sezona-sakas-ar-rietumu/; }
+location /s/nE1 { return 301 https://velo.lv/lv/jaunumi/sakusies-pieteiksanas-seb-mtb-smiltenes-posmam/; }
+location /s/nE2 { return 301 https://velo.lv/lv/jaunumi/rasens-bernu-brauciena-rezultati/; }
+location /s/nE3 { return 301 https://velo.lv/lv/jaunumi/smiltenes-trases-iepazisana/; }
+location /s/nE4 { return 301 https://velo.lv/lv/jaunumi/seb-mtb-maratona-sezona-turpinasies-smiltene/; }
+location /s/nE5 { return 301 https://velo.lv/lv/jaunumi/isostar-piedava-iegusti-dalibu-pasaules-lielakajos/; }
+location /s/nE6 { return 301 https://velo.lv/lv/jaunumi/smiltenes-posma-sacensibu-programma/; }
+location /s/nE7 { return 301 https://velo.lv/lv/jaunumi/video-seb-mtb-smiltenes-posma-trases-apskats/; }
+location /s/nE8 { return 301 https://velo.lv/lv/jaunumi/svarigi-zinat-komandam-un-dalibniekiem/; }
+location /s/nE9 { return 301 https://velo.lv/lv/jaunumi/junija-notiks-tradicionalais-toyota-rigas-velomara/; }
+location /s/nEa { return 301 https://velo.lv/lv/jaunumi/seb-mtb-vasarigaja-smiltenes-posma-dominanci-turpi/; }
+location /s/nEb { return 301 https://velo.lv/lv/jaunumi/seb-mtb-smiltenes-posma-rasens-bernu-brauciena-rez/; }

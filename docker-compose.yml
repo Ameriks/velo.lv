@@ -1,42 +1,83 @@
-postgres:
-  image: postgres:9.4
+elk:
+  image: ameriks/elk:latest
   volumes:
-    - /data/ameri/postgres:/var/lib/postgresql/data
-  env_file: .env
-
-django:
-  build: .
-  user: django
-  links:
-    - postgres
-    - redis
-  command: /gunicorn.sh
-  env_file: .env
-
-nginx:
-  build: ./compose/nginx
-  links:
-    - django
+       - /var/lib/elasticsearch:/var/lib/elasticsearch
   ports:
-    - "0.0.0.0:80:80"
+       - "127.0.0.1:12201:12201/udp" # Nginx log receiver
+       - "127.0.0.1:12202:12202/udp"  # App log receiver
+  restart: always
+
+
+postgres:
+  image: ameriks/postgres:9.5
+  volumes:
+    - /var/lib/postgresql/data:/var/lib/postgresql/data
+  restart: always
+  env_file: .env
+  links:
+    - redis  # For log management
+
+mariadb:
+  build: ./compose/mariadb
+  env_file: .env
+  volumes:
+      - /var/lib/mariadb:/data
+  restart: always
+
+velosendy:
+  build: ./compose/sendy
+  volumes:
+      - /var/lib/app/sendy:/app
+  restart: always
 
 redis:
-  image: redis:3.0
+  hostname: redis
+  image: redis:alpine
+  volumes:
+      - /var/lib/redis:/data
+  restart: always
 
-celeryworker:
-  build: .
-  user: django
-  env_file: .env
-  links:
-   - postgres
-   - redis
-  command: celery -A ameri.taskapp worker -l INFO
-
-celerybeat:
-  build: .
-  user: django
-  env_file: .env
+projectvelo:
+  image: ameriks/project_velo:latest
   links:
     - postgres
     - redis
-  command: celery -A ameri.taskapp beat -l INFO
+  env_file: .env
+  restart: always
+  log_driver: gelf
+  log_opt:
+      gelf-address: udp://127.0.0.1:12202
+      gelf-tag: projectvelo
+
+mainrouter:
+  build: ./compose/nginx
+  links:
+    - projectvelo
+    - sendy
+    - elk
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - /var/lib/app/letsencrypt:/var/lib/app/letsencrypt:ro
+    - /var/lib/app/letsencrypt_certs:/etc/letsencrypt:ro
+    - /var/lib/nginx/cache:/var/lib/nginx/cache
+    - /var/lib/app/project_velo/staticfiles:/var/lib/app/project_velo/staticfiles:ro
+    - /var/lib/app/project_velo/velo/media:/var/lib/app/project_velo/velo/media:ro
+  restart: always
+  log_driver: gelf
+  log_opt:
+      gelf-address: udp://127.0.0.1:12201
+      gelf-tag: mainrouter
+
+
+letsencrypt:
+  build: ./compose/letsencrypt
+  volumes:
+      - /var/lib/app/letsencrypt:/var/lib/app/letsencrypt
+      - /var/lib/app/letsencrypt_certs:/etc/letsencrypt
+  restart: always
+  log_driver: gelf
+  log_opt:
+      gelf-address: udp://127.0.0.1:12201
+      gelf-tag: letsencrypt

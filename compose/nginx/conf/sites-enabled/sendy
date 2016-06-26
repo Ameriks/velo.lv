@@ -1,0 +1,29 @@
+server {
+    listen 80;
+    server_name sendy.velo.lv;
+    client_max_body_size 1000M;
+
+    include /etc/nginx/letsencrypt.conf;
+
+    location / {
+        proxy_pass http://sendy/;
+        include /etc/nginx/proxy.conf;
+    }
+}
+
+server {
+    listen 443;
+    server_name sendy.velo.lv;
+    client_max_body_size 1000M;
+
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/www.velo.lv/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.velo.lv/privkey.pem;
+
+    include /etc/nginx/letsencrypt.conf;
+
+    location / {
+        proxy_pass http://sendy/;
+        include /etc/nginx/proxy.conf;
+    }
+}

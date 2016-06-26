@@ -1,0 +1,28 @@
+server {
+  listen 443;
+  server_name logs.velo.lv;
+  client_max_body_size 20M;
+
+  ssl on;
+  ssl_certificate /etc/letsencrypt/live/www.velo.lv/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/www.velo.lv/privkey.pem;
+
+  include /etc/nginx/proxy.conf;
+  include /etc/nginx/letsencrypt.conf;
+
+  auth_basic "Restricted";
+  auth_basic_user_file /etc/nginx/htpasswd;
+
+  access_log off;
+
+  location / {
+    proxy_pass http://elk:5601/;
+  }
+}
+
+server {
+    # Always serve only https traffic
+    listen 80;
+    server_name logs.velo.lv;
+    return 301 https://$host$request_uri;
+}

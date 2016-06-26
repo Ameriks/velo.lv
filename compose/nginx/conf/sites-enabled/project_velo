@@ -1,0 +1,60 @@
+server {
+    listen 443;
+    server_name mans.velo.lv;
+    client_max_body_size 1000M;
+
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/www.velo.lv/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.velo.lv/privkey.pem;
+
+    include /etc/nginx/letsencrypt.conf;
+
+    return 301 https://velo.lv$request_uri;
+}
+
+
+server {
+    listen 443;
+    server_name www.velo.lv velo.lv;
+    client_max_body_size 1000M;
+
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/www.velo.lv/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.velo.lv/privkey.pem;
+
+    include /etc/nginx/proxy.conf;
+
+    location = /robots.txt  {
+        alias /var/lib/app/project_velo/staticfiles/robots.txt;
+    }
+    location = /favicon.ico {
+        alias /var/lib/app/project_velo/staticfiles/favicon.ico;
+    }
+
+    location /static {
+        include cross-domain-fonts.conf;
+        expires off;
+        alias /var/lib/app/project_velo/staticfiles;
+    }
+    location /media {
+        expires off;
+        alias /var/lib/app/project_velo/velo/media;
+    }
+
+    include /etc/nginx/letsencrypt.conf;
+
+    include /etc/nginx/project_velo_block;
+
+    location / {
+        proxy_pass http://django:9000/;
+    }
+}
+
+server {
+    listen 80;
+    server_name www.velo.lv velo.lv mans.velo.lv;
+
+    location / {
+        return 301 https://velo.lv$request_uri;
+    }
+}
