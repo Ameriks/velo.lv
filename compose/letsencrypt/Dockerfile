@@ -7,5 +7,5 @@ COPY renewcerts /etc/periodic/weekly/
 
 CMD ["crond", "-f", "-d", "8"]
 
-#  letsencrypt certonly -a webroot --webroot-path=/var/lib/app/letsencrypt -d www.velo.lv -d velo.lv -d mans.velo.lv -d sendy.velo.lv -d test.velo.lv -d logs.velo.lv
+#  certbot certonly -a webroot --webroot-path=/var/lib/app/letsencrypt -d www.velo.lv -d velo.lv -d mans.velo.lv -d sendy.velo.lv -d test.velo.lv -d logs.velo.lv
 # export TERM=xterm

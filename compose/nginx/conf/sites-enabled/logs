@@ -10,13 +10,12 @@ server {
   include /etc/nginx/proxy.conf;
   include /etc/nginx/letsencrypt.conf;
 
-  auth_basic "Restricted";
-  auth_basic_user_file /etc/nginx/htpasswd;
-
-  access_log off;
-
   location / {
-    proxy_pass http://elk:5601/;
+      auth_basic "Restricted";
+      auth_basic_user_file /etc/nginx/htpasswd;
+
+
+      proxy_pass http://elk:5601/;
   }
 }
 
@@ -24,5 +23,8 @@ server {
     # Always serve only https traffic
     listen 80;
     server_name logs.velo.lv;
+
+    include /etc/nginx/letsencrypt.conf;
+
     return 301 https://$host$request_uri;
 }

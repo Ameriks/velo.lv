@@ -1,19 +1,24 @@
 elk:
-  image: ameriks/elk:latest
+  build: ./compose/elk
   volumes:
        - /var/lib/elasticsearch:/var/lib/elasticsearch
   ports:
        - "127.0.0.1:12201:12201/udp" # Nginx log receiver
        - "127.0.0.1:12202:12202/udp"  # App log receiver
+  links:
+    - redis
   restart: always
 
 
 postgres:
-  image: ameriks/postgres:9.5
+  build: ./compose/postgres
   volumes:
     - /var/lib/postgresql/data:/var/lib/postgresql/data
+    - /var/lib/postgresql/config:/home/postgres
   restart: always
   env_file: .env
+  environment:
+      - HOME=/var/lib/postgresql/data
   links:
     - redis  # For log management
 
@@ -24,11 +29,13 @@ mariadb:
       - /var/lib/mariadb:/data
   restart: always
 
-velosendy:
+sendy:
   build: ./compose/sendy
   volumes:
       - /var/lib/app/sendy:/app
   restart: always
+  links:
+    - mariadb
 
 redis:
   hostname: redis
@@ -42,6 +49,8 @@ projectvelo:
   links:
     - postgres
     - redis
+  volumes:
+      - /var/lib/app/project_velo:/app
   env_file: .env
   restart: always
   log_driver: gelf

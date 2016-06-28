@@ -1,0 +1,109 @@
+input {
+  stdin { }
+  redis {
+    batch_count => 100
+    host => "redis"
+    port => 6379
+    data_type => "list"
+    key => "postgres"
+    type => "postgres"
+  }
+  gelf { # This is for nginx logs
+    port => 12201
+    type => docker
+  }
+  gelf { # This is for application logs
+    port => 12202
+    type => app
+  }
+}
+
+filter {
+  if [tag] == "mainrouter" {
+    grok {
+      match => { "message" => "%{NGINXACCESS}" }
+      overwrite => [ "message" ]
+      add_tag => ["access_log"]
+    }
+
+    grok {
+      match => {
+              "message" => "(?<timestamp>%{YEAR}[./-]%{MONTHNUM}[./-]%{MONTHDAY}[- ]%{TIME}) \[%{LOGLEVEL:severity}\] %{POSINT:pid}#%{NUMBER}: %{GREEDYDATA:errormessage}(?:, client: (?<client>%{IP}|%{HOSTNAME}))(?:, server: %{IPORHOST:server})(?:, request: %{QS:request})?(?:, host: %{QS:host})?"
+      }
+      add_tag => ["error_log"]
+    }
+
+    if ("access_log" in [tags]) {
+      mutate {
+        convert => ["response", "integer"]
+        convert => ["bytes", "integer"]
+        convert => ["responsetime", "float"]
+        convert => ["upresponsetime", "float"]
+      }
+      useragent {
+        source => "agent"
+      }
+
+      geoip {
+        source => "clientip"
+        target => "geoip"
+        add_tag => [ "nginx-geoip" ]
+      }
+      date {
+        match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+        remove_field => [ "timestamp" ]
+      }
+    }
+  }
+
+  if [type] == "postgres" {
+     if "COPY" in [message] { drop {} }
+     else if "duration" in [message] {
+        if "execute" in [message] {
+          mutate { add_tag => ["sql-query"] }
+          grok {
+            match => ["message", "duration: %{NUMBER:duration_ms} ms  execute %{GREEDYDATA}: %{GREEDYDATA:request}"]
+          }
+        } else if "parse" in [message] {
+          mutate { add_tag => ["sql-parse"] }
+          grok {
+            match => ["message", "duration: %{NUMBER:duration_ms} ms  parse %{GREEDYDATA}: %{GREEDYDATA:request}"]
+          }
+        } else if "bind" in [message] {
+          mutate { add_tag => ["sql-bind"] }
+          grok {
+            match => ["message", "duration: %{NUMBER:duration_ms} ms  bind %{GREEDYDATA}: %{GREEDYDATA:request}"]
+          }
+        } else if "statement" in [message] {
+          mutate { add_tag => ["sql-query"] }
+          grok {
+            match => ["message", "duration: %{NUMBER:duration_ms} ms  statement: %{GREEDYDATA:request}"]
+          }
+        } else { # if [command_tag] in ["SELECT", "BEGIN", "COMMIT", "SHOW"] {
+            drop {}  # If just duration for QUERY, then drop
+        }
+         mutate { convert => [ "execution_ms", "float" ] }
+         ruby { code => "event['elapsed'] = event['duration_ms'].to_f / 1000" }
+      } else {
+        mutate { add_tag => "db-message" }
+      }
+  }
+
+
+  if [type] == "app" {
+      if "ERROR" in [message] {
+        mutate { add_tag => ["error"] }
+      }
+      multiline {
+          pattern => "^\["
+          negate => true
+          what => "previous"
+      }
+  }
+
+
+}
+
+output {
+  elasticsearch { }
+}

@@ -46,7 +46,7 @@ server {
     include /etc/nginx/project_velo_block;
 
     location / {
-        proxy_pass http://django:9000/;
+        proxy_pass http://projectvelo:5000/;
     }
 }
 
