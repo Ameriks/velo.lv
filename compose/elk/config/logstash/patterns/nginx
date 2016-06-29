@@ -1,4 +1,4 @@
 NGUSERNAME [a-zA-Z\.\@\-\+_%]+
 NGUSER %{NGUSERNAME}
 IPORHOSTORNONE %{IPORHOST}|\-
-NGINXACCESS %{IPORHOST:clientip} %{NGUSER:ident} %{NGUSER:auth} \[%{HTTPDATE:timestamp}\] %{HOSTNAME:hostname} "%{WORD:verb} %{URIPATHPARAM:request} HTTP/%{NUMBER:httpversion}" %{NUMBER:response} (?:%{NUMBER:bytes}|-) (?:"(?:%{URI:referrer}|-)"|%{QS:referrer}) %{QS:agent} "%{IPORHOSTORNONE:forwardedfor}" %{NUMBER:responsetime} %{NUMBER:upresponsetime} %{DATA:gzipratio} %{DATA:cachehit}
+NGINXACCESS %{IPORHOST:clientip} %{NGUSER:ident} %{NGUSER:auth} \[%{HTTPDATE:timestamp}\] %{HOSTNAME:hostname} "%{WORD:verb} %{URIPATHPARAM:request} HTTP/%{NUMBER:httpversion}" %{NUMBER:response} (?:%{NUMBER:bytes}|-) (?:"(?:%{URI:referrer}|-)"|%{QS:referrer}) %{QS:agent} "%{IPORHOSTORNONE:forwardedfor}" %{NUMBER:responsetime} (?:%{NUMBER:upresponsetime}|-) %{DATA:gzipratio} %{DATA:cachehit}
