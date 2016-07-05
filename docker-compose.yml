@@ -17,8 +17,6 @@ postgres:
     - /var/lib/postgresql/config:/home/postgres
   restart: always
   env_file: .env
-  environment:
-      - HOME=/var/lib/postgresql/data
   links:
     - redis  # For log management
 
@@ -90,3 +88,13 @@ letsencrypt:
   log_opt:
       gelf-address: udp://127.0.0.1:12201
       gelf-tag: letsencrypt
+
+
+duplicity:
+  build: ./compose/duplicity
+  volumes:
+    - /var/lib/postgresql/config:/root # GPG
+    - /var/lib/app/project_velo/velo/media:/var/lib/app/project_velo/velo/media:ro
+  restart: always
+  env_file: .env_duplicity
+  command: duply main backup

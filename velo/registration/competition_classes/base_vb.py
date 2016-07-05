@@ -1,5 +1,4 @@
-# coding=utf-8
-from __future__ import unicode_literals
+
 import datetime
 from django.core.cache.utils import make_template_fragment_key
 from django.db.models import Count
@@ -30,6 +29,7 @@ from velo.core.pdf import get_image, getSampleStyleSheet, base_table_style, fill
 from django.conf import settings
 from django.db import connection
 import os.path
+from django.utils.translation import ugettext_lazy as _, activate
 
 
 class VBCompetitionBase(CompetitionScriptBase):
@@ -40,22 +40,23 @@ class VBCompetitionBase(CompetitionScriptBase):
 
 
     def build_menu(self, lang):
+        activate(lang)
         current_date = datetime.date.today()
         child_items = [
-            # item('Atbalstītāji', 'competition:supporters %i' % self.competition.id),
-            item('Komandas', 'competition:team %i' % self.competition.id, children=[
+            item(_("Teams"), 'competition:team %i' % self.competition.id, children=[
                 item('{{ object }}', 'competition:team %i object.id' % self.competition.id, in_menu=False),
             ]),
-            item('Starta saraksts', 'competition:participant_list %i' % self.competition.id),
+            item(_("Start List"), 'competition:participant_list %i' % self.competition.id),
         ]
         self.build_flat_pages(self.competition, child_items, lang)
         if self.competition.map_set.count():
-            child_items.append(item('Kartes', 'competition:maps %i' % self.competition.id))
+            child_items.append(item(_("Maps"), 'competition:maps %i' % self.competition.id))
 
         if self.competition.competition_date <= current_date:
-            child_items.append(item('Rezultāti', 'competition:result_distance_list %i' % self.competition.id))
-            child_items.append(item('Komandu rezultāti', 'competition:result_team_by_name %i' % self.competition.id))
-            child_items.append(item('Komandu starp dist.', 'competition:result_team_by_name_btw_distances %i' % self.competition.id))
+            child_items.append(item(_("Results"), 'competition:result_distance_list %i' % self.competition.id))
+            child_items.append(item(_("Team Results"), 'competition:result_team_by_name %i' % self.competition.id))
+            if self.competition_id == 35:
+                child_items.append(item(_("Team Results betw. distances"), 'competition:result_team_by_name_btw_distances %i' % self.competition.id))
 
         return item(str(self.competition), 'competition:competition %i' % self.competition.id, url_as_pattern=True, children=child_items, in_menu=self.competition.is_in_menu)
 
