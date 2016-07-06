@@ -183,7 +183,7 @@ class Seb2016(SEBCompetitionBase):
             application = Application.objects.get(id=application_id)
 
         if application.participant_set.filter(distance_id=self.SPORTA_DISTANCE_ID):
-            distance = application.distance_set.get(id=self.SPORTA_DISTANCE_ID)
+            distance = self.competition.distance_set.get(id=self.SPORTA_DISTANCE_ID)
             return (('sport_approval', forms.BooleanField(label=_("I am informed that participation in %s requires LRF licence. More info - %s") % (distance, "http://lrf.lv/index.php/licences/licences-2015"), required=True)), )
 
         return ()
