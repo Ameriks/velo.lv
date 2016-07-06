@@ -1091,3 +1091,21 @@ AND r.id = res2.id
     def recalculate_all_standings(self):
         # Here are no standings.
         pass
+
+    def recalculate_all_points(self):
+        """
+        MAIN FUNCTION FROM MANAGER
+        This function is called from manager view to manually recalculate points.
+        This function is called in case there are errors in given points.
+        """
+        distances = [self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.TAUTAS1_DISTANCE_ID]
+        recalculate_places = False
+        results = Result.objects.filter(competition=self.competition, participant__distance_id__in=distances)
+        for result in results:
+            print(result.id)
+            if result.set_all():
+                recalculate_places = True
+                result.save()
+
+        if recalculate_places:
+            self.assign_standing_places()
