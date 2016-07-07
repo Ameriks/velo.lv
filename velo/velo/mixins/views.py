@@ -15,6 +15,7 @@ import datetime
 
 from velo.advert.models import Banner
 from velo.core.models import Competition, Distance
+from velo.supporter.models import CompetitionSupporter
 from velo.velo.utils import load_class
 
 
@@ -127,6 +128,13 @@ class SetCompetitionContextMixin(object):
             context.update({'distance_active': self.distance})
 
         context.update({'banners': self.get_banners()})
+
+        # Supporters
+        context.update({'supporters': CompetitionSupporter.objects \
+                       .filter(competition_id__in=self.competition.get_ids()) \
+                       .order_by('-support_level', 'ordering', '-label') \
+                       .select_related('supporter')
+                        })
 
         return context
 

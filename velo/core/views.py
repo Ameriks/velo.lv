@@ -121,12 +121,6 @@ class CompetitionDetail(SetCompetitionContextMixin, DetailView):
                 video = None
         context.update({'video': video})
 
-        # Supporters
-        context.update({'supporters': CompetitionSupporter.objects \
-                       .filter(competition_id__in=self.object.get_ids()) \
-                       .order_by('-support_level', 'ordering', '-label') \
-                       .select_related('supporter')
-                        })
 
         return context
 
