@@ -128,13 +128,14 @@ class SetCompetitionContextMixin(object):
             context.update({'distance_active': self.distance})
 
         context.update({'banners': self.get_banners()})
-
+        
         # Supporters
-        context.update({'supporters': CompetitionSupporter.objects \
-                       .filter(competition_id__in=self.competition.get_ids()) \
-                       .order_by('-support_level', 'ordering', '-label') \
-                       .select_related('supporter')
-                        })
+        if self.competition:
+            context.update({'supporters': CompetitionSupporter.objects \
+                           .filter(competition_id__in=self.competition.get_ids()) \
+                           .order_by('-support_level', 'ordering', '-label') \
+                           .select_related('supporter')
+                            })
 
         return context
 
