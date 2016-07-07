@@ -22,8 +22,7 @@ from velo.velo.utils import load_class
 
 
 class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm):
-    accept_terms = forms.BooleanField(label=_(
-        "I confirm that my health condition allows me to take part in competition in my chosen distance. I promise to keep regulations, traffic rules and use safety helmet."),
+    accept_terms = forms.BooleanField(label=_("I confirm, that: the competition organizers are not responsible for possible injuries of participants, during the competition; my health condition corresponds to the selected distance; I will definitely use a fastened helmet and will observe road traffic regulations and competition regulations; I agree with the conditions for participation in the competition, mentioned in the regulations; I am informed, that the paid participation fee will not be returned and the participant’s starting number shall not be transferred to any other person."),
                                       required=True)
     accept_inform_participants = forms.BooleanField(label=_("I will inform all registered participants about rules."),
                                                     required=True)
@@ -128,7 +127,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         if insured_participants:
             self.fields['accept_insurance'].required = True
             insurance_company = insured_participants[0].insurance.insurance_company
-            terms_doc = "<a href='%s' target='_blank'>Noteikumi</a>" % insurance_company.terms_doc.url if insurance_company.terms_doc else ""
+            terms_doc = "<a href='%s' target='_blank'>%s</a>" % (insurance_company.terms_doc.url, _("Regulation")) if insurance_company.terms_doc else ""
             self.fields['accept_insurance'].label = mark_safe("%s %s" % (insurance_company.term, terms_doc))
 
         else:

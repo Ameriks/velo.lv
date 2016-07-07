@@ -1,5 +1,5 @@
 from modeltranslation.translator import translator, TranslationOptions
-from .models import Competition, Distance
+from .models import Competition, Distance, InsuranceCompany
 
 
 class CompetitionTranslationOptions(TranslationOptions):
@@ -10,5 +10,10 @@ class DistanceTranslationOptions(TranslationOptions):
     fields = ('name',)
 
 
+class InsuranceCompanyTranslationOptions(TranslationOptions):
+    fields = ('term',)
+
+
 translator.register(Competition, CompetitionTranslationOptions)
 translator.register(Distance, DistanceTranslationOptions)
+translator.register(InsuranceCompany, InsuranceCompanyTranslationOptions)
