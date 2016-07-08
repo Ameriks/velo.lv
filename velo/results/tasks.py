@@ -10,6 +10,9 @@ import requests
 from io import StringIO
 from urllib.parse import urlencode
 import uuid
+
+from django.db.models import Count
+
 from velo.core.models import Log, Competition
 from velo.core.tasks import LogErrorsTask
 from velo.marketing.models import SMS
@@ -197,3 +200,39 @@ def master_update_helper_result_table(update=False, participant_id=None):
         .exclude(competition_date__lte=datetime.date.today())
     for competition in competitions:
         update_helper_result_table(competition_id=competition.id, update=update, participant_id=participant_id)
+
+
+@task(base=LogErrorsTask)
+def merge_standings(competition_id):
+    """
+    Function searches for double created standings in provided competition.
+    Such cases could appear if user had grammar error in his name and is fixed after standing has been created.
+
+    This function is invoked from Participant model on save method if participant slug has been changed.
+
+    :param competition_id: competition id that should be searched and merged
+    :return: Nothing is being returned
+    """
+    competition = Competition.objects.get(id__in=competition_id)
+    doubles = competition.sebstandings_set.order_by('distance', 'participant_slug').values('distance', 'participant_slug').annotate(count=Count('participant_slug')).filter(count__gt=1)
+
+    if not doubles:
+        return
+
+    if competition.processing_class:
+        class_ = load_class(competition.processing_class)
+        competition_class = class_(competition=competition)
+
+    for double in doubles:
+        print(double)
+        standings = list(competition.sebstandings_set.filter(distance_id=double.get('distance'), participant_slug=double.get('participant_slug')).order_by('-distance_total'))
+        standing = standings.pop(0)
+        for st in standings:
+            for _ in range(1, 8):
+                if getattr(st, "distance_points%s" % _) > getattr(standing, "distance_points%s" % _):
+                    setattr(standing, "distance_points%s" % _, getattr(st, "distance_points%s" % _))
+                    setattr(standing, "group_points%s" % _, getattr(st, "group_points%s" % _))
+            st.delete()
+        if competition.processing_class:
+            competition_class.recalculate_standing_points(standing)
+        standing.save()

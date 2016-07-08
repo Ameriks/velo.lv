@@ -221,6 +221,9 @@ class Participant(TimestampMixin, models.Model):
                 seb = sebs[0]
                 seb.participant_slug = self.slug
                 seb.save()
+                # Check if there are double standings that should be merged
+                from velo.results.tasks import merge_standings
+                merge_standings.delay(self.parent_id if self.level == 2 else self.id)
 
         self.set_group()
 
