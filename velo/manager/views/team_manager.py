@@ -100,16 +100,26 @@ class ManageTeamList(ManagerPermissionMixin, SingleTableViewWithRequest):
 
 
 class TeamMemberBaseInlineFormSet(BaseInlineFormSet):
+    empty_form_class = None
+    can_add_new = True
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.request_kwargs = kwargs.pop('request_kwargs', None)
+        self.empty_form_class = kwargs.pop('empty_form_class', self.form)
         super(TeamMemberBaseInlineFormSet, self).__init__(*args, **kwargs)
 
-        # def get_queryset(self):
-        #     queryset = super(TeamMemberBaseInlineFormSet, self).get_queryset()
-        #     queryset = queryset.filter(memberapplication__competition_id=self.request_kwargs.get('pk'))
-        #     queryset = queryset.order_by('memberapplication__kind').distinct()
-        #     return queryset
+    def empty_form(self):
+        data = {
+            'auto_id': self.auto_id,
+            'prefix': self.add_prefix('__prefix__'),
+            'empty_permitted': True,
+        }
+
+        form = self.empty_form_class(**data)
+        form.helper.template = None
+        self.add_fields(form, None)
+        return form
 
 
 class ManageTeamMemberInline(InlineFormSet):
@@ -119,6 +129,7 @@ class ManageTeamMemberInline(InlineFormSet):
     formset_class = TeamMemberBaseInlineFormSet
     extra = 0
     can_delete = False
+    fields = ManageTeamMemberForm.Meta.fields
 
     def get_extra_form_kwargs(self):
         kwargs = super(ManageTeamMemberInline, self).get_extra_form_kwargs()
