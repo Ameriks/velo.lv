@@ -21,5 +21,5 @@ System architecture consists of multiple different system that integrate togethe
  8. MariaDB - Sendy.co doesn't support Postgres, so we have MySQL database for that.
  9. AWS SES - All emails from system and newsletters are sent through AWS SES.
 10. AWS S3 - All backups - live Postgres (wal-e) and static file backups are stored in S3.
-
-
+11. Redis - Redis is used for Postgres log temporary storage, Celery queue management and for Velo System cache storage.
+12. Logstash Elasticsearch - Is used for concatenating all logs from postgres, nginx and system. 
