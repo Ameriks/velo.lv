@@ -23,3 +23,19 @@ System architecture consists of multiple different system that integrate togethe
 10. AWS S3 - All backups - live Postgres (wal-e) and static file backups are stored in S3.
 11. Redis - Redis is used for Postgres log temporary storage, Celery queue management and for Velo System cache storage.
 12. Logstash Elasticsearch - Is used for concatenating all logs from postgres, nginx and system. 
+
+
+## Development environment setup
+
+Clone repository:
+```
+git clone https://github.com/Ameriks/velo.lv.git velo
+```
+
+First we need to initialize Postgres database: ```docker-compose -f dev.yml up postgres```
+
+Execute all migration scripts: ```docker-compose -f dev.yml run django /app/manage.py migrate```
+
+Start the application: ```docker-compose -f dev.yml up```
+
+Website now is available in http://localhost:8000.
