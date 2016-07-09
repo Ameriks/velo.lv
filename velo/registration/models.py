@@ -358,3 +358,7 @@ class UCICategory(models.Model):
     code = models.CharField(max_length=20)
     birthday = models.DateField(_('Birthday'), help_text=_('YYYY-MM-DD'), blank=True, null=True)
     slug = models.SlugField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year), only_ascii=True)
+        return super().save(*args, **kwargs)
