@@ -24,6 +24,11 @@ server {
 
     include /etc/nginx/proxy.conf;
 
+    # Redirect legacy results from static to media as they are no more included in repository.
+    location /static/results/legacy/ {
+        rewrite ^/static/(.*)$ /media/$1 permanent;
+    }
+
     location = /robots.txt  {
         access_log off;
         alias /var/lib/app/project_velo/staticfiles/robots.txt;
