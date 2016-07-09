@@ -1,9 +1,14 @@
 # coding=utf-8
 from __future__ import unicode_literals
+
+import csv
 from difflib import get_close_matches
 import datetime
+
 from django.db.models import Sum
 from django.utils import timezone
+from slugify import slugify
+
 from velo.core.models import Log, Distance
 from velo.registration.competition_classes.base import SEBCompetitionBase
 from velo.registration.models import Application, ChangedName, PreNumberAssign, Number, Participant, UCICategory
@@ -422,3 +427,58 @@ class Seb2016(SEBCompetitionBase):
         uci = UCICategory.objects.filter(category="CYCLING FOR ALL", birthday__gte="1982-01-01", birthday__lt="1998-01-01")
         for u in uci:
             Participant.objects.filter(distance_id=49, is_participating=True, slug=u.slug, gender="M").update(group='M 19-34 CFA')
+
+    def import_children_csv(self, filename):
+        with open(filename, 'r') as csvfile:
+            results = csv.reader(csvfile)
+            next(results)  # header line
+            for row in results:
+                print(row)
+                if int(row[5]) != self.competition_index:
+                    print("Not processing.")
+                    continue
+
+                slug = slugify("%s-%s-%s" % (row[1], row[2], row[3]))
+                participant = Participant.objects.filter(slug=slug, competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=self.BERNU_DISTANCE_ID)
+                if participant:
+                    participant = participant[0]
+                else:
+                    data = {
+                        'competition_id': self.competition_id,
+                        'distance_id': self.BERNU_DISTANCE_ID,
+                        'team_name': row[4],
+                        'is_participating': True,
+                        'first_name': row[1],
+                        'last_name': row[2],
+                        'birthday': datetime.date(int(row[3]), 1, 1),
+                        'is_only_year': True,
+                        'gender': '',
+                    }
+
+                    if row[13] in ('F', 'M'):
+                        data.update({'gender': row[13]})
+
+                    participant = Participant.objects.create(**data)
+
+                number_group = self.get_group_for_number_search(self.BERNU_DISTANCE_ID, 'M', datetime.date(int(row[3]), 1, 1))
+
+                number = Number.objects.filter(competition=self.competition.parent, distance_id=self.BERNU_DISTANCE_ID, number=int(row[0][1:]), group=number_group).order_by('-id')
+                number.update(participant_slug=participant.slug)
+                if number:
+                    participant.primary_number = number.get()
+                    participant.save()
+
+                if row[8]:
+                    time = row[7]
+                    status = ''
+                    if time == 'NFL':
+                        time = None
+                        status = 'NFL'
+
+                    result, created = Result.objects.get_or_create(competition=self.competition, participant=participant, number=number.get(),
+                                                                   result_group=row[8] if row[8] else None, points_group=row[9] if row[9] else 0,
+                                                                   status=status, time=time)
+                    self.recalculate_standing_for_result(result)
+                else:
+                    print('didnt participate')
+        self.assign_standing_places()
