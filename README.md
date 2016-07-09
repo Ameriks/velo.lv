@@ -11,15 +11,15 @@ System architecture consists of multiple different system that integrate togethe
 
 ![architecture](docs/images/architecture.png "System Architecture")
 
- 1. Velo System - Core system what you can see in this repository.
- 2. Postgres - System database.
- 3. Celery - Task processing system.
- 4. NginX - Really powerful webserver.
- 5. Let's encrypt - SSL certificates from let's encrypt are used to provide SSL connection with webserver.
- 6. E-bill system - Integration with banks is not included in this repository. Instead external system is used to manage credit card payments.
- 7. Sendy - Sendy.co is used to send newsletters
- 8. MariaDB - Sendy.co doesn't support Postgres, so we have MySQL database for that.
- 9. AWS SES - All emails from system and newsletters are sent through AWS SES.
+1.  Velo System - Core system what you can see in this repository.
+2.  Postgres - System database.
+3.  Celery - Task processing system.
+4.  NginX - Really powerful webserver.
+5.  Let's encrypt - SSL certificates from let's encrypt are used to provide SSL connection with webserver.
+6.  E-bill system - Integration with banks is not included in this repository. Instead external system is used to manage credit card payments.
+7.  Sendy - Sendy.co is used to send newsletters
+8.  MariaDB - Sendy.co doesn't support Postgres, so we have MySQL database for that.
+9.  AWS SES - All emails from system and newsletters are sent through AWS SES.
 10. AWS S3 - All backups - live Postgres (wal-e) and static file backups are stored in S3.
 11. Redis - Redis is used for Postgres log temporary storage, Celery queue management and for Velo System cache storage.
 12. Logstash Elasticsearch - Is used for concatenating all logs from postgres, nginx and system. 
