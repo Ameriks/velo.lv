@@ -426,7 +426,7 @@ class Seb2016(SEBCompetitionBase):
     def setup(self):
         uci = UCICategory.objects.filter(category="CYCLING FOR ALL", birthday__gte="1982-01-01", birthday__lt="1998-01-01")
         for u in uci:
-            Participant.objects.filter(distance_id=49, is_participating=True, slug=u.slug, gender="M").update(group='M 19-34 CFA')
+            Participant.objects.filter(competition=self.competition, distance_id=49, is_participating=True, slug=u.slug, gender="M").update(group='M 19-34 CFA')
 
     def import_children_csv(self, filename):
         with open(filename, 'r') as csvfile:
