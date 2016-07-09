@@ -32,7 +32,7 @@ class ResultAllView(TemplateView):
         for year in range(2014, datetime.date.today().year + 1):
             years.append((year, _("Year %(year)i Results") % {"year": year}))
 
-        competitions = Competition.objects.filter(competition_date__lt=timezone.now()).order_by('competition_date')
+        competitions = Competition.objects.filter(Q(competition_date__lt=timezone.now())|Q(complex_payment_enddate__lt=timezone.now())).order_by('competition_date')
 
         context.update({'years': years, 'competitions': competitions})
 
@@ -41,6 +41,8 @@ class ResultAllView(TemplateView):
     def post(self, request, *args, **kwargs):
         try:
             competition = Competition.objects.get(id=request.POST.get('competition'))
+            if competition.get_children():
+                return HttpResponseRedirect(reverse("competition:standings_list", kwargs={'pk': competition.id}))
             return HttpResponseRedirect(reverse("competition:result_distance_list", kwargs={'pk': competition.id}))
         except:
             return self.get(request, *args, **kwargs)
