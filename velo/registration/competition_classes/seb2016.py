@@ -438,6 +438,10 @@ class Seb2016(SEBCompetitionBase):
                     print("Not processing.")
                     continue
 
+                if not row[1] or not row[2] or not row[3]:
+                    print("Don't have all required data. Skipping.")
+                    continue
+
                 slug = slugify("%s-%s-%s" % (row[1], row[2], row[3]))
                 participant = Participant.objects.filter(slug=slug, competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=self.BERNU_DISTANCE_ID)
                 if participant:
