@@ -27,6 +27,8 @@ System architecture consists of multiple different system that integrate togethe
 
 ## Development environment setup
 
+System is running in docker environment. So make sure you have latest Docker installed: https://docs.docker.com
+
 Clone repository:
 ```
 git clone https://github.com/Ameriks/velo.lv.git velo
@@ -39,3 +41,9 @@ Execute all migration scripts: ```docker-compose -f dev.yml run django /app/mana
 Start the application: ```docker-compose -f dev.yml up```
 
 Website now is available in http://localhost:8000.
+
+The default administrator access:
+```
+Email: admin@example.com
+Password: admin
+```

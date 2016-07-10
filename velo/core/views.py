@@ -43,9 +43,16 @@ class IndexView(TemplateView):
                            :1]
         if not next_competition:
             next_competition = Competition.objects.order_by('-competition_date')[:1]
-        context.update({'next_competition': next_competition[0]})
 
-        context.update({'front_photo': Photo.objects.filter(album_id=144)[0]})
+        if next_competition:
+            context.update({'next_competition': next_competition[0]})
+
+        photo = Photo.objects.filter(album_id=144)
+        if not photo:
+            photo = Photo.objects.all()
+
+        if photo:
+            context.update({'front_photo': photo[0]})
 
         context.update({'news_list': News.objects.published().filter(language=get_language())[:4]})
 
