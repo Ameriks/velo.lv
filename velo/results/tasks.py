@@ -232,6 +232,7 @@ def merge_standings(competition_id):
                 if getattr(st, "distance_points%s" % _) > getattr(standing, "distance_points%s" % _):
                     setattr(standing, "distance_points%s" % _, getattr(st, "distance_points%s" % _))
                     setattr(standing, "group_points%s" % _, getattr(st, "group_points%s" % _))
+            st.results.update(standings_object=standing)
             st.delete()
         if competition.processing_class:
             competition_class.recalculate_standing_points(standing)
