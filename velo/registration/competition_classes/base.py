@@ -595,9 +595,7 @@ AND r.id = res2.id
                 # Assign passage for specials
                 HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, participant__slug__in=specials, passage_assigned=None).update(passage_assigned=passage_nr)
 
-                specials_not_vip_count = PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).filter(segment=passage_nr).exclude(description__icontains='vip').count()
-
-                places = total - specials_not_vip_count - passage_extra
+                places = total - passage_extra
 
                 for result in helperresults[0:places]:
                     result.passage_assigned = passage_nr
