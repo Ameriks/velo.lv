@@ -213,7 +213,7 @@ def merge_standings(competition_id):
     :param competition_id: competition id that should be searched and merged
     :return: Nothing is being returned
     """
-    competition = Competition.objects.get(id__in=competition_id)
+    competition = Competition.objects.get(id=competition_id)
     doubles = competition.sebstandings_set.order_by('distance', 'participant_slug').values('distance', 'participant_slug').annotate(count=Count('participant_slug')).filter(count__gt=1)
 
     if not doubles:
@@ -232,7 +232,9 @@ def merge_standings(competition_id):
                 if getattr(st, "distance_points%s" % _) > getattr(standing, "distance_points%s" % _):
                     setattr(standing, "distance_points%s" % _, getattr(st, "distance_points%s" % _))
                     setattr(standing, "group_points%s" % _, getattr(st, "group_points%s" % _))
-            st.results.update(standings_object=standing)
+            for result in st.results:
+                result.standings_object = standing
+                result.save()
             st.delete()
         if competition.processing_class:
             competition_class.recalculate_standing_points(standing)

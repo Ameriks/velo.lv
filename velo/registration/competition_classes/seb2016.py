@@ -428,6 +428,13 @@ class Seb2016(SEBCompetitionBase):
         for u in uci:
             Participant.objects.filter(competition=self.competition, distance_id=49, is_participating=True, slug=u.slug, gender="M").update(group='M 19-34 CFA')
 
+    def recalculate_standing_for_result(self, result):
+        if result.participant.distance_id == self.SPORTA_DISTANCE_ID and result.participant.group == 'M-18' and self.competition_index == 3:
+            result.points_distance = 0
+            result.points_group = 0
+            result.save()
+        return super().recalculate_standing_for_result(result)
+
     def import_children_csv(self, filename):
         with open(filename, 'r') as csvfile:
             results = csv.reader(csvfile)
