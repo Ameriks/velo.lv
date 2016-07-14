@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-07-14 06:01+0000\n"
-"PO-Revision-Date: 2016-07-14 09:05+0137\n"
+"PO-Revision-Date: 2016-07-14 09:13+0137\n"
 "Last-Translator: b'  <admin@example.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -68,7 +68,7 @@ msgstr ""
 msgid ""
 "^company_application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/add/$"
 msgstr ""
-"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pievienot/$"
+"^uznemuma_pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/add/$"
 
 #: config/urls.py:65
 #, python-brace-format
