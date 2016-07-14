@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-07 07:17+0300\n"
+"POT-Creation-Date: 2016-07-14 06:01+0000\n"
 "PO-Revision-Date: 2016-07-07 07:08+0137\n"
 "Last-Translator: b'  <admin@example.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,290 +20,305 @@ msgstr ""
 "2);\n"
 "X-Translated-Using: django-rosetta 0.7.11\n"
 
-#: core/admin.py:52
+#: velo/core/admin.py:52
 msgid "Personal info"
 msgstr "Personīgā informācija"
 
-#: core/admin.py:53
+#: velo/core/admin.py:53
 msgid "Contact information"
 msgstr "Kontaktinformācija"
 
-#: core/admin.py:54
+#: velo/core/admin.py:54
 msgid "Permissions"
 msgstr "Pieejas tiesības"
 
-#: core/admin.py:56
+#: velo/core/admin.py:56
 msgid "Newsletters"
 msgstr "Newsletters"
 
-#: core/admin.py:57
+#: velo/core/admin.py:57
 msgid "Important dates"
 msgstr "Svarīgi datumi"
 
-#: core/forms.py:22 core/models.py:125 manager/tables/results_tables.py:18
-#: registration/models.py:109 registration/models.py:315
-#: registration/models.py:352 results/tables.py:51 results/tables.py:79
-#: results/tables.py:111 results/tables.py:143 results/tables.py:165
-#: results/tables.py:208 results/tables.py:306 results/tables.py:448
-#: team/models.py:73 templates/account/signup.html:126
-#: templates/bootstrap/manager/team_apply_list.html:15
-#: templates/core/user_registration.html:83
-#: templates/registration/form/participant_inline_form.html:53
-#: templates/results/team.html:117 templates/results/team_by_teamname.html:113
-#: templates/team/applied.html:101
-#: templates/team/form/member_inline_form.html:39
-#: templates/team/team_apply.html:47 templates/team/team_apply_list.html:37
+#: velo/core/forms.py:22 velo/core/models.py:125
+#: velo/manager/tables/results_tables.py:18 velo/registration/models.py:109
+#: velo/registration/models.py:318 velo/registration/models.py:355
+#: velo/results/tables.py:51 velo/results/tables.py:79
+#: velo/results/tables.py:111 velo/results/tables.py:143
+#: velo/results/tables.py:165 velo/results/tables.py:208
+#: velo/results/tables.py:306 velo/results/tables.py:448
+#: velo/team/models.py:73 velo/templates/account/signup.html:126
+#: velo/templates/bootstrap/manager/team_apply_list.html:15
+#: velo/templates/core/user_registration.html:83
+#: velo/templates/registration/form/participant_inline_form.html:53
+#: velo/templates/results/team.html:117
+#: velo/templates/results/team_by_teamname.html:113
+#: velo/templates/team/applied.html:101
+#: velo/templates/team/form/member_inline_form.html:39
+#: velo/templates/team/team_apply.html:47
+#: velo/templates/team/team_apply_list.html:37
 msgid "First Name"
 msgstr "Vārds"
 
-#: core/forms.py:23 core/models.py:126 manager/tables/results_tables.py:19
-#: registration/models.py:110 registration/models.py:316
-#: registration/models.py:353 results/tables.py:52 results/tables.py:80
-#: results/tables.py:112 results/tables.py:144 results/tables.py:166
-#: results/tables.py:209 results/tables.py:307 results/tables.py:449
-#: team/models.py:74 templates/account/signup.html:144
-#: templates/bootstrap/manager/team_apply_list.html:16
-#: templates/core/user_registration.html:90
-#: templates/registration/form/participant_inline_form.html:69
-#: templates/results/team.html:118 templates/results/team_by_teamname.html:114
-#: templates/team/applied.html:102
-#: templates/team/form/member_inline_form.html:55
-#: templates/team/team_apply.html:48 templates/team/team_apply_list.html:38
+#: velo/core/forms.py:23 velo/core/models.py:126
+#: velo/manager/tables/results_tables.py:19 velo/registration/models.py:110
+#: velo/registration/models.py:319 velo/registration/models.py:356
+#: velo/results/tables.py:52 velo/results/tables.py:80
+#: velo/results/tables.py:112 velo/results/tables.py:144
+#: velo/results/tables.py:166 velo/results/tables.py:209
+#: velo/results/tables.py:307 velo/results/tables.py:449
+#: velo/team/models.py:74 velo/templates/account/signup.html:144
+#: velo/templates/bootstrap/manager/team_apply_list.html:16
+#: velo/templates/core/user_registration.html:90
+#: velo/templates/registration/form/participant_inline_form.html:69
+#: velo/templates/results/team.html:118
+#: velo/templates/results/team_by_teamname.html:114
+#: velo/templates/team/applied.html:102
+#: velo/templates/team/form/member_inline_form.html:55
+#: velo/templates/team/team_apply.html:48
+#: velo/templates/team/team_apply_list.html:38
 msgid "Last Name"
 msgstr "Uzvārds"
 
-#: core/forms.py:24
+#: velo/core/forms.py:24
 msgid "I want to receive newsletters"
 msgstr "Vēlos saņemt jaunumus"
 
-#: core/forms.py:25 core/forms.py:26 core/forms.py:27 core/models.py:132
-#: registration/models.py:111 registration/models.py:317
-#: registration/models.py:356 team/models.py:75
-#: templates/account/signup.html:161 templates/core/user_registration.html:97
-#: templates/registration/application_pay.html:38
-#: templates/registration/form/participant_inline_form.html:95
-#: templates/team/form/member_inline_form.html:81
+#: velo/core/forms.py:25 velo/core/forms.py:26 velo/core/forms.py:27
+#: velo/core/models.py:132 velo/registration/models.py:111
+#: velo/registration/models.py:320 velo/registration/models.py:359
+#: velo/team/models.py:75 velo/templates/account/signup.html:161
+#: velo/templates/core/user_registration.html:97
+#: velo/templates/registration/application_pay.html:38
+#: velo/templates/registration/form/participant_inline_form.html:95
+#: velo/templates/team/form/member_inline_form.html:81
 msgid "Birthday"
 msgstr "Dzimšanas diena"
 
-#: core/forms.py:28 core/models.py:130 registration/models.py:125
-#: registration/models.py:322 team/models.py:35 team/models.py:81
-#: templates/account/signup.html:219 templates/core/user_registration.html:41
-#: templates/team/member_detail.html:59
+#: velo/core/forms.py:28 velo/core/models.py:130
+#: velo/registration/models.py:125 velo/registration/models.py:325
+#: velo/team/models.py:35 velo/team/models.py:81
+#: velo/templates/account/signup.html:219
+#: velo/templates/core/user_registration.html:41
+#: velo/templates/team/member_detail.html:59
 msgid "Country"
 msgstr "Valsts"
 
-#: core/forms.py:29 core/models.py:107 core/models.py:133
-#: registration/models.py:126 templates/core/user_registration.html:46
+#: velo/core/forms.py:29 velo/core/models.py:107 velo/core/models.py:133
+#: velo/registration/models.py:126
+#: velo/templates/core/user_registration.html:46
 msgid "City"
 msgstr "Pilsēta"
 
-#: core/forms.py:30 core/models.py:104 core/models.py:135
-#: registration/models.py:128 registration/models.py:129
-#: registration/models.py:323 results/tables.py:170 results/tables.py:214
-#: results/tables.py:311 results/tables.py:453
-#: templates/core/user_registration.html:51
-#: templates/registration/form/participant_inline_form.html:178
+#: velo/core/forms.py:30 velo/core/models.py:104 velo/core/models.py:135
+#: velo/registration/models.py:128 velo/registration/models.py:129
+#: velo/registration/models.py:326 velo/results/tables.py:170
+#: velo/results/tables.py:214 velo/results/tables.py:311
+#: velo/results/tables.py:453 velo/templates/core/user_registration.html:51
+#: velo/templates/registration/form/participant_inline_form.html:178
 msgid "Bike Brand"
 msgstr "Velo Zīmols"
 
-#: core/forms.py:31
+#: velo/core/forms.py:31
 msgid "Phone number"
 msgstr "Telefona numurs"
 
-#: core/forms.py:73 templates/core/user_registration.html:28
+#: velo/core/forms.py:73 velo/templates/core/user_registration.html:28
 msgid "Change Email"
 msgstr "Mainīt e-pastu"
 
-#: core/forms.py:77 templates/account/password_change.html:5
-#: templates/account/password_change.html:8
-#: templates/account/password_change.html:97
-#: templates/account/password_reset_from_key.html:6
-#: templates/account/password_reset_from_key.html:10
-#: templates/account/password_reset_from_key.html:68
-#: templates/account/password_reset_from_key_done.html:4
-#: templates/account/password_reset_from_key_done.html:8
-#: templates/core/user_registration.html:36
+#: velo/core/forms.py:77 velo/templates/account/password_change.html:5
+#: velo/templates/account/password_change.html:8
+#: velo/templates/account/password_change.html:97
+#: velo/templates/account/password_reset_from_key.html:6
+#: velo/templates/account/password_reset_from_key.html:10
+#: velo/templates/account/password_reset_from_key.html:68
+#: velo/templates/account/password_reset_from_key_done.html:4
+#: velo/templates/account/password_reset_from_key_done.html:8
+#: velo/templates/core/user_registration.html:36
 msgid "Change Password"
 msgstr "Mainīt paroli"
 
-#: core/forms.py:81 templates/core/user_registration.html:58
+#: velo/core/forms.py:81 velo/templates/core/user_registration.html:58
 msgid "Connect / Disconnect Social Accounts"
 msgstr "Pievienot / Atvienot sociālos kontus"
 
-#: core/forms.py:159
+#: velo/core/forms.py:159
 msgid "Update Profile"
 msgstr "Atjaunot profilu"
 
-#: core/formsets.py:36
+#: velo/core/formsets.py:36
 #, python-format
 msgid "You must have at least %i record"
 msgstr "Ir nepieciešams vismaz %i ieraksts"
 
-#: core/formsets.py:38
+#: velo/core/formsets.py:38
 #, python-format
 msgid "You can add maximum %i records"
 msgstr "Jūs nevarat pievienot vairāk nekā %i ierakstus"
 
-#: core/models.py:105 registration/models.py:131
+#: velo/core/models.py:105 velo/registration/models.py:131
 msgid "Occupation"
 msgstr "Nodarbošanās"
 
-#: core/models.py:106 registration/models.py:132
+#: velo/core/models.py:106 velo/registration/models.py:132
 msgid "Where Heard"
 msgstr "Kur uzzināja"
 
-#: core/models.py:119
+#: velo/core/models.py:119
 msgid "Not yet validated"
 msgstr "Nav pārbaudīts"
 
-#: core/models.py:120
+#: velo/core/models.py:120
 msgid "Bounced"
 msgstr "Atleca"
 
-#: core/models.py:121
+#: velo/core/models.py:121
 msgid "Validating"
 msgstr "Pārbauda"
 
-#: core/models.py:122
+#: velo/core/models.py:122
 msgid "Valid"
 msgstr "Pārbaudīts"
 
-#: core/models.py:123
+#: velo/core/models.py:123
 msgid "Invalid"
 msgstr "Nepareizs"
 
-#: core/models.py:128
+#: velo/core/models.py:128
 msgid "Email Address"
 msgstr "E-pasta adrese"
 
-#: core/models.py:131 registration/models.py:117 registration/models.py:319
-#: templates/registration/form/participant_inline_form.html:208
+#: velo/core/models.py:131 velo/registration/models.py:117
+#: velo/registration/models.py:322
+#: velo/templates/registration/form/participant_inline_form.html:208
 msgid "Social Security Number"
 msgstr "Personas kods"
 
-#: core/models.py:137 registration/models.py:119 registration/models.py:320
-#: team/models.py:39 templates/account/signup.html:260
-#: templates/core/user_registration.html:111
-#: templates/registration/form/participant_inline_form.html:144
-#: templates/team/team_form.html:92
+#: velo/core/models.py:137 velo/registration/models.py:119
+#: velo/registration/models.py:323 velo/team/models.py:39
+#: velo/templates/account/signup.html:260
+#: velo/templates/core/user_registration.html:111
+#: velo/templates/registration/form/participant_inline_form.html:144
+#: velo/templates/team/team_form.html:92
 msgid "Phone Number"
 msgstr "Telefona numurs"
 
-#: core/models.py:138
+#: velo/core/models.py:138
 msgid "Send Email Newsletters"
 msgstr "Sūtīt e-pasta jaunumus"
 
-#: core/models.py:140 registration/models.py:139
-#: templates/registration/application_pay.html:37
+#: velo/core/models.py:140 velo/registration/models.py:139
+#: velo/templates/registration/application_pay.html:37
 msgid "Full Name"
 msgstr "Pilns vārds"
 
-#: core/models.py:142
+#: velo/core/models.py:142
 msgid "staff status"
 msgstr "Darbinieka statuss"
 
-#: core/models.py:143
+#: velo/core/models.py:143
 msgid "Designates whether the user can log into this admin site."
 msgstr "Norāda vai lietotājs var pieslēgties administratora panelim."
 
-#: core/models.py:146
+#: velo/core/models.py:146
 msgid "active"
 msgstr "aktīvs"
 
-#: core/models.py:147
+#: velo/core/models.py:147
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr "Norāda vai lietotājs ir aktīvs."
 
-#: core/models.py:150
+#: velo/core/models.py:150
 msgid "date joined"
 msgstr "datums, kad pievienojās"
 
-#: core/models.py:152 templates/core/user_registration.html:69
-#: templates/team/form/member_inline_form.html:127
+#: velo/core/models.py:152 velo/templates/core/user_registration.html:69
+#: velo/templates/team/form/member_inline_form.html:127
 msgid "Profile Image"
 msgstr "Profila bilde"
 
-#: core/models.py:153 registration/models.py:302 team/models.py:32
-#: templates/registration/company_application_add.html:61
-#: templates/registration/company_application_add.html:148
-#: templates/registration/company_application_create.html:87
-#: templates/registration/company_application_detail.html:54
-#: templates/team/team_form.html:106
+#: velo/core/models.py:153 velo/registration/models.py:305
+#: velo/team/models.py:32
+#: velo/templates/registration/company_application_add.html:61
+#: velo/templates/registration/company_application_add.html:148
+#: velo/templates/registration/company_application_create.html:87
+#: velo/templates/registration/company_application_detail.html:54
+#: velo/templates/team/team_form.html:106
 msgid "Description"
 msgstr "Apraksts"
 
-#: core/models.py:160
+#: velo/core/models.py:160
 msgid "user"
 msgstr "lietotājs"
 
-#: core/models.py:161
+#: velo/core/models.py:161
 msgid "users"
 msgstr "lietotāji"
 
-#: core/models.py:205
+#: velo/core/models.py:205
 msgid "Velo"
 msgstr "Velo"
 
-#: core/models.py:206
+#: velo/core/models.py:206
 msgid "Cross Country"
 msgstr "Distanču slēpošana"
 
-#: core/urls.py:15
+#: velo/core/urls.py:15
 msgid "^profile/$"
 msgstr "^profils/$"
 
-#: core/urls.py:16
+#: velo/core/urls.py:16
 msgid "^my_applications/$"
 msgstr "^mani_pieteikumi/$"
 
-#: core/urls.py:17
+#: velo/core/urls.py:17
 msgid "^my_team/$"
 msgstr "^manas_komandas/$"
 
-#: core/urls.py:18
+#: velo/core/urls.py:18
 msgid "^my_team/add/$"
 msgstr "^manas_komandas/pievienot/$"
 
-#: core/urls.py:19
+#: velo/core/urls.py:19
 msgid "^my_team/(?P<pk2>\\d+)/$"
 msgstr "^manas_komandas/(?P<pk2>\\d+)/$"
 
-#: core/urls.py:21
+#: velo/core/urls.py:21
 msgid "^my_team/(?P<pk2>\\d+)/pay/$"
 msgstr "^manas_komandas/(?P<pk2>\\d+)/maksat/$"
 
-#: core/urls.py:23
+#: velo/core/urls.py:23
 msgid "^my_team/(?P<pk2>\\d+)/apply/$"
 msgstr "^manas_komandas/(?P<pk2>\\d+)/pieteikt/$"
 
-#: core/urls.py:24
+#: velo/core/urls.py:24
 msgid "^my_team/(?P<pk2>\\d+)/apply/(?P<competition_pk>\\d+)/$"
 msgstr "^manas_komandas/(?P<pk2>\\d+)/pieteikt/(?P<competition_pk>\\d+)/$"
 
-#: gallery/admin.py:22 gallery/forms.py:81
+#: velo/gallery/admin.py:22 velo/gallery/forms.py:81
 msgid "You can add only youtube and vimeo videos."
 msgstr "Var pievienot tikai Youtube un Vimeo adreses."
 
-#: gallery/forms.py:60
+#: velo/gallery/forms.py:60
 msgid "Link"
 msgstr "Adrese"
 
-#: gallery/forms.py:60
+#: velo/gallery/forms.py:60
 msgid "Youtube or Vimeo link"
 msgstr "Youtube vai Vimeo adrese"
 
-#: gallery/forms.py:85
+#: velo/gallery/forms.py:85
 msgid "Incorrect youtube link."
 msgstr "Nepareiza Youtube adrese."
 
-#: gallery/forms.py:89
+#: velo/gallery/forms.py:89
 msgid "Incorrect vimeo link."
 msgstr "Nepareiza Vimeo adrese."
 
-#: gallery/forms.py:107
+#: velo/gallery/forms.py:107
 msgid ""
 "Video successfully added. Video must be approved by agency to be available "
 "to public."
@@ -311,228 +326,240 @@ msgstr ""
 "Video veiksmīgi pievienots. Aģentūrai jāapstiprina video, lai tas parādītos "
 "publiski."
 
-#: gallery/forms.py:114
+#: velo/gallery/forms.py:114
 msgid "Zip File"
 msgstr "ZIP Fails"
 
-#: gallery/forms.py:114
+#: velo/gallery/forms.py:114
 msgid "ZIP File containing photos"
 msgstr "ZIP Fails, kas satur fotogrāfijas"
 
-#: gallery/forms.py:222 gallery/forms.py:303
-#: registration/competition_classes/base.py:222 registration/models.py:33
-#: team/tables.py:39 templates/registration/company_application_add.html:38
-#: templates/registration/company_application_add.html:142
-#: templates/registration/company_application_detail.html:36
-#: templates/team/member_detail.html:73
+#: velo/gallery/forms.py:222 velo/gallery/forms.py:303
+#: velo/registration/competition_classes/base.py:222
+#: velo/registration/models.py:33 velo/team/tables.py:39
+#: velo/templates/registration/company_application_add.html:38
+#: velo/templates/registration/company_application_add.html:142
+#: velo/templates/registration/company_application_detail.html:36
+#: velo/templates/team/member_detail.html:73
 msgid "Competition"
 msgstr "Sacensības"
 
-#: gallery/forms.py:223
+#: velo/gallery/forms.py:223
 msgid "Show"
 msgstr "Rādīt"
 
-#: gallery/forms.py:224 gallery/forms.py:304 manager/filter.py:35
-#: templates/base/competition/_head_search.html:24
-#: templates/base/competition/_head_search_w_group.html:24
-#: templates/registration/participant_list.html:29
-#: templates/results/participant.html:48
-#: templates/results/participant_standing.html:48
-#: templates/results/team.html:46 templates/results/team_by_teamname.html:46
-#: templates/results/team_standing.html:44 templates/team/applied.html:31
-#: templates/team/team_list.html:33
+#: velo/gallery/forms.py:224 velo/gallery/forms.py:304
+#: velo/manager/filter.py:35
+#: velo/templates/base/competition/_head_search.html:24
+#: velo/templates/base/competition/_head_search_w_group.html:24
+#: velo/templates/registration/participant_list.html:29
+#: velo/templates/results/participant.html:48
+#: velo/templates/results/participant_standing.html:48
+#: velo/templates/results/team.html:46
+#: velo/templates/results/team_by_teamname.html:46
+#: velo/templates/results/team_standing.html:44
+#: velo/templates/team/applied.html:31 velo/templates/team/team_list.html:33
 msgid "Search"
 msgstr "Meklēt"
 
-#: gallery/forms.py:262
+#: velo/gallery/forms.py:262
 msgid "Show only agency videos"
 msgstr "Rādīt tikai aģentūras video"
 
-#: gallery/forms.py:262
+#: velo/gallery/forms.py:262
 msgid "Show only user videos"
 msgstr "Rādīt tikai lietotāju video"
 
-#: gallery/tables.py:23 manager/tables/analytics.py:28
-#: manager/tables/analytics.py:59 manager/tables/analytics.py:77
-#: manager/tables/news_tables.py:22
+#: velo/gallery/tables.py:23 velo/manager/tables/analytics.py:28
+#: velo/manager/tables/analytics.py:59 velo/manager/tables/analytics.py:77
+#: velo/manager/tables/news_tables.py:22
 msgid "There are no records"
 msgstr "Nav ierakstu"
 
-#: gallery/urls.py:11
+#: velo/gallery/urls.py:11
 msgid "^video/$"
 msgstr "^video/$"
 
-#: gallery/urls.py:12
+#: velo/gallery/urls.py:12
 msgid "^video/add/$"
 msgstr "^video/pievienot/$"
 
-#: gallery/urls.py:13
+#: velo/gallery/urls.py:13
 msgid "^$"
 msgstr "^$"
 
-#: gallery/urls.py:14
+#: velo/gallery/urls.py:14
 msgid "^add/$"
 msgstr "^pievienot/$"
 
-#: gallery/urls.py:15
+#: velo/gallery/urls.py:15
 msgid "^(?P<album_pk>\\d+)/$"
 msgstr "^(?P<album_pk>\\d+)/$"
 
-#: gallery/urls.py:16
+#: velo/gallery/urls.py:16
 msgid "^(?P<album_pk>\\d+)/(?P<pk>\\d+)/assign_numbers/$"
 msgstr "^(?P<album_pk>\\d+)/(?P<pk>\\d+)/pievienot_numurus/$"
 
-#: gallery/urls.py:19
+#: velo/gallery/urls.py:19
 msgid "^pick/$"
 msgstr "^izveleties/$"
 
-#: gallery/urls.py:20
+#: velo/gallery/urls.py:20
 msgid "^pick/(?P<album_pk>\\d+)/$"
 msgstr "^izveleties/(?P<album_pk>\\d+)/$"
 
-#: gallery/views.py:213
+#: velo/gallery/views.py:213
 msgid "Uploaded file is not an image."
 msgstr "Augšupielādētais fails nav attēls."
 
-#: gallery/views.py:215
+#: velo/gallery/views.py:215
 msgid "Please pick file"
 msgstr "Lūdzu izvēlaties failu"
 
-#: manager/filter.py:36
+#: velo/manager/filter.py:36
 #, fuzzy
 #| msgid "Reserve"
 msgid "Reset"
 msgstr "Rezerve"
 
-#: manager/forms.py:47
+#: velo/manager/forms.py:47
 msgid "There is not created invoice link for this competition."
 msgstr "Nav izveidots rēķins šai sacensībai."
 
-#: manager/forms.py:49 payment/forms.py:75 payment/forms.py:295
+#: velo/manager/forms.py:49 velo/payment/forms.py:75 velo/payment/forms.py:295
 msgid "Error in connection with bank. Try again later."
 msgstr "Nevar savienoties ar banku. Lūdzu mēģiniet vēlreiz vēlāk."
 
-#: manager/forms.py:69 payment/forms.py:111 payment/forms.py:305
+#: velo/manager/forms.py:69 velo/payment/forms.py:111
+#: velo/payment/forms.py:305
 msgid "Company Name required."
 msgstr "Uzņēmuma nosaukums ir obligāts lauks."
 
-#: manager/forms.py:71 payment/forms.py:113 payment/forms.py:307
+#: velo/manager/forms.py:71 velo/payment/forms.py:113
+#: velo/payment/forms.py:307
 msgid "Company registration number required."
 msgstr "Uzņēmuma reģ.numurs ir obligāts lauks."
 
-#: manager/forms.py:73 payment/forms.py:115 payment/forms.py:309
+#: velo/manager/forms.py:73 velo/payment/forms.py:115
+#: velo/payment/forms.py:309
 msgid "Company Address required."
 msgstr "Uzņēmuma adrese ir obligāts lauks."
 
-#: manager/forms.py:75 payment/forms.py:117 payment/forms.py:311
+#: velo/manager/forms.py:75 velo/payment/forms.py:117
+#: velo/payment/forms.py:311
 msgid "Company Juridical Address required."
 msgstr "Uzņēmuma juridiskā adrese ir obligāts lauks."
 
-#: manager/forms.py:452 registration/forms.py:83
-#: templates/core/user_registration.html:131
-#: templates/registration/application_update.html:100
-#: templates/registration/company_application_add.html:89
-#: templates/registration/company_application_create.html:126
-#: templates/team/team_form.html:212
+#: velo/manager/forms.py:452 velo/registration/forms.py:83
+#: velo/templates/core/user_registration.html:131
+#: velo/templates/registration/application_update.html:100
+#: velo/templates/registration/company_application_add.html:89
+#: velo/templates/registration/company_application_create.html:126
+#: velo/templates/team/team_form.html:212
 msgid "Save"
 msgstr "Saglabāt"
 
-#: manager/forms.py:758 manager/forms.py:763 manager/forms.py:765
-#: registration/forms.py:228 registration/forms.py:233
-#: registration/forms.py:235 velo/mixins/forms.py:72 velo/mixins/forms.py:77
-#: velo/mixins/forms.py:79
+#: velo/manager/forms.py:758 velo/manager/forms.py:763
+#: velo/manager/forms.py:765 velo/registration/forms.py:228
+#: velo/registration/forms.py:233 velo/registration/forms.py:235
+#: velo/velo/mixins/forms.py:72 velo/velo/mixins/forms.py:77
+#: velo/velo/mixins/forms.py:79
 msgid "Invalid Social Security Number."
 msgstr "Kļūdains personas kods."
 
-#: manager/tables/results_tables.py:16 manager/tables/tables.py:259
-#: manager/tables/tables.py:271 manager/tables/tables.py:283
-#: manager/tables/tables.py:295
+#: velo/manager/tables/results_tables.py:16 velo/manager/tables/tables.py:259
+#: velo/manager/tables/tables.py:271 velo/manager/tables/tables.py:283
+#: velo/manager/tables/tables.py:295
 msgid "ID"
 msgstr "ID"
 
-#: manager/tables/results_tables.py:17
-#: templates/registration/company_application_detail.html:242
+#: velo/manager/tables/results_tables.py:17
+#: velo/templates/registration/company_application_detail.html:242
 msgid "Distance"
 msgstr "Distance"
 
-#: manager/tables/results_tables.py:20 registration/models.py:134
-#: registration/models.py:272 results/tables.py:56 results/tables.py:85
-#: results/tables.py:148 results/tables.py:171 results/tables.py:212
-#: results/tables.py:455
+#: velo/manager/tables/results_tables.py:20 velo/registration/models.py:134
+#: velo/registration/models.py:275 velo/results/tables.py:56
+#: velo/results/tables.py:85 velo/results/tables.py:148
+#: velo/results/tables.py:171 velo/results/tables.py:212
+#: velo/results/tables.py:455
 msgid "Group"
 msgstr "Grupa"
 
-#: manager/tables/results_tables.py:21 manager/tables/results_tables.py:46
-#: results/models.py:168 results/models.py:181 results/models.py:183
-#: results/models.py:184 results/tables.py:454
-#: templates/results/team_by_teamname.html:102
-#: templates/results/team_by_teamname.html:116
+#: velo/manager/tables/results_tables.py:21
+#: velo/manager/tables/results_tables.py:46 velo/results/models.py:168
+#: velo/results/models.py:181 velo/results/models.py:183
+#: velo/results/models.py:184 velo/results/tables.py:454
+#: velo/templates/results/team_by_teamname.html:102
+#: velo/templates/results/team_by_teamname.html:116
 msgid "Time"
 msgstr "Laiks"
 
-#: manager/tables/results_tables.py:34 results/tables.py:43
-#: results/tables.py:71 results/tables.py:103 results/tables.py:135
-#: results/tables.py:157 results/tables.py:199 results/tables.py:254
-#: results/tables.py:349 results/tables.py:369 results/tables.py:406
-#: results/tables.py:439 results/tables.py:484
+#: velo/manager/tables/results_tables.py:34 velo/results/tables.py:43
+#: velo/results/tables.py:71 velo/results/tables.py:103
+#: velo/results/tables.py:135 velo/results/tables.py:157
+#: velo/results/tables.py:199 velo/results/tables.py:254
+#: velo/results/tables.py:349 velo/results/tables.py:369
+#: velo/results/tables.py:406 velo/results/tables.py:439
+#: velo/results/tables.py:484
 msgid "There are no results"
 msgstr "Nav rezultātu"
 
-#: manager/tables/results_tables.py:56
+#: velo/manager/tables/results_tables.py:56
 #, fuzzy
 #| msgid "There are no participants"
 msgid "There are no chip scans"
 msgstr "Nav dalībnieku"
 
-#: manager/tables/tables.py:37 manager/tables/tables.py:54
+#: velo/manager/tables/tables.py:37 velo/manager/tables/tables.py:54
 msgid "You haven't added any team"
 msgstr "Jūs neesat pievienojis nevienu komandu"
 
-#: manager/tables/tables.py:71
+#: velo/manager/tables/tables.py:71
 msgid "You haven't added any distance"
 msgstr "Jūs neesat pievienojis nevienu distanci"
 
-#: manager/tables/tables.py:99
+#: velo/manager/tables/tables.py:99
 msgid "No numbers"
 msgstr "Nav numuru"
 
-#: manager/tables/tables.py:131 manager/tables/tables.py:163
+#: velo/manager/tables/tables.py:131 velo/manager/tables/tables.py:163
 msgid "You haven't added any participant"
 msgstr "Jūs neesat pievienojis nevienu dalībnieku"
 
-#: manager/tables/tables.py:196
+#: velo/manager/tables/tables.py:196
 msgid "You haven't added any number"
 msgstr "Jūs neesat pievienojis nevienu numuru"
 
-#: manager/tables/tables.py:213
+#: velo/manager/tables/tables.py:213
 msgid "You haven't added any competition"
 msgstr "Jūs neesat pievienojis nevienu sacensību"
 
-#: manager/tables/tables.py:237
+#: velo/manager/tables/tables.py:237
 msgid "You haven't added any applied member"
 msgstr "Jūs neesat pievienojis nevienu komandas dalībnieku"
 
-#: manager/tables/tables.py:252
+#: velo/manager/tables/tables.py:252
 msgid "There are no applications"
 msgstr "Nav pieteikumu"
 
-#: manager/tables/tables.py:265
+#: velo/manager/tables/tables.py:265
 msgid "There are no Sync tasks"
 msgstr "Nav Sinhronizācijas uzdevumu"
 
-#: manager/tables/tables.py:277
+#: velo/manager/tables/tables.py:277
 msgid "There are no pricing records."
 msgstr "Nav maksu ierakstu."
 
-#: manager/tables/tables.py:289 manager/tables/tables.py:301
+#: velo/manager/tables/tables.py:289 velo/manager/tables/tables.py:301
 msgid "There are no records."
 msgstr "Nav ierakstu."
 
-#: news/urls.py:11
+#: velo/news/urls.py:11
 msgid "^notification/(?P<slug>.+)/$"
 msgstr "^pazinojums/(?P<slug>.+)/$"
 
-#: payment/forms.py:25
+#: velo/payment/forms.py:25
 msgid ""
 "I confirm, that: the competition organizers are not responsible for possible "
 "injuries of participants, during the competition; my health condition "
@@ -551,78 +578,78 @@ msgstr ""
 "iemaksātā dalības maksa netiek atdota un dalībnieka numurs nav nododams "
 "citai personai."
 
-#: payment/forms.py:27
+#: velo/payment/forms.py:27
 msgid "I will inform all registered participants about rules."
 msgstr "Apliecinu, ka informēšu pieteiktos dalībniekus par noteikumiem."
 
-#: payment/forms.py:69 payment/forms.py:289
+#: velo/payment/forms.py:69 velo/payment/forms.py:289
 #, python-format
 msgid "Invoice successfully created and sent to %(email)s"
 msgstr "Rēķins veiksmīgi izveidots un nosūtīts uz %(email)s"
 
-#: payment/forms.py:130
+#: velo/payment/forms.py:130
 #, fuzzy
 #| msgid "Occupation"
 msgid "Regulation"
 msgstr "Nodarbošanās"
 
-#: payment/forms.py:177 payment/forms.py:340
+#: velo/payment/forms.py:177 velo/payment/forms.py:340
 msgid "Payment method"
 msgstr "Maksājumu metode"
 
-#: payment/models.py:103
+#: velo/payment/models.py:103
 msgid "Receive Bill"
 msgstr "Saņemt rēķinu"
 
-#: payment/models.py:118
+#: velo/payment/models.py:118
 msgid "New"
 msgstr "Jauns"
 
-#: payment/models.py:119
+#: velo/payment/models.py:119
 msgid "Pending"
 msgstr "Gaida"
 
-#: payment/models.py:120
+#: velo/payment/models.py:120
 msgid "OK"
 msgstr "OK"
 
-#: payment/models.py:121
+#: velo/payment/models.py:121
 msgid "Reversed"
 msgstr "Atgriezts"
 
-#: payment/models.py:122 registration/models.py:31
+#: velo/payment/models.py:122 velo/registration/models.py:31
 msgid "Cancelled"
 msgstr "Atcelts"
 
-#: payment/models.py:123
+#: velo/payment/models.py:123
 msgid "Timeout"
 msgstr "Laiks notecējis"
 
-#: payment/models.py:124
+#: velo/payment/models.py:124
 msgid "Declined"
 msgstr "Noraidīts"
 
-#: payment/models.py:125
+#: velo/payment/models.py:125
 msgid "Failed"
 msgstr "Neizdevās"
 
-#: payment/models.py:126
+#: velo/payment/models.py:126
 msgid "Error"
 msgstr "Kļūda"
 
-#: payment/models.py:127
+#: velo/payment/models.py:127
 msgid "ID not found"
 msgstr "ID nav atrodams"
 
-#: payment/urls.py:11
+#: velo/payment/urls.py:11
 msgid "^checkprice/(?P<pk>\\d+)/$"
 msgstr "^cenasparbaude/(?P<pk>\\d+)/$"
 
-#: payment/urls.py:12
+#: velo/payment/urls.py:12
 msgid "^back/(?P<slug>.+)/$"
 msgstr "^atpakal/(?P<slug>.+)/$"
 
-#: payment/utils.py:125
+#: velo/payment/utils.py:125
 #, python-format
 msgid ""
 "<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-"
@@ -631,7 +658,7 @@ msgstr ""
 "<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-"
 "margin--10'>Pieteikuma maksa - <span>%(entry_fee)s€</span></div>"
 
-#: payment/utils.py:127
+#: velo/payment/utils.py:127
 #, python-format
 msgid ""
 "<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-"
@@ -640,7 +667,7 @@ msgstr ""
 "<div class='fs12 fw700 c-white--70 uppercase text-align--right bottom-"
 "margin--10'>Apdrošināšanas maksa - <span>%(insurance_fee)s€</span></div>"
 
-#: payment/utils.py:128
+#: velo/payment/utils.py:128
 #, python-format
 msgid ""
 "<div class='fs14 fw700 c-white uppercase text-align--right'>Total - <span "
@@ -649,7 +676,7 @@ msgstr ""
 "<div class='fs14 fw700 c-white uppercase text-align--right'>KOPĀ - <span "
 "class='c-yellow'>%(total)s€</span></div>"
 
-#: payment/utils.py:130
+#: velo/payment/utils.py:130
 #, python-format
 msgid ""
 "<div class='fs14 fw700 c-white uppercase text-align--right'>This distance "
@@ -658,15 +685,15 @@ msgstr ""
 "<div class='fs14 fw700 c-white uppercase text-align--right'>Šī distance nav "
 "pieejama dzimšanas gadam %(year)s.</div>"
 
-#: payment/utils.py:450
+#: velo/payment/utils.py:450
 msgid "Team profile successfully paid."
 msgstr "Komandas profils veiksmīgi apmaksāts"
 
-#: payment/utils.py:500
+#: velo/payment/utils.py:500
 msgid "Transaction unsuccessful. Try again."
 msgstr "Maksājums neizdevās. Mēģiniet vēlreiz."
 
-#: payment/utils.py:513
+#: velo/payment/utils.py:513
 msgid ""
 "Transaction status unknown. If you paid, then wait a while until status is "
 "updated - you will receive email."
@@ -674,7 +701,7 @@ msgstr ""
 "Maksājuma statuss nav zināms. Ja ir apmaksāts, tad uzgaidīt kamēr statuss "
 "tiek atjaunots - jūs saņemsiet e-pastu."
 
-#: payment/views.py:36
+#: velo/payment/views.py:36
 msgid ""
 "<div class='fs14 fw700 c-white uppercase text-align--right'>Please enter all "
 "details</div>"
@@ -682,99 +709,99 @@ msgstr ""
 "<div class='fs14 fw700 c-white uppercase text-align--right'>Lūdzu norādiet "
 "visu informāciju</div>"
 
-#: payment/views.py:85
+#: velo/payment/views.py:85
 msgid "Please add at least one participant"
 msgstr "Lūdzu pievienojiet vismaz vienu dalībnieku"
 
-#: payment/views.py:90
+#: velo/payment/views.py:90
 msgid "Please specify first name and last name for all participants"
 msgstr "Lūdzu norādiet vārdu un uzvārdu visiem dalībniekiem"
 
-#: payment/views.py:93
+#: velo/payment/views.py:93
 msgid "Please specify birthday for all participants"
 msgstr "Lūdzu norādiet dzimšanas dienas visiem dalībniekiem"
 
-#: payment/views.py:96
+#: velo/payment/views.py:96
 msgid "Not all participants have price added. Did you press save & pay?"
 msgstr ""
 "Visiem dalībniekiem nav pievienotas cenas. Vai jūs nospiedāt saglabāt un "
 "apmaksāt?"
 
-#: payment/views.py:105
+#: velo/payment/views.py:105
 msgid "Price expired. Start registering participants from step 1."
 msgstr "Cena vairs nav aktīva. Lūdzu sāciet reģistrāciju no sākuma."
 
-#: payment/views.py:189
+#: velo/payment/views.py:189
 msgid "Team profile already payed."
 msgstr "Komandas profils ir jau apmaksāts."
 
-#: payment/views.py:193
+#: velo/payment/views.py:193
 msgid "Competition already passed."
 msgstr "Sacensība jau ir pagātnē."
 
-#: payment/views.py:199
+#: velo/payment/views.py:199
 msgid "Price for team profile not defined."
 msgstr "Cena komandas profilam nav noteikta."
 
-#: payment/widgets.py:46
+#: velo/payment/widgets.py:46
 msgid "Get Invoice"
 msgstr "Saņemt rēķinu"
 
-#: registration/competition_classes/base.py:207
-#: registration/competition_classes/base.py:223
-#: registration/competition_classes/base.py:788
-#: registration/competition_classes/base_vb.py:46
+#: velo/registration/competition_classes/base.py:207
+#: velo/registration/competition_classes/base.py:223
+#: velo/registration/competition_classes/base.py:792
+#: velo/registration/competition_classes/base_vb.py:46
 msgid "Teams"
 msgstr "Komandas"
 
-#: registration/competition_classes/base.py:210
-#: registration/competition_classes/base.py:226
+#: velo/registration/competition_classes/base.py:210
+#: velo/registration/competition_classes/base.py:226
 msgid "Standings"
 msgstr "Kopvērtējums"
 
-#: registration/competition_classes/base.py:211
-#: registration/competition_classes/base.py:227
+#: velo/registration/competition_classes/base.py:211
+#: velo/registration/competition_classes/base.py:227
 msgid "Team Standings"
 msgstr "Komandu kopvērtējums"
 
-#: registration/competition_classes/base.py:228
-#: registration/competition_classes/base.py:791
-#: registration/competition_classes/base_vb.py:49
-#: registration/competition_classes/ec2016.py:252
+#: velo/registration/competition_classes/base.py:228
+#: velo/registration/competition_classes/base.py:795
+#: velo/registration/competition_classes/base_vb.py:49
+#: velo/registration/competition_classes/ec2016.py:252
 msgid "Start List"
 msgstr "Starta saraksts"
 
-#: registration/competition_classes/base.py:229
+#: velo/registration/competition_classes/base.py:229
 msgid "Applied Teams"
 msgstr "Pieteiktās komandas"
 
-#: registration/competition_classes/base.py:230
-#: registration/competition_classes/base.py:795
-#: registration/competition_classes/base_vb.py:53
-#: registration/competition_classes/ec2016.py:253
+#: velo/registration/competition_classes/base.py:230
+#: velo/registration/competition_classes/base.py:799
+#: velo/registration/competition_classes/base_vb.py:53
+#: velo/registration/competition_classes/ec2016.py:253
 msgid "Maps"
 msgstr "Kartes"
 
-#: registration/competition_classes/base.py:236
-#: registration/competition_classes/base.py:798
-#: registration/competition_classes/base_vb.py:56
-#: registration/competition_classes/ec2016.py:258
+#: velo/registration/competition_classes/base.py:236
+#: velo/registration/competition_classes/base.py:802
+#: velo/registration/competition_classes/base_vb.py:56
+#: velo/registration/competition_classes/ec2016.py:258
 msgid "Results"
 msgstr "Rezultāti"
 
-#: registration/competition_classes/base.py:237
-#: registration/competition_classes/base.py:799
-#: registration/competition_classes/base_vb.py:57
+#: velo/registration/competition_classes/base.py:237
+#: velo/registration/competition_classes/base.py:803
+#: velo/registration/competition_classes/base_vb.py:57
 msgid "Team Results"
 msgstr "Komandu rezultāti"
 
-#: registration/competition_classes/base_vb.py:59
+#: velo/registration/competition_classes/base_vb.py:59
 #, fuzzy
 #| msgid "Result Distance"
 msgid "Team Results betw. distances"
 msgstr "Rezultāts distancē"
 
-#: registration/competition_classes/ec2016.py:57
+#: velo/registration/competition_classes/ec2016.py:57
 msgid ""
 "I am informed that participation in UEC MTB Marathon requires licence. More "
 "info in Technical Guide."
@@ -782,7 +809,7 @@ msgstr ""
 "Es esmu informēts, ka dalībai Eiropas Čempionātā ir nepieciešama licence. "
 "Vairkā informācijas tehniskajā dokumentācijā."
 
-#: registration/competition_classes/seb2015.py:181
+#: velo/registration/competition_classes/seb2015.py:181
 #, python-format
 msgid ""
 "I am informed that participation in Skandi Motors distance requires LRF "
@@ -791,7 +818,7 @@ msgstr ""
 "Esmu informēts/ta, ka Skandi Motors distancē nepieciešama LRF licence. "
 "Vairāk informācija - %s"
 
-#: registration/competition_classes/seb2016.py:187
+#: velo/registration/competition_classes/seb2016.py:192
 #, python-format
 msgid ""
 "I am informed that participation in %s requires LRF licence. More info - "
@@ -800,285 +827,295 @@ msgstr ""
 "Esmu informēts/ta, ka %s distancē nepieciešama LRF licence. Vairāk "
 "informācija - http://lrf.lv"
 
-#: registration/forms.py:23
+#: velo/registration/forms.py:23
 msgid "Reset public URL?"
 msgstr "Nomainīt publisko URL?"
 
-#: registration/forms.py:24
+#: velo/registration/forms.py:24
 msgid ""
 "If you reset URL, then nobody will be able to access using previous URL."
 msgstr ""
 "Ja nomainīsiet, tad kompānijas pieteikumam vairs nevarēs piekļūt ar veco "
 "interneta adresi."
 
-#: registration/forms.py:120
+#: velo/registration/forms.py:120
 msgid "E-mail confirmation"
 msgstr "E-pasta apstiprinājums"
 
-#: registration/forms.py:126 registration/forms.py:141
+#: velo/registration/forms.py:126 velo/registration/forms.py:141
 msgid "This field is required."
 msgstr "Šis lauks ir obligāts."
 
-#: registration/forms.py:127 registration/forms.py:142
+#: velo/registration/forms.py:127 velo/registration/forms.py:142
 msgid "Please enter valid email address!"
 msgstr "Lūdzu norādiet korektu e-pasta adresi!"
 
-#: registration/forms.py:128
+#: velo/registration/forms.py:128
 msgid "Emails doesn't match"
 msgstr "E-pasta adreses nesakrīt"
 
-#: registration/forms.py:151
+#: velo/registration/forms.py:151
 msgid "The two email fields didn't match."
 msgstr "Abi e-pasta lauki nesakrīt."
 
-#: registration/forms.py:168 templates/registration/application_pay.html:41
+#: velo/registration/forms.py:168
+#: velo/templates/registration/application_pay.html:41
 msgid "Insurance"
 msgstr "Apdrošināšana"
 
-#: registration/forms.py:237
+#: velo/registration/forms.py:237
 msgid "SSN is required."
 msgstr "Personas kods ir obligāts lauks"
 
-#: registration/forms.py:243 registration/forms.py:424
+#: velo/registration/forms.py:243 velo/registration/forms.py:424
 msgid "This distance not available for this participant."
 msgstr "Distance nav pieejama šim dalībniekam."
 
-#: registration/forms.py:275
+#: velo/registration/forms.py:275
 msgid "Select Insurance"
 msgstr "Izvēlēties apdrošināšanu"
 
-#: registration/forms.py:286
+#: velo/registration/forms.py:286
 msgid "Select Distance"
 msgstr "Izvēlēties distanci"
 
-#: registration/forms.py:305
+#: velo/registration/forms.py:305
 msgid "Select Gender"
 msgstr "Izvēlieties dzimumu"
 
-#: registration/models.py:28
+#: velo/registration/models.py:28
 msgid "Haven't Payed"
 msgstr "Nav apmaksāts"
 
-#: registration/models.py:29
+#: velo/registration/models.py:29
 msgid "Waiting for Payment"
 msgstr "Gaida maksājumu"
 
-#: registration/models.py:30
+#: velo/registration/models.py:30
 msgid "Payed"
 msgstr "Apmaksāts"
 
-#: registration/models.py:34
+#: velo/registration/models.py:34
 msgid "Payment Status"
 msgstr "Maksājuma statuss"
 
-#: registration/models.py:38
+#: velo/registration/models.py:38
 msgid "I want to receive velo.lv news in email."
 msgstr "Es vēlos saņemt velo.lv jaunumus."
 
-#: registration/models.py:43 team/models.py:51
+#: velo/registration/models.py:43 velo/team/models.py:51
 msgid "Company name / Full Name"
 msgstr "Uzņēmuma nosaukums / Vārds Uzvārds"
 
-#: registration/models.py:44 team/models.py:52
+#: velo/registration/models.py:44 velo/team/models.py:52
 msgid "VAT Number"
 msgstr "VAT Numurs"
 
-#: registration/models.py:45 team/models.py:53
+#: velo/registration/models.py:45 velo/team/models.py:53
 msgid "Company number / SSN"
 msgstr "Uzņēmuma numurs / Personas kods"
 
-#: registration/models.py:46 team/models.py:54
+#: velo/registration/models.py:46 velo/team/models.py:54
 msgid "Address"
 msgstr "Adrese"
 
-#: registration/models.py:47 team/models.py:55
+#: velo/registration/models.py:47 velo/team/models.py:55
 msgid "Juridical Address"
 msgstr "Juridiskā adrese"
 
-#: registration/models.py:48
+#: velo/registration/models.py:48
 msgid "Show participant names in invoice"
 msgstr "Rādīt dalībnieku vārdus rēķinā"
 
-#: registration/models.py:50 team/models.py:56
+#: velo/registration/models.py:50 velo/team/models.py:56
 msgid "Invoice code"
 msgstr "Rēķina kods"
 
-#: registration/models.py:51 team/models.py:57
+#: velo/registration/models.py:51 velo/team/models.py:57
 msgid "Invoice Number"
 msgstr "Rēķina numurs"
 
-#: registration/models.py:53
+#: velo/registration/models.py:53
 msgid "Donation"
 msgstr "Ziedojums"
 
-#: registration/models.py:85 registration/models.py:307 team/models.py:69
+#: velo/registration/models.py:85 velo/registration/models.py:310
+#: velo/team/models.py:69
 msgid "Male"
 msgstr "Vīrietis"
 
-#: registration/models.py:86 registration/models.py:308 team/models.py:70
+#: velo/registration/models.py:86 velo/registration/models.py:311
+#: velo/team/models.py:70
 msgid "Female"
 msgstr "Sieviete"
 
-#: registration/models.py:102 registration/tables.py:34 results/tables.py:55
-#: results/tables.py:84 results/tables.py:116 results/tables.py:147
-#: results/tables.py:169 results/tables.py:213 results/tables.py:310
-#: results/tables.py:452 templates/registration/application_pay.html:39
-#: templates/registration/company_application_detail.html:108
-#: templates/registration/company_application_detail.html:288
+#: velo/registration/models.py:102 velo/registration/tables.py:34
+#: velo/results/tables.py:55 velo/results/tables.py:84
+#: velo/results/tables.py:116 velo/results/tables.py:147
+#: velo/results/tables.py:169 velo/results/tables.py:213
+#: velo/results/tables.py:310 velo/results/tables.py:452
+#: velo/templates/registration/application_pay.html:39
+#: velo/templates/registration/company_application_detail.html:108
+#: velo/templates/registration/company_application_detail.html:288
 msgid "Team"
 msgstr "Komanda"
 
-#: registration/models.py:105 registration/models.py:312
+#: velo/registration/models.py:105 velo/registration/models.py:315
 msgid "Is Participating"
 msgstr "Vai piedalās?"
 
-#: registration/models.py:106
+#: velo/registration/models.py:106
 msgid "Is Paying"
 msgstr "Vai maksā?"
 
-#: registration/models.py:107
+#: velo/registration/models.py:107
 msgid "Is Competing"
 msgstr "Vai piedalās"
 
-#: registration/models.py:115 registration/models.py:318 team/models.py:79
+#: velo/registration/models.py:115 velo/registration/models.py:321
+#: velo/team/models.py:79
 msgid "Gender"
 msgstr "Dzimums"
 
-#: registration/models.py:119 registration/models.py:320
+#: velo/registration/models.py:119 velo/registration/models.py:323
 msgid "Result will be sent to this phone number"
 msgstr "Uz šo telefona numuru tiks sūtīts rezultāts"
 
-#: registration/models.py:120 registration/models.py:321 team/models.py:38
-#: templates/core/user_registration.html:25
-#: templates/registration/company_application_add.html:46
-#: templates/registration/company_application_add.html:146
-#: templates/registration/company_application_detail.html:44
-#: templates/registration/form/participant_inline_form.html:128
+#: velo/registration/models.py:120 velo/registration/models.py:324
+#: velo/team/models.py:38 velo/templates/core/user_registration.html:25
+#: velo/templates/registration/company_application_add.html:46
+#: velo/templates/registration/company_application_add.html:146
+#: velo/templates/registration/company_application_detail.html:44
+#: velo/templates/registration/form/participant_inline_form.html:128
 msgid "Email"
 msgstr "E-pasts"
 
-#: registration/models.py:122
+#: velo/registration/models.py:122
 msgid "Send Email"
 msgstr "Sūtīt e-pastu"
 
-#: registration/models.py:123
+#: velo/registration/models.py:123
 msgid "Send SMS"
 msgstr "Sūtīt SMS"
 
-#: registration/models.py:134
+#: velo/registration/models.py:134
 msgid "Assigned automatically"
 msgstr "Piešķirt automātiski"
 
-#: registration/models.py:136
+#: velo/registration/models.py:136
 msgid "Registrant"
 msgstr "Reģistrētājs"
 
-#: registration/models.py:147
+#: velo/registration/models.py:147
 msgid "Registration Date"
 msgstr "Reģistrēšanas datums"
 
-#: registration/models.py:159
+#: velo/registration/models.py:159
 msgid "participant"
 msgstr "dalībnieks"
 
-#: registration/models.py:160
+#: velo/registration/models.py:160
 msgid "participants"
 msgstr "dalībnieki"
 
-#: registration/models.py:288
+#: velo/registration/models.py:291
 msgid "If specific number should be given"
 msgstr "Ja jāpiešķir specifisks numurs."
 
-#: registration/models.py:289
+#: velo/registration/models.py:292
 msgid "If specific passage should be given"
 msgstr "Ja jāpiešķir specifisks koridors."
 
-#: registration/models.py:291
+#: velo/registration/models.py:294
 msgid "Group together in one passage"
 msgstr "Norādiet vienādu skaitli, lai cilvēkus sagrupētu vienā koridorī"
 
-#: registration/models.py:301
+#: velo/registration/models.py:304
 msgid ""
 "You will receive payment confirmation and information about start numbers."
 msgstr ""
 "Jūs saņemsiet maksājuma apstiprinājumu un informāciju par starta numuriem."
 
-#: registration/models.py:356
+#: velo/registration/models.py:359
 msgid "YYYY-MM-DD"
 msgstr "YYYY-MM-DD"
 
-#: registration/tables.py:26
+#: velo/registration/tables.py:26
 msgid "You haven't created any application."
 msgstr "Jūs neesat izveidojis nevienu pieteikumu."
 
-#: registration/tables.py:33 results/tables.py:53 results/tables.py:81
-#: results/tables.py:113 results/tables.py:145 results/tables.py:167
-#: results/tables.py:210 results/tables.py:308 results/tables.py:450
-#: templates/bootstrap/manager/team_apply_list.html:17
-#: templates/results/team.html:119 templates/results/team_by_teamname.html:115
-#: templates/team/applied.html:103 templates/team/team_apply.html:49
-#: templates/team/team_apply_list.html:39
+#: velo/registration/tables.py:33 velo/results/tables.py:53
+#: velo/results/tables.py:81 velo/results/tables.py:113
+#: velo/results/tables.py:145 velo/results/tables.py:167
+#: velo/results/tables.py:210 velo/results/tables.py:308
+#: velo/results/tables.py:450
+#: velo/templates/bootstrap/manager/team_apply_list.html:17
+#: velo/templates/results/team.html:119
+#: velo/templates/results/team_by_teamname.html:115
+#: velo/templates/team/applied.html:103 velo/templates/team/team_apply.html:49
+#: velo/templates/team/team_apply_list.html:39
 msgid "Year"
 msgstr "Gads"
 
-#: registration/tables.py:53 registration/tables.py:117
+#: velo/registration/tables.py:53 velo/registration/tables.py:117
 msgid "There are no participants"
 msgstr "Nav dalībnieku"
 
-#: registration/tables.py:60 registration/tables.py:69
-#: registration/tables.py:97 results/tables.py:58 results/tables.py:83
-#: results/tables.py:115
+#: velo/registration/tables.py:60 velo/registration/tables.py:69
+#: velo/registration/tables.py:97 velo/results/tables.py:58
+#: velo/results/tables.py:83 velo/results/tables.py:115
 msgid "Number"
 msgstr "Numurs"
 
-#: registration/tables.py:78 templates/results/team.html:105
-#: templates/results/team.html:120 templates/team/member_detail.html:74
+#: velo/registration/tables.py:78 velo/templates/results/team.html:105
+#: velo/templates/results/team.html:120
+#: velo/templates/team/member_detail.html:74
 msgid "Points"
 msgstr "Punkti"
 
-#: registration/tables.py:87
+#: velo/registration/tables.py:87
 msgid "Passage"
 msgstr "Koridors"
 
-#: registration/tables.py:96
+#: velo/registration/tables.py:96
 msgid "Last Year's Place"
 msgstr "Iepr. gada rezultāts"
 
-#: registration/tables.py:134
+#: velo/registration/tables.py:134
 msgid "You haven't created any company application."
 msgstr "Jūs neesat pievienojis nevienu sacensību pieteikumu."
 
-#: registration/tasks.py:46
+#: velo/registration/tasks.py:46
 #, python-format
 msgid "VELO.LV application #%i"
 msgstr "VELO.LV pieteikums nr.%i"
 
-#: registration/views.py:140 registration/views.py:145
+#: velo/registration/views.py:140 velo/registration/views.py:145
 msgid "Select at least one participant."
 msgstr "Izvēlieties vismaz vienu dalībnieku."
 
-#: registration/views.py:153
+#: velo/registration/views.py:153
 msgid "Competition selected for payment is not available."
 msgstr "Izvēlētai sacensībai nav pieejama maksāšana."
 
-#: registration/views.py:190
+#: velo/registration/views.py:190
 msgid "Select team"
 msgstr "Izvēlēties komandu"
 
-#: registration/views.py:201
+#: velo/registration/views.py:201
 msgid "Add team title."
 msgstr "Pievienot komandas nosaukumu."
 
-#: registration/views.py:206
+#: velo/registration/views.py:206
 #, python-format
 msgid "Team with title %s already exists. Pick different title."
 msgstr "Komanda ar nosaukumu %s jau eksistē. Izvēlieties citu nosaukumu."
 
-#: registration/views.py:214
+#: velo/registration/views.py:214
 msgid "Select participants in selected competition distance."
 msgstr "Izvēlēties dalībniekus izvēlētajā sacensību distancē."
 
-#: registration/views.py:220
+#: velo/registration/views.py:220
 #, python-format
 msgid ""
 "Maximum team member count in this competition is %(count)s. Please select "
@@ -1087,7 +1124,7 @@ msgstr ""
 "Maksimālais komandas dalībnieku skaits šajās sacensībās ir %(count)s. Lūdzu "
 "norādiet mazāku dalībnieku skaitu, lai pievienotu komandu."
 
-#: registration/views.py:235
+#: velo/registration/views.py:235
 msgid ""
 "All selected participants are already participants in teams. One participant "
 "can be in only one team."
@@ -1095,22 +1132,22 @@ msgstr ""
 "Visi izvēlētie dalībnieki jau ir pievienoti komandās. Viens dalībnieks var "
 "būt tikai vienā komandā."
 
-#: registration/views.py:246
+#: velo/registration/views.py:246
 #, python-format
 msgid ""
 "Member %(first_name)s %(last_name)s is already registered in other team."
 msgstr ""
 "Dalībnieks %(first_name)s %(last_name)s jau ir reģistrēts citā komandā."
 
-#: registration/views.py:382
+#: velo/registration/views.py:382
 msgid "Saved"
 msgstr "Saglabāts"
 
-#: registration/views.py:391
+#: velo/registration/views.py:391
 msgid "Competition is in past. Cannot change application."
 msgstr "Sacensības jau ir notikušas. Nevar mainīt pieteikumu."
 
-#: registration/views.py:402
+#: velo/registration/views.py:402
 msgid ""
 "Currently logged in user doesn't have access to this application. Please, "
 "login with user that you used to create application."
@@ -1118,105 +1155,108 @@ msgstr ""
 "Lietotājam, kurš šobrīd ir pieslēdzies, nav tiesību mainīt pieteikumu. Lūdzu "
 "pieslēdzieties ar lietotāju, ar kuru tika izveidots pieteikums."
 
-#: registration/views.py:571
+#: velo/registration/views.py:571
 msgid "Competition already passed. Cannot register to historic competitions."
 msgstr ""
 "Sacensības jau ir notikušas. Nevar reģistrēties vēsturiskajām sacensībām"
 
-#: results/models.py:190
+#: velo/results/models.py:190
 msgid "Average Speed"
 msgstr "Vidējais ātrums"
 
-#: results/models.py:192
+#: velo/results/models.py:192
 msgid "Result Group"
 msgstr "Rezultāts grupā"
 
-#: results/models.py:193
+#: velo/results/models.py:193
 msgid "Result Distance"
 msgstr "Rezultāts distancē"
 
-#: results/models.py:195 results/tables.py:57 results/tables.py:149
-#: results/tables.py:172
+#: velo/results/models.py:195 velo/results/tables.py:57
+#: velo/results/tables.py:149 velo/results/tables.py:172
 msgid "Points Group"
 msgstr "Punkti grupā"
 
-#: results/models.py:196 results/tables.py:215
+#: velo/results/models.py:196 velo/results/tables.py:215
 msgid "Points Distance"
 msgstr "Punkti distancē"
 
-#: results/models.py:198 templates/bootstrap/manager/team_apply_list.html:19
-#: templates/team/team_apply_list.html:41
+#: velo/results/models.py:198
+#: velo/templates/bootstrap/manager/team_apply_list.html:19
+#: velo/templates/team/team_apply_list.html:41
 msgid "Status"
 msgstr "Statuss"
 
-#: results/models.py:359
+#: velo/results/models.py:359
 msgid "Points Total"
 msgstr "Punkti kopā"
 
-#: results/tables.py:27 templates/registration/company_application_add.html:42
-#: templates/registration/company_application_add.html:144
-#: templates/registration/company_application_create.html:41
-#: templates/registration/company_application_detail.html:40
-#: templates/registration/form/participant_inline_form.html:161
-#: templates/team/team_form.html:53
+#: velo/results/tables.py:27
+#: velo/templates/registration/company_application_add.html:42
+#: velo/templates/registration/company_application_add.html:144
+#: velo/templates/registration/company_application_create.html:41
+#: velo/templates/registration/company_application_detail.html:40
+#: velo/templates/registration/form/participant_inline_form.html:161
+#: velo/templates/team/team_form.html:53
 msgid "Team Name"
 msgstr "Komandas nos."
 
-#: results/tables.py:262 results/tables.py:274
+#: velo/results/tables.py:262 velo/results/tables.py:274
 msgid "C1"
 msgstr "C1"
 
-#: results/tables.py:275
+#: velo/results/tables.py:275
 msgid "C2"
 msgstr ""
 
-#: results/tables.py:276
+#: velo/results/tables.py:276
 msgid "C3"
 msgstr ""
 
-#: results/tables.py:277
+#: velo/results/tables.py:277
 msgid "C4"
 msgstr ""
 
-#: results/tables.py:357 results/tables.py:377 results/tables.py:414
+#: velo/results/tables.py:357 velo/results/tables.py:377
+#: velo/results/tables.py:414
 msgid "L1"
 msgstr "L1"
 
-#: results/tables.py:378 results/tables.py:415
+#: velo/results/tables.py:378 velo/results/tables.py:415
 msgid "L2"
 msgstr "L2"
 
-#: results/tables.py:379 results/tables.py:416
+#: velo/results/tables.py:379 velo/results/tables.py:416
 msgid "L3"
 msgstr "L3"
 
-#: results/tables.py:380 results/tables.py:417
+#: velo/results/tables.py:380 velo/results/tables.py:417
 msgid "L4"
 msgstr "L4"
 
-#: results/tables.py:381
+#: velo/results/tables.py:381
 msgid "L5"
 msgstr "L5"
 
-#: results/views.py:33
+#: velo/results/views.py:33
 #, python-format
 msgid "Year %(year)i Results"
 msgstr "%(year)i. gada rezultāti"
 
-#: staticpage/admin.py:16
+#: velo/staticpage/admin.py:16
 msgid "Advanced options"
 msgstr "Papildus uzstādījumi"
 
-#: staticpage/forms.py:27
+#: velo/staticpage/forms.py:27
 #, python-format
 msgid "Staticpage with url %(url)s already exists for site %(site)s"
 msgstr "Statiskā lapa ar adresi %(url)s jau eksistē lapai %(site)s"
 
-#: staticpage/models.py:19
+#: velo/staticpage/models.py:19
 msgid "URL"
 msgstr "Adrese"
 
-#: staticpage/models.py:22
+#: velo/staticpage/models.py:22
 msgid ""
 "This value must contain only letters, numbers, dots, underscores, dashes, "
 "slashes or tildes."
@@ -1224,69 +1264,69 @@ msgstr ""
 "Šī vērtība var saturēt tikai burtus, numurus, punktus, zemsvītras, svītras, "
 "tildes."
 
-#: staticpage/models.py:23
+#: velo/staticpage/models.py:23
 msgid "title"
 msgstr "nosaukums"
 
-#: staticpage/models.py:24
+#: velo/staticpage/models.py:24
 msgid "content"
 msgstr "saturs"
 
-#: staticpage/models.py:27
+#: velo/staticpage/models.py:27
 msgid "enable comments"
 msgstr "pieslēgt komentārus"
 
-#: staticpage/models.py:37
+#: velo/staticpage/models.py:37
 msgid "flat page"
 msgstr "statiskā lapa"
 
-#: staticpage/models.py:38
+#: velo/staticpage/models.py:38
 msgid "flat pages"
 msgstr "statiskā lapa"
 
-#: staticpage/views.py:35
+#: velo/staticpage/views.py:35
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
 msgstr ""
 "Neviens %(verbose_name)s nav atrodams, kas atbilst meklēšanas nosacījumiem"
 
-#: supporter/models.py:54
+#: velo/supporter/models.py:54
 msgid "Supporter"
 msgstr "Atbalstītājs"
 
-#: supporter/models.py:56
+#: velo/supporter/models.py:56
 msgid "Partners"
 msgstr "Partneri"
 
-#: supporter/models.py:57
+#: velo/supporter/models.py:57
 msgid "Official Water"
 msgstr "Oficiālais ūdens"
 
-#: supporter/models.py:58
+#: velo/supporter/models.py:58
 msgid "Official Energy Drink"
 msgstr "Oficiālais enerģijas dzēriens"
 
-#: supporter/models.py:59
+#: velo/supporter/models.py:59
 msgid "Official Technical Partner"
 msgstr "Oficiālais tehniskais partneris"
 
-#: supporter/models.py:60
+#: velo/supporter/models.py:60
 msgid "Official Prize Sponsor"
 msgstr "Oficiālais balvu sponsors"
 
-#: supporter/models.py:61
+#: velo/supporter/models.py:61
 msgid "Sponsor"
 msgstr "Sponsors"
 
-#: supporter/models.py:62
+#: velo/supporter/models.py:62
 msgid "Official Partners"
 msgstr "Oficiālie partneri"
 
-#: supporter/models.py:63
+#: velo/supporter/models.py:63
 msgid "General Sponsor"
 msgstr "Ģenerālsponsors"
 
-#: team/forms.py:62
+#: velo/team/forms.py:62
 #, python-brace-format
 msgid ""
 "Member with this First Name and Last Name is already registered in other "
@@ -1294,197 +1334,201 @@ msgid ""
 msgstr ""
 "Dalībnieks ar norādīto vārdu un uzvārdu jau ir reģistrēts citā komandā - {0}."
 
-#: team/forms.py:144
+#: velo/team/forms.py:144
 msgid "Team with such title already exist."
 msgstr "Komanda ar šādu nosaukumu jau eksistē."
 
-#: team/models.py:29 templates/registration/company_application_detail.html:256
-#: templates/team/team_pay.html:27
+#: velo/team/models.py:29
+#: velo/templates/registration/company_application_detail.html:256
+#: velo/templates/team/team_pay.html:27
 msgid "Title"
 msgstr "Nosaukums"
 
-#: team/models.py:33 team/models.py:84
+#: velo/team/models.py:33 velo/team/models.py:84
 msgid "Image"
 msgstr "Attēls"
 
-#: team/models.py:34
+#: velo/team/models.py:34
 msgid "Shirt Image"
 msgstr "Krekla attēls"
 
-#: team/models.py:37 templates/team/team_form.html:39
+#: velo/team/models.py:37 velo/templates/team/team_form.html:39
 msgid "Contact Person"
 msgstr "Kontaktpersona"
 
-#: team/models.py:41
+#: velo/team/models.py:41
 msgid "Management Info"
 msgstr "Apkalpes informācija"
 
-#: team/models.py:77
+#: velo/team/models.py:77
 msgid "SSN"
 msgstr "Personas kods"
 
-#: team/models.py:82
+#: velo/team/models.py:82
 msgid "License NR"
 msgstr "Licences numurs"
 
-#: team/models.py:106
-#: templates/registration/form/participant_inline_form.html:9
-#: templates/team/applied.html:117
-#: templates/team/form/member_inline_form.html:9
-#: templates/team/team_apply.html:63
+#: velo/team/models.py:106
+#: velo/templates/registration/form/participant_inline_form.html:9
+#: velo/templates/team/applied.html:117
+#: velo/templates/team/form/member_inline_form.html:9
+#: velo/templates/team/team_apply.html:63
 msgid "Participant"
 msgstr "Dalībnieks"
 
-#: team/models.py:107 templates/team/applied.html:119
-#: templates/team/team_apply.html:65
+#: velo/team/models.py:107 velo/templates/team/applied.html:119
+#: velo/templates/team/team_apply.html:65
 msgid "Reserve"
 msgstr "Rezerve"
 
-#: team/models.py:111 templates/team/member_detail.html:76
+#: velo/team/models.py:111 velo/templates/team/member_detail.html:76
 msgid "Kind"
 msgstr "Tips"
 
-#: team/tables.py:30
+#: velo/team/tables.py:30
 msgid "There are no teams"
 msgstr "Nav nevienas komandas"
 
-#: team/tables.py:45 templates/base/_competition_supporters.html:8
-#: templates/core/calendar_view.html:52 templates/core/index.html:65
-#: templates/registration/application_pay.html:156
+#: velo/team/tables.py:45 velo/templates/base/_competition_supporters.html:8
+#: velo/templates/core/calendar_view.html:52 velo/templates/core/index.html:65
+#: velo/templates/registration/application_pay.html:156
 msgid "Apply"
 msgstr "Pieteikties"
 
-#: team/tables.py:50
+#: velo/team/tables.py:50
 msgid "Pay for team account"
 msgstr "Maksāt par komandu"
 
-#: team/tables.py:60
+#: velo/team/tables.py:60
 msgid "You haven't created any official team."
 msgstr "Jūs neesat izveidojis nevienu oficiālu komandu."
 
-#: team/views.py:411
+#: velo/team/views.py:411
 #, python-format
 msgid "Too many team members marked as participants. MAX-%i"
 msgstr ""
 "Pārāk daudz dalībnieki atzīmēti, kā dalībnieki. Maksimālais skaits ir %i"
 
-#: team/views.py:413
+#: velo/team/views.py:413
 #, python-format
 msgid "Too many team members marked as reserve. MAX-%i"
 msgstr ""
 "Pārāk daudz dalībnieki atzīmēti, kā rezerves braucēji. Maksimālais skaits ir "
 "%i"
 
-#: team/views.py:433
+#: velo/team/views.py:433
 msgid "Successfuly saved."
 msgstr "Veiksmīgi saglabāts."
 
-#: templates/404.html:4 templates/404.html:15
+#: velo/templates/404.html:4 velo/templates/404.html:15
 #, fuzzy
 #| msgid "ID not found"
 msgid "Page Not found"
 msgstr "ID nav atrodams"
 
-#: templates/404.html:17
+#: velo/templates/404.html:17
 msgid "This is not the page you were looking for."
 msgstr ""
 
-#: templates/500.html:4
+#: velo/templates/500.html:4
 msgid "Server Error"
 msgstr ""
 
-#: templates/500.html:17
+#: velo/templates/500.html:17
 msgid "Looks like something went wrong!"
 msgstr ""
 
-#: templates/500.html:19
+#: velo/templates/500.html:19
 msgid ""
 "We track these errors automatically, but if the problem persists feel free "
 "to contact us.\n"
 "                                In the meantime, try refreshing."
 msgstr ""
 
-#: templates/account/email.html:6
+#: velo/templates/account/email.html:6
 msgid "Account"
 msgstr "Konts"
 
-#: templates/account/email.html:9
+#: velo/templates/account/email.html:9
 msgid "E-mail Addresses"
 msgstr "E-pasta adrese"
 
-#: templates/account/email.html:11
+#: velo/templates/account/email.html:11
 msgid "The following e-mail addresses are associated with your account:"
 msgstr "Sekojošās adreses ir piesaistītas jūsu kontam:"
 
-#: templates/account/email.html:32
+#: velo/templates/account/email.html:32
 msgid "Verified"
 msgstr "Pārbaudīts"
 
-#: templates/account/email.html:34
+#: velo/templates/account/email.html:34
 msgid "Unverified"
 msgstr "Nav pārbaudīts"
 
-#: templates/account/email.html:36
+#: velo/templates/account/email.html:36
 msgid "Primary"
 msgstr "Primārais"
 
-#: templates/account/email.html:51
+#: velo/templates/account/email.html:51
 msgid "Make Primary"
 msgstr "Norādīt kā primāro"
 
-#: templates/account/email.html:54
+#: velo/templates/account/email.html:54
 msgid "Re-send Verification"
 msgstr "Sūtīt vēlreiz pārbaudi"
 
-#: templates/account/email.html:57
-#: templates/registration/form/participant_inline_form.html:16
-#: templates/socialaccount/connections.html:50
-#: templates/team/form/member_inline_form.html:16
+#: velo/templates/account/email.html:57
+#: velo/templates/registration/form/participant_inline_form.html:16
+#: velo/templates/socialaccount/connections.html:50
+#: velo/templates/team/form/member_inline_form.html:16
 msgid "Remove"
 msgstr "Izdzēst"
 
-#: templates/account/email.html:65
+#: velo/templates/account/email.html:65
 msgid "Add E-mail Address"
 msgstr "Pievienot e-pasta adresi"
 
-#: templates/account/email.html:78 templates/account/login.html:43
-#: templates/account/password_reset.html:25 templates/account/signup.html:31
+#: velo/templates/account/email.html:78 velo/templates/account/login.html:43
+#: velo/templates/account/password_reset.html:25
+#: velo/templates/account/signup.html:31
 msgid "E-mail address"
 msgstr "E-pasta adrese"
 
-#: templates/account/email.html:87 templates/account/login.html:46
-#: templates/account/login.html:58 templates/account/password_change.html:29
-#: templates/account/password_change.html:54
-#: templates/account/password_change.html:74
-#: templates/account/password_reset.html:34
-#: templates/account/password_reset_from_key.html:34
-#: templates/account/password_reset_from_key.html:54
-#: templates/account/signup.html:40 templates/account/signup.html:63
-#: templates/account/signup.html:84
+#: velo/templates/account/email.html:87 velo/templates/account/login.html:46
+#: velo/templates/account/login.html:58
+#: velo/templates/account/password_change.html:29
+#: velo/templates/account/password_change.html:54
+#: velo/templates/account/password_change.html:74
+#: velo/templates/account/password_reset.html:34
+#: velo/templates/account/password_reset_from_key.html:34
+#: velo/templates/account/password_reset_from_key.html:54
+#: velo/templates/account/signup.html:40 velo/templates/account/signup.html:63
+#: velo/templates/account/signup.html:84
 msgid "This field is mandatory"
 msgstr "Šis lauks ir obligāts"
 
-#: templates/account/email.html:88 templates/account/login.html:47
-#: templates/account/password_reset.html:35 templates/account/signup.html:41
+#: velo/templates/account/email.html:88 velo/templates/account/login.html:47
+#: velo/templates/account/password_reset.html:35
+#: velo/templates/account/signup.html:41
 msgid "Please enter valid e-mail address!"
 msgstr "Lūdzu norādiet pareizu e-pasta adresi!"
 
-#: templates/account/email.html:100
+#: velo/templates/account/email.html:100
 msgid "Add E-mail"
 msgstr "Pievienot e-pastu"
 
-#: templates/account/email.html:123
+#: velo/templates/account/email.html:123
 msgid "Do you really want to remove the selected e-mail address?"
 msgstr "Vai tiešām vēlaties izdzēst izvēlēto e-pasta adresi?"
 
-#: templates/account/email_confirm.html:6
-#: templates/account/email_confirm.html:10
-#: templates/account/email_confirmed.html:6
-#: templates/account/email_confirmed.html:10
+#: velo/templates/account/email_confirm.html:6
+#: velo/templates/account/email_confirm.html:10
+#: velo/templates/account/email_confirmed.html:6
+#: velo/templates/account/email_confirmed.html:10
 msgid "Confirm E-mail Address"
 msgstr "Apstiprināt e-pasta adresi"
 
-#: templates/account/email_confirm.html:16
+#: velo/templates/account/email_confirm.html:16
 #, python-format
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
@@ -1493,11 +1537,11 @@ msgstr ""
 "Lūdzu apstipriniet, ka <a href=\"mailto:%(email)s\">%(email)s</a> is an ir "
 "lietotāja %(user_display)s e-pasta adrese."
 
-#: templates/account/email_confirm.html:25
+#: velo/templates/account/email_confirm.html:25
 msgid "Confirm"
 msgstr "Apstiprināt"
 
-#: templates/account/email_confirm.html:42
+#: velo/templates/account/email_confirm.html:42
 #, python-format
 msgid ""
 "This e-mail confirmation link expired or is invalid. Please <a href="
@@ -1506,7 +1550,7 @@ msgstr ""
 "E-pastā norādītā apstiprinājuma links vairs neeksistē vai ir kļūdains. <a "
 "href=\"%(email_url)s\">Lūdzu pieprasiet jaunu linku</a>."
 
-#: templates/account/email_confirmed.html:14
+#: velo/templates/account/email_confirmed.html:14
 #, python-format
 msgid ""
 "You have confirmed that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-"
@@ -1515,63 +1559,64 @@ msgstr ""
 "Jūs esat apstiprinājis, ka <a href=\"mailto:%(email)s\">%(email)s</a> ir "
 "lietotāja %(user_display)s e-pasta adrese."
 
-#: templates/account/login.html:8 templates/account/login.html:16
-#: templates/account/login.html:62
+#: velo/templates/account/login.html:8 velo/templates/account/login.html:16
+#: velo/templates/account/login.html:62
 msgid "Sign In"
 msgstr "Pieslēgties"
 
-#: templates/account/login.html:56 templates/account/signup.html:55
-#: templates/core/user_registration.html:33
+#: velo/templates/account/login.html:56 velo/templates/account/signup.html:55
+#: velo/templates/core/user_registration.html:33
 msgid "Password"
 msgstr "Parole"
 
-#: templates/account/login.html:71
+#: velo/templates/account/login.html:71
 msgid "Forgot Password?"
 msgstr "Aizmirsāt paroli?"
 
-#: templates/account/login.html:77
-#: templates/bootstrap/manager/team_apply_list.html:47
-#: templates/team/team_apply.html:74 templates/team/team_apply_list.html:105
+#: velo/templates/account/login.html:77
+#: velo/templates/bootstrap/manager/team_apply_list.html:47
+#: velo/templates/team/team_apply.html:74
+#: velo/templates/team/team_apply_list.html:105
 msgid "Register"
 msgstr "Reģistrēties"
 
-#: templates/account/logout.html:5 templates/account/logout.html:9
-#: templates/account/logout.html:23
+#: velo/templates/account/logout.html:5 velo/templates/account/logout.html:9
+#: velo/templates/account/logout.html:23
 msgid "Sign Out"
 msgstr "Atslēgties"
 
-#: templates/account/logout.html:11
+#: velo/templates/account/logout.html:11
 msgid "Are you sure you want to sign out?"
 msgstr "Vai tiešām vēlaties atslēgties?"
 
-#: templates/account/password_change.html:22
+#: velo/templates/account/password_change.html:22
 msgid "Current Password"
 msgstr "Esošā parole"
 
-#: templates/account/password_change.html:47
-#: templates/account/password_reset_from_key.html:27
+#: velo/templates/account/password_change.html:47
+#: velo/templates/account/password_reset_from_key.html:27
 msgid "New Password"
 msgstr "Jaunā parole"
 
-#: templates/account/password_change.html:66
-#: templates/account/password_reset_from_key.html:46
+#: velo/templates/account/password_change.html:66
+#: velo/templates/account/password_reset_from_key.html:46
 msgid "New Password (again)"
 msgstr "Jaunā parole (vēlreiz)"
 
-#: templates/account/password_change.html:75
-#: templates/account/password_reset_from_key.html:55
-#: templates/account/signup.html:85
+#: velo/templates/account/password_change.html:75
+#: velo/templates/account/password_reset_from_key.html:55
+#: velo/templates/account/signup.html:85
 msgid "The two password fields didn't match."
 msgstr "Paroles lauki nesakrīt."
 
-#: templates/account/password_reset.html:7
-#: templates/account/password_reset.html:10
-#: templates/account/password_reset_done.html:6
-#: templates/account/password_reset_done.html:9
+#: velo/templates/account/password_reset.html:7
+#: velo/templates/account/password_reset.html:10
+#: velo/templates/account/password_reset_done.html:6
+#: velo/templates/account/password_reset_done.html:9
 msgid "Password Reset"
 msgstr "Paroles nomaiņa"
 
-#: templates/account/password_reset.html:15
+#: velo/templates/account/password_reset.html:15
 msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll send you "
 "an e-mail allowing you to reset it."
@@ -1579,15 +1624,15 @@ msgstr ""
 "Aizmirsāt savu paroli? Norādiet e-pasta adresi un mēs jums nosūtīsim e-"
 "pastu, kurā būs norādīts, kā atjaunot paroli."
 
-#: templates/account/password_reset.html:47
+#: velo/templates/account/password_reset.html:47
 msgid "Reset My Password"
 msgstr "Nomainīt paroli"
 
-#: templates/account/password_reset.html:60
+#: velo/templates/account/password_reset.html:60
 msgid "Please contact us if you have any trouble resetting your password."
 msgstr "Lūdzu informējiet, ka jums ir problēmas nomainīt paroli."
 
-#: templates/account/password_reset_done.html:15
+#: velo/templates/account/password_reset_done.html:15
 msgid ""
 "We have sent you an e-mail. Please contact us if you do not receive it "
 "within a few minutes."
@@ -1595,11 +1640,11 @@ msgstr ""
 "Mēs nosūtījām jums e-pastu. Lūdzu sakontaktējieties ar mums, ja jūs  to "
 "neesat saņēmis 10 minūšu laikā."
 
-#: templates/account/password_reset_from_key.html:10
+#: velo/templates/account/password_reset_from_key.html:10
 msgid "Bad Token"
 msgstr "Kļūdais kods"
 
-#: templates/account/password_reset_from_key.html:14
+#: velo/templates/account/password_reset_from_key.html:14
 #, python-format
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
@@ -1609,25 +1654,27 @@ msgstr ""
 "Paroles nomaiņas links ir kļūdains. Iespējams tas jau ir izmantots. Lūdzu "
 "pieprasiet <a href=\"%(passwd_reset_url)s\">vēlreiz paroles nomaiņu</a>."
 
-#: templates/account/password_reset_from_key.html:84
-#: templates/account/password_reset_from_key_done.html:10
+#: velo/templates/account/password_reset_from_key.html:84
+#: velo/templates/account/password_reset_from_key_done.html:10
 msgid "Your password is now changed."
 msgstr "Jūsu parole ir nomainīta."
 
-#: templates/account/password_set.html:6 templates/account/password_set.html:9
-#: templates/account/password_set.html:14
+#: velo/templates/account/password_set.html:6
+#: velo/templates/account/password_set.html:9
+#: velo/templates/account/password_set.html:14
 msgid "Set Password"
 msgstr "Uzstādīt paroli"
 
-#: templates/account/signup.html:6
+#: velo/templates/account/signup.html:6
 msgid "Signup"
 msgstr "Reģistrēties"
 
-#: templates/account/signup.html:14 templates/account/signup.html:277
+#: velo/templates/account/signup.html:14
+#: velo/templates/account/signup.html:277
 msgid "Sign Up"
 msgstr "Reģistrēties"
 
-#: templates/account/signup.html:16
+#: velo/templates/account/signup.html:16
 #, python-format
 msgid ""
 "Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."
@@ -1635,48 +1682,51 @@ msgstr ""
 "Ja jums jau ir lietotājs, lūdzu <a href=\"%(login_url)s\">pieslēdzieties </"
 "a>."
 
-#: templates/account/signup.html:75
+#: velo/templates/account/signup.html:75
 msgid "Password (again)"
 msgstr "Parole (vēlreiz)"
 
-#: templates/account/signup.html:110
+#: velo/templates/account/signup.html:110
 msgid "I want to receive velo.lv news in email"
 msgstr "Vēlos saņemt velo.lv jaunumus e-pastā"
 
-#: templates/account/signup.html:174 templates/account/signup.html:175
+#: velo/templates/account/signup.html:174
+#: velo/templates/account/signup.html:175
 msgid "Please enter correct day number"
 msgstr "Norādiet korektu dienu"
 
-#: templates/account/signup.html:188 templates/account/signup.html:189
+#: velo/templates/account/signup.html:188
+#: velo/templates/account/signup.html:189
 msgid "Please enter correct month number"
 msgstr "Norādiet korektu mēnesi"
 
-#: templates/account/signup.html:199
+#: velo/templates/account/signup.html:199
 msgid "YYYY"
 msgstr "YYYY"
 
-#: templates/account/signup.html:202 templates/account/signup.html:203
+#: velo/templates/account/signup.html:202
+#: velo/templates/account/signup.html:203
 msgid "Please enter correct year number"
 msgstr "Norādiet korektu gadu."
 
-#: templates/account/signup_closed.html:5
-#: templates/account/signup_closed.html:8
+#: velo/templates/account/signup_closed.html:5
+#: velo/templates/account/signup_closed.html:8
 msgid "Sign Up Closed"
 msgstr "Reģistrēšanās nav atļauta"
 
-#: templates/account/signup_closed.html:10
+#: velo/templates/account/signup_closed.html:10
 msgid "We are sorry, but the sign up is currently closed."
 msgstr ""
 "Atvainojiet par neērtībām, bet šobrīd nav iespējams reģistrēties mājas lapā."
 
-#: templates/account/verification_sent.html:5
-#: templates/account/verification_sent.html:8
-#: templates/account/verified_email_required.html:5
-#: templates/account/verified_email_required.html:8
+#: velo/templates/account/verification_sent.html:5
+#: velo/templates/account/verification_sent.html:8
+#: velo/templates/account/verified_email_required.html:5
+#: velo/templates/account/verified_email_required.html:8
 msgid "Verify Your E-mail Address"
 msgstr "Pārbaudiet savu e-pasta adresi"
 
-#: templates/account/verification_sent.html:10
+#: velo/templates/account/verification_sent.html:10
 #, python-format
 msgid ""
 "We have sent an e-mail to <a href=\"mailto:%(email)s\">%(email)s</a> for "
@@ -1687,7 +1737,7 @@ msgstr ""
 "Lūdzu sekojiet norādījumiem, lai pabeigtu reģistrēšanos. Lūdzu informējiet "
 "mūs, ja 10 minūšu laikā e-pastu nesaņēmāt."
 
-#: templates/account/verified_email_required.html:12
+#: velo/templates/account/verified_email_required.html:12
 msgid ""
 "This part of the site requires us to verify that\n"
 "        you are who you claim to be. For this purpose, we require that you\n"
@@ -1697,7 +1747,7 @@ msgstr ""
 "izdarītu, mēs pieprasam lai jūs apstipriniet e-pasta adresi, kuru "
 "izmantojiet."
 
-#: templates/account/verified_email_required.html:16
+#: velo/templates/account/verified_email_required.html:16
 msgid ""
 "We have sent an e-mail to you for\n"
 "        verification. Please click on the link inside this e-mail. Please\n"
@@ -1706,7 +1756,7 @@ msgstr ""
 "Mēs nosūtījām jums e-pastu. Lūdzu nospiediet uz www adreses e-pastā. Lūdzu "
 "informējiet mūs, ka neesat saņēmis e-pastu 10 minūšu laikā."
 
-#: templates/account/verified_email_required.html:20
+#: velo/templates/account/verified_email_required.html:20
 #, python-format
 msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
@@ -1715,221 +1765,226 @@ msgstr ""
 "<strong>Piezīme:</strong> jūs joprojām varat <a href=\"%(email_url)s"
 "\">nomainīt</a>."
 
-#: templates/base.html:106
+#: velo/templates/base.html:106
 msgid "Login"
 msgstr "Pieslēgties"
 
-#: templates/base.html:123
+#: velo/templates/base.html:123
 msgid "Profile"
 msgstr "Profils"
 
-#: templates/base.html:127 templates/registration/application_my.html:13
+#: velo/templates/base.html:127
+#: velo/templates/registration/application_my.html:13
 msgid "My Applications"
 msgstr "Mani pieteikumi"
 
-#: templates/base.html:130 templates/team/team_form.html:13
-#: templates/team/team_list_my.html:13
+#: velo/templates/base.html:130 velo/templates/team/team_form.html:13
+#: velo/templates/team/team_list_my.html:13
 msgid "My Teams"
 msgstr "Manas komandas"
 
-#: templates/base.html:133
-#: templates/registration/company_application_my.html:20
+#: velo/templates/base.html:133
+#: velo/templates/registration/company_application_my.html:20
 msgid "My Company Applications"
 msgstr "Mani uzņēmuma pieteikumi"
 
-#: templates/base.html:138
+#: velo/templates/base.html:138
 msgid "Administrator"
 msgstr ""
 
-#: templates/base.html:142 templates/team/team_detail.html:108
+#: velo/templates/base.html:142 velo/templates/team/team_detail.html:108
 msgid "Manager"
 msgstr "Menedžeris"
 
-#: templates/base.html:148
+#: velo/templates/base.html:148
 msgid "Logout"
 msgstr "Atslēgties"
 
-#: templates/base.html:195
+#: velo/templates/base.html:195
 msgid "Competitions"
 msgstr "Sacensības"
 
-#: templates/base.html:207
+#: velo/templates/base.html:207
 msgid "Menu"
 msgstr "Saturs"
 
-#: templates/base.html:214 templates/team/team_detail.html:101
+#: velo/templates/base.html:214 velo/templates/team/team_detail.html:101
 msgid "Contacts"
 msgstr "Kontakti"
 
-#: templates/base/_news_info.html:7
+#: velo/templates/base/_news_info.html:7
 msgid "Read more"
 msgstr "Lasīt vairāk"
 
-#: templates/base/competition/_head_search_w_group.html:47
-#: templates/registration/participant_list.html:52
-#: templates/results/participant.html:71
-#: templates/results/participant_standing.html:71
+#: velo/templates/base/competition/_head_search_w_group.html:47
+#: velo/templates/registration/participant_list.html:52
+#: velo/templates/results/participant.html:71
+#: velo/templates/results/participant_standing.html:71
 msgid "All Groups"
 msgstr "Visas grupas"
 
-#: templates/base/table.html:123
+#: velo/templates/base/table.html:123
 msgid "Previous"
 msgstr "Atpakaļ"
 
-#: templates/base/table.html:148 templates/bootstrap/table.html:67
+#: velo/templates/base/table.html:148 velo/templates/bootstrap/table.html:67
 msgid "Next"
 msgstr "Tālāk"
 
-#: templates/bootstrap/manager/team_apply_list.html:18
-#: templates/team/team_apply.html:50 templates/team/team_apply_list.html:40
+#: velo/templates/bootstrap/manager/team_apply_list.html:18
+#: velo/templates/team/team_apply.html:50
+#: velo/templates/team/team_apply_list.html:40
 msgid "Type"
 msgstr "Tips"
 
-#: templates/bootstrap/manager/team_apply_list.html:43
-#: templates/team/team_apply_list.html:85
+#: velo/templates/bootstrap/manager/team_apply_list.html:43
+#: velo/templates/team/team_apply_list.html:85
 msgid "Update Registration"
 msgstr "Atjaunot reģistrāciju"
 
-#: templates/bootstrap/manager/team_apply_list.html:46
-#: templates/team/team_apply_list.html:95
+#: velo/templates/bootstrap/manager/team_apply_list.html:46
+#: velo/templates/team/team_apply_list.html:95
 msgid "Team not applied for this competition"
 msgstr "Komanda nav pieteikusies sacensībai"
 
-#: templates/bootstrap/table.html:56
+#: velo/templates/bootstrap/table.html:56
 msgid "Prev"
 msgstr "Atpakaļ"
 
-#: templates/bootstrap/table.html:61
+#: velo/templates/bootstrap/table.html:61
 #, python-format
 msgid "Page %(current)s of %(total)s"
 msgstr ""
 
-#: templates/bootstrap/table.html:62
+#: velo/templates/bootstrap/table.html:62
 #, python-format
 msgid "%(count)s of %(total)s"
 msgstr ""
 
-#: templates/core/competition_detail.html:38
+#: velo/templates/core/competition_detail.html:38
 msgid "About Competition"
 msgstr "Par sacensībām"
 
-#: templates/core/competition_detail.html:53
+#: velo/templates/core/competition_detail.html:53
 msgid "Photo Galleries"
 msgstr "Foto galerijas"
 
-#: templates/core/index.html:90
+#: velo/templates/core/index.html:90
 msgid "Open Competition"
 msgstr "Atvērt sacensības"
 
-#: templates/core/index.html:149
+#: velo/templates/core/index.html:149
 msgid "News"
 msgstr "Jaunumi"
 
-#: templates/core/maps.html:40
+#: velo/templates/core/maps.html:40
 msgid "View"
 msgstr "Aplūkot"
 
-#: templates/core/user_registration.html:9
-#: templates/registration/application_my.html:9
-#: templates/registration/company_application_add.html:11
-#: templates/registration/company_application_create.html:9
-#: templates/registration/company_application_detail.html:10
-#: templates/registration/company_application_my.html:9
-#: templates/team/team_apply.html:18 templates/team/team_apply_list.html:9
-#: templates/team/team_form.html:9 templates/team/team_list_my.html:9
+#: velo/templates/core/user_registration.html:9
+#: velo/templates/registration/application_my.html:9
+#: velo/templates/registration/company_application_add.html:11
+#: velo/templates/registration/company_application_create.html:9
+#: velo/templates/registration/company_application_detail.html:10
+#: velo/templates/registration/company_application_my.html:9
+#: velo/templates/team/team_apply.html:18
+#: velo/templates/team/team_apply_list.html:9
+#: velo/templates/team/team_form.html:9
+#: velo/templates/team/team_list_my.html:9
 msgid "My Profile"
 msgstr "Mans profils"
 
-#: templates/core/user_registration.html:13
+#: velo/templates/core/user_registration.html:13
 msgid "My Information"
 msgstr "Mana informācija"
 
-#: templates/core/user_registration.html:56
+#: velo/templates/core/user_registration.html:56
 msgid "Social Accounts"
 msgstr "Sociālie konti"
 
-#: templates/core/user_registration.html:77
+#: velo/templates/core/user_registration.html:77
 msgid "Background"
 msgstr "Apraksts"
 
-#: templates/core/widgets/profile_image.html:19
+#: velo/templates/core/widgets/profile_image.html:19
 msgid "Change Image"
 msgstr "Mainīt attēlu"
 
-#: templates/core/widgets/profile_image.html:21
-#: templates/team/team_form.html:146 templates/team/team_form.html:167
+#: velo/templates/core/widgets/profile_image.html:21
+#: velo/templates/team/team_form.html:146
+#: velo/templates/team/team_form.html:167
 msgid "Upload image that is smaller than"
 msgstr "Augšupielādējiet attēlu, kas ir mazāks par "
 
-#: templates/gallery/gallery_add_form.html:15
+#: velo/templates/gallery/gallery_add_form.html:15
 msgid "Add new gallery"
 msgstr ""
 
-#: templates/gallery/gallery_add_form.html:22
+#: velo/templates/gallery/gallery_add_form.html:22
 msgid "Upload"
 msgstr ""
 
-#: templates/news/news_list.html:42
+#: velo/templates/news/news_list.html:42
 msgid "Previous Page"
 msgstr "Iepriekšējā lapa"
 
-#: templates/news/news_list.html:51
+#: velo/templates/news/news_list.html:51
 msgid "Next Page"
 msgstr "Nākamā lapa"
 
-#: templates/registration/_top_steps.html:14
+#: velo/templates/registration/_top_steps.html:14
 msgid "Basic information"
 msgstr "Pamatinformācija"
 
-#: templates/registration/_top_steps.html:23
+#: velo/templates/registration/_top_steps.html:23
 msgid "Payment"
 msgstr "Maksājums"
 
-#: templates/registration/_top_steps.html:37
+#: velo/templates/registration/_top_steps.html:37
 msgid "Confirmation"
 msgstr "Apstiprinājums"
 
-#: templates/registration/application_ok.html:16
-#: templates/registration/application_pay.html:16
-#: templates/registration/application_update.html:14
+#: velo/templates/registration/application_ok.html:16
+#: velo/templates/registration/application_pay.html:16
+#: velo/templates/registration/application_update.html:14
 msgid "Apply for competition"
 msgstr "Pieteikties sacensībām"
 
-#: templates/registration/application_ok.html:27
-#: templates/registration/company_application_added.html:20
+#: velo/templates/registration/application_ok.html:27
+#: velo/templates/registration/company_application_added.html:20
 msgid "Registration successful"
 msgstr "Reģistrēšanās veiksmīga"
 
-#: templates/registration/application_ok.html:34
+#: velo/templates/registration/application_ok.html:34
 msgid "Thank you for applying!"
 msgstr "Paldies par pieteikšanos sacensībām!"
 
-#: templates/registration/application_ok.html:35
+#: velo/templates/registration/application_ok.html:35
 msgid ""
 "You will receive email with confirmation that you have successfuly applied."
 msgstr "Jūs saņemsiet apstiprinājuma e-pastu, ka esat veiksmīgi pieteicies."
 
-#: templates/registration/application_ok.html:44
+#: velo/templates/registration/application_ok.html:44
 msgid "To download invoice, press here."
 msgstr "Lai lejupielādētu rēķinu, spiediet šeit."
 
-#: templates/registration/application_ok.html:52
+#: velo/templates/registration/application_ok.html:52
 msgid "Pay with Creditcard"
 msgstr "Maksāt ar kredītkarti"
 
-#: templates/registration/application_ok.html:58
+#: velo/templates/registration/application_ok.html:58
 msgid "Update participant contact information"
 msgstr "Atjaunot dalībnieku kontaktinformāciju"
 
-#: templates/registration/application_pay.html:24
+#: velo/templates/registration/application_pay.html:24
 msgid "Thank you! We have received the payment."
 msgstr "Paldies! Mēs esam saņēmuši maksājumu."
 
-#: templates/registration/application_pay.html:40
+#: velo/templates/registration/application_pay.html:40
 msgid "Price"
 msgstr "Cena"
 
-#: templates/registration/application_pay.html:70
+#: velo/templates/registration/application_pay.html:70
 #, python-format
 msgid ""
 "\n"
@@ -1948,64 +2003,66 @@ msgstr[1] ""
 "\n"
 "%(counter)s dalībnieki"
 
-#: templates/registration/application_pay.html:75
-#: templates/team/team_pay.html:28 templates/team/team_pay.html:49
+#: velo/templates/registration/application_pay.html:75
+#: velo/templates/team/team_pay.html:28 velo/templates/team/team_pay.html:49
 msgid "Total"
 msgstr "Kopā"
 
-#: templates/registration/application_pay.html:91
+#: velo/templates/registration/application_pay.html:91
 msgid "Add or Update Participants"
 msgstr "Pievienot vai mainīt dalībniekus"
 
-#: templates/registration/application_pay.html:137
+#: velo/templates/registration/application_pay.html:137
 msgid "Donate"
 msgstr "Ziedot"
 
-#: templates/registration/application_pay.html:156
-#: templates/registration/table/my_application_action.html:7
-#: templates/team/team_apply_list.html:89 templates/team/team_pay.html:68
+#: velo/templates/registration/application_pay.html:156
+#: velo/templates/registration/table/my_application_action.html:7
+#: velo/templates/team/team_apply_list.html:89
+#: velo/templates/team/team_pay.html:68
 msgid "Pay"
 msgstr "Maksāt"
 
-#: templates/registration/application_update.html:38
-#: templates/registration/company_application_create.html:70
-#: templates/team/team_detail.html:109 templates/team/team_form.html:67
+#: velo/templates/registration/application_update.html:38
+#: velo/templates/registration/company_application_create.html:70
+#: velo/templates/team/team_detail.html:109
+#: velo/templates/team/team_form.html:67
 msgid "E-mail"
 msgstr "E-pasts"
 
-#: templates/registration/application_update.html:55
+#: velo/templates/registration/application_update.html:55
 msgid "E-mail Confirmation"
 msgstr "E-pasta apstiprinājums"
 
-#: templates/registration/application_update.html:67
+#: velo/templates/registration/application_update.html:67
 msgid "To this email address confirmation email will be sent."
 msgstr "Uz šo e-pasta adresi tiks sūtīts apstiprinājums"
 
-#: templates/registration/application_update.html:102
-#: templates/registration/company_application_add.html:182
+#: velo/templates/registration/application_update.html:102
+#: velo/templates/registration/company_application_add.html:182
 msgid "Save & Pay"
 msgstr "Saglabāt un maksāt"
 
-#: templates/registration/company_application_add.html:26
-#: templates/registration/company_application_add.html:126
+#: velo/templates/registration/company_application_add.html:26
+#: velo/templates/registration/company_application_add.html:126
 msgid "Add Company Team Member"
 msgstr "Pievienot uzņēmuma pieteikuma dalībnieku"
 
-#: templates/registration/company_application_add.html:51
-#: templates/registration/company_application_add.html:150
-#: templates/registration/company_application_detail.html:49
+#: velo/templates/registration/company_application_add.html:51
+#: velo/templates/registration/company_application_add.html:150
+#: velo/templates/registration/company_application_detail.html:49
 msgid "Public URL"
 msgstr "Publiskā adrese"
 
-#: templates/registration/company_application_added.html:27
+#: velo/templates/registration/company_application_added.html:27
 msgid "Great! You have successfuly added participants to company application."
 msgstr "Super! Dalībnieki ir veiksmīgi pievienoti uzņēmuma pieteikumam."
 
-#: templates/registration/company_application_added.html:28
+#: velo/templates/registration/company_application_added.html:28
 msgid "What's next?"
 msgstr "Kas tālāk?"
 
-#: templates/registration/company_application_added.html:28
+#: velo/templates/registration/company_application_added.html:28
 msgid ""
 "Company's responsible person (the one who created company application) now "
 "see new participants and she must take action so that you appear in start "
@@ -2016,63 +2073,63 @@ msgstr ""
 "norādītie dalībnieki parādītos starta sarakstā. Līdz tam Jūsu pieteiktie "
 "dalībnieki nav iekļauti starta sarakstā."
 
-#: templates/registration/company_application_create.html:19
+#: velo/templates/registration/company_application_create.html:19
 msgid "Create Company Application"
 msgstr "Izveidot uzņēmuma pieteikumu"
 
-#: templates/registration/company_application_create.html:116
-#: templates/team/team_form.html:197
+#: velo/templates/registration/company_application_create.html:116
+#: velo/templates/team/team_form.html:197
 msgid "Pay for"
 msgstr "Maksāt par"
 
-#: templates/registration/company_application_detail.html:20
+#: velo/templates/registration/company_application_detail.html:20
 msgid "Company Application"
 msgstr "Uzņēmuma pieteikums"
 
-#: templates/registration/company_application_detail.html:25
+#: velo/templates/registration/company_application_detail.html:25
 msgid "Edit"
 msgstr "Labot"
 
-#: templates/registration/company_application_detail.html:63
+#: velo/templates/registration/company_application_detail.html:63
 msgid "Company riders"
 msgstr "Uzņēmuma braucēji"
 
-#: templates/registration/company_application_detail.html:82
+#: velo/templates/registration/company_application_detail.html:82
 msgid "Add participant"
 msgstr "Pievienot dalībnieku"
 
-#: templates/registration/company_application_detail.html:124
-#: templates/team/team_list_my.html:14
+#: velo/templates/registration/company_application_detail.html:124
+#: velo/templates/team/team_list_my.html:14
 msgid "New Team"
 msgstr "Jauna komanda"
 
-#: templates/registration/company_application_detail.html:139
-#: templates/registration/company_application_detail.html:281
+#: velo/templates/registration/company_application_detail.html:139
+#: velo/templates/registration/company_application_detail.html:281
 msgid "Add to existing team"
 msgstr "Pievienot esošajai komandai"
 
-#: templates/registration/company_application_detail.html:169
-#: templates/registration/company_application_detail.html:186
+#: velo/templates/registration/company_application_detail.html:169
+#: velo/templates/registration/company_application_detail.html:186
 msgid "Pay for selected"
 msgstr "Apmaksāt izvēlētos"
 
-#: templates/registration/company_application_detail.html:235
+#: velo/templates/registration/company_application_detail.html:235
 msgid "Create new team"
 msgstr "Izveidot jaunu komandu"
 
-#: templates/registration/company_application_detail.html:267
+#: velo/templates/registration/company_application_detail.html:267
 msgid "Create team"
 msgstr "Izveidot komandu"
 
-#: templates/registration/company_application_detail.html:303
+#: velo/templates/registration/company_application_detail.html:303
 msgid "Add to Team"
 msgstr "Pievienot komandai"
 
-#: templates/registration/company_application_my.html:24
+#: velo/templates/registration/company_application_my.html:24
 msgid "Create New"
 msgstr "Izveidot jaunu"
 
-#: templates/registration/company_application_my.html:37
+#: velo/templates/registration/company_application_my.html:37
 msgid ""
 "Corporate application is intended for larger companies or groups which "
 "require entering data of many participants."
@@ -2080,7 +2137,7 @@ msgstr ""
 "Uzņēmuma pieteikums ir paredzēts lielākiem uzņēmumiem vai grupām, kurām ir "
 "nepieciešams ievadīt daudzu dalībnieku datus."
 
-#: templates/registration/company_application_my.html:38
+#: velo/templates/registration/company_application_my.html:38
 msgid ""
 "When you create a corporate application, you will get a public web address "
 "to share with employees. Thus your employees will be able to add their "
@@ -2090,97 +2147,101 @@ msgstr ""
 "adresi, kuru būs iespējams izsūtīt darbiniekiem, kur viņiem pašiem būs "
 "iespēja pievienot informāciju par sevi."
 
-#: templates/registration/company_application_my.html:39
+#: velo/templates/registration/company_application_my.html:39
 msgid ""
 "Afterwards you can register participants and pay the participation fee for "
 "selected participants."
 msgstr "Pēc tam Jums būs iespējams pieteikt un apmaksāt izvēlētos dalībniekus."
 
-#: templates/registration/form/participant_inline.html:30
-#: templates/team/form/member_inline.html:30
+#: velo/templates/registration/form/participant_inline.html:30
+#: velo/templates/team/form/member_inline.html:30
 msgid "Add Participants"
 msgstr "Pievienot dalībniekus"
 
-#: templates/registration/form/participant_inline_form.html:24
+#: velo/templates/registration/form/participant_inline_form.html:24
 msgid "Competition Information"
 msgstr "Sacensību informācija"
 
-#: templates/registration/form/participant_inline_form.html:43
+#: velo/templates/registration/form/participant_inline_form.html:43
 msgid "Participant Information"
 msgstr "Dalībnieka informācija"
 
-#: templates/registration/table/my_application_action.html:3
+#: velo/templates/registration/table/my_application_action.html:3
 msgid "Download Invoice"
 msgstr "Lejupielādēt rēķinu"
 
-#: templates/results/all_view.html:17
+#: velo/templates/results/all_view.html:17
 msgid "Use filters to find results."
 msgstr "Izmantojiet filtrus, lai atrastu rezultātus."
 
-#: templates/results/all_view.html:20 templates/results/all_view.html:38
+#: velo/templates/results/all_view.html:20
+#: velo/templates/results/all_view.html:38
 msgid "Select Competition"
 msgstr "Izvēlieties sacensību"
 
-#: templates/results/all_view.html:30
+#: velo/templates/results/all_view.html:30
 msgid "Select Year"
 msgstr "Izvēlieties gadu"
 
-#: templates/results/all_view.html:43
+#: velo/templates/results/all_view.html:43
 msgid "See Results"
 msgstr "Aplūkot rezultātus"
 
-#: templates/results/all_view.html:53
+#: velo/templates/results/all_view.html:53
 msgid "Historic results"
 msgstr "Vēsturiskie rezultāti"
 
-#: templates/results/participant.html:22
-#: templates/results/participant_standing.html:20
-#: templates/results/team.html:18 templates/results/team_by_teamname.html:18
-#: templates/results/team_standing.html:16
+#: velo/templates/results/participant.html:22
+#: velo/templates/results/participant_standing.html:20
+#: velo/templates/results/team.html:18
+#: velo/templates/results/team_by_teamname.html:18
+#: velo/templates/results/team_standing.html:16
 msgid "PARTICIPANTS"
 msgstr "DALĪBNIEKI"
 
-#: templates/results/participant.html:27
-#: templates/results/participant_standing.html:25
-#: templates/results/team.html:23 templates/results/team_by_teamname.html:23
-#: templates/results/team_standing.html:21
+#: velo/templates/results/participant.html:27
+#: velo/templates/results/participant_standing.html:25
+#: velo/templates/results/team.html:23
+#: velo/templates/results/team_by_teamname.html:23
+#: velo/templates/results/team_standing.html:21
 msgid "TEAMS"
 msgstr "KOMANDAS"
 
-#: templates/results/team.html:102 templates/team/applied.html:91
+#: velo/templates/results/team.html:102 velo/templates/team/applied.html:91
 msgid "VIP"
 msgstr "VIP"
 
-#: templates/results/team.html:104 templates/results/team_by_teamname.html:101
-#: templates/team/member_detail.html:75
+#: velo/templates/results/team.html:104
+#: velo/templates/results/team_by_teamname.html:101
+#: velo/templates/team/member_detail.html:75
 msgid "Result"
 msgstr "Rezultāts"
 
-#: templates/socialaccount/connections.html:6
+#: velo/templates/socialaccount/connections.html:6
 msgid "Account Connections"
 msgstr "Konta pieslēgumi"
 
-#: templates/socialaccount/connections.html:9
+#: velo/templates/socialaccount/connections.html:9
 msgid ""
 "You can sign in to your account using any of the following third party "
 "accounts:"
 msgstr "Jūs varat pieslēgties savam kontam izmantojot šos ārējos kontus:"
 
-#: templates/socialaccount/connections.html:60
+#: velo/templates/socialaccount/connections.html:60
 msgid ""
 "You currently have no social network accounts connected to this account."
 msgstr "Jūs neesat pieslēdzis nevienu sociālo kontu jūsu lietotājam."
 
-#: templates/socialaccount/connections.html:63
+#: velo/templates/socialaccount/connections.html:63
 msgid "Add a 3rd Party Account"
 msgstr "Pievienot sociālo kontu"
 
-#: templates/socialaccount/snippets/provider_list.html:16
+#: velo/templates/socialaccount/snippets/provider_list.html:16
 #, python-format
 msgid "Enter with %(provider_name)s"
 msgstr "Ienākt ar %(provider_name)s"
 
-#: templates/team/applied.html:53
+#: velo/templates/team/applied.html:53
 msgid ""
 "If a team member is marked red, it means that the participation fee has not "
 "been paid for this participant or cannot be found among the participants "
@@ -2192,143 +2253,143 @@ msgstr ""
 "šim pievērst pastiprinātu uzmanību, jo sarkanā krāsā esošo komandas "
 "dalībnieku rezultāti netiks ņemti vērā."
 
-#: templates/team/applied.html:104
+#: velo/templates/team/applied.html:104
 msgid "Tips"
 msgstr "Tips"
 
-#: templates/team/member_detail.html:20
+#: velo/templates/team/member_detail.html:20
 msgid "Team Information"
 msgstr "Komandas informācija"
 
-#: templates/team/member_detail.html:60
+#: velo/templates/team/member_detail.html:60
 msgid "Birth Year"
 msgstr "Dzimšanas gads"
 
-#: templates/team/member_detail.html:105
+#: velo/templates/team/member_detail.html:105
 msgid "All Team"
 msgstr "Visa komanda"
 
-#: templates/team/team_apply.html:22
+#: velo/templates/team/team_apply.html:22
 msgid "apply to"
 msgstr "pieteikt uz"
 
-#: templates/team/team_apply_list.html:97
+#: velo/templates/team/team_apply_list.html:97
 msgid "Registration have finished."
 msgstr "Reģistrācija ir noslēgusies."
 
-#: templates/team/team_detail.html:110
+#: velo/templates/team/team_detail.html:110
 msgid "Phone"
 msgstr "Telefona numurs"
 
-#: templates/team/team_detail.html:111
+#: velo/templates/team/team_detail.html:111
 msgid "Management"
 msgstr "Apkalpe"
 
-#: templates/team/team_form.html:13
+#: velo/templates/team/team_form.html:13
 msgid "Create Team"
 msgstr "Izveidot komandu"
 
-#: templates/team/team_form.html:120
+#: velo/templates/team/team_form.html:120
 msgid "Management Information"
 msgstr "Apkalpes informācija"
 
-#: templates/team/team_form.html:138
+#: velo/templates/team/team_form.html:138
 msgid "Upload Team Photo"
 msgstr "Augšupielādēt komandas attēlu"
 
-#: templates/team/team_form.html:159
+#: velo/templates/team/team_form.html:159
 msgid "Upload Shirt Photo"
 msgstr "Augšupielādēt komandas krekla attēlu"
 
-#: templates/team/team_pay.html:14
+#: velo/templates/team/team_pay.html:14
 msgid "Pay for Team Profile"
 msgstr "Maksāt par komandas profilu"
 
-#: velo/mixins/models.py:10
+#: velo/velo/mixins/models.py:10
 msgid "Created"
 msgstr "Izveidots"
 
-#: velo/mixins/models.py:11
+#: velo/velo/mixins/models.py:11
 msgid "Modified"
 msgstr "Labots"
 
-#: velo/urls_competition.py:17
+#: velo/velo/urls_competition.py:17
 msgid "^(?P<pk>\\d+)/total.json$"
 msgstr "^(?P<pk>\\d+)/total.json$"
 
-#: velo/urls_competition.py:18
+#: velo/velo/urls_competition.py:18
 msgid "^(?P<pk>\\d+)/all.json$"
 msgstr "^(?P<pk>\\d+)/all.json$"
 
-#: velo/urls_competition.py:20
+#: velo/velo/urls_competition.py:20
 msgid "^(?P<pk>\\d+)/maps/$"
 msgstr "^(?P<pk>\\d+)/kartes/$"
 
-#: velo/urls_competition.py:21
+#: velo/velo/urls_competition.py:21
 msgid "^maps/gpx/(?P<pk2>\\d+)/$"
 msgstr "^kartes/gpx/(?P<pk2>\\d+)/$"
 
-#: velo/urls_competition.py:23
+#: velo/velo/urls_competition.py:23
 msgid "^(?P<pk>\\d+)/team/$"
 msgstr "^(?P<pk>\\d+)/komandas/$"
 
-#: velo/urls_competition.py:24
+#: velo/velo/urls_competition.py:24
 msgid "^(?P<pk>\\d+)/team/(?P<pk2>\\d+)/$"
 msgstr "^(?P<pk>\\d+)/komandas/(?P<pk2>\\d+)/$"
 
-#: velo/urls_competition.py:25
+#: velo/velo/urls_competition.py:25
 msgid "^(?P<pk>\\d+)/team/(?P<pk2>\\d+)/(?P<pk3>\\d+)/$"
 msgstr "^(?P<pk>\\d+)/komandas/(?P<pk2>\\d+)/(?P<pk3>\\d+)/$"
 
-#: velo/urls_competition.py:27
+#: velo/velo/urls_competition.py:27
 msgid "^(?P<pk>\\d+)/standings/$"
 msgstr "^(?P<pk>\\d+)/kopvertejums/$"
 
-#: velo/urls_competition.py:28
+#: velo/velo/urls_competition.py:28
 msgid "^(?P<pk>\\d+)/standings/teams/$"
 msgstr "^(?P<pk>\\d+)/kopvertejums/komandas/$"
 
-#: velo/urls_competition.py:30
+#: velo/velo/urls_competition.py:30
 msgid "^(?P<pk>\\d+)/participants/$"
 msgstr "^(?P<pk>\\d+)/dalibnieki/$"
 
-#: velo/urls_competition.py:31
+#: velo/velo/urls_competition.py:31
 msgid "^(?P<pk>\\d+)/applied_teams/$"
 msgstr "^(?P<pk>\\d+)/pieteiktas_komandas/$"
 
-#: velo/urls_competition.py:32
+#: velo/velo/urls_competition.py:32
 msgid "^(?P<pk>\\d+)/results/$"
 msgstr "^(?P<pk>\\d+)/rezultati/$"
 
-#: velo/urls_competition.py:33
+#: velo/velo/urls_competition.py:33
 msgid "^(?P<pk>\\d+)/results/(?P<pk2>\\d+)/$"
 msgstr "^(?P<pk>\\d+)/rezultati/(?P<pk2>\\d+)/$"
 
-#: velo/urls_competition.py:36
+#: velo/velo/urls_competition.py:36
 msgid "^(?P<pk>\\d+)/results/teams/$"
 msgstr "^(?P<pk>\\d+)/rezultati/komandas/$"
 
-#: velo/urls_competition.py:37
+#: velo/velo/urls_competition.py:37
 msgid "^(?P<pk>\\d+)/results/team_name/$"
 msgstr "^(?P<pk>\\d+)/rezultati/komandas_nos/$"
 
-#: velo/urls_competition.py:39
+#: velo/velo/urls_competition.py:39
 msgid "^(?P<pk>\\d+)/results/team_name/between_distances/$"
 msgstr "^(?P<pk>\\d+)/rezultati/komandas_nos/starp_distancem/$"
 
-#: velo/urls_competition.py:44
+#: velo/velo/urls_competition.py:44
 msgid "^(?P<pk>\\d+)/teams.json$"
 msgstr "^(?P<pk>\\d+)/teams.json$"
 
-#: velo/urls_competition.py:45
+#: velo/velo/urls_competition.py:45
 msgid "^bike_brands.json$"
 msgstr "^bike_brands.json$"
 
-#: velo/urls_competition.py:50
+#: velo/velo/urls_competition.py:50
 msgid "^participant/search.json$"
 msgstr "^dalibnieks/meklet.json$"
 
-#: velo/urls_competition.py:53
+#: velo/velo/urls_competition.py:53
 msgid "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 msgstr "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 

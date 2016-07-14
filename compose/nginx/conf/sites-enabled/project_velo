@@ -29,6 +29,16 @@ server {
         rewrite ^/static/(.*)$ /media/$1 permanent;
     }
 
+    location /lv/company_application/ {
+        rewrite ^/lv/company_application/(.*)$ /lv/uznemuma_pieteikums/$1 permanent;
+    }
+    location /lv/application/ {
+        rewrite ^/lv/application/(.*)$ /lv/pieteikums/$1 permanent;
+    }
+    location /lv/competition/ {
+        rewrite ^/lv/competition/(.*)$ /lv/sacensibas/$1 permanent;
+    }
+
     location = /robots.txt  {
         access_log off;
         alias /var/lib/app/project_velo/staticfiles/robots.txt;

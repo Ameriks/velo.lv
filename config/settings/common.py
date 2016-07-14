@@ -19,6 +19,7 @@ env = environ.Env()
 
 LOCALE_PATHS = [
     str(APPS_DIR.path('locale')),
+    str(ROOT_DIR.path('config/locale')),
 ]
 
 # APP CONFIGURATION
