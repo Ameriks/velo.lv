@@ -115,6 +115,7 @@ class Participant(TimestampMixin, models.Model):
     gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True)
 
     ssn = models.CharField(_('Social Security Number'), max_length=12, blank=True)
+    ssn_hashed = models.CharField(_('Social Security Number Hashed'), max_length=44, blank=True)
 
     phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True, help_text=_("Result will be sent to this phone number"))
     email = models.EmailField(_('Email'), blank=True)
