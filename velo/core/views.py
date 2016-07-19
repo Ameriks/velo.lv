@@ -149,16 +149,6 @@ class MapView(SetCompetitionContextMixin, ListView):
 
         return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Supporters
-        context.update({'supporters': CompetitionSupporter.objects \
-                       .filter(competition_id__in=self.competition.get_ids()) \
-                       .order_by('-support_level', 'ordering', '-label') \
-                       .select_related('supporter')
-                        })
-        return context
 
 class CalendarView(CacheControlMixin, TemplateView):
     template_name = 'core/calendar_view.html'

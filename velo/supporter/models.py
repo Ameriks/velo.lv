@@ -18,11 +18,8 @@ def _get_logo_upload_path(instance, filename):
 
 class Supporter(models.Model):
     title = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
     url = models.URLField(blank=True)
     is_agency_supporter = models.BooleanField(default=False)
-    supporter_kind = models.CharField(max_length=100, blank=True)
-    ordering = models.IntegerField(default=0, db_index=True)
     default_logo = models.ForeignKey('supporter.Logo', blank=True, null=True, on_delete=models.SET_NULL, related_name='+', )
     default_svg = models.ForeignKey('supporter.Logo', blank=True, null=True, on_delete=models.SET_NULL, related_name='+', )
 
@@ -30,7 +27,7 @@ class Supporter(models.Model):
         return self.title
 
     class Meta:
-        ordering = ('ordering', )
+        ordering = ('title', )
 
 
 class Logo(models.Model):
@@ -50,23 +47,11 @@ class Logo(models.Model):
 
 
 class CompetitionSupporter(models.Model):
-    SUPPORT_LEVELS = (
-        (10, _('Supporter')),
-
-        (30, _('Partners')),
-        (34, _('Official Water')),
-        (35, _('Official Energy Drink')),
-        (40, _('Official Technical Partner')),
-        (65, _('Official Prize Sponsor')),
-        (70, _('Sponsor')),
-        (80, _('Official Partners')),
-        (90, _('General Sponsor'))
-    )
     competition = models.ForeignKey('core.Competition')
     supporter = models.ForeignKey(Supporter)
     logo = models.ForeignKey(Logo, blank=True, null=True)
-    support_level = models.PositiveSmallIntegerField(choices=SUPPORT_LEVELS)
+    support_title = models.CharField(max_length=100, blank=True)
 
-    label = models.CharField(max_length=100, blank=True)
+    is_large_logo = models.BooleanField(default=False)
 
-    ordering = models.IntegerField(default=0)
+    ordering = models.IntegerField(default=1000)

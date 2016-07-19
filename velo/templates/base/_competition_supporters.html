@@ -22,19 +22,19 @@
     {% endif %}
     {% for supporter in supporters %}
 
-        {% ifchanged supporter.support_level or supporter.label %}
+        {% ifchanged supporter.support_title %}
             {% if forloop.counter0 > 0 %}
                 </div>
             {% endif %}
-            <div class="sponsors__heading">{% firstof supporter.label supporter.get_support_level_display %}</div>
-            <div class="sponsors__group loaded {% if supporter.support_level >= 90 %}sponsors__image--large{% endif %}">
+            <div class="sponsors__heading">{% firstof supporter.support_title %}</div>
+            <div class="sponsors__group loaded {% if supporter.is_large_logo %}sponsors__image--large{% endif %}">
         {% endifchanged %}
 
         {% thumbnail supporter.logo.image 420x215 as logo %}
 
         {# todo: Add support for <a> in CSS #}
                                     <a class="sponsors__image  " target="_blank" href="{% if supporter.supporter.url %}{{ supporter.supporter.url }}{% else %}#{% endif %}">
-        <figure class="img-wrapper {% if supporter.support_level < 90 %}sponsors__image--small{% endif %}">
+        <figure class="img-wrapper {% if not supporter.is_large_logo %}sponsors__image--small{% endif %}">
             <img data-load-on="768" onload="imgLoaded(this)" src="
                     {% if supporter.logo.svg_logo %}{{ supporter.logo.svg_logo.url }}{% else %}{{ logo.url }}{% endif %}"
                  alt="{{ supporter.supporter }}">
