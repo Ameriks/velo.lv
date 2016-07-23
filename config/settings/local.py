@@ -21,7 +21,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY", default='CHANGEME!!!7z0c)k$qd19(@)@_qmg(dg
 
 # Mail settings
 # ------------------------------------------------------------------------------
-EMAIL_HOST = '192.168.99.1'
+EMAIL_HOST = 'host'
 EMAIL_PORT = 1025
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
                     default='django.core.mail.backends.smtp.EmailBackend')
@@ -41,7 +41,7 @@ CACHES = {
 MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 INSTALLED_APPS += ('debug_toolbar', )
 
-INTERNAL_IPS = ('127.0.0.1', '10.0.2.2', '172.16.13.1', '192.168.99.12')
+INTERNAL_IPS = ('127.0.0.1', '10.0.2.2',)
 
 DEBUG_TOOLBAR_CONFIG = {
     'DISABLE_PANELS': [
