@@ -67,7 +67,7 @@ class SetCompetitionContextMixin(object):
                 self.competition = Competition.objects.get(id=pk)
             except Competition.DoesNotExist:
                 return None
-            cache.set(cache_key, self.competition)
+            # cache.set(cache_key, self.competition)
         return self.competition
 
     def set_distances(self, all=True, only_w_teams=False, have_results=False):
@@ -87,7 +87,7 @@ class SetCompetitionContextMixin(object):
             elif have_results:
                 self.distances = self.distances.filter(have_results=True)
 
-            cache.set(cache_key, self.distances)
+            # cache.set(cache_key, self.distances)
         return self.distances
 
     def set_distance(self, pk):
