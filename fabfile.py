@@ -1,8 +1,15 @@
-from fabric.api import run, env, hosts, sudo, cd, task
+from fabric.api import run, env, hosts, sudo, cd, task, local
 from fabric.tasks import Task
 
 env.hosts = ['velo', ]
 env.use_ssh_config = True
+
+
+@task
+def rebuild_docker():
+    local("docker build -t ameriks/project_velo:latest .")
+    local("docker-compose -f dev.yml build django")
+    local("docker push ameriks/project_velo:latest")
 
 
 @task
