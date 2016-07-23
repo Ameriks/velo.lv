@@ -15,6 +15,7 @@ from velo.registration.models import Application, ChangedName, PreNumberAssign, 
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 from velo.registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
+from velo.results.helper import time_to_seconds, seconds_to_time
 from velo.results.models import SebStandings, HelperResults, ChipScan, DistanceAdmin, Result
 from velo.results.tables import ResultDistanceTable, ResultDistanceCheckpointTable, ResultXCODistanceCheckpointTable, \
     ResultXCODistanceCheckpointSEBTable
@@ -428,12 +429,35 @@ class Seb2016(SEBCompetitionBase):
         for u in uci:
             Participant.objects.filter(competition=self.competition, distance_id=49, is_participating=True, slug=u.slug, gender="M").update(group='M 19-34 CFA')
 
-    def recalculate_standing_for_result(self, result):
-        if result.participant.distance_id == self.SPORTA_DISTANCE_ID and result.participant.group == 'M-18' and self.competition_index == 3:
-            result.points_distance = 0
-            result.points_group = 0
-            result.save()
-        return super().recalculate_standing_for_result(result)
+    def calculate_points_distance(self, result, top_result=None):
+        """
+        Overriding point calculation, because of 3rd
+        """
+
+        if self.competition_index == 3:
+            if result.participant.distance_id == self.SPORTA_DISTANCE_ID and result.participant.group == 'M-18':
+                # M-18 group was riding with TAUTA distance, so we need to recalculate points based on different top_result.
+                try:
+                    top_result = Result.objects.filter(competition=result.competition, number__distance_id=self.TAUTAS_DISTANCE_ID).exclude(time=None).order_by('time')[0]
+                    tauta_time = time_to_seconds(self.competition.distanceadmin_set.get(distance_id=self.TAUTAS_DISTANCE_ID).zero)
+                    sport_time = time_to_seconds(self.competition.distanceadmin_set.get(distance_id=self.SPORTA_DISTANCE_ID).zero)
+                    top_result.time = seconds_to_time(time_to_seconds(top_result.time) + (tauta_time - sport_time))
+                except IndexError:
+                    return 1000
+
+            elif result.participant.distance_id == self.SPORTA_DISTANCE_ID:
+                # As the distance for women was shorter then men, but points should be calculated, we take proportion and calculate based on that.
+                try:
+                    top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance).exclude(time=None).exclude(participant__group="W").order_by('time')[0]
+                except IndexError:
+                    return 1000
+
+                if result.participant.group == 'W':
+                    proportion = 80.0 / 103.0  # W distance was 80 km, but all M distance was 103 km
+                    time = time_to_seconds(top_result.time) * proportion
+                    top_result = Result(time=seconds_to_time(time))
+
+        return super().calculate_points_distance(result, top_result)
 
     def import_children_csv(self, filename):
         with open(filename, 'r') as csvfile:

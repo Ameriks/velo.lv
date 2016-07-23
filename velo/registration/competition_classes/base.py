@@ -62,7 +62,7 @@ class CompetitionScriptBase(object):
         cache.delete('tree_aliases')
         # TODO: Add all other caches that are added manually
 
-    def calculate_points_distance(self, result):
+    def calculate_points_distance(self, result, top_result=None):
         return 0
 
     def calculate_points_group(self, result):
@@ -477,7 +477,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             self.assign_standing_places()
             self.recalculate_team_results()
 
-    def calculate_points_distance(self, result):
+    def calculate_points_distance(self, result, top_result=None):
         """
         Function used to calculate distance points
         """
@@ -487,10 +487,11 @@ class SEBCompetitionBase(CompetitionScriptBase):
         if result.status:  # If result has the status then that means that result is 0
             return 0
 
-        try:
-            top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance).exclude(time=None).order_by('time')[0]
-        except IndexError:
-            return 1000
+        if not top_result:
+            try:
+                top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance).exclude(time=None).order_by('time')[0]
+            except IndexError:
+                return 1000
 
         if result.time is None:
             return 0
