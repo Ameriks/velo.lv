@@ -142,6 +142,7 @@ class SetCompetitionContextMixin(object):
 
 class SingleTableViewWithRequest(SetCompetitionContextMixin, SingleTableView):
     add_link = None
+    paginate_by = 100
 
     def table_order_by(self):
         return None

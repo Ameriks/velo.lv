@@ -120,6 +120,7 @@ class MyTeamList(LoginRequiredMixin, SingleTableView):
     model = Team
     table_class = TeamMyTable
     template_name = 'team/team_list_my.html'
+    paginate_by = 100
 
     def get_queryset(self):
         queryset = super().get_queryset()

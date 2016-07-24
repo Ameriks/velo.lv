@@ -36,6 +36,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
     model = Participant
     table_class = ParticipantTable
     template_name = 'registration/participant_list.html'
+    paginate_by = 100
 
     def get_table_class(self):
         return self.get_competition_class().get_startlist_table_class(self.distance)
@@ -124,6 +125,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
     table_class = CompanyParticipantTable
     template_name = 'registration/company_application_detail.html'
     companyapplication = None
+    paginate_by = 100
 
     def post(self, request, *args, **kwargs):
         self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)
@@ -489,6 +491,7 @@ class MyApplicationList(SSLRequiredMixin, LoginRequiredMixin, SingleTableView):
     model = Application
     table_class = ApplicationTable
     template_name = 'registration/application_my.html'
+    paginate_by = 100
 
     def get_queryset(self):
         queryset = super(MyApplicationList, self).get_queryset().filter(competition__competition_date__year__gte=timezone.now().year)
@@ -583,6 +586,7 @@ class MyCompanyApplicationList(SSLRequiredMixin, LoginRequiredMixin, SingleTable
     model = CompanyApplication
     table_class = CompanyApplicationTable
     template_name = 'registration/company_application_my.html'
+    paginate_by = 100
 
     def get_queryset(self):
         queryset = super(MyCompanyApplicationList, self).get_queryset()

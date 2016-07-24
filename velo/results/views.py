@@ -55,6 +55,7 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
     """
     model = Result
     template_name = 'results/participant.html'
+    paginate_by = 100
 
     def get_table_class(self):
         try:
@@ -155,6 +156,7 @@ class SebStandingResultList(SetCompetitionContextMixin, SingleTableView):
     """
     model = SebStandings
     template_name = 'results/participant_standing.html'
+    paginate_by = 100
 
     def get_table_class(self):
         try:
@@ -242,6 +244,7 @@ class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
     """
     model = TeamResultStandings
     template_name = 'results/team_standing.html'
+    paginate_by = 100
 
     def get_table_class(self):
         return ResultTeamStandingTable
