@@ -1,5 +1,8 @@
 {% extends "base.html" %}
-{% load staticfiles i18n %}
+{% load i18n staticfiles cache %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
 {% block content %}
     <script type="text/template" id="slider-button-left">
         <svg class="icon">
@@ -18,7 +21,9 @@
     <main>
         <div class="w100">
             <div class="inner">
-                <div class="calendar-slider js-calendar-slider" data-slide-to="{{ slide_to }}">
+            {% cache 300 index_calendar_slider LANGUAGE_CODE %}
+                {% with calendar_active_indexes=active_indexes %}
+                <div class="calendar-slider js-calendar-slider" data-slide-to="{{ calendar_active_indexes.1 }}">
 
 
                     <div class="calendar-slider__slide border-right">
@@ -28,7 +33,7 @@
                                 <div class="calendar-slider__slide border-right">
                             {% endif %}
 
-                            <div class="calendar-slider__head accordeon-head h100  js-accordeon-head js-open-accordeon {% if forloop.counter0 in active_indexes %}active{% endif %}">
+                            <div class="calendar-slider__head accordeon-head h100  js-accordeon-head js-open-accordeon {% if forloop.counter0 in calendar_active_indexes.0 %}active{% endif %}">
                                 <div class="calendar-tile h100 c-white flex wrap--nowrap direction--column justify--start align-items--start border-left">
                                     <a data-href="{% url "competition:competition" item.id %}"
                                        class="calendar-tile__info flex--1 js-calendar-slider-link">
@@ -96,11 +101,12 @@
                             </div>
 
                         {% endfor %}
-
-                        </div>
+                    </div>
 
 
                 </div>
+                {% endwith %}
+            {% endcache %}
             </div>
         </div>
         <div class="w100 border-top">
@@ -108,26 +114,27 @@
                 <div class="row logo-tiles">
                     <div class="col-xl-144 col-m-24">
                         <div class="row">
-
-                            {% for competition in front_competitions %}
-                                <div class="col-xl-8 border-left border-bottom">
-                                    <a href="{% url "competition:competition" competition.id %}"
-                                       class="logo-tiles__tile img-wrapper">
-                                        <img
-                                                data-src="{{ competition.logo_svg.url }}"
-                                                onload="imgLoaded(this)"
-                                        >
-                                        <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
-                                            <span class="bottom-margin--5">{{ competition }}</span>
-                                            <svg class="btn__icon icon">
-                                                <use
-                                                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                        xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
-                                            </svg>
-                                        </div>
-                                    </a>
-                                </div>
-                            {% endfor %}
+                            {% cache 300 front_competitions LANGUAGE_CODE %}
+                                {% for competition in front_competitions %}
+                                    <div class="col-xl-8 border-left border-bottom">
+                                        <a href="{% url "competition:competition" competition.id %}"
+                                           class="logo-tiles__tile img-wrapper">
+                                            <img
+                                                    data-src="{{ competition.logo_svg.url }}"
+                                                    onload="imgLoaded(this)"
+                                            >
+                                            <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
+                                                <span class="bottom-margin--5">{{ competition }}</span>
+                                                <svg class="btn__icon icon">
+                                                    <use
+                                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                            xlink:href="{% static "template/velo-2016/html/img/icons.svg" %}#arrow--right"></use>
+                                                </svg>
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% endcache %}
                         </div>
                     </div>
                     <figure class="logo-tiles__hero col-xl-96 flex js-background-image"
@@ -135,13 +142,17 @@
                 </div>
             </div>
         </div>
-        {% if news_list %}
-            {% include "base/_sponsors.html" %}
-        {% endif %}
+        {% cache 1200 agency_sponsors LANGUAGE_CODE %}
+            {% if news_list %}
+                {% include "base/_sponsors.html" %}
+            {% endif %}
+        {% endcache %}
 
         {#    {% include "base/_newest_results.html" %}#}
 
-        {% if news_list %}
+        {% cache 300 index_news LANGUAGE_CODE %}
+            {% if news_list %}
+
             <div class="w100 border-bottom border-top">
                 <div class="inner">
                     <h2 class="heading fs21 border-left flex wrap--nowrap direction--row justify--start align-items--center">
@@ -175,7 +186,9 @@
                     </div>
                 </div>
             {% endfor %}
-        {% endif %}
+
+            {% endif %}
+        {% endcache %}
 
 
         {#    {% include "base/_front_shop.html" %}#}

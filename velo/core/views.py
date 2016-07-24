@@ -36,23 +36,23 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-        calendar = list(Competition.objects.filter(competition_date__year=timezone.now().year).select_related('parent').extra(select={'is_past': "core_competition.competition_date < now()::date  - interval '3 days'"}).order_by('is_past', 'competition_date', '-name_lv'))
+        calendar = Competition.objects.filter(competition_date__year=timezone.now().year).select_related('parent').extra(select={'is_past': "core_competition.competition_date < now()::date  - interval '3 days'"}).order_by('is_past', 'competition_date', '-name_lv')
         context.update({'calendar': calendar})
 
-        next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date', '-name_lv')[
-                           :1]
-        if not next_competition:
-            next_competition = Competition.objects.order_by('-competition_date')[:1]
+        cache_key = 'image_top_%s' % get_language()
+        front_photo = cache.get(cache_key, None)
+        if front_photo is None:
+            front_photo = False
+            photo = Photo.objects.filter(album_id=144)
+            if not photo:
+                photo = Photo.objects.all()
+            if photo:
+                front_photo = photo[0]
+            cache.set(cache_key, front_photo, 60 * 30)  # Cache for 30 minutes
 
-        if next_competition:
-            context.update({'next_competition': next_competition[0]})
+        if front_photo:
+            context.update({'front_photo': front_photo})
 
-        photo = Photo.objects.filter(album_id=144)
-        if not photo:
-            photo = Photo.objects.all()
-
-        if photo:
-            context.update({'front_photo': photo[0]})
 
         context.update({'news_list': News.objects.published().filter(language=get_language())[:4]})
 
@@ -72,17 +72,27 @@ class IndexView(TemplateView):
             context.update({'banner_top': banner_top})
             self.request.session['showed_index_banner'] = current_time
 
-        slide_to = 0
-        active_indexes = []
-        for index in range(0, len(calendar)):
-            if next_competition and calendar[index].id == next_competition[0].id:
-                slide_to = len(active_indexes)
-                active_indexes.append(index)
-            elif (not active_indexes or index - active_indexes[-1] > 2) and index % 3 == 2 and index > 0:
-                active_indexes.append(index-2)
-            elif index == len(calendar)-1 and (index - active_indexes[-1] > 2):  # LAST ELEMENT
-                active_indexes.append(index - (index - active_indexes[-1]) % 3)
-        context.update({'active_indexes': active_indexes, 'slide_to': slide_to})
+
+
+        def active_index_func():
+            next_competition = Competition.objects.filter(competition_date__gt=timezone.now()).order_by('competition_date', '-name_lv')[:1]
+            if not next_competition:
+                next_competition = Competition.objects.order_by('-competition_date')[:1]
+
+            slide_to = 0
+            active_indexes = []
+            for index in range(0, len(calendar)):
+                if next_competition and calendar[index].id == next_competition[0].id:
+                    slide_to = len(active_indexes)
+                    active_indexes.append(index)
+                elif (not active_indexes or index - active_indexes[-1] > 2) and index % 3 == 2 and index > 0:
+                    active_indexes.append(index-2)
+                elif index == len(calendar)-1 and (index - active_indexes[-1] > 2):  # LAST ELEMENT
+                    active_indexes.append(index - (index - active_indexes[-1]) % 3)
+
+            return active_indexes, slide_to
+
+        context.update({'active_indexes': active_index_func})
 
         return context
 
