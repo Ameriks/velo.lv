@@ -49,6 +49,7 @@ projectvelo:
     - redis
   volumes:
       - /var/lib/app/project_velo:/app
+      - /var/lib/app/sendy/uploads/templates:/sendy
   env_file: .env
   restart: always
   log_driver: gelf
