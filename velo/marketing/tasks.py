@@ -60,7 +60,8 @@ def copy_mc_template(template_id: int, subject: str):
 
     template_html = re.sub(r'\t', '', template_html)
 
-    os.mkdir("/sendy/%s" % template_id)
+    if not os.path.exists("/sendy/%s" % template_id):
+        os.mkdir("/sendy/%s" % template_id)
 
     soup = BeautifulSoup(template_html, "lxml")
     for img in soup.find_all("img"):
