@@ -390,10 +390,7 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             return ''
 
     def clean_birthday(self):
-        if self.cleaned_data.get('country') == 'LV':
-            return bday_from_LV_SSN(self.cleaned_data.get('ssn'))
-        else:
-            return self.cleaned_data.get('birthday')
+        return self.cleaned_data.get('birthday')
 
     def clean_bike_brand2(self):
         return self.cleaned_data.get('bike_brand2').strip()[:20]
