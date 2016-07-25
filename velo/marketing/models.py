@@ -17,3 +17,8 @@ class SMS(models.Model):
     discount_code = models.ForeignKey('payment.DiscountCode', blank=True, null=True)
     send_out_at = models.DateTimeField()
     status = models.CharField(max_length=50, blank=True)
+
+    class Meta:
+        permissions = (
+            ('can_update_marketing', 'Can update marketing'),
+        )

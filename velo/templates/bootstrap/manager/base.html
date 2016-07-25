@@ -12,7 +12,10 @@
                 <h3>{{ competition.get_full_name }}</h3>
                 {% sitetree_menu from "mainmenu" include "manager" template "bootstrap/menu/sidemenu_bootstrap3.html"  %}
                 {% if competition %}
-                {% sitetree_menu from "competition_admin" include "trunk" template "bootstrap/menu/sidemenu_bootstrap3.html"  %}
+
+                    {% sitetree_menu from "competition_admin" include "trunk" template "bootstrap/menu/sidemenu_bootstrap3.html"  %}
+                {% else %}
+                    {% sitetree_menu from "manager_admin" include "trunk" template "bootstrap/menu/sidemenu_bootstrap3.html"  %}
                 {% endif %}
             </div>
             <!-- End Sidebar Menu -->

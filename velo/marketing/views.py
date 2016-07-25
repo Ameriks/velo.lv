@@ -2,7 +2,10 @@
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View, TemplateView
 
@@ -11,7 +14,9 @@ import hashlib
 import hmac
 
 from velo.core.models import Log
+from velo.marketing.forms import SendyCreateForm
 from velo.marketing.models import SMS
+from velo.marketing.tasks import copy_mc_template
 from velo.registration.models import Participant, Application
 
 
@@ -53,3 +58,26 @@ class TestEmailTemplate(SuperuserRequiredMixin, TemplateView):
         })
 
         return context
+
+
+class CreateSendyView(PermissionRequiredMixin, TemplateView):
+    template_name = "bootstrap/manager/form.html"
+    permission_required = "marketing.can_update_marketing"
+
+    def get_form(self):
+        return SendyCreateForm(data=self.request.POST)
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateSendyView, self).get_context_data(**kwargs)
+        context.update({'form': self.get_form(), "title": "Izveidot Sendy"})
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            template_id = int(form.cleaned_data.get('template'))
+            copy_mc_template.delay(template_id, dict(form.fields['template'].choices).get(template_id))
+            return HttpResponseRedirect("https://sendy.velo.lv/app?i=1")
+        else:
+            messages.error(request, "Kļūda.")
+            return super(CreateSendyView, self).get(request, *args, **kwargs)

@@ -773,16 +773,7 @@ class RMCompetitionBase(CompetitionScriptBase):
         return NotImplementedError
 
     def build_manager_menu(self):
-        child_items = []
-        # for child in self.competition.get_children():
-        #     children = []
-        #     children.append(item('Dalībnieki', '#', url_as_pattern=False, access_loggedin=True, children=[
-        #         item('Pieteikt dalībnieku', 'manager:participant_create %i' % child.id, access_loggedin=True),
-        #         item('Dalībnieku saraksts', 'manager:participant_list %i' % child.id, access_loggedin=True),
-        #         item('{{ object }}', 'manager:participant %i object.id' % child.id, in_menu=False, access_loggedin=True),
-        #     ]))
-        return item(str(self.competition), '#', url_as_pattern=False, children=child_items, in_menu=self.competition.is_in_menu, access_loggedin=True)
-
+        return item(str(self.competition), 'manager:competition %i' % self.competition.id, in_menu=self.competition.is_in_menu, access_loggedin=True)
 
     def build_menu(self, lang):
         current_date = datetime.date.today() + datetime.timedelta(days=1)

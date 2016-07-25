@@ -1,9 +1,11 @@
+from django.utils.translation import activate
 from sitetree.utils import tree, item
 from velo.core.models import Competition
 from velo.velo.utils import load_class
 
 
 def sitetrees_build():
+    activate("lv")
     items = []
     for competition in Competition.objects.filter(is_in_menu=True):
         children = []

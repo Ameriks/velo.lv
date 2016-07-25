@@ -414,3 +414,10 @@ SHORTEN_MODELS = {
 }
 
 MAIN_LIST_ID = env('MAIN_LIST_ID', default=None)
+SENDY_API_KEY = env('SENDY_API_KEY', default=None)
+
+MC_URL = env('MC_URL', default=None)
+MC_USER = env('MC_USER', default=None)
+MC_USERID = env('MC_USERID', default=None)
+MC_PASSWORD = env('MC_PASSWORD', default=None)
+MC_APIKEY = env('MC_APIKEY', default=None)
