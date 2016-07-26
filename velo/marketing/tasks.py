@@ -87,6 +87,9 @@ def copy_mc_template(template_id: int, subject: str):
         link.attrs.update({'src': 'https://sendy.velo.lv/uploads/templates/%s/%s' % (template_id, file_name)})
 
     template_html = transform(str(soup))
+    # After transform, links are changed to uri safe links. Change back.
+    template_html = re.sub(r'%5Bunsubscribe%5D', '[unsubscribe]', template_html)
+    template_html = re.sub(r'%5Bwebversion%5D', '[webversion]', template_html)
 
     resp3 = requests.post("https://sendy.velo.lv/api/campaigns/create.php", data={
         "api_key": settings.SENDY_API_KEY,
