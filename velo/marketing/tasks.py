@@ -84,7 +84,7 @@ def copy_mc_template(template_id: int, subject: str):
             with open("/sendy/%s/%s" % (template_id, file_name), 'wb') as f:
                 r.raw.decode_content = True
                 shutil.copyfileobj(r.raw, f)
-        link.attrs.update({'src': 'https://sendy.velo.lv/uploads/templates/%s/%s' % (template_id, file_name)})
+        link.attrs.update({'href': 'https://sendy.velo.lv/uploads/templates/%s/%s' % (template_id, file_name)})
 
     template_html = transform(str(soup))
     # After transform, links are changed to uri safe links. Change back.
