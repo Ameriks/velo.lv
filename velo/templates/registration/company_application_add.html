@@ -49,12 +49,7 @@
 
                                             <tr>
                                                 <td>{% trans 'Public URL' %}:</td>
-                                                <td><a href="https://
-
-
-
-
-                                                        {{ request.get_host }}{% url 'companyapplication_add' companyapplication.code %}">https://{{ request.get_host }}{% url 'companyapplication_add' companyapplication.code %}</a>
+                                                <td><a href="https://{{ request.get_host }}{% url 'companyapplication_add' companyapplication.code %}">https://{{ request.get_host }}{% url 'companyapplication_add' companyapplication.code %}</a>
                                                 </td>
                                             </tr>
                                             <tr>
