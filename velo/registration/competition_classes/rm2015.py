@@ -2,15 +2,14 @@
 from __future__ import unicode_literals
 from io import BytesIO
 from difflib import get_close_matches
-from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
-from velo.registration.competition_classes.base import RMCompetitionBase
-from velo.registration.models import Number, Participant, ChangedName
+from velo.registration.competition_classes.base_rm import RMCompetitionBase
+from velo.registration.models import Participant, ChangedName
 from velo.results.models import Result, HelperResults
 
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import inch, cm
+from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
-from velo.core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, _baseFontNameB
+from velo.core.pdf import fill_page_with_image, _baseFontName, _baseFontNameB
 import os.path
 from velo.team.models import Member, Team
 

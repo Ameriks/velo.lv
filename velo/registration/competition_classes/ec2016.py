@@ -9,10 +9,9 @@ from velo.registration.competition_classes.base import CompetitionScriptBase
 from velo.registration.models import Application, Participant
 from django import forms
 from django.utils.translation import ugettext_lazy as _, activate
-from velo.registration.tables import ParticipantTable, ParticipantTableWCountry
+from velo.registration.tables import ParticipantTableWCountry
 from velo.results.models import HelperResults, ChipScan, DistanceAdmin, Result, LapResult
-from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable, ResultXCODistanceCheckpointTable, \
-    ResultGroupTable
+from velo.results.tables import ResultRMGroupTable, ResultXCODistanceCheckpointTable
 from velo.results.tasks import create_result_sms, recalculate_standing_for_result
 
 

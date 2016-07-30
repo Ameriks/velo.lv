@@ -1,31 +1,22 @@
 
 import datetime
 from django.core.cache.utils import make_template_fragment_key
-from django.db.models import Count
-from django.template.defaultfilters import slugify
-import math
-import csv
 from django.core.cache import cache
 from sitetree.utils import item
 from io import BytesIO
-from velo.core.models import Competition, Choices, Log
-from velo.marketing.utils import send_sms_to_participant, send_number_email, send_smses, send_sms_to_family_participant
+from velo.core.models import Log
+from velo.marketing.utils import send_sms_to_participant, send_number_email
 from velo.registration.competition_classes.base import CompetitionScriptBase
 from velo.registration.models import Number, Participant, PreNumberAssign, Application
 from velo.registration.tables import ParticipantTable, ParticipantTableWithLastYearPlace
-from velo.results.models import LegacySEBStandingsResult, ChipScan, Result, DistanceAdmin, SebStandings, TeamResultStandings, \
-    LapResult
-from velo.results.tables import *
-from velo.results.tables import ResultDistanceStandingTable, ResultRMSportsDistanceTable, ResultRMTautaDistanceTable, \
-    ResultRMGroupTable, ResultRMDistanceTable
+from velo.results.models import ChipScan, Result, DistanceAdmin, TeamResultStandings
+from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable
 from velo.results.tasks import create_result_sms
-from velo.results.helper import time_to_seconds
 from velo.team.models import Team, MemberApplication
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import inch, cm
+from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
-from velo.core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, \
-    _baseFontNameB
+from velo.core.pdf import fill_page_with_image, _baseFontName, _baseFontNameB
 from django.conf import settings
 from django.db import connection
 import os.path

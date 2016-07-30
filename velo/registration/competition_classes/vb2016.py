@@ -4,12 +4,10 @@ from io import BytesIO
 from difflib import get_close_matches
 from velo.registration.competition_classes.base_vb import VBCompetitionBase
 from velo.registration.models import Participant, ChangedName
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
-from velo.core.pdf import get_image, getSampleStyleSheet, base_table_style, fill_page_with_image, _baseFontName, \
-    _baseFontNameB
+from velo.core.pdf import fill_page_with_image, _baseFontName, _baseFontNameB
 import os.path
 from velo.results.models import Result, HelperResults
 

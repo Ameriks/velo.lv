@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from velo.registration.competition_classes.base import SEBCompetitionBase
+from velo.registration.competition_classes.base_seb import SEBCompetitionBase
 
 
 class Seb2014(SEBCompetitionBase):

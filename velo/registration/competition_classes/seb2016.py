@@ -6,19 +6,17 @@ from difflib import get_close_matches
 import datetime
 
 from django.db.models import Sum
-from django.utils import timezone
 from slugify import slugify
 
 from velo.core.models import Log, Distance
-from velo.registration.competition_classes.base import SEBCompetitionBase
-from velo.registration.models import Application, ChangedName, PreNumberAssign, Number, Participant, UCICategory
+from velo.registration.competition_classes.base_seb import SEBCompetitionBase
+from velo.registration.models import Application, ChangedName, Number, Participant, UCICategory
 from django import forms
-from django.utils.translation import ugettext, ugettext_lazy as _
-from velo.registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable, ParticipantTableBase
+from django.utils.translation import ugettext_lazy as _
+from velo.registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable
 from velo.results.helper import time_to_seconds, seconds_to_time
-from velo.results.models import SebStandings, HelperResults, ChipScan, DistanceAdmin, Result
-from velo.results.tables import ResultDistanceTable, ResultDistanceCheckpointTable, ResultXCODistanceCheckpointTable, \
-    ResultXCODistanceCheckpointSEBTable
+from velo.results.models import SebStandings, HelperResults, ChipScan, Result
+from velo.results.tables import ResultDistanceCheckpointTable, ResultXCODistanceCheckpointSEBTable
 
 
 class Seb2016(SEBCompetitionBase):
