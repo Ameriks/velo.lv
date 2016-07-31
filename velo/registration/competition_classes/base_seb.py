@@ -472,6 +472,8 @@ AND r.id = res2.id
         if reset:
             HelperResults.objects.filter(competition=self.competition).update(passage_assigned=None)
 
+        update_helper_result_table(self.competition_id, update=True)
+
         for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None).select_related('participant').order_by('-calculated_total', 'participant__registration_dt')
             for passage_nr, total, passage_extra in self.passages.get(distance_id):

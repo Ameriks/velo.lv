@@ -170,3 +170,5 @@ SESSION_COOKIE_DOMAIN = '.velo.lv'
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"

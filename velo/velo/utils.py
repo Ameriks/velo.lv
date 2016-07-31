@@ -6,14 +6,15 @@ import stat
 
 
 def listdir(path):
-	try:
-		result = os.stat(path)
-	except OSError:
-		return []
-	if stat.S_ISDIR(result.st_mode):
-		return sorted(os.listdir(path))
-	else:
-		return []
+    try:
+        result = os.stat(path)
+    except OSError:
+        return []
+    if stat.S_ISDIR(result.st_mode):
+        return sorted(os.listdir(path))
+    else:
+        return []
+
 
 def load_class(full_class_string):
     """
@@ -38,8 +39,10 @@ def bday_from_LV_SSN(ssn):
     except:
         return None
 
+
 class SessionWHeaders(requests.Session):
     url = None
+
     def __init__(self, additional_headers, url=None):
         super(SessionWHeaders, self).__init__()
         self.url = url
