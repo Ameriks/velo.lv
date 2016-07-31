@@ -83,6 +83,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
     'velo.core.middleware.CustomSessionMiddleware', # CUSTOM
     # 'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -93,6 +94,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',  # CUSTOM
     'impersonate.middleware.ImpersonateMiddleware',  # CUSTOM
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 # MIGRATIONS CONFIGURATION
