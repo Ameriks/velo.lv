@@ -1,4 +1,5 @@
 proxy_cache_path  /var/lib/nginx/cache/velo  levels=1:2  inactive=30m keys_zone=velo:100m;
+proxy_cache_path  /var/lib/nginx/cache/velo_memory  levels=1:2  inactive=30m keys_zone=velo_memory:100m;
 
 server {
     listen 443;
@@ -69,8 +70,9 @@ server {
     location / {
         add_header X-Cached $upstream_cache_status;
         proxy_pass http://projectvelo:5000/;
-        proxy_cache            velo;
+        proxy_cache            velo_memory;
         proxy_cache_valid      200  10m;
+        proxy_cache_lock       on;
         proxy_cache_use_stale  error timeout invalid_header updating
                                http_500 http_502 http_503 http_504;
     }

@@ -1,4 +1,5 @@
 <!DOCTYPE html>{% load staticfiles i18n sitetree translate cache email %}{% get_current_language as LANGUAGE_CODE %}
+{% spaceless %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
@@ -289,3 +290,4 @@
 
 </body>
 </html>
+{% endspaceless %}
