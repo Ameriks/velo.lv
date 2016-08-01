@@ -4,7 +4,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 
 class CustomSessionMiddleware(SessionMiddleware):
     def process_response(self, request, response):
-        if request.user.is_anonymous() and "login" not in request.path:
+        if request.user and request.user.is_anonymous() and "login" not in request.path:
             if settings.SESSION_COOKIE_NAME in request.COOKIES:
                 response.delete_cookie(settings.SESSION_COOKIE_NAME)
             if "messages" in request.COOKIES:
