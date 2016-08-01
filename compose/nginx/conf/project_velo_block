@@ -7,9 +7,6 @@ location /index.php {
 location /administrator/index.php {
     return 404;
 }
-location /lv/kautkas/f {
-    return 404;
-}
 
 location /plugins/ {
     return 404;
