@@ -1,9 +1,10 @@
-
-from __future__ import absolute_import
 import os
 from celery import Celery
+from celery.schedules import crontab
+from celery.task import periodic_task
 from django.apps import AppConfig
 from django.conf import settings
+from django.core.management import call_command
 
 
 if not settings.configured:
@@ -35,3 +36,9 @@ class CeleryConfig(AppConfig):
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))  # pragma: no cover
+
+
+@periodic_task(run_every=crontab(minute="2", hour="1"))
+def clear_old_sessions():
+    call_command("clearsessions")
+
