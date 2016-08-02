@@ -96,6 +96,5 @@ duplicity:
   volumes:
     - /var/lib/postgresql/config:/root # GPG
     - /var/lib/app/project_velo/velo/media:/var/lib/app/project_velo/velo/media:ro
-  restart: always
   env_file: .env_duplicity
   command: duply main backup
