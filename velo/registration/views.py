@@ -14,7 +14,7 @@ from django.conf import settings
 
 from django_tables2 import SingleTableView
 from extra_views import UpdateWithInlinesView, NamedFormsetsMixin, InlineFormSet
-from braces.views import JsonRequestResponseMixin, LoginRequiredMixin, JSONResponseMixin, SSLRequiredMixin
+from braces.views import JsonRequestResponseMixin, LoginRequiredMixin, JSONResponseMixin
 from extra_views.advanced import BaseUpdateWithInlinesView
 
 from velo.core.formsets import CustomBaseInlineFormSet, OnlyAddBaseInlineFormSet
@@ -28,7 +28,7 @@ from velo.registration.tables import ParticipantTable, ApplicationTable, Company
     CompanyApplicationTable
 from velo.team.models import Team, Member
 from velo.velo.mixins.forms import GetClassNameMixin
-from velo.velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin
+from velo.velo.mixins.views import SetCompetitionContextMixin, RequestFormKwargsMixin, NeverCacheMixin
 from velo.velo.utils import load_class
 
 
@@ -96,7 +96,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
         return queryset
 
 
-class CompanyApplicationCreate(SSLRequiredMixin, LoginRequiredMixin, RequestFormKwargsMixin, CreateView):
+class CompanyApplicationCreate(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, CreateView):
     template_name = 'registration/company_application_create.html'
     model = CompanyApplication
     form_class = CompanyApplicationCreateForm
@@ -105,7 +105,7 @@ class CompanyApplicationCreate(SSLRequiredMixin, LoginRequiredMixin, RequestForm
         return reverse('companyapplication', kwargs={'slug': self.object.code})
 
 
-class CompanyApplicationUpdate(SSLRequiredMixin, LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
+class CompanyApplicationUpdate(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
     template_name = 'registration/company_application_create.html'
     model = CompanyApplication
     form_class = CompanyApplicationCreateForm
@@ -120,7 +120,7 @@ class CompanyApplicationUpdate(SSLRequiredMixin, LoginRequiredMixin, RequestForm
         return reverse('companyapplication', kwargs={'slug': self.object.code})
 
 
-class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTableView):
+class CompanyApplicationDetail(NeverCacheMixin, LoginRequiredMixin, SingleTableView):
     model = CompanyParticipant
     table_class = CompanyParticipantTable
     template_name = 'registration/company_application_detail.html'
@@ -301,7 +301,7 @@ class CompanyApplicationDetail(SSLRequiredMixin, LoginRequiredMixin, SingleTable
         return super(CompanyApplicationDetail, self).get(request, *args, **kwargs)
 
 
-class ApplicationCreate(SSLRequiredMixin, RequestFormKwargsMixin, CreateView):
+class ApplicationCreate(NeverCacheMixin, RequestFormKwargsMixin, CreateView):
     template_name = 'registration/application_create.html'
     model = Application
     form_class = ApplicationCreateForm
@@ -367,7 +367,7 @@ class ParticipantInline(GetClassNameMixin, InlineFormSet):
         return kwargs
 
 
-class ApplicationUpdate(SSLRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
+class ApplicationUpdate(NeverCacheMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
     template_name = 'registration/application_update.html'
     inlines = [ParticipantInline, ]
     inlines_names = ['participant']
@@ -407,7 +407,7 @@ class ApplicationUpdate(SSLRequiredMixin, RequestFormKwargsMixin, NamedFormsetsM
         return super(BaseUpdateWithInlinesView, self).get(request, *args, **kwargs)
 
 
-class TeamJsonList(SSLRequiredMixin, JsonRequestResponseMixin, SetCompetitionContextMixin, ListView):
+class TeamJsonList(JsonRequestResponseMixin, SetCompetitionContextMixin, ListView):
     model = Participant
 
     def get_queryset(self):
@@ -431,7 +431,7 @@ class TeamJsonList(SSLRequiredMixin, JsonRequestResponseMixin, SetCompetitionCon
         return self.render_json_response(list(self.object_list))
 
 
-class BikeBrandJsonList(SSLRequiredMixin, JsonRequestResponseMixin, ListView):
+class BikeBrandJsonList(JsonRequestResponseMixin, ListView):
     model = Participant
 
     def get_queryset(self):
@@ -454,7 +454,7 @@ class BikeBrandJsonList(SSLRequiredMixin, JsonRequestResponseMixin, ListView):
         return self.render_json_response(list(self.object_list))
 
 
-class ParticipantSearchView(SSLRequiredMixin, JsonRequestResponseMixin, ListView):
+class ParticipantSearchView(JsonRequestResponseMixin, ListView):
     model = Participant
 
     def get_queryset(self):
@@ -487,7 +487,7 @@ class ParticipantSearchView(SSLRequiredMixin, JsonRequestResponseMixin, ListView
         return self.render_json_response({"suggestions": list(self.object_list)})
 
 
-class MyApplicationList(SSLRequiredMixin, LoginRequiredMixin, SingleTableView):
+class MyApplicationList(NeverCacheMixin, LoginRequiredMixin, SingleTableView):
     model = Application
     table_class = ApplicationTable
     template_name = 'registration/application_my.html'
@@ -500,7 +500,7 @@ class MyApplicationList(SSLRequiredMixin, LoginRequiredMixin, SingleTableView):
         return queryset
 
 
-class DataForExternalTotal(SSLRequiredMixin, JSONResponseMixin, SetCompetitionContextMixin, View):
+class DataForExternalTotal(JSONResponseMixin, SetCompetitionContextMixin, View):
     content_type = "application/json"
 
     def get(self, *args, **kwargs):
@@ -510,7 +510,7 @@ class DataForExternalTotal(SSLRequiredMixin, JSONResponseMixin, SetCompetitionCo
         return self.render_json_response(data)
 
 
-class DataForExternalAll(SSLRequiredMixin, JSONResponseMixin, SetCompetitionContextMixin, View):
+class DataForExternalAll(JSONResponseMixin, SetCompetitionContextMixin, View):
     content_type = "application/json"
 
     def get(self, *args, **kwargs):
@@ -547,7 +547,7 @@ class CompanyParticipantInline(GetClassNameMixin, InlineFormSet):
         return kwargs
 
 
-class CompanyApplicationParticipantAdd(SSLRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin,
+class CompanyApplicationParticipantAdd(NeverCacheMixin, RequestFormKwargsMixin, NamedFormsetsMixin,
                                        UpdateWithInlinesView):
     template_name = 'registration/company_application_add.html'
     inlines = [CompanyParticipantInline, ]
@@ -582,7 +582,7 @@ class CompanyApplicationParticipantAdd(SSLRequiredMixin, RequestFormKwargsMixin,
         return super(BaseUpdateWithInlinesView, self).get(request, *args, **kwargs)
 
 
-class MyCompanyApplicationList(SSLRequiredMixin, LoginRequiredMixin, SingleTableView):
+class MyCompanyApplicationList(NeverCacheMixin, LoginRequiredMixin, SingleTableView):
     model = CompanyApplication
     table_class = CompanyApplicationTable
     template_name = 'registration/company_application_my.html'

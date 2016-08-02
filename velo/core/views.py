@@ -20,7 +20,7 @@ from velo.core.models import Competition, Map, User
 from velo.gallery.models import Album, Video, Photo
 from velo.news.models import News
 from velo.supporter.models import CompetitionSupporter
-from velo.velo.mixins.views import SetCompetitionContextMixin, CacheControlMixin
+from velo.velo.mixins.views import SetCompetitionContextMixin, CacheControlMixin, NeverCacheMixin
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -191,7 +191,7 @@ class CalendarView(CacheControlMixin, TemplateView):
         return context
 
 
-class ProfileView(LoginRequiredMixin, UpdateView):
+class ProfileView(NeverCacheMixin, LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'core/user_registration.html'

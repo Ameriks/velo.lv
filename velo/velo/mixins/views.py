@@ -4,6 +4,8 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.cache import patch_response_headers
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from django.views.generic import ListView, CreateView, UpdateView
 from django.utils.safestring import mark_safe
 from django.utils import timezone
@@ -29,6 +31,13 @@ class CacheControlMixin(object):
         response = super(CacheControlMixin, self).dispatch(*args, **kwargs)
         patch_response_headers(response, self.get_cache_timeout())
         return response
+
+
+class NeverCacheMixin(object):
+    @method_decorator(never_cache)
+    def dispatch(self, *args, **kwargs):
+        return super(NeverCacheMixin, self).dispatch(*args, **kwargs)
+
 
 class RequestFormKwargsMixin(object):
     def get_form_kwargs(self):

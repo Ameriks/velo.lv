@@ -1,7 +1,9 @@
 from braces.views import PermissionRequiredMixin, LoginRequiredMixin
 
+from velo.velo.mixins.views import NeverCacheMixin
 
-class ManagerBaseMixin:
+
+class ManagerBaseMixin(NeverCacheMixin):
     add_link = None
     filter_class = None
 
