@@ -22,8 +22,7 @@ from velo.team.forms import MemberInlineForm, TeamForm
 from velo.team.models import Team, Member, MemberApplication
 from velo.team.tables import TeamTable, TeamMyTable
 from velo.velo.mixins.forms import GetClassNameMixin
-from velo.velo.mixins.views import SetCompetitionContextMixin, SingleTableViewWithRequest, RequestFormKwargsMixin
-
+from velo.velo.mixins.views import SetCompetitionContextMixin, SingleTableViewWithRequest, RequestFormKwargsMixin, NeverCacheMixin
 
 
 class TeamAppliedView(SetCompetitionContextMixin, ListView):
@@ -116,7 +115,7 @@ class TeamMemberProfileView(DetailView):
         return context
 
 
-class MyTeamList(LoginRequiredMixin, SingleTableView):
+class MyTeamList(NeverCacheMixin, LoginRequiredMixin, SingleTableView):
     model = Team
     table_class = TeamMyTable
     template_name = 'team/team_list_my.html'
@@ -181,7 +180,7 @@ class MemberInline(GetClassNameMixin, InlineFormSet):
         return kwargs
 
 
-class TeamCreateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, CreateWithInlinesView):
+class TeamCreateView(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, CreateWithInlinesView):
     template_name = 'team/team_form.html'
     inlines = [MemberInline, ]
     inlines_names = ['member']
@@ -192,7 +191,7 @@ class TeamCreateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
         return reverse('account:team_list')
 
 
-class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
+class TeamUpdateView(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, UpdateWithInlinesView):
     template_name = 'team/team_form.html'
     inlines = [MemberInline, ]
     inlines_names = ['member']
@@ -258,8 +257,7 @@ class TeamUpdateView(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMi
         return ret
 
 
-
-class TeamApplyList(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, DetailView):
+class TeamApplyList(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, DetailView):
     model = Team
     template_name = 'team/team_apply_list.html'
     pk_url_kwarg = 'pk2'
@@ -332,7 +330,7 @@ class TeamApplyList(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMix
             return self.get(request, *args, **kwargs)
 
 
-class TeamApply(LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, DetailView):
+class TeamApply(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, NamedFormsetsMixin, DetailView):
     model = Team
     template_name = 'team/team_apply.html'
     pk_url_kwarg = 'pk2'
