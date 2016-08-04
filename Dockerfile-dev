@@ -1,7 +1,7 @@
 FROM ameriks/project_velo:latest
 
 COPY ./requirements /tmp/requirements
-RUN pip3 install -r /tmp/requirements/local.txt
+RUN pip3 install -r /tmp/requirements/requirements_local.txt
 
 WORKDIR /app
 
