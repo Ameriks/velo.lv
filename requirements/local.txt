@@ -1,5 +1,5 @@
 # Local development dependencies go here
--r requirements_base.txt
+-r base.txt
 coverage==4.2
 django_coverage_plugin==1.2.2
 Sphinx==1.4.5

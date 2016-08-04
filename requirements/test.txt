@@ -1,5 +1,5 @@
 # Test dependencies go here.
--r requirements_base.txt
+-r base.txt
 
 
 
