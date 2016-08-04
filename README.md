@@ -1,3 +1,6 @@
+[![Dependency Status](https://gemnasium.com/badges/github.com/Ameriks/velo.lv.svg)](https://gemnasium.com/github.com/Ameriks/velo.lv)
+
+
 Velo - Open source tool for bicycle competition management
 =======
 This is open source (GPLv3) web application to manage bicycle competitions (incl. applying, paying, start list generation, result showing).
