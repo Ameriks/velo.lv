@@ -18,7 +18,7 @@ from velo.payment.utils import get_form_message, validate_payment, \
     get_participant_fee_from_price, get_insurance_fee_from_insurance
 from velo.registration.models import Application
 from velo.team.models import Team
-from velo.velo.mixins.views import RequestFormKwargsMixin
+from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin
 
 
 class CheckPriceView(JsonRequestResponseMixin, DetailView):
@@ -46,13 +46,13 @@ class CheckPriceView(JsonRequestResponseMixin, DetailView):
         raise Http404
 
 
-class ApplicationOKView(RequestFormKwargsMixin, DetailView):
+class ApplicationOKView(NeverCacheMixin, RequestFormKwargsMixin, DetailView):
     model = Application
     slug_field = 'code'
     template_name = 'registration/application_ok.html'
 
 
-class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
+class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
     model = Application
     form_class = ApplicationPayUpdateForm
     slug_field = 'code'
@@ -162,7 +162,7 @@ class ApplicationPayView(RequestFormKwargsMixin, UpdateView):
         return super(BaseUpdateView, self).post(request, *args, **kwargs)
 
 
-class TeamPayView(LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
+class TeamPayView(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
     model = Team
     form_class = TeamPayForm
     template_name = 'team/team_pay.html'
@@ -224,7 +224,7 @@ class TeamPayView(LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
         return super(BaseUpdateView, self).post(request, *args, **kwargs)
 
 
-class PaymentReturnView(DetailView):
+class PaymentReturnView(NeverCacheMixin, DetailView):
     model = Payment
     slug_field = 'erekins_code'
 
