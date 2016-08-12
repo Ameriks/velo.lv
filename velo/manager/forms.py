@@ -847,6 +847,9 @@ class ParticipantForm(CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelFo
         else:
             prices = [(str(price.id), "%s€ - %s" % (str(price.price), price.distance)) for price in competition.price_set.all().select_related('distance')]
 
+        if self.instance.price:
+            prices.append((str(self.instance.price_id), str(self.instance.price)))
+
         self.fields['price'].choices = [(u'', u'------'), ] + prices
 
         if self.instance.id:
