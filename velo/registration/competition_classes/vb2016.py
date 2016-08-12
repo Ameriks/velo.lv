@@ -38,9 +38,7 @@ class VB2016(VBCompetitionBase):
             return ''
         elif distance_id == self.SOSEJAS_DISTANCE_ID:
             if gender == 'M':
-                if self._update_year(1999) >= year >= self._update_year(1998):
-                    return 'M-16'
-                elif self._update_year(1997) >= year >= self._update_year(1996):
+                if self._update_year(1997) >= year >= self._update_year(1996):
                     return 'M-18'
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'M-Elite'
@@ -59,9 +57,7 @@ class VB2016(VBCompetitionBase):
                     return 'W'
         elif distance_id == self.MTB_DISTANCE_ID:
             if gender == 'M':
-                if self._update_year(2002) >= year >= self._update_year(1998):
-                    return 'MTB M-16'
-                elif self._update_year(1997) >= year >= self._update_year(1996):
+                if self._update_year(1997) >= year >= self._update_year(1996):
                     return 'MTB M-18'
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'MTB M-Elite'
