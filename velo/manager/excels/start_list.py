@@ -172,7 +172,7 @@ def start_list_have_participated_this_year(competition=None, competition_id=None
 
         row = 4
         header_row = (
-            '#', 'UID', 'Numurs', 'Alias', 'Sacensības', 'Distance', 'Uzvārds', 'Vārds', 'Dzimšanas diena', 'Dzimums',
+            '#', 'UID', 'Numurs', 'Alias', 'Sacensības', 'Distance', 'Uzvārds', 'Vārds', 'Dzimšanas diena', 'Dzimums', 'Pilsēta',
             'Grupa', 'Pieteikuma ziedojums', 'Dalības maksa', 'Apdrošināšanas maksa', 'Kopā samaksāts', 'Atlaižu kods', 'E-pasts', 'Telefons', 'Valsts', 'Komanda', 'Velo', 'Izveidots', 'Rezultāts - Punkti')
         for col, value in enumerate(header_row):
             sheet.write(row, col, value)
@@ -203,7 +203,7 @@ def start_list_have_participated_this_year(competition=None, competition_id=None
 
             row_values = (
                 index, item.id, str(item.primary_number), item.slug, str(item.competition), str(item.distance), item.last_name,
-                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, item.group, donation, total_entry_fee, total_insurance_fee, final_price,
+                item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, str(item.city), item.group, donation, total_entry_fee, total_insurance_fee, final_price,
                 str(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, str(item.country), item.team_name, str(item.bike_brand2) if item.bike_brand2 else '',
                 item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res_points)
 
