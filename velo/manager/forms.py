@@ -843,7 +843,7 @@ class ParticipantForm(CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelFo
         if competition.get_root().id == 1 and self.instance.competition.level == 1:
             comps = self.instance.competition.get_descendants()
             prices_obj = comps[0].price_set.all()
-            prices = [(price.id, "%s€- %s" % (str(price.price * comps.count() * (100 - competition.complex_discount) / 100), price.distance)) for price in prices_obj]
+            prices = [(price.id, "%s€- %s" % (str(price.price * comps.count() * (100 - self.instance.competition.complex_discount) / 100), price.distance)) for price in prices_obj]
         else:
             prices = [(str(price.id), "%s€ - %s" % (str(price.price), price.distance)) for price in competition.price_set.all().select_related('distance')]
 
