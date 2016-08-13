@@ -396,3 +396,43 @@ def create_team_list(competition=None, competition_id=None):
 
     wbk.save(output)
     return output
+
+
+def create_temporary_participant_list(competition=None, competition_id=None):
+    if not competition and not competition_id:
+        raise Exception('Expected at least one variable')
+    if not competition:
+        competition = Competition.objects.get(id=competition_id)
+
+    output = BytesIO()
+    distances = competition.get_distances()
+
+    wbk = xlwt.Workbook()
+
+    for distance in distances:
+        sheet = wbk.add_sheet(slugify(str(distance))[:30])
+
+        participants = Participant.objects.filter(competition__in=competition.get_ids(), distance=distance, is_participating=True, is_temporary=True).select_related('competition', 'distance', 'application',
+                                                                                      'price', 'primary_number').order_by('distance', 'primary_number__group', 'primary_number__number', 'registration_dt')
+        row = 4
+        header_row = (
+            '#', 'UID', 'Numurs', 'Alias', 'Sacensības', 'Distance', 'Uzvārds', 'Vārds', 'Dzimšanas diena', 'Dzimums', 'Pilsēta', 'Sacenšas?',
+            'Grupa', 'E-pasts', 'Telefons', 'Valsts', 'Komanda', 'Velo', 'Izveidots')
+        for col, value in enumerate(header_row):
+            sheet.write(row, col, value)
+
+        row = 5
+        for index, participant in enumerate(participants, start=1):
+
+            row_values = (
+                index, participant.id, str(participant.primary_number), participant.slug, str(participant.competition), str(participant.distance), participant.last_name,
+                participant.first_name, participant.birthday.strftime("%Y-%m-%d"), participant.gender, str(participant.city) if participant.city else "", str(participant.is_competing), participant.group,
+                participant.email, participant.phone_number, str(participant.country), participant.team_name, str(participant.bike_brand2) if participant.bike_brand2 else '',
+                participant.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"))
+
+            for col, value in enumerate(row_values):
+                sheet.write(row, col, value)
+            row += 1
+
+    wbk.save(output)
+    return output

@@ -11,7 +11,7 @@ from django.views.generic import DetailView, TemplateView
 from velo.core.models import Competition
 from velo.manager.excels.insured import create_insured_list
 from velo.manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
-    create_team_list, payment_list, create_donations_list, start_list_have_participated_this_year
+    create_team_list, payment_list, create_donations_list, start_list_have_participated_this_year, create_temporary_participant_list
 from velo.manager.tables import ManageCompetitionTable
 from velo.manager.views import ManageApplication
 from velo.manager.views.permission_view import ManagerPermissionMixin
@@ -91,6 +91,14 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
+        elif request.POST.get('action') == 'create_temporary_participant_list':
+            file_obj = create_temporary_participant_list(competition=self.competition)
+            response = HttpResponse(content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename=temporary_participant_list.xls'
+            response.write(file_obj.getvalue())
+            file_obj.close()
+            return response
+
         elif request.POST.get('action') == 'start_list_have_participated_this_year':
             file_obj = start_list_have_participated_this_year(competition=self.competition)
             response = HttpResponse(content_type='application/vnd.ms-excel')
