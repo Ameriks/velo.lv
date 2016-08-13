@@ -19,7 +19,7 @@
                                 <div class="col-xl-6 col-l-8 col-m-8 col-s-12 col-xs-24 flex direction--column justify--start align-items--stretch">
                                     <a href="{% url 'gallery:album' object.id %}">
                                     <div
-                                        class="brief border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20 cursor--pointer  js-open-gallery-lightbox">
+                                        class="brief border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20 cursor--pointer">
                                         <div class="w100">
                                             <figure class="brief__hero brief-hover-layer img-wrapper">
                                                 <img data-src="{{ object.primary_image.image.thumb.url }}" onload="imgLoaded(this)" />

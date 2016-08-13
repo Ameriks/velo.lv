@@ -47,3 +47,15 @@ $ ->
 
   $('th.selection input[type=checkbox]').on 'change', ->
       $('tr td:nth-child(1) input[type=checkbox]', $(this).parents('table')).prop("checked", $(this).prop("checked"))
+
+  $('.gallery_album').on 'click', (evt) ->
+      template = $('#hb-video-tmpl').html()
+      template = template.replace('{{ video_link }}', $(this).data('url'))
+      $("#video-modal .modal-inner").html(template)
+      $("#video-modal").addClass("is-active")
+      false
+
+  $('#video-modal .modal-close').on 'click', (evt) ->
+      $("#video-modal").removeClass("is-active")
+
+
