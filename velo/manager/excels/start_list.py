@@ -428,7 +428,7 @@ def create_temporary_participant_list(competition=None, competition_id=None):
                 index, participant.id, str(participant.primary_number), participant.slug, str(participant.competition), str(participant.distance), participant.last_name,
                 participant.first_name, participant.birthday.strftime("%Y-%m-%d"), participant.gender, str(participant.city) if participant.city else "", str(participant.is_competing), participant.group,
                 participant.email, participant.phone_number, str(participant.country), participant.team_name, str(participant.bike_brand2) if participant.bike_brand2 else '',
-                participant.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"))
+                participant.creaated.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"))
 
             for col, value in enumerate(row_values):
                 sheet.write(row, col, value)

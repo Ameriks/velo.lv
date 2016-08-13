@@ -283,7 +283,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             if participant_data:
                 participant_data = participant_data.values()[0]
                 # TODO: Refresh list
-                for pop_element in ['id', 'application_id', 'comment', 'created', 'created_by_id', 'insurance_id', 'legacy_id', 'modified', 'modified_by_id', 'price_id', 'registrant_id', 'is_sent_number_sms', 'is_sent_number_email', ]:
+                for pop_element in ['id', 'application_id', 'comment', 'created', 'created_by_id', 'insurance_id', 'legacy_id', 'modified', 'modified_by_id', 'price_id', 'registrant_id', 'is_sent_number_sms', 'is_sent_number_email', 'registration_dt']:
                     participant_data.pop(pop_element)
 
                 participant_data.update({'is_temporary': True, 'competition_id': chip.competition.id, })
