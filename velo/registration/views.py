@@ -46,7 +46,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
         self.set_distances()  # Based on self.competition
         self.set_distance(self.request.GET.get('distance', None))
 
-        return super(ParticipantList, self).get(*args, **kwargs)
+        return super().get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -57,7 +57,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
         return context
 
     def get_queryset(self):
-        queryset = super(ParticipantList, self).get_queryset()
+        queryset = super().get_queryset()
         queryset = queryset.filter(is_participating=True)
 
         if self.distance:
@@ -73,7 +73,6 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
         if self.request.GET.get('group', None):
             queryset = queryset.filter(group=self.request.GET.get('group', None))
 
-
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
         queryset = queryset.select_related('competition', 'distance', 'team', 'primary_number')
@@ -86,12 +85,6 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
                     'passage_assigned': 'results_helperresults.passage_assigned',
                 },
             )
-
-        # if self.competition.id == 34:
-        #     queryset = queryset.extra(select={
-        #         'last_year_result': "Select result_distance from results_legacyresult where results_legacyresult.slug = registration_participant.slug and results_legacyresult.distance_id = registration_participant.distance_id",
-        #         # 'last_year_result_fixed': "case not exists(Select points_distance from results_legacyresult where results_legacyresult.slug = registration_participant.slug and results_legacyresult.distance_id = registration_participant.distance_id) when true then '' else last_year_result end"
-        #     })
 
         return queryset
 
