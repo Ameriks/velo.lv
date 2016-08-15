@@ -80,7 +80,7 @@ class Seb2016(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 400, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 700, 'end': 3200, 'group': ''}, ],
             self.VESELIBAS_DISTANCE_ID: [{'start': 5000, 'end': 5200, 'group': ''}, ],
-            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
+            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 150, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
         }
 
     def get_startlist_table_class(self, distance=None):
