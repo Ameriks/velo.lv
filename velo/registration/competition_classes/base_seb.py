@@ -565,8 +565,8 @@ AND r.id = res2.id
                 participant.primary_number = next_number
                 participant.save()
 
-    def get_group_for_number_search(self, distance_id, gender, birthday):
-        if not isinstance(birthday, datetime.date):
+    def get_group_for_number_search(self, distance_id, gender, birthday, group=None):
+        if not isinstance(birthday, datetime.date) and birthday:
             try:
                 birthday = datetime.datetime.strptime(birthday, "%Y-%m-%d").date()
             except:

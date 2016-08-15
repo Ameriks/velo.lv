@@ -236,10 +236,8 @@ class VBCompetitionBase(CompetitionScriptBase):
                         participant.primary_number = number
                         participant.save()
 
-
-    def get_group_for_number_search(self, distance_id, gender, birthday):
+    def get_group_for_number_search(self, distance_id, gender, birthday, group=None):
             return ''
-
 
     def recalculate_team_results(self):
         raise NotImplementedError

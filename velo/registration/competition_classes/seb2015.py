@@ -303,8 +303,9 @@ class Seb2015(SEBCompetitionBase):
 
             helper.save()
 
-    def get_group_for_number_search(self, distance_id, gender, birthday):
-        group = super(Seb2015, self).get_group_for_number_search(distance_id, gender, birthday)
+    def get_group_for_number_search(self, distance_id, gender, birthday, group=None):
+        if not group:
+            group = super(Seb2015, self).get_group_for_number_search(distance_id, gender, birthday)
 
         if group in ('B 05-04 M', 'B 05-04 Z'):
             return 'B 05-04'

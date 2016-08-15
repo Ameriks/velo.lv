@@ -110,7 +110,7 @@ class RMCompetitionBase(CompetitionScriptBase):
             return ParticipantTable
 
 
-    def get_group_for_number_search(self, distance_id, gender, birthday):
+    def get_group_for_number_search(self, distance_id, gender, birthday, group=None):
             return ''
 
 
