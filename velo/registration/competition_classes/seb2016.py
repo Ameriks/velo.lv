@@ -338,9 +338,8 @@ class Seb2016(SEBCompetitionBase):
             helper.save()
 
     def get_group_for_number_search(self, distance_id, gender, birthday, group=None):
-        if not group:
+        if group is None:
             group = super(Seb2016, self).get_group_for_number_search(distance_id, gender, birthday)
-
         groups = self.groups.get(self.BERNU_DISTANCE_ID)
 
         if groups[0][:7] != groups[1][:7]:
