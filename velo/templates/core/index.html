@@ -83,7 +83,7 @@
                                     <figure class="w100 img-wrapper">
                                         <img
                                                 class="js-calendar-slider-image"
-                                                {% if forloop.counter0 in active_indexes %}src{% else %}data-calendar-slider-img{% endif %}="{{ item.get_random_image.image.front_small.url }}"
+                                                {% if forloop.counter0 in calendar_active_indexes.0 %}src{% else %}data-calendar-slider-img{% endif %}="{{ item.get_random_image.image.front_small.url }}"
                                                 data-load-on="880"
                                                 onload="imgLoaded(this)"
                                         >
