@@ -290,7 +290,11 @@ class CompanyApplicationDetail(NeverCacheMixin, LoginRequiredMixin, SingleTableV
             'complex_payment_enddate', 'competition_date')
 
     def get(self, request, *args, **kwargs):
-        self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)
+        try:
+            self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)
+        except:
+            raise Http404(_("Company Application not found. Did you change public url?"))
+
         return super(CompanyApplicationDetail, self).get(request, *args, **kwargs)
 
 
