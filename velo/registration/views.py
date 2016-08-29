@@ -118,7 +118,7 @@ class CompanyApplicationDetail(NeverCacheMixin, LoginRequiredMixin, SingleTableV
     table_class = CompanyParticipantTable
     template_name = 'registration/company_application_detail.html'
     companyapplication = None
-    paginate_by = 100
+    paginate_by = 500
 
     def post(self, request, *args, **kwargs):
         self.companyapplication = CompanyApplication.objects.get(code=kwargs.get('slug'), created_by=self.request.user)

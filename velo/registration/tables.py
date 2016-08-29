@@ -117,7 +117,7 @@ class CompanyParticipantTable(tables.Table):
                     'is_participating')
         empty_text = _("There are no participants")
         order_by = ("created")
-        per_page = 200
+        per_page = 500
         template = "base/table.html"
 
 
