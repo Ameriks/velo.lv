@@ -2,6 +2,9 @@
 from __future__ import unicode_literals
 from io import BytesIO
 from difflib import get_close_matches
+
+from django.utils.translation import activate
+
 from velo.registration.competition_classes.base_vb import VBCompetitionBase
 from velo.registration.models import Participant, ChangedName
 from reportlab.lib.pagesizes import A4
@@ -86,25 +89,25 @@ class VB2016(VBCompetitionBase):
 
     def number_pdf(self, participant_id):
         participant = Participant.objects.get(id=participant_id)
+        activate(participant.application.language if participant.application else 'lv')
         output = BytesIO()
 
         c = canvas.Canvas(output, pagesize=A4)
         fill_page_with_image("velo/media/competition/vestule/VBm_2016_vestule_ar_tekstu.jpg", c)
 
         c.setFont(_baseFontNameB, 18)
-        c.drawString(5.5*cm, 20.05*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
-        c.drawString(4.2*cm, 18.05*cm, str(participant.distance))
-
+        c.drawString(8.0*cm, 20.45*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
+        c.drawString(5.8*cm, 18.2*cm, str(participant.distance))
 
         if participant.primary_number:
             c.setFont(_baseFontNameB, 35)
-            c.drawString(15*cm, 18.5*cm, str(participant.primary_number))
+            c.drawString(15*cm, 19.2*cm, str(participant.primary_number))
         # elif participant.distance_id == self.GIMENU_DISTANCE_ID:
         #     c.setFont(_baseFontNameB, 25)
         #     c.drawString(15*cm, 18.5*cm, "Amway")
         else:
             c.setFont(_baseFontNameB, 25)
-            c.drawString(15*cm, 19*cm, "-")
+            c.drawString(15*cm, 19.225*cm, "-")
 
         c.showPage()
         c.save()
