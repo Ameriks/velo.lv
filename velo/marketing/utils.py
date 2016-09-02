@@ -118,15 +118,18 @@ def send_sms_to_family_participant(participant):
 def initial_send_numbers_to_all_participants():
     # TODO: Filter. If participant is only one in application, then send only one email.
     competition = Competition.objects.get(id=62)
+    print(competition)
     applications = Application.objects.filter(competition_id=62).filter(participant__is_participating=True).order_by('id')
     applications = applications.distinct()
 
     for application in applications:
+        print(application.id)
         send_number_email(competition, application=application)
         application.participant_set.all().update(is_sent_number_email=True)
 
     participants = Participant.objects.filter(competition_id=62, is_participating=True, is_sent_number_email=False).exclude(primary_number=None).order_by('primary_number__number')
     for participant in participants:
+        print(participant.id)
         if participant.application:
             if participant.application.participant_set.filter(is_participating=True).count() == 1:
                 continue
