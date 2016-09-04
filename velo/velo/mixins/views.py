@@ -80,6 +80,9 @@ class SetCompetitionContextMixin(object):
         return self.competition
 
     def set_distances(self, all=True, only_w_teams=False, have_results=False):
+        if not self.competition:
+            return None
+
         if self.distances:
             return self.distances
         if only_w_teams:

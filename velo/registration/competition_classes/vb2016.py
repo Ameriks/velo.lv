@@ -123,8 +123,10 @@ class VB2016(VBCompetitionBase):
         if not os.path.isfile(path):
             raise Exception
 
-        total_participants = result.participant.distance.participant_set.filter(is_participating=True).count()
-        total_group_participants = result.participant.distance.participant_set.filter(is_participating=True, group=result.participant.group).count()
+        # total_participants = result.participant.distance.participant_set.filter(is_participating=True).count()
+        # total_group_participants = result.participant.distance.participant_set.filter(is_participating=True, group=result.participant.group).count()
+        total_participants = result.competition.result_set.filter(participant__distance=result.participant.distance).count()
+        total_group_participants = result.competition.result_set.filter(participant__distance=result.participant.distance, participant__group=result.participant.group).count()
 
         c = canvas.Canvas(output, pagesize=A4)
 
