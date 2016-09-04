@@ -4365,8 +4365,6 @@ img.brief__video-thumbnail {
     display: none; } }
 
 @media only screen and (max-width: 390px) {
-  .pagination__increment {
-    display: none; }
   .pagination__numbers {
     padding: 0px 0px 0px 0px;
     -webkit-justify-content: space-between;
