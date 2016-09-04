@@ -4,6 +4,7 @@ from io import BytesIO
 from difflib import get_close_matches
 
 from django.utils.translation import activate
+from reportlab.lib.colors import HexColor
 
 from velo.registration.competition_classes.base_vb import VBCompetitionBase
 from velo.registration.models import Participant, ChangedName
@@ -121,17 +122,34 @@ class VB2016(VBCompetitionBase):
         if not os.path.isfile(path):
             raise Exception
 
+        total_participants = result.participant.distance.participant_set.filter(is_participating=True).count()
+        total_group_participants = result.participant.distance.participant_set.filter(is_participating=True, group=result.participant.group).count()
+
         c = canvas.Canvas(output, pagesize=A4)
 
         fill_page_with_image(path, c)
 
-        c.setFont(_baseFontNameB, 35)
-        c.drawCentredString(c._pagesize[0] / 2, 16.3*cm, result.participant.full_name)
+        c.setFont(_baseFontNameB, 28)
+        c.setFillColor(HexColor(0xf16b60))
+        c.drawString(c._pagesize[0] - 3.3 * cm, 28.3 * cm, str(result.participant.primary_number))
+
+        c.setFont(_baseFontNameB, 32)
+        c.setFillColor(HexColor(0x46445c))
+        c.drawString(1*cm, 28.2*cm, result.participant.full_name)
+
         c.setFont(_baseFontName, 25)
-        c.drawCentredString(c._pagesize[0] / 2, 15*cm, "%i.vieta" % result.result_distance)
+        c.drawCentredString(5.55 * cm, 10 * cm, str(result.time.replace(microsecond=0)))
+
+        c.drawCentredString(3 * cm, 6.5*cm, str(result.result_distance))
+        c.drawCentredString(7.6 * cm, 6.5 * cm, str(total_participants))
+
+        c.drawCentredString(15.5 * cm, 6.5 * cm, "%s km/h" % result.avg_speed)
+
+        c.drawCentredString(13.2 * cm, 9.3*cm, str(result.result_group))
+        c.drawCentredString(17.7 * cm, 9.3*cm, str(total_group_participants))
+
         c.setFont(_baseFontName, 18)
-        c.drawCentredString(c._pagesize[0] / 2, 14*cm, "Laiks: %s" % result.time.replace(microsecond=0))
-        c.drawCentredString(c._pagesize[0] / 2, 13*cm, "Vidējais ātrums: %s km/h" % result.avg_speed)
+        c.drawCentredString(15.5 * cm, 10.9 * cm, str(result.participant.group))
 
         c.showPage()
         c.save()

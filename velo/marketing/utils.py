@@ -138,6 +138,8 @@ def initial_send_numbers_to_all_participants():
 
         if participant.email:
             send_number_email(competition, [participant, ])
+            participant.is_sent_number_email = True
+            participant.save()
 
 
 def send_numbers_to_all_participants_sms():
