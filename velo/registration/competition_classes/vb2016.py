@@ -14,6 +14,7 @@ from reportlab.pdfgen import canvas
 from velo.core.pdf import fill_page_with_image, _baseFontName, _baseFontNameB
 import os.path
 from velo.results.models import Result, HelperResults
+from velo.team.models import Team, Member
 
 
 class VB2016(VBCompetitionBase):
@@ -200,3 +201,16 @@ class VB2016(VBCompetitionBase):
                     helper.matches_slug = matches[0]
 
             helper.save()
+
+    def pre_competition_run(self):
+        t = Team.objects.filter(distance__competition=self.competition)
+        members = Member.objects.filter(team__in=t)
+        for member in members:
+            try:
+                p = Participant.objects.get(slug=member.slug, is_participating=True, distance=member.team.distance)
+                if p.team_name != member.team.title:
+                    print("%i %s %s %s" % (p.id, p.slug, p.team_name, member.team.title))
+                    p.team_name = member.team.title
+                    p.save()
+            except:
+                print('Not %s' % member.slug)
