@@ -284,9 +284,8 @@ class Seb2016(SEBCompetitionBase):
                     if matches:
                         helper.matches_slug = matches[0]
             elif current_standing:
-                participated_count = 0
                 skipped_count = 0
-                total_points = 0
+                total_points_array = []
 
                 stages = range(1, self.competition_index)
                 for stage in stages:
@@ -296,25 +295,26 @@ class Seb2016(SEBCompetitionBase):
                         points /= 2  # There shouldn't be such a case, but still, if so, then we divide points by 2
 
                     if points > 0:
-                        participated_count += 1
-                        total_points += points
+                        total_points_array.append(points)
                     else:
                         skipped_count += 1
 
-                if participated_count:
-                    avg = float(total_points) / float(participated_count)
+                if len(total_points_array):
+                    avg = float(sum(total_points_array)) / float(len(total_points_array))
                     if skipped_count in (1, 2):
-                        total_points += avg / 1.15
-                        participated_count += 1
+                        total_points_array.append(avg / 1.15)
 
-                    if skipped_count == 2:
-                        total_points += avg / 1.25
-                        participated_count += 1
+                    if skipped_count in (2, 3, 4):
+                        total_points_array.append(avg / 1.25)
 
+                    total_points_array = sorted(total_points_array, reverse=True)
                     if skipped_count > 2:
-                        helper.calculated_total = total_points / (participated_count + (skipped_count - 2))
+                        helper.calculated_total = sum(total_points_array[0:5]) / (len(total_points_array) + (skipped_count - 2))
                     else:
-                        helper.calculated_total = float(total_points) / float(participated_count)
+                        count = float(len(total_points_array))
+                        if count > 5:
+                            count = 5.0
+                        helper.calculated_total = float(sum(total_points_array[0:5])) / count
                 else:
                     helper.calculated_total = 0.0
 
