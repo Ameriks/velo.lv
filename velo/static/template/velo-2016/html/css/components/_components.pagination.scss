@@ -1,0 +1,122 @@
+.pagination{
+
+}
+.pagination__increment{
+    width: 30%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    color: rgba(255, 255, 255, 1);
+    transition: background-color 0.3s, color 0.3s;
+}
+.pagination__increment:hover{
+    background-color: #098dce;
+}
+.pagination__increment:active{
+    background-color: #007EAF;
+}
+.pagination__icon{
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0px 14px;
+}
+.pagination__text{
+    font-family: 'Titillium';
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    margin: 0px 14px;
+    white-space: nowrap;
+}
+.pagination__numbers{
+    list-style: none;
+    padding: 0px 15px;
+}
+.pagination__number{
+}
+.pagination__link{
+    float: left;
+    width: 30px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    transition: color 0.3s, background-color 0.3s;
+    font-family: 'Titillium';
+    font-weight: 700;
+    font-size: 15px;
+}
+.pagination__link:hover{
+    background-color: #098dce;
+    color: rgba(255, 255, 255, 1);
+}
+.pagination__link:active {
+    background-color: #007EAF;
+    color: rgba(255, 255, 255, 1);
+}
+.pagination__link.active{
+    background-color: transparent;
+    color: rgba(255, 255, 255, 1);
+}
+@media only screen and (max-width: 768px) {
+    .pagination{}
+    .pagination__increment{}
+    .pagination__increment:hover{}
+    .pagination__increment:active{}
+    .pagination__icon{
+    margin: 0px 7px;
+}
+    .pagination__text{
+    margin: 0px 7px;
+}
+    .pagination__numbers{}
+    .pagination__number{}
+    .pagination__link{}
+    .pagination__link:hover{}
+    .pagination__link:active {}
+    .pagination__link.active{}
+}
+@media only screen and (max-width: 630px) {
+    .pagination{}
+    .pagination__increment{
+}
+    .pagination__increment:hover{}
+    .pagination__increment:active{}
+    .pagination__icon{}
+    .pagination__text{
+    display: none;
+}
+    .pagination__numbers{}
+    .pagination__number{}
+    .pagination__link{}
+    .pagination__link:hover{}
+    .pagination__link:active {}
+    .pagination__link.active{}
+}
+@media only screen and (max-width: 390px) {
+    .pagination{}
+
+    .pagination__increment:hover{}
+    .pagination__increment:active{}
+    .pagination__icon{}
+    .pagination__text{}
+    .pagination__numbers{
+    padding: 0px 0px 0px 0px;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: space-between;
+    justify-content: space-between;
+}
+    .pagination__number{
+    flex: 1;
+        flex-basis: auto;
+}
+    .pagination__link{
+    width: 100%;
+}
+    .pagination__link:hover{}
+    .pagination__link:active {}
+    .pagination__link.active{}
+}

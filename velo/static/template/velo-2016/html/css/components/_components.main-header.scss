@@ -1,0 +1,38 @@
+.main-header {
+    -webkit-box-flex: 0;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
+}
+.main-header__inner{height: 95px;}
+.main-header__logo{
+    margin: 0px 15px 0px 30px;
+}
+.main-header__logo svg{
+    float: left;
+}
+.main-header__secondary-nav{}
+@media only screen and (max-width: 1060px) {
+.main-header {}
+.main-header__inner{
+    height: 60px;
+}
+.main-header__logo{
+}
+.main-header__logo svg{}
+.main-header__secondary-nav{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+}
+@media only screen and (max-width: 480px) {
+.main-header {}
+.main-header__inner{}
+.main-header__logo{
+    margin: 0px 0px 0px 20px;
+}
+.main-header__logo svg{}
+.main-header__secondary-nav{}
+}

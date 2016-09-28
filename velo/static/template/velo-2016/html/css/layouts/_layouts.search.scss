@@ -1,0 +1,14 @@
+.layouts-search-news{
+    cursor: pointer;
+}
+.layouts-search-news:hover{}
+.layouts-search-news__heading{
+    transition: color 0.3s;
+}
+.layouts-search-news:hover .layouts-search-news__heading{
+    color: #f9e103;
+}
+.layouts-search-news__btn{}
+.layouts-search-news:hover .layouts-search-news__btn{
+    color: #f9e103;
+}

@@ -1,0 +1,65 @@
+.scroll-banner{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    width: calc(100% + 0px);
+    height: 100%;
+    z-index: 3;
+    overflow: auto;
+    overflow-x: hidden;
+}
+.scroll-banner__scroll-area{
+    float: left;
+    width: 100%;
+    width: 100vw;
+    height: 200vh;
+    overflow: hidden;
+}
+.scroll-banner__content{
+    float: left;
+    width: 100%;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: -moz-linear-gradient(top, rgba(26,33,38,0) 0%, rgba(26,33,38,1) 35%, rgba(26,33,38,1) 65%, rgba(26,33,38,0) 100%);
+    background: -webkit-linear-gradient(top, rgba(26,33,38,0) 0%,rgba(26,33,38,1) 35%,rgba(26,33,38,1) 65%,rgba(26,33,38,0) 100%);
+    background: linear-gradient(to bottom, rgba(26,33,38,0) 0%,rgba(26,33,38,1) 35%,rgba(26,33,38,1) 65%,rgba(26,33,38,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#001a2126', endColorstr='#001a2126',GradientType=0 );
+}
+.scroll-banner__banner{
+    float: left;
+    width: 100%;
+    max-width: 1366px;
+}
+.scroll-banner__banner-content{
+    float: left;
+    width: 100%;
+}
+.scroll-banner__scroll-down-placeholder{
+    height: 0px;
+}
+.scroll-banner__scroll-down{
+    position: relative;
+    top: 40px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ffffff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.scroll-banner__scroll-down-icon{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}

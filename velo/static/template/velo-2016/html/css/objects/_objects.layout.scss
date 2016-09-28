@@ -1,0 +1,19 @@
+.inner {
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0px 20px;
+}
+.inner--no-padding{
+    padding:0px 0px 0px 0px;
+}
+@media only screen and (max-width: 560px) {
+    .no-padding--560{
+        padding: 0px 0px 0px 0px;
+    }
+}
+@media only screen and (max-width: 480px) {
+    .no-padding--480{
+        padding: 0px 0px 0px 0px;
+    }
+}

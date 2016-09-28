@@ -1,0 +1,132 @@
+.login-link{
+    float: right;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'Titillium';
+    font-size: 13px;
+    padding: 0px 15px;
+    line-height: 20px;
+    height: 95px;
+    margin: 0px 0px 0px 15px;
+    transition:background-color 0.3s;
+}
+.login-link:hover{
+    background-color: #098dce;
+}
+
+.profile-nav{
+    display: block;
+    position: relative;
+    margin: 0px 0px 0px 15px;
+}
+.profile-nav__select{
+    float: right;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'Titillium';
+    font-size: 13px;
+    padding: 0px 15px;
+    height: 95px;
+    width: 100px;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.1;
+    background-color: #098dce;
+}
+.profile-nav__hero{
+    width: 55px;
+    height: 55px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.profile-nav__hero-image{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.profile-nav__triangle{
+    content: "";
+    border-style: solid;
+    border-width: 3px 3px 0px 3px;
+    margin: 8px 0px 0px 0px;
+    border-color: white transparent transparent transparent;
+}
+.profile-nav__items{
+    z-index: 10;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    list-style: none;
+    display: none;
+}
+.profile-nav.active .profile-nav__items{
+    display: block;
+}
+.profile-nav__item{}
+.profile-nav__link{
+    float: left;
+    width: 100%;
+    background-color: #1a2126;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'Titillium';
+    font-size: 13px;
+    text-align: center;
+    padding: 10px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.3);
+    border-width: 0px 1px 1px 1px;
+    transition:
+        background-color 0.3s,
+        border-color 0.3s;
+}
+.profile-nav__link:hover{
+    background-color: #098dce;
+    border-color: #098dce;
+}
+
+@media only screen and (max-width: 1060px) {
+.login-link{
+    height: 60px;
+    margin: 0px 0px 0px 0px;
+}
+.profile-nav__select{
+    height: 60px;
+    margin: 0px 0px 0px 0px;
+}
+.profile-nav__hero{
+    width: 35px;
+    height: 35px;
+}
+.profile-nav__hero-image{}
+.profile-nav__triangle{}
+}
+@media only screen and (max-width: 380px) {
+.login-link{
+    font-size: 12px;
+}
+.login-link:hover{}
+
+.profile-nav{}
+.profile-nav__select{
+    padding: 0px 5px;
+    font-size: 12px;
+    width: 74px;
+}
+.profile-nav__hero{}
+.profile-nav__hero-image{}
+.profile-nav__triangle{}
+.profile-nav__items{}
+.profile-nav.active .profile-nav__items{}
+.profile-nav__item{}
+.profile-nav__link{
+    font-size: 11px;
+    padding: 10px 0px;
+}
+.profile-nav__link:hover{}
+}

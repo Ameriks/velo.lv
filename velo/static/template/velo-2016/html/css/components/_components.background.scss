@@ -1,0 +1,26 @@
+.background{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.background__image{
+    float: left;
+    width: 100%;
+    max-height: 100%;
+    position: relative;
+}
+.background__image img{float: left;width: 100%;}
+.background__gradient{
+    background: -moz-linear-gradient(top, rgba(26,33,38,0.85) 0%, rgba(26,33,38,0.7) 34%, rgba(26,33,38,0.75) 60%, rgba(26,33,38,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(26,33,38,0.85) 0%,rgba(26,33,38,0.7) 34%,rgba(26,33,38,0.75) 60%,rgba(26,33,38,1) 100%);
+    background: linear-gradient(to bottom, rgba(26,33,38,0.85) 0%,rgba(26,33,38,0.7) 34%,rgba(26,33,38,0.75) 60%,rgba(26,33,38,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d91a2126', endColorstr='#1a2126',GradientType=0 );
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}

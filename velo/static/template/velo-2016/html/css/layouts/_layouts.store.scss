@@ -1,0 +1,68 @@
+.store-button{
+    float: left;
+    cursor: pointer;
+    margin: 5px 5px 5px 5px;
+}
+.store-button__input{
+    display: none;
+    cursor: pointer;
+}
+.store-button__label{
+    float: left;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.3);
+    background-color: transparent;
+    transition: border-color 0.3s, color 0.3s;
+    padding: 4px;
+}
+.store-button__color{
+    width: 20px;
+    height: 20px;
+}
+.store-button__input:checked + .store-button__label{
+    border-color: #f9e103;
+    color: #f9e103;
+    border-width: 2px;
+}
+
+.layouts-store-left{}
+.layouts-store-right{
+    float:left;
+    width: 100%;
+}
+.layouts-store-toolbox{
+    float: left;
+    width: 100%;
+    padding: 20px;
+}
+.layouts-store-toolbox-grid{
+    float: left;
+    width: 100%;
+    margin: 0 -5px;
+}
+.layouts-store-textarea{
+    height: 100px;
+}
+@media only screen and (max-width: 560px) {
+.layouts-store-left{
+    background-color: transparent;
+}
+.layouts-store-right{
+    background-color: transparent;
+}
+.layouts-store-toolbox{}
+}
+@media only screen and (max-width: 480px) {
+.layouts-store-left{
+    background-color: transparent;
+}
+.layouts-store-right{}
+.layouts-store-toolbox{
+    padding: 20px 0px;
+}
+}

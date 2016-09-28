@@ -1,0 +1,33 @@
+.layouts-about-heading{
+    height: 125px;
+}
+.layouts-about-left{}
+.layouts-about-right-text{
+    float: left;
+    width: 100%;
+    padding: 30px;
+}
+@media only screen and (max-width: 1020px) {
+.layouts-about-heading{
+    height: 115px;
+}
+}
+@media only screen and (max-width: 560px) {
+.layouts-about-heading{
+    height: auto;
+}
+.layouts-about-left{
+    background-color: transparent;
+    border-style: solid;
+    border-width: 0px 0px 1px 0px;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+.layouts-about-right-text{}
+}
+@media only screen and (max-width: 480px) {
+.layouts-about-heading{}
+.layouts-about-left{}
+.layouts-about-right-text{
+    padding: 30px 0px;
+}
+}

@@ -1,0 +1,124 @@
+.editor-text{}
+.editor-text ul{
+    margin: 0px 0px 20px 0px;
+    list-style-position: inside;
+    padding: 0px 0px 0px 30px;
+    list-style: none;
+}
+.editor-text ul li{
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.5;
+    position: relative;
+    padding: 0px 0px 0px 20px;
+}
+.editor-text ul li:before{
+    content: "";
+    display: block;
+    width: 5px;
+    height: 5px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 7px;
+    left: 0;
+}
+.editor-text ol{
+    margin: 0px 0px 20px 0px;
+    list-style-position: inside;
+    padding: 0px 0px 0px 50px;
+}
+.editor-text ol li{
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.5;
+}
+.editor-text p{
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.5;
+    margin: 0px 0px 20px 0px;
+}
+.editor-text h1{
+    margin: 0px 0px 20px 0px;
+    font-size: 28px;
+}
+.editor-text h2{
+    margin: 0px 0px 20px 0px;
+    font-size: 21px;
+}
+.editor-text h3{
+    margin: 0px 0px 20px 0px;
+    font-size: 16px;
+}
+.editor-text h4{
+    margin: 0px 0px 20px 0px;
+    font-size: 15px;
+}
+.editor-text h5{}
+.editor-text h6{}
+.editor-text blockquote{}
+.editor-text a{
+    color: #098dce;
+}
+.editor-text a:hover{
+    text-decoration: underline;
+}
+.editor-text table{
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    overflow-x: auto;
+    margin: 0px 0px 20px 0px;
+}
+.editor-text thead{
+}
+.editor-text thead tr{}
+.editor-text thead th{
+    padding: 10px;
+    border-color: rgba(255, 255, 255, 0.63);
+    border-style: solid;
+    border-width: 1px;
+}
+.editor-text tbody tr{}
+.editor-text tbody tr:nth-of-type(2n){}
+.editor-text tbody td{
+    padding: 10px;
+    border-color: rgba(255, 255, 255, 0.63);
+    border-style: solid;
+    border-width: 1px;
+}
+.editor-text img{
+    max-width: 100%;
+}
+.editor-text strong{font-weight: 700;}
+.editor-text em{font-style: italic;}
+.editor-text u{}
+.editor-text s{}
+.editor-text hr{
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 0px 0px 20px 0px;
+}
+.editor-text *:last-child{
+    margin: 0px 0px 0px 0px;
+}
+
+.theme--green .editor-text h1,
+.theme--green .editor-text h2,
+.theme--green .editor-text h3,
+.theme--green .editor-text h4,
+.theme--green .editor-text h5,
+.theme--green .editor-text h6,
+.theme--green .editor-text a{
+    color:#60cd18;
+}
+
+.theme--blue .editor-text h1,
+.theme--blue .editor-text h2,
+.theme--blue .editor-text h3,
+.theme--blue .editor-text h4,
+.theme--blue .editor-text h5,
+.theme--blue .editor-text h6,
+.theme--blue .editor-text a{
+    color:#1bcbe2;
+}

@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'Titillium';
+    src: url('../../fonts/titillium/subset-TitilliumWeb-Regular.woff2') format('woff2'),
+        url('../../fonts/titillium/subset-TitilliumWeb-Regular.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Titillium';
+    src: url('../../fonts/titillium/subset-TitilliumWeb-Bold.woff2') format('woff2'),
+        url('../../fonts/titillium/subset-TitilliumWeb-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../../fonts/roboto/subset-Roboto-Regular.woff2') format('woff2'),
+        url('../../fonts/roboto/subset-Roboto-Regular.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}

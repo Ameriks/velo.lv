@@ -1,0 +1,67 @@
+.input-amount {
+    float: left;
+    width: 90px;
+    height: 50px;
+    position: relative;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.3);
+    padding: 0px 25px 0px 0px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.input-amount__buttons {
+    float: right;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 25px;
+    height: 100%;
+    border-style: solid;
+    border-width: 0px 0px 0px 1px;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+.input-amount__btn {
+    float: left;
+    text-align: center;
+    padding: 0px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: #1a2937;
+    position: relative;
+}
+.input-amount__btn--minus {
+    border-width: 0px 0px 0px 0px;
+    font-size: 8px;
+}
+.input-amount__btn--plus {
+    border-width: 0px 0px 1px 0px;
+}
+.input-amount__value {
+    float: left;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    font-weight: 300;
+    font-size: 13px;
+    text-align: center;
+    border-width: 0px;
+    background-color: #1a2937;
+    background-repeat: no-repeat;
+    transition: border-color 0.3s, background-color 0.3s, border-width 0.3s, color 0.3s;
+}
+.input-amount__icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    color: #ffffff;
+}

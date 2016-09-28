@@ -1,0 +1,33 @@
+.layouts-index-results-banner{}
+.layouts-index-results-hero{
+    background-size: cover;
+    background-position: 50% 50%;
+    min-height: 230px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.layouts-index-results-hero.image-loaded{
+    opacity: 1;
+}
+.layouts-index-results-heading{
+    padding: 20px 40px;
+}
+.layouts-index-results-text{
+    padding: 20px 40px;
+}
+@media only screen and (max-width: 960px) {
+.layouts-index-results-banner{
+    display: none;
+}
+}
+@media only screen and (max-width: 560px) {
+.layouts-index-results-banner{}
+.layouts-index-results-hero{
+}
+.layouts-index-results-heading{
+    padding: 20px 20px;
+}
+.layouts-index-results-text{
+    padding: 20px 20px;
+}
+}

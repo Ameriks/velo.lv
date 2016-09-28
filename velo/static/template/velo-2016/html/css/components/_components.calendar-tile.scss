@@ -1,0 +1,144 @@
+.calendar-tile{
+    float: left;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+}
+.calendar-tile:before{
+    content:"";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: rgba(9, 141, 206, 0);
+    transition: background-color 0.3s;
+}
+.calendar-tile:hover:before{
+    background-color: rgba(9, 141, 206, 0.1);
+}
+.calendar-tile--no-hover:hover:before{
+    background-color: transparent;
+}
+.calendar-tile__info{
+    float:left;
+    width:100%;
+    padding: 35px 12% 0px 12%;
+    position: relative;
+    z-index: 2;
+    color:#ffffff;
+    transition: color 0.3s;
+}
+.calendar-tile--yellow .calendar-tile__info{
+    color:#f9e103 !important;
+}
+.calendar-tile:hover .calendar-tile__info{
+    color:#098dce;
+}
+.calendar-tile--no-hover:hover .calendar-tile__info{
+    color: #ffffff;
+}
+.calendar-tile__date{
+    float: left;
+    font-family: 'Roboto';
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0px 15px 15px 0px;
+    text-align: center;
+}
+.calendar-tile__day{
+    font-size: 60px;
+}
+.calendar-tile__month{
+    font-size: 34px;
+}
+.calendar-tile__logo{
+    float: left;
+    border-style: solid;
+    border-width: 0px 0px 0px 1px;
+    padding: 0px 0px 0px 15px;
+    height: 60px;
+    margin: 0px 0px 15px 0px;
+}
+.calendar-tile__logo img{
+    width: auto !important;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+.calendar-tile__heading{
+    float: left;
+    width: 100%;
+    font-size: 19px;
+    text-transform: uppercase;
+    font-weight: 700;
+    line-height: 1.1;
+    border-style: solid;
+    border-width: 1px 0px;
+    padding: 10px 0px;
+    margin: 0px 0px 15px 0px;
+}
+.calendar-tile__text{
+    float: left;
+    width: 100%;
+    text-transform: uppercase;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.calendar-tile__btn{
+    width: 100%;
+    z-index: 2;
+    border-top-color: rgba(255, 255, 255, 0.3);
+}
+@media only screen and (max-width: 1060px) {
+.calendar-tile{}
+.calendar-tile--yellow{}
+.calendar-tile:hover .calendar-tile__info{
+    color: #ffffff;
+}
+.calendar-tile:before{}
+.calendar-tile:hover:before{}
+.calendar-tile__info{}
+.calendar-tile__date{}
+.calendar-tile__day{
+    font-size: 40px;
+}
+.calendar-tile__month{
+    font-size: 23px;
+}
+.calendar-tile__logo{}
+.calendar-tile__logo img{}
+.calendar-tile__heading{
+    font-size: 16px;
+}
+.calendar-tile__text{}
+.calendar-tile__btn{
+}
+}
+@media only screen and (max-width: 560px) {
+.calendar-tile{}
+.calendar-tile--yellow{}
+.calendar-tile:hover .calendar-tile__info{}
+.calendar-tile:before{}
+.calendar-tile:hover:before{}
+.calendar-tile__info{}
+.calendar-tile__date{}
+.calendar-tile__day{
+    font-size: 30px;
+}
+.calendar-tile__month{
+    font-size: 16px;
+}
+.calendar-tile__logo{
+    height: 42px;
+}
+.calendar-tile__logo img{}
+.calendar-tile__heading{
+    font-size: 16px;
+}
+.calendar-tile__text{}
+.calendar-tile__btn{
+}
+}

@@ -1,0 +1,80 @@
+.heading{
+    text-transform: uppercase;
+    font-weight: 700;
+    line-height: 1.15;
+    padding: 33px 40px;
+    color: #ffffff;
+}
+.heading--smaller{
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+.heading--padding-20{
+    padding-left: 20px;
+}
+.heading__link{
+    color: #ffffff;
+    transition: color 0.3s;
+}
+.heading__link:hover{
+    color: #098dce;
+}
+@media only screen and (max-width: 960px) {
+.heading{
+    font-size: 21px;
+}
+.heading--smaller{}
+.heading--padding-20{
+    padding-left: 20px;
+}
+}
+@media only screen and (max-width: 768px) {
+.heading{
+    font-size: 18px;
+    padding: 30px 30px;
+}
+.heading--smaller{
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+.heading--padding-20{
+    padding-left: 20px;
+}
+}
+@media only screen and (max-width: 560px) {
+.heading{
+    font-size: 14px;
+    padding: 23px 30px;
+}
+.heading--smaller{
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+.heading--padding-20{
+    padding-left: 20px;
+}
+}
+@media only screen and (max-width: 480px) {
+.heading{
+
+}
+.heading--smaller{
+
+}
+.heading--padding-20{
+    padding-left: 0px;
+}
+}
+@media only screen and (max-width: 380px) {
+.heading{
+    font-size: 14px;
+    padding: 23px 20px;
+}
+.heading--smaller{
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+.heading--padding-20{
+    padding-left: 0px;
+}
+}

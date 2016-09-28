@@ -1,0 +1,23 @@
+.layouts-competition-intro-padding{
+    float: left;
+    width: 100%;
+    padding: 50px;
+}
+.layouts-competition-intro-left{
+    border-style: solid;
+    border-width: 0px 1px 0px 0px;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+@media only screen and (max-width: 960px) {
+.layouts-competition-intro-left{
+    border-style: solid;
+    border-width: 0px 0px 1px 0px;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+}
+@media only screen and (max-width: 480px) {
+.layouts-competition-intro-padding{
+    padding: 30px 0px;
+}
+.layouts-competition-intro-left{}
+}

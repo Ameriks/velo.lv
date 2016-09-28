@@ -1,0 +1,113 @@
+.input-field {
+    float: left;
+    width: 100%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-weight: 300;
+    font-size: 13px;
+    background-repeat: no-repeat;
+    transition:
+        border-color 0.3s,
+        background-color 0.3s,
+        border-width 0.3s,
+        color 0.3s;
+}
+.input-field::-webkit-input-placeholder {
+    color: #ffffff;
+}
+.input-field:-moz-placeholder {
+    color: #ffffff;
+}
+.input-field::-moz-placeholder {
+    color: #ffffff;
+}
+.input-field:-ms-input-placeholder {
+    color: #ffffff;
+}
+
+input:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+input:focus:-moz-placeholder {
+    color: transparent;
+}
+input:focus::-moz-placeholder {
+    color: transparent;
+}
+input:focus:-ms-input-placeholder {
+    color: transparent;
+}
+textarea:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+textarea:focus:-moz-placeholder {
+    color: transparent;
+}
+textarea:focus::-moz-placeholder {
+    color: transparent;
+}
+textarea:focus:-ms-input-placeholder {
+    color: transparent;
+}
+.input-field.error {
+    border-color: #f9e103;
+}
+.input-field:disabled{
+    opacity: 0.5;
+}
+.if--50 {
+    height: 50px;
+    line-height: 50px;
+    padding: 0px 10px 0px 25px;
+}
+.if--dark{
+    background-color: #1a2937;
+}
+.if--dark:-webkit-autofill {
+    background-color: #1a2937 !important;
+}
+.if--dark:focus{
+    background-color: #17232F;
+}
+.if--center{
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+}
+.input-field--textarea{
+    height: 160px;
+    line-height: 1.5;
+    padding-top: 15px;
+}
+.input-wrap {}
+.input-wrap p.error {
+    float: left;
+    width: 100%;
+    text-align: right;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #f9e103;
+    padding: 5px 0px;
+}
+
+
+
+.input-field-label{
+    position: relative;
+    top: 41px;
+    left: 25px;
+    float: left;
+    width: 100%;
+    width: calc(100% - 25px);
+    margin: 0px 0px 10px 0px;
+    transition: top 0.3s, left 0.3s;
+    font-size: 13px;
+    line-height: 13px;
+}
+.input-field-label.focus{
+    top: 0px;
+    left: 0px;
+    width: 100%;
+}

@@ -1,0 +1,55 @@
+.scroll-along__container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    visibility: hidden;
+}
+.scroll-along__container.scroll-along{visibility: visible;}
+.scroll-along__element{
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 3;
+    opacity: 0;
+}
+.scroll-along__container.scroll-along .scroll-along__element{
+    position: fixed;
+    opacity: 1;
+}
+.scroll-along__borders{
+    border-style: solid;
+    border-width: 0px 1px 0px 1px;
+    border-color:#5e6367;
+}
+.scroll-along__thead{
+    top: 100px;
+    left: 0;
+    width: 100%;
+    height: 52px;
+    display: block;
+    background-color: #1a3048;
+    border-style: solid;
+    border-width: 1px 0px 1px 0px;
+    border-color: #444b4e;
+}
+.scroll-along__thead tr{
+    background-color: #1a3048;
+    display: table;
+    table-layout: fixed;
+}
+.scroll-along__thead th{
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-align: center;
+    /* border-style: solid; */
+    /* border-width: 1px 1px 1px 0px; */
+    /* border-color: rgba(255, 255, 255, 0.1); */
+    height: 50px;
+    padding: 10px;
+    overflow: hidden;
+    display: table-cell;
+}

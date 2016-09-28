@@ -1,0 +1,196 @@
+.btn {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 0px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transition: color 0.3s, border 0.3s, background-color 0.3s, opacity 0.3s;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.3;
+    background-clip: border-box;
+    text-transform: uppercase;
+}
+.btn__flex{
+    flex: 1 1 auto;
+    width: 100%;
+    float: left;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.btn--50{
+    height: 50px;
+    line-height: 48px;
+    padding: 0px 30px;
+}
+.btn--60{
+    height: 60px;
+    line-height: 58px;
+    padding: 0px 30px;
+}
+.btn:disabled{
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.3);
+}
+.btn--blue{
+    background-color: #098dce;
+    border-color: #098dce;
+    color: #ffffff;
+}
+.btn--dblue{
+    background-color: #1a3048;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+.btn--dgray{
+    background-color: #1a2126;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+.btn--twitter{
+    background-color: #4099ff;
+    border-color: #4099ff;
+    color: #ffffff;
+}
+.btn--facebook{
+    background-color: #3b5998;
+    border-color: #3b5998;
+    color: #ffffff;
+}
+.btn--draugiem{
+    background-color: #fc6c32;
+    border-color: #fc6c32;
+    color: #ffffff;
+}
+.btn--white-transparent{
+    background-color: rgba(255, 255, 255, 0);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+.btn--dgray-transparent{
+    background-color: rgba(255, 255, 255, 0);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+.btn--yellow-transparent{
+    background-color: rgba(255, 255, 255, 0);
+    border-color: #f9e103;
+    color: #f9e103;
+}
+.theme--green .btn--theme{
+    background-color: #60cd18;
+    border-color: #60cd18;
+    color: #ffffff;
+}
+.theme--blue .btn--theme{
+    background-color: #1bcbe2;
+    border-color: #1bcbe2;
+    color: #ffffff;
+}
+.btn--white-hover:hover,
+.btn--white-hover.active{
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: #ffffff;
+    color: #18a3ac;
+}
+.btn--blue-hover:hover,
+.btn--blue-hover.active{
+    background-color: #098dce;
+    border-color: #098dce;
+    color: #ffffff;
+}
+.btn--white-active:active{
+    background-color: rgba(255, 255, 255, 1);
+    border-color: #ffffff;
+    color: #18a3ac;
+}
+.btn--blue-active:active{
+    background-color: #007EAF;
+    border-color: #007EAF;
+    color: #ffffff;
+}
+.btn--no-borders{
+    border-width: 0px 0px 0px 0px;
+}
+.btn--border-top{
+    border-width: 1px 0px 0px 0px;
+}
+.btn--no-padding{
+    padding: 0px 0px 0px 0px;
+}
+.btn--square-50{
+    width: 50px;
+    padding: 0px 0px 0px 0px;
+}
+.btn__social-icon{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 20px;
+}
+.btn__icon{
+    width: 18px;
+    height: 18px;
+}
+.btn__icon-block{
+    width: 50px;
+    height: 50px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-width: 0px 1px 0px 0px;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.btn__icon-block-icon{}
+.btn--loading:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 15px;
+    border-style: solid;
+    border-bottom-color: transparent;
+    border-width: 2px;
+    border-radius: 50%;
+    -webkit-animation: loadingSpin 1s infinite linear;
+    animation: loadingSpin 1s infinite linear;
+}
+@-webkit-keyframes loadingSpin {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes loadingSpin {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

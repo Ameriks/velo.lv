@@ -1,0 +1,62 @@
+.drag-bar{
+    width: 100%;
+    height: 12px;
+    background-color: #31383c;
+    border-style: solid;
+    border-color: #2b3136;
+    border-width: 3px;
+    border-radius: 6px;
+    position: relative;
+    margin: 10px 0px;
+}
+.drag-bar__bar{}
+.drag-bar__handle{
+    background-color: #098dce;
+    position: absolute;
+    top: 0;
+    left: 0%;
+    width: 74%;
+    border-radius: 3px;
+    height: 6px;
+    cursor: pointer;
+}
+.drag-bar__handle-circle{
+    position: absolute;
+    top: -4.5px;
+    right: 0;
+    left: 0;
+    margin: auto;
+    width: 15px;
+    height: 15px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    color: #a7a9ac;
+    font-size: 7px;
+}
+.drag-bar__handle-icon{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+
+.drag-box{
+    float: left;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+.drag-box__content{
+    float: left;
+    min-width: 100%;
+}
+.drag-bar__click-space{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    margin: -12px 0px 0px 0px;
+}

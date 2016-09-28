@@ -1,0 +1,83 @@
+@import "../generic/_generic.fonts.scss";
+@import "../generic/_generic.normalize.scss";
+
+@import "../base/_base.page.scss";
+
+@import "../libs/jquery-ui.scss";
+@import "../libs/owl.carousel.scss";
+
+@import "../helpers/_helpers.helpers.scss";
+@import "../helpers/_helpers.background-colors.scss";
+@import "../helpers/_helpers.borders.scss";
+@import "../helpers/_helpers.paddings_and_margins.scss";
+@import "../helpers/_helpers.fonts.scss";
+@import "../helpers/_helpers.sizes.scss";
+@import "../helpers/_helpers.text-color.scss";
+
+@import "../objects/_objects.layout.scss";
+@import "../objects/_objects.grid.scss";
+@import "../objects/_objects.image-fade-in.scss";
+
+@import "../components/_components.announcement.scss";
+@import "../components/_components.input-amount.scss";
+@import "../components/_components.input-buttons.scss";
+@import "../components/_components.input-check-button.scss";
+@import "../components/_components.input-field.scss";
+@import "../components/_components.input-field-with-select.scss";
+@import "../components/_components.input-file.scss";
+@import "../components/_components.input-radio-checkbox.scss";
+@import "../components/_components.input-select.scss";
+@import "../components/_components.invisible-table.scss";
+@import "../components/_components.heading.scss";
+@import "../components/_components.primary-heading.scss";
+@import "../components/_components.secondary-heading.scss";
+@import "../components/_components.editor-text.scss";
+@import "../components/_components.gallery.scss";
+@import "../components/_components.article.scss";
+@import "../components/_components.background.scss";
+@import "../components/_components.banners.scss";
+@import "../components/_components.brief.scss";
+@import "../components/_components.burger.scss";
+@import "../components/_components.calendar-slider.scss";
+@import "../components/_components.calendar-tile.scss";
+@import "../components/_components.card.scss";
+@import "../components/_components.click-circle.scss";
+@import "../components/_components.click-circle.scss";
+@import "../components/_components.drag-bar.scss";
+@import "../components/_components.dropdown.scss";
+@import "../components/_components.language-nav.scss";
+@import "../components/_components.lightbox.scss";
+@import "../components/_components.login.scss";
+@import "../components/_components.logo-tile.scss";
+@import "../components/_components.main-header.scss";
+@import "../components/_components.main-footer.scss";
+@import "../components/_components.main-nav.scss";
+@import "../components/_components.map.scss";
+@import "../components/_components.page-count.scss";
+@import "../components/_components.pagination.scss";
+@import "../components/_components.participant.scss";
+@import "../components/_components.scroll-along.scss";
+@import "../components/_components.scroll-banner.scss";
+@import "../components/_components.search.scss";
+@import "../components/_components.secondary-nav.scss";
+@import "../components/_components.setps.scss";
+@import "../components/_components.sponsor-line.scss";
+@import "../components/_components.sponsors.scss";
+@import "../components/_components.table-block.scss";
+@import "../components/_components.video.scss";
+@import "../components/_components.winner.scss";
+
+@import "../layouts/_layouts.about.scss";
+@import "../layouts/_layouts.company-aplication.scss";
+@import "../layouts/_layouts.competition.scss";
+@import "../layouts/_layouts.competition-intro.scss";
+@import "../layouts/_layouts.competition-register.scss";
+@import "../layouts/_layouts.index-results.scss";
+@import "../layouts/_layouts.login.scss";
+@import "../layouts/_layouts.profile.scss";
+@import "../layouts/_layouts.results.scss";
+@import "../layouts/_layouts.search.scss";
+@import "../layouts/_layouts.store.scss";
+@import "../layouts/_layouts.team-member.scss";
+
+@import "../shame/shame.scss";

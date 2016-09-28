@@ -1,0 +1,62 @@
+.logo-tiles{}
+.logo-tiles__tile{
+    float: left;
+    width: 100%;
+    height: 115px;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.21);
+}
+.logo-tiles__tile img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    max-width: 60%;
+    max-height: 60%;
+    width: auto;
+    height: auto;
+    z-index: 1;
+}
+.logo-tiles__tile__btn{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 1.5;
+    opacity: 0;
+    z-index: 2;
+    transition: all 0.7s;
+}
+.logo-tiles__tile:hover .logo-tiles__tile__btn{
+    opacity: 1;
+}
+.logo-tiles__hero{background-position: 50%;background-size: cover;}
+@media only screen and (max-width: 768px) {
+.logo-tiles{}
+.logo-tiles__tile{}
+.logo-tiles__tile img{}
+.logo-tiles__tile__btn{
+}
+.logo-tiles__tile:hover .logo-tiles__tile__btn{
+    opacity: 0;
+}
+.logo-tiles__hero{
+    display: none;
+}
+}
+@media only screen and (max-width: 480px) {
+.logo-tiles{}
+.logo-tiles__tile{
+    height: 80px;
+}
+.logo-tiles__tile img{
+    max-width: 70%;
+    max-height: 70%;
+}
+.logo-tiles__tile__btn{}
+.logo-tiles__tile:hover .logo-tiles__tile__btn{}
+.logo-tiles__hero{}
+}

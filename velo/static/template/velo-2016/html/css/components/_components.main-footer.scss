@@ -1,0 +1,106 @@
+.main-footer {
+    -webkit-box-flex: 0;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
+}
+.main-footer__bottom {
+    padding: 50px 0px 20px 0px;
+}
+.main-footer-section {
+    float: left;
+    padding: 0px 80px 0px 0px;
+}
+.main-footer-heading {
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+.main-footer-text {}
+.main-footer-text ul {
+    list-style: none;
+}
+.main-footer-text li {
+    color: rgba(255, 255, 255, 0.6);
+}
+.main-footer-text p {
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+    padding: 0px 0px 5px 0px;
+}
+.main-footer-text a {
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+    transition: color 0.3s;
+    padding: 0px 0px 5px 0px;
+    display: inline-block;
+}
+.main-footer-text a:hover {
+    color: rgba(255, 255, 255, 1);
+}
+.main-footer-social {
+    position: absolute;
+    top: -10px;
+    right: 0;
+}
+.main-footer-social__items {
+    list-style: none;
+}
+.main-footer-social__item {
+    float: left;
+}
+.main-footer-social__link {
+    float: left;
+    color: #ffffff;
+    font-size: 18px;
+    height: 30px;
+    width: 30px;
+    position: relative;
+}
+.main-footer-social__link .icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+@media only screen and (max-width: 930px) {
+.main-footer {}
+.main-footer__bottom {}
+.main-footer-section {
+    padding: 0px 50px 30px 0px;
+}
+.main-footer-heading {}
+.main-footer-text {}
+.main-footer-text ul {}
+.main-footer-text li {}
+.main-footer-text p {}
+.main-footer-text a {}
+.main-footer-text a:hover {}
+.main-footer-social {}
+.main-footer-social__items {}
+.main-footer-social__item {}
+.main-footer-social__link {}
+.main-footer-social__link .icon {}
+}
+@media only screen and (max-width: 830px) {
+.main-footer {}
+.main-footer__bottom {}
+.main-footer-section {
+    clear: left;
+    padding: 0px 30px 30px 0px;
+}
+.main-footer-heading {}
+.main-footer-text {}
+.main-footer-text ul {}
+.main-footer-text li {}
+.main-footer-text p {}
+.main-footer-text a {}
+.main-footer-text a:hover {}
+.main-footer-social {}
+.main-footer-social__items {}
+.main-footer-social__item {}
+.main-footer-social__link {}
+.main-footer-social__link .icon {}
+}

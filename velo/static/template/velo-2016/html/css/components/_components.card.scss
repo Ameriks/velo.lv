@@ -1,0 +1,165 @@
+.card{
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    position: relative;
+}
+.card--large{}
+.card__info{
+    padding: 35px 0px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+}
+.card--large .card__info{
+    width: 40%;
+    flex-basis: 40%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding-bottom: 80px;
+}
+.card__heading{
+    font-weight: 700;
+    font-size: 21px;
+    text-transform: uppercase;
+    line-height: 1.2;
+    padding: 0px 30px
+}
+.card__image{
+    overflow: hidden;
+}
+.card__image img{
+    display: block;
+}
+.card__image--3by2{
+    padding: 0px 0px 66.67% 0px;
+    position: relative;
+}
+.card__image--3by2 img{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.card__image--background{
+    background-size: cover;
+    background-position: 50% 50%;
+    min-height: 345px;
+}
+.card__image--background-low{
+    min-height: 230px;
+}
+.card__text{
+    font-family: 'Roboto';
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 0px 30px
+}
+.card-nav{}
+.card-nav--absolute{
+    position: absolute;
+    bottom: 0;
+    width: 40%;
+}
+.card-nav--left{
+    left: 0;
+}
+.card-nav--right{
+    right: 0;
+}
+.card-nav__icon{
+    position: relative;
+    width: 60px;
+    font-size: 25px;
+    color: #ffffff;
+}
+.card-nav__icon .icon{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+@media only screen and (max-width: 1024px) {
+.card{}
+.card--large{}
+.card__info{
+    padding: 25px 20px;
+}
+.card--large .card__info{}
+.card__heading{
+    font-size: 16px;
+    padding: 0px 20px;
+}
+.card__image{}
+.card__image img{}
+.card__text{
+    padding: 0px 20px;
+}
+.card-nav{}
+.card-nav--absolute{}
+.card-nav__icon{}
+.card-nav__icon .icon{}
+.card-nav__btn{}
+}
+@media only screen and (max-width: 960px) {
+.card{}
+.card--large{}
+.card__info{}
+.card--large .card__info{}
+.card__heading{}
+.card__image{}
+.card__image img{}
+.card__text{}
+.card-nav{}
+.card-nav--absolute{}
+.card-nav__icon{
+    width: 50;
+}
+.card-nav__icon .icon{}
+.card-nav__btn{
+    height: 50px;
+    line-height: 48px;
+    padding: 0px 20px;
+}
+}
+@media only screen and (max-width: 560px) {
+.card{}
+.card--large{
+    display: block;
+}
+.card__info{}
+.card--large .card__info{
+    width: 100%;
+    flex-basis: 100%;
+    padding-bottom: 25px;
+}
+.card__heading{}
+.card__image{
+}
+.card__image img{}
+.card__text{}
+.card-nav{}
+.card-nav--absolute{
+    position: relative;
+    width: 100%;
+}
+.card-nav__icon{}
+.card-nav__icon .icon{}
+.card-nav__btn{}
+}
+@media only screen and (max-width: 480px) {
+.card{}
+.card--large{}
+.card__info{}
+.card--large .card__info{}
+.card__heading{}
+.card__image{}
+.card__image img{}
+.card__text{}
+.card-nav{}
+.card-nav--absolute{}
+.card-nav__icon{}
+.card-nav__icon .icon{}
+.card-nav__btn{}
+}

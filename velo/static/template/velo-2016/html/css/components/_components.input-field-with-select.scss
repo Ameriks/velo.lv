@@ -1,0 +1,17 @@
+.input-filed-with-select{
+    float: left;
+    width: 130px;
+    position: relative;
+}
+.input-filed-with-select__field{
+    float: left;
+    width: 80px;
+    position: relative;
+    z-index: 2;
+}
+.input-filed-with-select__select{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}

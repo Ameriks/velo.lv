@@ -1,0 +1,33 @@
+.select {
+    appearance: none;
+    background-color: #1a3048 !important;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNTAgNTAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDUwIDUwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjRjlFMTAzIiBwb2ludHM9IjIxLDIyLjUgMjUsMjcuNSAyOSwyMi41ICIvPjwvc3ZnPg==);
+    background-repeat: no-repeat;
+    background-size: 50px 50px;
+    background-position: 100% 100%;
+    
+    height: 50px;
+    width: 100%;
+    
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.3);
+    
+    padding: 0px 50px 0px 20px;
+    
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    line-height: 50px;
+    color: #ffffff;
+}
+.select.error{
+    border-color: #f9e103;
+}
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #fff;
+}
+.select:disabled{
+    opacity: 0.5;
+}

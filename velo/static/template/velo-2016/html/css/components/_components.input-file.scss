@@ -1,0 +1,25 @@
+.input-file{
+    position: relative;
+    float: left;
+    width: 100%;
+    overflow: hidden;
+}
+.input-file__input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.input-file__label {
+    float: left;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}

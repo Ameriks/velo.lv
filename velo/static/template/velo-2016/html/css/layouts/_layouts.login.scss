@@ -1,0 +1,18 @@
+.layouts-login-left{
+    padding: 0px 15px 0px 0px;
+}
+.layouts-login-right{
+    padding: 0px 0px 0px 15px;
+    border-style: solid;
+    border-width: 0px 0px 0px 1px;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+@media only screen and (max-width: 768px) {
+.layouts-login-left{
+    padding: 0px 0px 20px 0px;
+}
+.layouts-login-right{
+    padding: 15px 0px 0px 0px;
+    border-width: 1px 0px 0px 0px;
+}
+}

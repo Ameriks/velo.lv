@@ -1,0 +1,41 @@
+.primary-heading{
+    float: left;
+    width: 100%;
+}
+.primary-heading__spacing{
+    padding: 34px 30px;
+}
+.primary-heading__text{
+    font-weight: 700;
+    font-size: 32px;
+    text-transform: uppercase;
+    line-height: 1.3;
+    float: left;
+    width: 100%;
+}
+.primary-heading__text--smaller{
+    font-size: 22px;
+}
+@media only screen and (max-width: 1020px) {
+.primary-heading{}
+.primary-heading__spacing{
+
+    padding: 28px 28px;
+}
+.primary-heading__text{
+    font-size: 26px;
+}
+.primary-heading__text--smaller{
+    font-size: 22px;
+}
+}
+@media only screen and (max-width: 480px) {
+.primary-heading{}
+.primary-heading__spacing{
+    padding: 20px 20px;
+}
+.primary-heading__text{
+    font-size: 18px;
+}
+.primary-heading__text--smaller{}
+}
