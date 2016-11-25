@@ -147,7 +147,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default="postgis://velolv:velolv@db/velolv"),
+    'default': env.db("DATABASE_URL", default="postgis://velolv:velolv@host/velolv"),
 }
 
 DATABASES['default']['ATOMIC_REQUESTS'] = True

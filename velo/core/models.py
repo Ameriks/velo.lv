@@ -327,7 +327,7 @@ class Competition(MPTTModel):
 
     @property
     def is_application_active(self):
-        if (self.complex_payment_enddate and self.complex_payment_enddate < timezone.now()) or self.price_set.active().exists():
+        if (self.complex_payment_enddate and self.complex_payment_enddate > timezone.now()) or self.price_set.active().exists():
             return True
         return False
 
