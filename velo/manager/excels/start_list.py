@@ -80,7 +80,7 @@ def payment_list(competition=None, competition_id=None):
         payments = application.payment_set.filter(status=Payment.STATUSES.ok)
         row_values = (
             application.id, application.created.date(), application.modified.date(), str(application.competition), application.get_payment_status_display(),
-            application.legacy_id, application.company_name, application.external_invoice_nr, application.final_price,
+            application.legacy_id, application.company_name,  application.final_price,
         )
         for payment in payments:
             row_values += (
@@ -92,7 +92,6 @@ def payment_list(competition=None, competition_id=None):
 
     wbk.save(output)
     return output
-
 
 
 def create_start_list(competition=None, competition_id=None):
@@ -255,7 +254,7 @@ def create_donations_list(competition=None, competition_id=None):
 
         row_values = (
             index, application.id, str(application.competition), participant.last_name,
-            participant.first_name, participant.ssn, application.email, application.donation, total_count, total_payed, application.external_invoice_nr)
+            participant.first_name, participant.ssn, application.email, application.donation, total_count, total_payed, application.invoice.invoice_nr)
 
         for col, value in enumerate(row_values):
             sheet.write(row, col, value)

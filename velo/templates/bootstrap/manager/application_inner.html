@@ -65,8 +65,8 @@
     {% endif %}
 
     <p>Kopējā summa: {{ object.final_price }} €.</p>
-    {% if object.external_invoice_nr %}
-    <p>Rēķina numurs: <a href="https://www.e-rekins.lv/d/i/{{ object.external_invoice_code }}/">{{ object.external_invoice_nr }}</a>.</p>
+    {% if object.invoice %}
+    <p>Rēķina numurs: <a href="{{ object.invoice.file.url }}">{{ object.invoice.series }}{{ object.invoice.number }}</a>.</p>
     {% endif %}
 
     {% if object.payment_status != object.PAY_STATUS_PAYED %}

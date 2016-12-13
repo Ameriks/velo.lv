@@ -9,7 +9,8 @@ from velo.manager.views import ManageParticipantList, ManageCompetitionList, Man
     MatchParticipantToNumberView, FindNumberView, ManageResultReports, ManageApplicationExternalPay, \
     ManageParticipantIneseCreate, ManageApplicationList, ManageApplication, ManageTeams, ManageTeamApplyList, \
     ManageUrlSyncList, ManageUrlSyncUpdate, PayedAmountNotEqualView, ManagePriceList, ManagePriceCreate, ManagePriceUpdate, \
-    MatchResultParticipantView, ManageNewsList, ManageNewsCreate, ManageNewsUpdate, ManageChipScanList
+    MatchResultParticipantView, ManageNewsList, ManageNewsCreate, ManageNewsUpdate, ManageChipScanList, \
+    ManageInvoiceList, ManageInvoice
 from velo.manager.views.participant_manage import ManagePreNumberAssignList, ManagePreNumberAssignUpdate, \
     ManagePreNumberAssignCreate, ChangedNameList, ChangedNameCreate, ChangedNameUpdate
 from velo.manager.views.results_manage import ManageResultList, ManageResultUpdate
@@ -66,6 +67,10 @@ urlpatterns = [
                         url(r'^competition/(?P<pk>\d+)/price/$', ManagePriceList.as_view(), name='price_list'),
                         url(r'^competition/(?P<pk>\d+)/price/add/$', ManagePriceCreate.as_view(), name='price'),
                         url(r'^competition/(?P<pk>\d+)/price/(?P<pk2>\d+)/$', ManagePriceUpdate.as_view(), name='price'),
+
+                        url(r'^competition/(?P<pk>\d+)/invoice/$', ManageInvoiceList.as_view(), name='invoice_list'),
+                        url(r'^competition/(?P<pk>\d+)/invoice/(?P<pk2>\d+)/$', ManageInvoice.as_view(), name='invoice'),
+
 
                        # This is legacy. To be deleted in next version.
                        url(r'^competition/(?P<pk>\d+)/application/(?P<pk2>\d+)/pay/$', ManageApplicationExternalPay.as_view(), name='application_pay'),

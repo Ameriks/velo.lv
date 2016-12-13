@@ -42,7 +42,7 @@ class InvoiceCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
         try:
             active_payment_type = ActivePaymentChannel.objects.filter(competition=instance.competition, payment_channel__is_bill=True)[:1]
             if active_payment_type:
-                instance.external_invoice_code, instance.external_invoice_nr = create_application_invoice(instance, active_payment_type[0], action="approve")
+                create_application_invoice(instance, active_payment_type[0], action="approve")
             else:
                 self._errors['company_name'] = self.error_class([_("There is not created invoice link for this competition.")])
         except:
@@ -1267,3 +1267,42 @@ class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.instance.modified_by = self.request.user
 
         return super(NewsForm, self).save(commit)
+
+
+class InvoiceListSearchForm(RequestKwargModelFormMixin, forms.Form):
+    search = forms.CharField(required=False)
+    status = forms.ChoiceField(choices=(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        competition = kwargs.pop('competition', None)
+        super().__init__(*args, **kwargs)
+
+        self.fields['status'].choices = [('', '------'), (0, 'Nav apmaksāts'), (10, 'Gaida maksājumu'), (20, 'Apmaksāts')]
+
+        self.fields['status'].initial = self.request.GET.get('status', '')
+        self.fields['search'].initial = self.request.GET.get('search', '')
+
+        self.helper = FormHelper()
+        self.helper.form_class = 'invoice-search-form'
+        self.helper.form_tag = True
+        self.helper.form_method = "GET"
+        self.helper.layout = Layout(
+            Row(
+                Div(
+                    'search',
+                    css_class='col-xs-4',
+                ),
+                Div(
+                    'status',
+                    css_class='col-xs-4',
+                ),
+                Div(
+                    Div(
+                        StrictButton('<span data-icon="&#xe090;"></span> Meklēt', css_class="btn-u btn-u-blue", type="submit"),
+                        css_class="buttons",
+                    ),
+                    css_class='col-xs-4',
+                ),
+            ),
+        )
+

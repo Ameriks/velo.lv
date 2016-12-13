@@ -1,16 +1,21 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-from builtins import str
+import datetime
+import uuid
 
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext, ugettext_lazy as _
 from model_utils import Choices
 
 from velo.velo.mixins.models import TimestampMixin
+import os
+
+
+def get_invoice_upload(instance, filename):
+    return os.path.join("payment", "invoice", str(datetime.date.today().year), filename)
 
 
 class ActivePriceManager(models.Manager):
@@ -95,11 +100,12 @@ class PaymentChannel(models.Model):
     erekins_auth_key = models.CharField(max_length=100, blank=True)
     erekins_link = models.CharField(max_length=50, blank=True)
     is_bill = models.BooleanField(default=False)
+    params = JSONField(default={})
 
     def __str__(self):
         return ugettext(self.title)
 
-    def translations(self): # This is just place holder for translation strings for unicode function
+    def translations(self):  # This is just place holder for translation strings for unicode function
         ugettext("Receive Bill")
 
 
@@ -141,3 +147,46 @@ class Payment(TimestampMixin, models.Model):
     donation = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
     status = models.SmallIntegerField(choices=STATUSES, default=STATUSES.new)
+
+
+class Invoice(TimestampMixin, models.Model):
+    competition = models.ForeignKey('core.Competition', verbose_name=_('Competition'), blank=True, null=True)
+
+    company_name = models.CharField(_('Company name / Full Name'), max_length=100, blank=True)
+    company_vat = models.CharField(_('VAT Number'), max_length=100, blank=True)
+    company_regnr = models.CharField(_('Company number / SSN'), max_length=100, blank=True)
+    company_address = models.CharField(_('Address'), max_length=100, blank=True)
+    company_juridical_address = models.CharField(_('Juridical Address'), max_length=100, blank=True)
+    email = models.EmailField(blank=True, max_length=254)
+
+    invoice_show_names = models.BooleanField(_('Show participant names in invoice'), default=True)
+
+    PAY_STATUS = Choices((0, 'not_payed', _("Haven't Payed")),
+                         (10, 'waiting', _('Have opened invoice')),
+                         (20, 'payed', _('Payed')),
+                         (-10, 'cancelled', _('Cancelled')), )
+    status = models.SmallIntegerField(_('Payment Status'), default=PAY_STATUS.not_payed, choices=PAY_STATUS)
+
+    slug = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
+    file = models.FileField(_("Invoice URL"), upload_to=get_invoice_upload, default="")
+    series = models.CharField(_('Competition series'), max_length=10, blank=True)
+    number = models.IntegerField(_('Series invoice number'), null=True, blank=True)
+
+    access_time = models.TimeField(null=True, blank=True)
+    access_ip = models.CharField(max_length=100, null=True, blank=True)
+
+    @property
+    def invoice_nr(self):
+        return "%s-%03d" % (self.series, self.number)
+
+    def save(self, *args, **kwargs):
+        if not self.number:
+            try:
+                self.number = Invoice.objects.filter(series=self.series).order_by("-number")[0].number + 1
+            except:
+                self.number = 1
+
+        return super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ("series", "number")

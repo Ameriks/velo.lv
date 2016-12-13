@@ -100,7 +100,8 @@ class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
         if query_attrs.get('search').initial:
             slug = slugify(query_attrs.get('search').initial)
             queryset = queryset.filter(
-                Q(external_invoice_nr__icontains=slug) |
+                Q(invoice__series__icontains=slug) |
+                Q(invoice__number__icontains=slug) |
                 Q(email__icontains=query_attrs.get('search').initial.upper()) |
                 Q(participant__slug__icontains=slug) |
                 Q(participant__team_name__icontains=query_attrs.get('search').initial.upper())

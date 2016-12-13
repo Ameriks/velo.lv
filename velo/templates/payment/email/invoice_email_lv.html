@@ -1,0 +1,60 @@
+{% extends "base/email.html" %}
+{% block content %}
+
+<table>
+    <tr>
+        <td>
+            <h3>God. sportist!</h3>
+            <p class="lead">Nosūtām Jums elektronisko rēķinu no velo.lv elektronisko rēķinu sistēmas.</p>
+            <p>Rēķina nr.: {{ invoice.name }}<br>
+                Rēķina sūtīšanas laiks: {% now "d.m.Y H:i" %}<br>
+                Samaksas summa: {{ invoice.total_price }} {{ invoice.currency }}<br>
+                Apmaksas datums: {{ invoice.due_date|date:"d.m.Y" }}</p>
+
+            <p class="callout">Lūdzu, lejupielādējiet rēķinu, izmantojot šo saiti:<br><a href="{{ url }}">{{ url }}</a>
+            </p>
+
+<h4>Lai labi ripo velo!</h4><p>
+Ar cieņu,<br>
+www.velo.lv</p>
+            <!-- social & contact -->
+            <table class="social" width="100%">
+                <tr>
+                    <td>
+
+                        <!-- column 1 -->
+                        <table align="left" class="column">
+                            <tr>
+                                <td>
+
+                                    <h5 class="">Rēķina saņēmējs:</h5>
+                                    <p>{{ invoice.client_data.name }}<br>{{ invoice.email }}</p>
+
+
+                                </td>
+                            </tr>
+                        </table><!-- /column 1 -->
+
+                        <!-- column 2 -->
+                        <table align="left" class="column">
+                            <tr>
+                                <td>
+
+                                    <h5 class="">velo.lv kontaktinformācija:</h5>
+                                    <p>Telefons: <strong>+371 67314150</strong><br>
+    E-pasts: <strong><a href="emailto:pieteikumi@velo.lv">pieteikumi@velo.lv</a></strong></p>
+
+                                </td>
+                            </tr>
+                        </table><!-- /column 2 -->
+
+                        <span class="clear"></span>
+
+                    </td>
+                </tr>
+            </table><!-- /social & contact -->
+
+        </td>
+    </tr>
+</table>
+{% endblock content %}

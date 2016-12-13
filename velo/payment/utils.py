@@ -5,15 +5,20 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, Http404
 from django.utils import timezone
 from django.conf import settings
+from django.core.files.base import ContentFile
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, activate
 
 import json
 import datetime
 from urllib.parse import quote
+from premailer import transform
 
 from velo.core.models import Insurance, Log
-from velo.payment.models import Payment
+from velo.payment.models import Payment, Invoice
+from velo.payment.pdf import InvoiceGenerator
 from velo.registration.models import Application
 from velo.velo.utils import SessionWHeaders
 from velo.registration.tasks import send_success_email
@@ -131,148 +136,111 @@ def get_form_message(competition, distance_id, year, insurance_id=None):
     return messages
 
 
-def create_team_invoice(team, active_payment_type, action="send"):
-    bill_series = team.distance.competition.bill_series
-    prefix = active_payment_type.payment_channel.erekins_url_prefix
+def generate_pdf_invoice(application, invoice_data):
+    invoice_save = Invoice.objects.create(
+        company_name=application.company_name,
+        company_vat=application.company_vat,
+        company_regnr=application.company_regnr,
+        company_address=application.company_address,
+        company_juridical_address=application.company_juridical_address,
+        email=application.email,
+        series=invoice_data.get('bill_series'),
+    )
+    invoice_data.update({'name': invoice_save.invoice_nr})
+    invoice = InvoiceGenerator(invoice_data)
+    invoice_pdf = invoice.build()
+    invoice_save.file = ContentFile(invoice_pdf.read(), str("%s-%03d.pdf" % (invoice_save.series, invoice_save.number)))
+    invoice_save.save()
+    application.invoice = invoice_save
+    application.save()
+    total_price = 0
+    for item in invoice_data.get('items'):
+        total_price += item.get('price')
+    invoice_data.update({'total_price': total_price})
 
-    # Create new requests session with Auth keys and prepended url
-    session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key},
-                              url="https://%s.e-rekins.lv" % prefix)
-
-    # Find series resource_uri from e-rekins
-    series_obj = session.get("/api/v1/series/?prefix=%s" % bill_series)
-    if series_obj.json().get('meta').get('total_count') == 0:
-        series_obj = session.post("/api/v1/series/", data=json.dumps({
-            'title': bill_series,
-            'reset_period': 4,
-            'prefix': bill_series,
-            'formatting': '- #'
-        }))
-        series_obj.raise_for_status()
-        series_resource_uri = series_obj.headers.get('Location')
+    if application.competition.level == 2:
+        primary_competition = application.competition.parent
     else:
-        series_resource_uri = series_obj.json().get('objects')[0].get('resource_uri')
+        primary_competition = application.competition
 
-    client_data = {
-        'name': team.company_name,
-        'name_short': team.company_name,
-        'integration_code': "team_%s" % str(team.id),
-        'number': team.company_regnr,
-        'vat': team.company_vat,
-        'email': team.email,
-        'office_address': {
-            'address': team.company_address,
-            'country': '/api/v1/country/124/',  # Always default is Latvia
-        },
-        'juridical_address': {
-            'address': team.company_juridical_address,
-            'country': '/api/v1/country/124/',  # Always default is Latvia
-        },
-        'form': 1,  # Juridical
+    context = {
+        'application': application,
+        'competitions': application.competition,
+        'competition': primary_competition,
+        'domain': settings.MY_DEFAULT_DOMAIN,
+        'invoice': invoice_data,
+        'url': "{0}/payment/invoice/{1}/".format(settings.MY_DEFAULT_DOMAIN, invoice_save.slug)
     }
 
-    # Find or Create customer
-    client_obj = session.get("/api/v1/client/?number=%s" % team.company_regnr)
-    if client_obj.json().get('meta').get('total_count') == 0:
-        client_obj = session.post("/api/v1/client/", data=json.dumps(client_data))
-        client_obj.raise_for_status()
-        client_obj = session.get(client_obj.headers.get('Location'))
-        client_obj.raise_for_status()
-        client_resource_uri = client_obj.json().get('resource_uri')
-    else:
-        client_resource_uri = client_obj.json().get('objects')[0].get('resource_uri')
-        client_obj = session.put(client_resource_uri, data=json.dumps(client_data))
-        client_obj.raise_for_status()
+    try:
+        language = application.language
+    except:
+        language = 'lv'
+    activate(language)
+    template = transform(render_to_string('payment/email/invoice_email_lv.html', context))
+    template_txt = render_to_string('payment/email/invoice_email_lv.txt', context)
 
-    items = [{
-        "description": "Komandas %s profila apmaksa" % str(team),
-        "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
-        "units": "gab.",
-        "amount": "1",
-        "price": float(team.final_price)
-    }, ]
+    email_data = {
+        'subject': _('VELO.LV application #%i') % application.id,
+        'message': template_txt,
+        'from_email': settings.SERVER_EMAIL,
+        'recipient_list': [application.email, ],
+        'html_message': template,
+    }
 
+    send_mail(**email_data)
+
+    return invoice_pdf
+
+def create_team_invoice(team, active_payment_type, action="send"):
     due_date = datetime.datetime.now() + datetime.timedelta(days=7)
     invoice_data = {
-        "due_date": due_date.strftime('%Y-%m-%d'),
-        "client": client_resource_uri,
-        "currency": "/api/v1/currency/1/",
-        "invoice_creator": getattr(settings,
-                                   "EREKINS_%s_DEFAULT_CREATOR" % active_payment_type.payment_channel.payment_channel),
-        "series": series_resource_uri,
-        "language": getattr(settings,
-                            "EREKINS_%s_DEFAULT_LANGUAGE" % active_payment_type.payment_channel.payment_channel),
+        "bill_series": team.distance.competition.bill_series,
+        "client_data": {
+            'name': team.company_name,
+            'number': team.company_regnr,
+            'vat': team.company_vat,
+            'office_address': team.company_address,
+            'country': 'Latvia',
+            'juridical_address': team.company_juridical_address,
+            'name_short': team.company_name,
+            'integration_code': "team_%s" % str(team.id),
+            'form': 1,  # Juridical
+        },
+        "organiser_data": {
+            "name": active_payment_type.payment_channel.params.get("name"),
+            "juridical_address": active_payment_type.payment_channel.params.get("juridical_address"),
+            "number": active_payment_type.payment_channel.params.get("number"),
+            "vat": active_payment_type.payment_channel.params.get("vat"),
+            "account_name": active_payment_type.payment_channel.params.get("account_name"),
+            "account_code": active_payment_type.payment_channel.params.get("account_code"),
+            "account_number": active_payment_type.payment_channel.params.get("account_number")
+        },
+        "invoice_date": datetime.datetime.now(),
+        "due_date": due_date,
+        "currency": "EUR",
+        "invoice_creator": active_payment_type.payment_channel.payment_channel,
+        "language": active_payment_type.payment_channel.payment_channel,
         "payment_type": "Pārskaitījums",
         "kind": "2",
-        "items": items,
+        "items": [{
+            "description": "Komandas %s profila apmaksa" % str(team),
+            "units": "gab.",
+            "amount": "1",
+            "price": float(team.final_price)
+        }],
         "status": "10",
         "activity": 'Pakalpojumu sniegšana',
         "ad_integration_code": "team_%i" % team.id,
-        "action": action,
+        'email': team.email,
+        "comments": "Nesaņemot apmaksu līdz norādītajam termiņam, rēķins zaudē spēku un dalībnieki starta sarakstā neparādās, kā arī netiek pielaisti pie starta.",
+        "action": action
     }
-
-    # Create invoice
-    invoice_obj = session.post("/api/v1/invoice/", data=json.dumps(invoice_data))
-    invoice_obj.raise_for_status()
-    invoice_obj = session.get(invoice_obj.headers.get('Location'))
-    invoice_obj.raise_for_status()
-    invoice = invoice_obj.json()
-    return invoice.get('code'), invoice.get('invoice_nr')
+    invoice_pdf = generate_pdf_invoice(team, invoice_data)
+    return invoice_pdf
 
 
 def create_application_invoice(application, active_payment_type, action="send"):
-    bill_series = application.competition.bill_series
-    prefix = active_payment_type.payment_channel.erekins_url_prefix
-
-    # Create new requests session with Auth keys and prepended url
-    session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key},
-                              url="https://%s.e-rekins.lv" % prefix)
-
-    # Find series resource_uri from e-rekins
-    series_obj = session.get("/api/v1/series/?prefix=%s" % bill_series)
-    if series_obj.json().get('meta').get('total_count') == 0:
-        series_obj = session.post("/api/v1/series/", data=json.dumps({
-            'title': bill_series,
-            'reset_period': 4,
-            'prefix': bill_series,
-            'formatting': '- #'
-        }))
-        series_obj.raise_for_status()
-        series_resource_uri = series_obj.headers.get('Location')
-    else:
-        series_resource_uri = series_obj.json().get('objects')[0].get('resource_uri')
-
-    client_data = {
-        'name': application.company_name,
-        'name_short': application.company_name,
-        'integration_code': str(application.id),
-        'number': application.company_regnr,
-        'vat': application.company_vat,
-        'email': application.email,
-        'office_address': {
-            'address': application.company_address,
-            'country': '/api/v1/country/124/',  # Always default is Latvia
-        },
-        'juridical_address': {
-            'address': application.company_juridical_address,
-            'country': '/api/v1/country/124/',  # Always default is Latvia
-        },
-        'form': 1,  # Juridical
-    }
-
-    # Find or Create customer
-    client_obj = session.get("/api/v1/client/?number=%s" % application.company_regnr)
-    if client_obj.json().get('meta').get('total_count') == 0:
-        client_obj = session.post("/api/v1/client/", data=json.dumps(client_data))
-        client_obj.raise_for_status()
-        client_obj = session.get(client_obj.headers.get('Location'))
-        client_obj.raise_for_status()
-        client_resource_uri = client_obj.json().get('resource_uri')
-    else:
-        client_resource_uri = client_obj.json().get('objects')[0].get('resource_uri')
-        client_obj = session.put(client_resource_uri, data=json.dumps(client_data))
-        client_obj.raise_for_status()
-
     items = []
     for participant in application.participant_set.all():
         activate(application.language)
@@ -330,33 +298,42 @@ def create_application_invoice(application, active_payment_type, action="send"):
         due_date = now + datetime.timedelta(days=7)
 
     invoice_data = {
-        "due_date": due_date.strftime('%Y-%m-%d'),
-        "client": client_resource_uri,
-        "currency": "/api/v1/currency/1/",
-        "invoice_creator": getattr(settings,
-                                   "EREKINS_%s_DEFAULT_CREATOR" % active_payment_type.payment_channel.payment_channel),
-        "series": series_resource_uri,
-        "language": getattr(settings,
-                            "EREKINS_%s_DEFAULT_LANGUAGE" % active_payment_type.payment_channel.payment_channel),
+        "bill_series": application.competition.bill_series,
+        "client_data": {
+            'name': application.company_name,
+            'number': application.company_regnr,
+            'vat': application.company_vat,
+            'office_address': application.company_address,
+            'country': 'Latvia',
+            'juridical_address': application.company_juridical_address,
+        },
+        "organiser_data": {
+            "name": active_payment_type.payment_channel.params.get("name"),
+            "juridical_address": active_payment_type.payment_channel.params.get("juridical_address"),
+            "number": active_payment_type.payment_channel.params.get("number"),
+            "vat": active_payment_type.payment_channel.params.get("vat"),
+            "account_name": active_payment_type.payment_channel.params.get("account_name"),
+            "account_code": active_payment_type.payment_channel.params.get("account_code"),
+            "account_number": active_payment_type.payment_channel.params.get("account_number")
+        },
+        "invoice_date": now,
+        "due_date": due_date,
+        "currency": "EUR",
+        "invoice_creator": active_payment_type.payment_channel.payment_channel,
+        "language": active_payment_type.payment_channel.payment_channel,
         "payment_type": "Pārskaitījums",
         "kind": "2",
         "items": items,
         "status": "10",
         "activity": 'Pakalpojumu sniegšana',
         "ad_integration_code": application.id,
+        'email': application.email,
         "comments": "Nesaņemot apmaksu līdz norādītajam termiņam, rēķins zaudē spēku un dalībnieki starta sarakstā neparādās, kā arī netiek pielaisti pie starta.",
-        "action": action,
-        "invoice_external_edit_url": ("%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('manager:application_pay', kwargs={
-            'pk': application.competition_id, 'pk2': application.id}))).replace('http://', 'https://'),
+        "action": action
     }
+    invoice_pdf = generate_pdf_invoice(application, invoice_data)
 
-    # Create invoice
-    invoice_obj = session.post("/api/v1/invoice/", data=json.dumps(invoice_data))
-    invoice_obj.raise_for_status()
-    invoice_obj = session.get(invoice_obj.headers.get('Location'))
-    invoice_obj.raise_for_status()
-    invoice = invoice_obj.json()
-    return invoice.get('code'), invoice.get('invoice_nr')
+    return invoice_pdf
 
 
 def create_team_bank_transaction(team, active_payment_type):
@@ -367,7 +344,7 @@ def create_team_bank_transaction(team, active_payment_type):
                               url="https://%s.e-rekins.lv" % prefix)
 
     information = "Komandas %s profila apmaksa %s" % (str(team),
-                                                      team.distance.competition.get_full_name) if not team.external_invoice_code else "Rekins nr.%s" % team.external_invoice_nr
+                                                      team.distance.competition.get_full_name) if not team.invoice else "Rekins nr.%s" % team.invoice.invoice_nr
 
     bank_data = {
         "information": information,
@@ -396,7 +373,7 @@ def create_application_bank_transaction(application, active_payment_type):
     session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key},
                               url="https://%s.e-rekins.lv" % prefix)
 
-    information = "Pieteikums nr.%i" % application.id if not application.external_invoice_code else "Rekins nr.%s" % application.external_invoice_nr
+    information = "Pieteikums nr.%i" % application.id if not application.invoice else "Rekins nr.%s" % application.invoice.invoice_nr
     if application.donation > 0:
         information += (" + %s" % application.competition.params_dict.get('donation', {}).get('bank_code',
                                                                                          'Ziedojums - %s')) % application.donation
@@ -489,7 +466,7 @@ def validate_payment(payment, user=False, request=None):
         if payment.content_type.model == 'application':
             application = payment.content_object
             # If there are no other active payments and user haven't taken invoice, then lets reset application payment status.
-            if not other_active_payments and not application.external_invoice_code:
+            if not other_active_payments and not application.invoice:
                 application.payment_status = application.PAY_STATUS.not_payed
                 application.save()
 
@@ -517,3 +494,12 @@ def validate_payment(payment, user=False, request=None):
                 return HttpResponseRedirect(reverse('account:team_pay', kwargs={'pk2': payment.content_object.id}))
         else:
             return False
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

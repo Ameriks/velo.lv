@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
+import datetime
 
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
@@ -8,14 +7,15 @@ from django.views.generic import DetailView, UpdateView
 from django.views.generic.edit import BaseUpdateView
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from django_downloadview import ObjectDownloadView
 
 from braces.views import JsonRequestResponseMixin, LoginRequiredMixin
 
 from velo.core.models import Competition
 from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
-from velo.payment.models import Payment
+from velo.payment.models import Payment, Invoice
 from velo.payment.utils import get_form_message, validate_payment, \
-    get_participant_fee_from_price, get_insurance_fee_from_insurance
+    get_participant_fee_from_price, get_insurance_fee_from_insurance, get_client_ip
 from velo.registration.models import Application
 from velo.team.models import Team
 from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin
@@ -33,7 +33,8 @@ class CheckPriceView(JsonRequestResponseMixin, DetailView):
                 raise ValueError
         except ValueError:
             return self.render_json_response({
-                'message': _("<div class='fs14 fw700 c-white uppercase text-align--right'>Please enter all details</div>"),
+                'message': _(
+                    "<div class='fs14 fw700 c-white uppercase text-align--right'>Please enter all details</div>"),
                 'success': False
             })
         messages = get_form_message(self.get_object(), distance_id, year, insurance_id=insurance_id)
@@ -96,7 +97,7 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                 messages.error(self.request, _('Not all participants have price added. Did you press save & pay?'))
                 valid = False
             else:
-                if not self.object.external_invoice_code and not participant.is_participating:
+                if not self.object.invoice and not participant.is_participating:
                     if participant.price.start_registering > now or participant.price.end_registering < now:
                         participant.price = None
                         participant.save()
@@ -237,3 +238,20 @@ class PaymentReturnView(NeverCacheMixin, DetailView):
             elif self.object.content_type.model == 'team':
                 return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': self.object.content_object.id}))
         return validate_payment(self.object, user=True, request=request)
+
+# invoice_download_view = ObjectDownloadView.as_view(model=Invoice, basename="invoice.pdf")
+
+
+class InvoiceDownloadView(ObjectDownloadView):
+    model = Invoice
+
+    def get_file(self):
+        invoice = self.model.objects.get(slug=self.request.resolver_match.kwargs.get('slug'))
+
+        if not invoice.access_time or not invoice.access_ip:
+            if int(invoice.status) == 0:
+                invoice.status = 10
+            invoice.access_ip = get_client_ip(self.request)
+            invoice.access_time = datetime.datetime.now()
+            invoice.save()
+        return super(InvoiceDownloadView, self).get_file()
