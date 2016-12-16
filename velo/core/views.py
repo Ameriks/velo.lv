@@ -36,7 +36,12 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
 
-        calendar = Competition.objects.filter(competition_date__year=timezone.now().year).select_related('parent').extra(select={'is_past': "core_competition.competition_date < now()::date  - interval '3 days'"}).order_by('is_past', 'competition_date', '-name_lv')
+        try:
+            first_id = Competition.objects.filter(is_in_menu=True).order_by('id')[0].id
+        except:
+            first_id = 1
+
+        calendar = Competition.objects.filter(id__gte=first_id).select_related('parent').extra(select={'is_past': "core_competition.competition_date < now()::date  - interval '3 days'"}).order_by('is_past', 'competition_date', '-name_lv')
         context.update({'calendar': calendar})
 
         cache_key = 'image_top_%s' % get_language()
@@ -90,7 +95,7 @@ class IndexView(TemplateView):
                 elif index == len(calendar)-1 and (index - active_indexes[-1] > 2):  # LAST ELEMENT
                     active_indexes.append(index - (index - active_indexes[-1]) % 3)
 
-            return active_indexes, slide_to
+            return active_indexes, 0
 
         context.update({'active_indexes': active_index_func})
 
