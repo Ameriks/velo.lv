@@ -261,6 +261,8 @@ class Competition(MPTTModel):
 
     @property
     def params_dict(self):
+        if isinstance(self.params, dict):
+            return self.params
         return json.loads(self.params)
 
     def get_ids(self):
