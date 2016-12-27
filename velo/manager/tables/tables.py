@@ -244,7 +244,6 @@ class ManageApplicationTable(GetRequestTableKwargs, tables.Table):
     invoice_nr = tables.Column(accessor="invoice.invoice_nr", order_by=("invoice.series", "invoice.number"), )
 
     def render_payment_status(self, record, **kwargs):
-        print(GetRequestTableKwargs)
         url = reverse('manager:application', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.id})
         return mark_safe('<a href="%s">%s</a>' % (url, record.get_payment_status_display()))
 
@@ -308,7 +307,7 @@ class ChangedNameTable(GetRequestTableKwargs, tables.Table):
 
 class ManageInvoiceTable(GetRequestTableKwargs, tables.Table):
 
-    status = LinkColumn('manager:application', args=[A('competition_id'), A('id')], accessor="status", verbose_name=_('Invoice status'), )
+    status = LinkColumn('manager:invoice', args=[A('competition_id'), A('id')], accessor="payment_set.status", verbose_name=_('Invoice status'), )
 
     class Meta:
         model = Invoice

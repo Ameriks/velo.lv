@@ -4,7 +4,7 @@
     {% csrf_token %}
 
     <p>Rēķins #{{ object.id }} ({{ object.invoice_nr }}).</p>
-    <p>Rēķina statuss: {{ object.get_status_display }}</p>
+    <p>Rēķina statuss: {{ object.payment_set.get_status_display }}</p>
 
     <p>Maksājumu informācija:</p>
 
@@ -49,7 +49,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for participant in basket %}
+            {% for participant in participants %}
                 <tr class="{% if not participant.is_participating %}danger{% endif %}">
                     <td>{{ participant.competition }}</td>
                     <td>{{ participant.distance }}</td>
@@ -64,9 +64,11 @@
         </tbody>
     </table>
 
-    <p>Rēķins: <a href="{{ object.file.url }}">{{ object.invoice_nr }}</a>.</p>
+    <p>Rēķins: <a href="/payment/invoice/{{ object.slug }}/">{{ object.invoice_nr }}</a>.</p>
 
-    {% if object.status != object.PAY_STATUS_PAYED %}
+    {% if old_invoice %}
+        <p>Nevar atzīmēt ka samaksāts, jo rēķins vecāks par 6 mēnešiem. </p>
+    {% elif object.payment_set.status != object.payment_set.STATUSES.ok %}
         <button class="btn btn-primary" type="submit" name="action" value="mark_as_payed">Atzīmēt, ka pieteikums apmaksāts</button>
     {% else %}
         <p>Jau atzīmēts, kā samakstāts.</p>

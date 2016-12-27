@@ -64,12 +64,12 @@ urlpatterns = [
                        url(r'^competition/(?P<pk>\d+)/urlsync/$', ManageUrlSyncList.as_view(), name='urlsync'),
                        url(r'^competition/(?P<pk>\d+)/urlsync/(?P<pk2>\d+)/$', ManageUrlSyncUpdate.as_view(), name='urlsync'),
 
-                        url(r'^competition/(?P<pk>\d+)/price/$', ManagePriceList.as_view(), name='price_list'),
-                        url(r'^competition/(?P<pk>\d+)/price/add/$', ManagePriceCreate.as_view(), name='price'),
-                        url(r'^competition/(?P<pk>\d+)/price/(?P<pk2>\d+)/$', ManagePriceUpdate.as_view(), name='price'),
+                       url(r'^competition/(?P<pk>\d+)/price/$', ManagePriceList.as_view(), name='price_list'),
+                       url(r'^competition/(?P<pk>\d+)/price/add/$', ManagePriceCreate.as_view(), name='price'),
+                       url(r'^competition/(?P<pk>\d+)/price/(?P<pk2>\d+)/$', ManagePriceUpdate.as_view(), name='price'),
 
-                        url(r'^competition/(?P<pk>\d+)/invoice/$', ManageInvoiceList.as_view(), name='invoice_list'),
-                        url(r'^competition/(?P<pk>\d+)/invoice/(?P<pk2>\d+)/$', ManageInvoice.as_view(), name='invoice'),
+                       url(r'^competition/(?P<pk>\d+)/invoice/$', ManageInvoiceList.as_view(), name='invoice_list'),
+                       url(r'^competition/(?P<pk>\d+)/invoice/(?P<pk2>\d+)/$', ManageInvoice.as_view(), name='invoice'),
 
 
                        # This is legacy. To be deleted in next version.

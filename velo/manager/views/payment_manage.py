@@ -4,8 +4,7 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.db.models import Q
-from django.utils.decorators import method_decorator
-from django.views.decorators.clickjacking import xframe_options_exempt
+from django.utils import timezone
 from django.views.generic import DetailView
 from slugify import slugify
 
@@ -14,14 +13,23 @@ from velo.manager.tables import ManagePriceTable
 from velo.manager.tables.tables import ManageInvoiceTable
 from velo.manager.views.permission_view import ManagerPermissionMixin
 from velo.payment.models import Price, Invoice
-from velo.registration.models import Application
-from velo.team.models import Team
+from velo.payment.utils import approve_payment
 from velo.velo.mixins.views import SingleTableViewWithRequest, CreateViewWithCompetition, \
     UpdateViewWithCompetition, SetCompetitionContextMixin
 
 __all__ = [
     'ManagePriceList', 'ManagePriceCreate', 'ManagePriceUpdate', 'ManageInvoiceList', 'ManageInvoice'
 ]
+
+def gather_participants(instance):
+    if instance.content_type.model == 'application':
+        invoice_data = instance.content_object.participant_set.all()
+    elif instance.content_type.model == 'team':
+        invoice_data = instance.content_object.members_set.all()
+    else:
+        invoice_data = None
+    return invoice_data
+
 
 class ManagePriceList(ManagerPermissionMixin, SingleTableViewWithRequest):
     model = Price
@@ -73,13 +81,16 @@ class ManageInvoiceList(ManagerPermissionMixin, SingleTableViewWithRequest):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
-        query_attrs = self.request.GET
+        query_attrs = self.request.GET.copy()
 
         if query_attrs.get('status'):
-            queryset = queryset.filter(status=query_attrs.get('status'))
+            queryset = queryset.filter(payment_set__status=query_attrs.get('status'))
 
+        if query_attrs.get('series'):
+            queryset = queryset.filter(series=query_attrs.get('series'))
+        else:
+            queryset = queryset.filter(series=self.competition.bill_series)
 
         if query_attrs.get('search'):
             slug = slugify(query_attrs.get('search'))
@@ -88,7 +99,7 @@ class ManageInvoiceList(ManagerPermissionMixin, SingleTableViewWithRequest):
                 Q(file__icontains=query_attrs.get('search'))
             )
 
-        return queryset.select_related('competition')
+        return queryset
 
 
 class ManageInvoice(ManagerPermissionMixin, SetCompetitionContextMixin, DetailView):
@@ -100,48 +111,22 @@ class ManageInvoice(ManagerPermissionMixin, SetCompetitionContextMixin, DetailVi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'basket': self.invoice_data()})
+        context.update({'participants': gather_participants(self.object.payment_set)})
+        context.update({'old_invoice': self.object.created < timezone.now() - timezone.timedelta(weeks=26)})
         return context
 
-    def invoice_data(self):
-        print(self.kwargs.get('pk2'))
-        try:
-            application = Application.objects.all().filter(competition_id=self.kwargs.get('pk'), invoice__pk=self.kwargs.get('pk2'))[0]
-            invoice_data = application.participant_set.all()
-            self.invoice_from = "Application"
-        except:
-            try:
-                team = Team.objects.all().filter(competition_id=self.kwargs.get('pk'), invoice__pk=self.kwargs.get('pk2'))[0]
-                invoice_data = team.participant_set.all()
-                self.invoice_from = "Team"
-            except:
-                return None
-
-        return invoice_data
-
-
-    @method_decorator(xframe_options_exempt)
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
     def process_post(self, request):
         action = request.POST.get('action', '')
-        if action == 'mark_as_payed':
-            self.object.status = Invoice.PAY_STATUS.payed
-            object = None
-            self.invoice_data()
-            if self.invoice_from == "Team":
-                object = Team.objects.all().filter(competition_id=self.kwargs.get('pk'), invoice__pk=self.kwargs.get('pk2'))[0]
-            elif self.invoice_from == "Application":
-                object = Application.objects.all().filter(competition_id=self.kwargs.get('pk'), invoice__pk=self.kwargs.get('pk2'))[0]
-            if object:
-                for participant in object.participant_set.all():
-                    participant.is_participating = True
-                    participant.save()
-                object.save()
-                self.object.save()
+        if action == 'mark_as_payed' and not self.object.created < timezone.now() - timezone.timedelta(weeks=26):
+            payment_object = self.object.payment_set
+            if approve_payment(payment_object):
+                payment_object.status = payment_object.STATUSES.ok
+                payment_object.save()
 
-    @method_decorator(xframe_options_exempt)
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.process_post(request)
