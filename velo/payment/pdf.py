@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle, Spacer
@@ -30,22 +27,19 @@ def numbers_in_latvian(number):
     ones = number % 10
     tens = (number - ones) % 100
     hundreds = (number - number % 100) // 100
-    if 0 < number < 100:
-        if number == 0:
-            str_number = names[ones]
-        elif number < 10:
-            str_number = names[number]
-        if tens == 10:
-            str_number = ('%s' % (names[tens+ones]))
-        elif number < 100:
-            str_number = ('%sdesmit %s' % (names[tens], '' if ones == 0 else names[ones]))
-    elif hundreds == 1:
-        str_number = 'viens simts ' + str_number
-    elif number < 1000:
-        str_number = ('%s simti ' % names[hundreds]) + str_number
-    else:
+    if tens == 10:
+        str_number = names[ones+tens]
+    elif tens == 0 and ones:
+        str_number = names[ones]
+    elif tens>10:
+        str_number = ('%sdesmit%s' % (names[tens], ' ' + names[ones] if ones else ""))
+    if hundreds:
+        if hundreds == 1:
+            str_number = 'viens simts ' + str_number
+        elif number < 1000:
+            str_number = ('%s simti ' % names[hundreds]) + str_number
+    elif not str_number:
         str_number = str(number)
-
     return str_number
 
 
