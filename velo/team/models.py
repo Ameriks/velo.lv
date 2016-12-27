@@ -53,8 +53,8 @@ class Team(StatusMixin, TimestampMixin, models.Model):
     company_regnr = models.CharField(_('Company number / SSN'), max_length=100, blank=True)
     company_address = models.CharField(_('Address'), max_length=100, blank=True)
     company_juridical_address = models.CharField(_('Juridical Address'), max_length=100, blank=True)
-    # external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
-    # external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
+    external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
+    external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
     invoice = models.ForeignKey('payment.Invoice', null=True, blank=True)
 
     class Meta:

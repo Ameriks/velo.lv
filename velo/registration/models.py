@@ -46,6 +46,9 @@ class Application(TimestampMixin, models.Model):
     company_address = models.CharField(_('Address'), max_length=100, blank=True)
     company_juridical_address = models.CharField(_('Juridical Address'), max_length=100, blank=True)
     invoice_show_names = models.BooleanField(_('Show participant names in invoice'), default=True)
+
+    external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
+    external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
     invoice = models.ForeignKey('payment.Invoice', null=True, blank=True)
 
     donation = models.DecimalField(_('Donation'), max_digits=20, decimal_places=2, default=0.0)
