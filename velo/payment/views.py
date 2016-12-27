@@ -247,11 +247,11 @@ class InvoiceDownloadView(ObjectDownloadView):
 
     def get_file(self):
         invoice = self.model.objects.get(slug=self.request.resolver_match.kwargs.get('slug'))
-
-        if not invoice.access_time or not invoice.access_ip:
-            if int(invoice.status) == 0:
-                invoice.status = 10
-            invoice.access_ip = get_client_ip(self.request)
-            invoice.access_time = datetime.datetime.now()
-            invoice.save()
+        if not self.request.user.has_perm('registration.add_number'):
+            if not invoice.access_time or not invoice.access_ip:
+                if invoice.payment_set.status == 10:
+                    invoice.payment_set.status = 20
+                invoice.access_ip = get_client_ip(self.request)
+                invoice.access_time = datetime.datetime.now()
+                invoice.save()
         return super(InvoiceDownloadView, self).get_file()

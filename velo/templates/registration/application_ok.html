@@ -38,7 +38,7 @@
                                             <div class="w100 bottom-margin--20">
                                                 <div class="row row--gutters-50">
                                                     {% if object.invoice %}
-                                                        <a href="{{ object.invoice.file.url }}" class="col-xl-24" download>
+                                                        <a href="/payment/invoice/{{ object.invoice.slug }}/" class="col-xl-24" download>
                                                             <div class="btn btn--50 btn--blue btn--blue-hover btn--blue-active btn--no-borders w100 bottom-margin--20">
                                                                 {% trans "To download invoice, press here." %}
                                                             </div>
