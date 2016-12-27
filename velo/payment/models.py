@@ -151,6 +151,7 @@ class Payment(TimestampMixin, models.Model):
 
 class Invoice(TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition', verbose_name=_('Competition'), blank=True, null=True)
+    payment_set = models.ForeignKey(Payment, verbose_name=_('Payment'), blank=True, null=True)
 
     company_name = models.CharField(_('Company name / Full Name'), max_length=100, blank=True)
     company_vat = models.CharField(_('VAT Number'), max_length=100, blank=True)
@@ -160,12 +161,6 @@ class Invoice(TimestampMixin, models.Model):
     email = models.EmailField(blank=True, max_length=254)
 
     invoice_show_names = models.BooleanField(_('Show participant names in invoice'), default=True)
-
-    PAY_STATUS = Choices((0, 'not_payed', _("Haven't Payed")),
-                         (10, 'waiting', _('Have opened invoice')),
-                         (20, 'payed', _('Payed')),
-                         (-10, 'cancelled', _('Cancelled')), )
-    status = models.SmallIntegerField(_('Payment Status'), default=PAY_STATUS.not_payed, choices=PAY_STATUS)
 
     slug = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
     file = models.FileField(_("Invoice URL"), upload_to=get_invoice_upload, default="")
