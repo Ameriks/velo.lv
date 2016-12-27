@@ -136,44 +136,52 @@ def get_form_message(competition, distance_id, year, insurance_id=None):
     return messages
 
 
-def generate_pdf_invoice(application, invoice_data):
-    invoice_save = Invoice.objects.create(
-        company_name=application.company_name,
-        company_vat=application.company_vat,
-        company_regnr=application.company_regnr,
-        company_address=application.company_address,
-        company_juridical_address=application.company_juridical_address,
-        email=application.email,
+def generate_pdf_invoice(instance, invoice_data, active_payment_type):
+    invoice_object = Invoice.objects.create(
+        competition=instance.competition,
+        company_name=instance.company_name,
+        company_vat=instance.company_vat,
+        company_regnr=instance.company_regnr,
+        company_address=instance.company_address,
+        company_juridical_address=instance.company_juridical_address,
+        email=instance.email,
         series=invoice_data.get('bill_series'),
     )
-    invoice_data.update({'name': invoice_save.invoice_nr})
+
+    invoice_object.payment_set = Payment.objects.create(
+        content_object=instance,
+        channel=active_payment_type,
+        total=instance.final_price,
+        status=Payment.STATUSES.new,
+    )
+    invoice_data.update({'name': invoice_object.invoice_nr})
     invoice = InvoiceGenerator(invoice_data)
     invoice_pdf = invoice.build()
-    invoice_save.file = ContentFile(invoice_pdf.read(), str("%s-%03d.pdf" % (invoice_save.series, invoice_save.number)))
-    invoice_save.save()
-    application.invoice = invoice_save
-    application.save()
+    invoice_object.file = ContentFile(invoice_pdf.read(), str("%s-%03d.pdf" % (invoice_object.series, invoice_object.number)))
+    invoice_object.save()
+    instance.invoice = invoice_object
+    instance.save()
     total_price = 0
     for item in invoice_data.get('items'):
         total_price += item.get('price')
     invoice_data.update({'total_price': total_price})
 
-    if application.competition.level == 2:
-        primary_competition = application.competition.parent
+    if instance.competition.level == 2:
+        primary_competition = instance.competition.parent
     else:
-        primary_competition = application.competition
+        primary_competition = instance.competition
 
     context = {
-        'application': application,
-        'competitions': application.competition,
+        'application': instance,
+        'competitions': instance.competition,
         'competition': primary_competition,
         'domain': settings.MY_DEFAULT_DOMAIN,
         'invoice': invoice_data,
-        'url': "{0}/payment/invoice/{1}/".format(settings.MY_DEFAULT_DOMAIN, invoice_save.slug)
+        'url': "{0}/payment/invoice/{1}/".format(settings.MY_DEFAULT_DOMAIN, invoice_object.slug)
     }
 
     try:
-        language = application.language
+        language = instance.language
     except:
         language = 'lv'
     activate(language)
@@ -181,16 +189,16 @@ def generate_pdf_invoice(application, invoice_data):
     template_txt = render_to_string('payment/email/invoice_email_lv.txt', context)
 
     email_data = {
-        'subject': _('VELO.LV application #%i') % application.id,
+        'subject': _('VELO.LV application #%i') % instance.id,
         'message': template_txt,
         'from_email': settings.SERVER_EMAIL,
-        'recipient_list': [application.email, ],
+        'recipient_list': [instance.email, ],
         'html_message': template,
     }
 
     send_mail(**email_data)
 
-    return invoice_pdf
+    return invoice_object
 
 def create_team_invoice(team, active_payment_type, action="send"):
     due_date = datetime.datetime.now() + datetime.timedelta(days=7)
@@ -219,8 +227,7 @@ def create_team_invoice(team, active_payment_type, action="send"):
         "invoice_date": datetime.datetime.now(),
         "due_date": due_date,
         "currency": "EUR",
-        "invoice_creator": active_payment_type.payment_channel.payment_channel,
-        "language": active_payment_type.payment_channel.payment_channel,
+        "language": "LV",
         "payment_type": "Pārskaitījums",
         "kind": "2",
         "items": [{
@@ -236,7 +243,8 @@ def create_team_invoice(team, active_payment_type, action="send"):
         "comments": "Nesaņemot apmaksu līdz norādītajam termiņam, rēķins zaudē spēku un dalībnieki starta sarakstā neparādās, kā arī netiek pielaisti pie starta.",
         "action": action
     }
-    invoice_pdf = generate_pdf_invoice(team, invoice_data)
+    invoice_pdf = generate_pdf_invoice(team, invoice_data, active_payment_type)
+
     return invoice_pdf
 
 
@@ -268,8 +276,7 @@ def create_application_invoice(application, active_payment_type, action="send"):
                 "description": "&nbsp;-&nbsp;Apdrošināšana %(insurance)s" % {
                     "insurance": participant.insurance,
                 },
-                "vat": getattr(settings,
-                               "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
+                "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
                 "units": "gab.",
                 "amount": "1",
                 "price": get_insurance_fee_from_insurance(participant.competition, participant.insurance)
@@ -319,8 +326,8 @@ def create_application_invoice(application, active_payment_type, action="send"):
         "invoice_date": now,
         "due_date": due_date,
         "currency": "EUR",
-        "invoice_creator": active_payment_type.payment_channel.payment_channel,
-        "language": active_payment_type.payment_channel.payment_channel,
+        "language": "LV",
+        "payment_channel": active_payment_type.payment_channel.payment_channel,
         "payment_type": "Pārskaitījums",
         "kind": "2",
         "items": items,
@@ -331,9 +338,9 @@ def create_application_invoice(application, active_payment_type, action="send"):
         "comments": "Nesaņemot apmaksu līdz norādītajam termiņam, rēķins zaudē spēku un dalībnieki starta sarakstā neparādās, kā arī netiek pielaisti pie starta.",
         "action": action
     }
-    invoice_pdf = generate_pdf_invoice(application, invoice_data)
+    invoice_object = generate_pdf_invoice(application, invoice_data, active_payment_type)
 
-    return invoice_pdf
+    return invoice_object
 
 
 def create_team_bank_transaction(team, active_payment_type):
