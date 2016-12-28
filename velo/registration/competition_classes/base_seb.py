@@ -3,6 +3,7 @@ import math
 import csv
 from django.db import connection
 from django.utils.translation import activate
+from django.utils import timezone
 from sitetree.utils import item
 from velo.core.models import Log
 
@@ -86,16 +87,22 @@ class SEBCompetitionBase(CompetitionScriptBase):
     def build_menu(self, lang):
         activate(lang)
         current_date = datetime.date.today()
+
+        allchildren = list(self.competition.get_children().order_by('-competition_date'))
+
         child_items = [
             item(_("Teams"), 'competition:team %i' % self.competition.id, children=[
                 item('{{ object }}', 'competition:team %i object.id' % self.competition.id, in_menu=False),
             ]),
             item(_("Standings"), 'competition:standings_list %i' % self.competition.id),
-            item(_("Team Standings"), 'competition:team_standings_list %i' % self.competition.id, in_menu=False)
+            item(_("Team Standings"), 'competition:team_standings_list %i' % self.competition.id, in_menu=False),
         ]
-        self.build_flat_pages(self.competition, child_items, lang)
 
-        allchildren = list(self.competition.get_children().order_by('-competition_date'))
+        # If there is still active complex payment, then we should show start list from 1st stage.
+        if self.competition.complex_payment_enddate > timezone.now():
+            child_items.append(item(_("Start List"), 'competition:participant_list %i' % allchildren[-1].id))
+
+        self.build_flat_pages(self.competition, child_items, lang)
 
         for index, child in enumerate(allchildren, start=1):
             if index < len(allchildren) and allchildren[index].competition_date > current_date:
@@ -359,6 +366,8 @@ class SEBCompetitionBase(CompetitionScriptBase):
         if recalculate_places:
             self.assign_standing_places()
             self.recalculate_team_results()
+
+        self.assign_result_place()
 
     def calculate_points_distance(self, result, top_result=None):
         """

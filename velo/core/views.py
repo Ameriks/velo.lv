@@ -13,6 +13,7 @@ from django.db.models import Count, F
 from django_downloadview import ObjectDownloadView
 from braces.views import LoginRequiredMixin
 from easy_thumbnails.alias import aliases
+from easy_thumbnails.exceptions import InvalidImageFormatError
 
 from velo.advert.models import Banner
 from velo.core.forms import UserProfileForm
@@ -126,8 +127,11 @@ class CompetitionDetail(SetCompetitionContextMixin, DetailView):
             albums_query = Album.objects.filter(competition__tree_id=self.object.tree_id, is_processed=True).extra(select={
                 'is_current': "CASE WHEN competition_id = %s Then true ELSE false END"
             }, select_params=(self.object.id,)).order_by('-is_current', '-gallery_date', '-id')[:6]
-            albums = [(obj.id,  obj.primary_image.image.get_thumbnail(aliases.get('thumb', target=obj.primary_image.image), silent_template_exception=True).url) for obj in albums_query]
-            cache.set(cache_key, albums)
+            try:
+                albums = [(obj.id,  obj.primary_image.image.get_thumbnail(aliases.get('thumb', target=obj.primary_image.image), silent_template_exception=True).url) for obj in albums_query]
+                cache.set(cache_key, albums)
+            except InvalidImageFormatError:
+                albums = []
         context.update({'galleries': albums})
 
         # Showing latest featured video in current/parent competition
