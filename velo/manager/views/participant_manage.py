@@ -106,7 +106,7 @@ class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
                 Q(participant__team_name__icontains=query_attrs.get('search').initial.upper())
             )
 
-        queryset = queryset.select_related('competition').distinct()
+        queryset = queryset.select_related('competition').defer('competition__params').distinct()
         return queryset
 
 
@@ -223,7 +223,7 @@ class ManagePreNumberAssignList(ManagerPermissionMixin, SingleTableViewWithReque
         queryset = super(ManagePreNumberAssignList, self).get_queryset()
         queryset = queryset.filter(competition_id=self.competition.id)
 
-        queryset = queryset.select_related('competition', 'distance').distinct()
+        queryset = queryset.select_related('competition', 'distance').defer('competition__params').distinct()
         return queryset
 
 
