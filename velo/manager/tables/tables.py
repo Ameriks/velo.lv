@@ -7,7 +7,7 @@ from django_tables2.columns import LinkColumn, Column
 from django_tables2.utils import A
 
 from velo.core.models import Competition
-from velo.payment.models import Price
+from velo.payment.models import Price, Invoice
 from velo.results.models import DistanceAdmin, UrlSync
 from velo.team.models import MemberApplication, Team
 from velo.velo.mixins.table import GetRequestTableKwargs
@@ -241,6 +241,8 @@ class ManageMemberApplicationTable(GetRequestTableKwargs, tables.Table):
 
 
 class ManageApplicationTable(GetRequestTableKwargs, tables.Table):
+    invoice_nr = tables.Column(accessor="invoice.invoice_nr", order_by=("invoice.series", "invoice.number"), )
+
     def render_payment_status(self, record, **kwargs):
         url = reverse('manager:application', kwargs={'pk': self.request_kwargs.get('pk'), 'pk2': record.id})
         return mark_safe('<a href="%s">%s</a>' % (url, record.get_payment_status_display()))
@@ -248,7 +250,7 @@ class ManageApplicationTable(GetRequestTableKwargs, tables.Table):
     class Meta:
         model = Application
         attrs = {"class": "table table-striped table-hover"}
-        fields = ("competition", "payment_status", "discount_code", "email", "external_invoice_nr",)
+        fields = ("competition", "payment_status", "discount_code", "email",)
         empty_text = _("There are no applications")
         # order_by = ("-created")
         per_page = 100
@@ -299,5 +301,18 @@ class ChangedNameTable(GetRequestTableKwargs, tables.Table):
         attrs = {"class": "table table-striped table-hover"}
         fields = ("id", "slug", "new_slug",)
         empty_text = _("There are no records.")
+        per_page = 100
+        template = "bootstrap/table.html"
+
+
+class ManageInvoiceTable(GetRequestTableKwargs, tables.Table):
+
+    status = LinkColumn('manager:invoice', args=[A('competition_id'), A('id')], accessor="payment_set.status", verbose_name=_('Invoice status'), )
+
+    class Meta:
+        model = Invoice
+        attrs = {"class": "table table-striped table-hover"}
+        fields = ("id", "status", "file", "series", "number")
+        empty_text = _("There are no invoice records.")
         per_page = 100
         template = "bootstrap/table.html"

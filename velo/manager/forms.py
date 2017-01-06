@@ -19,7 +19,7 @@ from velo.manager.select2_fields import NumberChoices, UserChoices, NumberAllCho
 from velo.manager.tasks import update_results_for_participant
 from velo.manager.widgets import PhotoPickWidget
 from velo.news.models import News
-from velo.payment.models import ActivePaymentChannel, Price
+from velo.payment.models import ActivePaymentChannel, Price, Invoice
 from velo.payment.utils import create_application_invoice
 from velo.registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
 from velo.results.models import DistanceAdmin, Result, LapResult, UrlSync
@@ -42,7 +42,7 @@ class InvoiceCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
         try:
             active_payment_type = ActivePaymentChannel.objects.filter(competition=instance.competition, payment_channel__is_bill=True)[:1]
             if active_payment_type:
-                instance.external_invoice_code, instance.external_invoice_nr = create_application_invoice(instance, active_payment_type[0], action="approve")
+                create_application_invoice(instance, active_payment_type[0], action="approve")
             else:
                 self._errors['company_name'] = self.error_class([_("There is not created invoice link for this competition.")])
         except:
@@ -1267,3 +1267,55 @@ class NewsForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.instance.modified_by = self.request.user
 
         return super(NewsForm, self).save(commit)
+
+
+class InvoiceListSearchForm(RequestKwargModelFormMixin, forms.Form):
+    search = forms.CharField(required=False)
+    status = forms.ChoiceField(choices=(), required=False)
+    series = forms.ChoiceField(choices=(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        competition = kwargs.pop('competition', None)
+        super().__init__(*args, **kwargs)
+
+        # Series dropdown
+        series_list = [('', '------')]
+        for series in Invoice.objects.order_by().values('series').distinct():
+            series_list.append((series.get('series'), series.get('series')))
+
+        self.fields['series'].choices = series_list
+
+        self.fields['status'].choices = [('', '------'), (0, 'Nav apmaksāts'), (10, 'Gaida maksājumu'), (20, 'Apmaksāts')]
+
+        self.fields['status'].initial = self.request.GET.get('status', '')
+        self.fields['search'].initial = self.request.GET.get('search', '')
+        self.fields['series'].initial = self.request.GET.get('series', competition.bill_series)
+
+        self.helper = FormHelper()
+        self.helper.form_class = 'invoice-search-form'
+        self.helper.form_tag = True
+        self.helper.form_method = "GET"
+        self.helper.layout = Layout(
+            Row(
+                Div(
+                    'search',
+                    css_class='col-xs-4',
+                ),
+                Div(
+                    'status',
+                    css_class='col-xs-4',
+                ),
+                Div(
+                    'series',
+                    css_class='col-xs-4',
+                ),
+                Div(
+                    Div(
+                        StrictButton('<span data-icon="&#xe090;"></span> Meklēt', css_class="btn-u btn-u-blue", type="submit"),
+                        css_class="buttons",
+                    ),
+                    css_class='col-xs-4',
+                ),
+            ),
+        )
+
