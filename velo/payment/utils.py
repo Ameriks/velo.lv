@@ -17,7 +17,8 @@ from urllib.parse import quote
 from premailer import transform
 
 from velo.core.models import Insurance, Log
-from velo.payment.models import Payment, Invoice
+from velo.payment.bank import FirstDataIntegration
+from velo.payment.models import Payment, Invoice, Transaction
 from velo.payment.pdf import InvoiceGenerator
 from velo.registration.models import Application
 from velo.velo.utils import SessionWHeaders
@@ -343,67 +344,40 @@ def create_application_invoice(application, active_payment_type, action="send"):
     return invoice_object
 
 
-def create_team_bank_transaction(team, active_payment_type):
-    prefix = active_payment_type.payment_channel.erekins_url_prefix
+def create_bank_transaction(instance, active_payment_type, request):
+    instance_name = instance.__class__.__name__
+    if instance_name == 'Application':
+        information = "Pieteikums nr.%i" % instance.id \
+            if not instance.invoice else "Rekins nr.%s" % instance.invoice.invoice_nr
+        information += (" + %s" % instance.competition.params_dict.get("donation", {}).get("bank_code", "Ziedojums - %s")) % instance.donation
+    elif instance_name == 'Team':
+        information = "Komandas %s profila apmaksa %s" % (str(instance), instance.distance.competition.get_full_name) \
+            if not instance.invoice else "Rekins nr.%s" % instance.invoice.invoice_nr
 
-    # Create new requests session with Auth keys and prepended url
-    session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key},
-                              url="https://%s.e-rekins.lv" % prefix)
+    transaction = Transaction.objects.create(
+        link=active_payment_type.payment_channel,
+        payment_set=Payment.objects.create(
+                content_object=instance,
+                channel=active_payment_type,
+                total=instance.final_price,
+                status=Payment.STATUSES.pending,
+                donation=instance.donation if hasattr(instance, "donation") else 0.0
+            ),
+        status=Transaction.STATUSES.new,
+        amount=instance.final_price,
+        created_ip=get_client_ip(request),
+        information=information,
+    )
+    if active_payment_type.payment_channel.title == "FirstData":
+        link = FirstDataIntegration(transaction).response()
+    elif active_payment_type.payment_channel.title == "IBanka":
+        pass
+    elif active_payment_type.payment_channel.title == "Swedbanka":
+        pass
+    else:
+        generate_pdf_invoice()
 
-    information = "Komandas %s profila apmaksa %s" % (str(team),
-                                                      team.distance.competition.get_full_name) if not team.invoice else "Rekins nr.%s" % team.invoice.invoice_nr
-
-    bank_data = {
-        "information": information,
-        "integration_id": team.id,
-        "amount": float(team.final_price),
-        "link": active_payment_type.payment_channel.erekins_link,
-    }
-
-    transaction_obj = session.post("/api/v1/transaction/", data=json.dumps(bank_data))
-    transaction_obj.raise_for_status()
-    transaction = transaction_obj.json()
-
-    Payment.objects.create(content_object=team,
-                           channel=active_payment_type,
-                           erekins_code=transaction.get('code'),
-                           total=team.final_price,
-                           status=Payment.STATUSES.pending, )
-
-    return "https://%s.e-rekins.lv/bank/%s/" % (prefix, transaction.get('code'))
-
-
-def create_application_bank_transaction(application, active_payment_type):
-    prefix = active_payment_type.payment_channel.erekins_url_prefix
-
-    # Create new requests session with Auth keys and prepended url
-    session = SessionWHeaders({'Authorization': 'ApiKey %s' % active_payment_type.payment_channel.erekins_auth_key},
-                              url="https://%s.e-rekins.lv" % prefix)
-
-    information = "Pieteikums nr.%i" % application.id if not application.invoice else "Rekins nr.%s" % application.invoice.invoice_nr
-    if application.donation > 0:
-        information += (" + %s" % application.competition.params_dict.get('donation', {}).get('bank_code',
-                                                                                         'Ziedojums - %s')) % application.donation
-
-    bank_data = {
-        "information": information,
-        "integration_id": application.id,
-        "amount": float(application.final_price),
-        "link": active_payment_type.payment_channel.erekins_link,
-    }
-
-    transaction_obj = session.post("/api/v1/transaction/", data=json.dumps(bank_data))
-    transaction_obj.raise_for_status()
-    transaction = transaction_obj.json()
-
-    Payment.objects.create(content_object=application,
-                           channel=active_payment_type,
-                           erekins_code=transaction.get('code'),
-                           total=application.final_price,
-                           status=Payment.STATUSES.pending,
-                           donation=application.donation)
-
-    return "https://%s.e-rekins.lv/bank/%s/" % (prefix, transaction.get('code'))
+    return link.url
 
 
 def approve_payment(payment, user=False, request=None):

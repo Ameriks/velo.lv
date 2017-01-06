@@ -3,17 +3,20 @@ import datetime
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView, UpdateView, View
 from django.views.generic.edit import BaseUpdateView
 from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
+from django.views.decorators.csrf import csrf_exempt
 from django_downloadview import ObjectDownloadView
 
 from braces.views import JsonRequestResponseMixin, LoginRequiredMixin
 
 from velo.core.models import Competition
+from velo.payment.bank import FirstDataIntegration
 from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
-from velo.payment.models import Payment, Invoice
+from velo.payment.models import Payment, Invoice, Transaction
 from velo.payment.utils import get_form_message, validate_payment, \
     get_participant_fee_from_price, get_insurance_fee_from_insurance, get_client_ip
 from velo.registration.models import Application
@@ -239,8 +242,6 @@ class PaymentReturnView(NeverCacheMixin, DetailView):
                 return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': self.object.content_object.id}))
         return validate_payment(self.object, user=True, request=request)
 
-# invoice_download_view = ObjectDownloadView.as_view(model=Invoice, basename="invoice.pdf")
-
 
 class InvoiceDownloadView(ObjectDownloadView):
     model = Invoice
@@ -255,3 +256,12 @@ class InvoiceDownloadView(ObjectDownloadView):
                 invoice.access_time = datetime.datetime.now()
                 invoice.save()
         return super(InvoiceDownloadView, self).get_file()
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FirstDataReturnView(View):
+
+    def post(self, request, *args, **kwargs):
+        transaction = Transaction.objects.filter(external_code=self.request.POST.get("trans_id")).get()
+        first_data = FirstDataIntegration(transaction)
+        return first_data.verify_return(request)

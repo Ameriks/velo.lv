@@ -13,8 +13,8 @@ from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML, Field
 from crispy_forms.helper import FormHelper
 
 from velo.payment.models import ActivePaymentChannel, Payment
-from velo.payment.utils import create_application_invoice, create_application_bank_transaction, create_team_invoice, \
-    create_team_bank_transaction, approve_payment
+from velo.payment.utils import create_application_invoice, create_bank_transaction, create_team_invoice, \
+     approve_payment
 from velo.payment.widgets import PaymentTypeWidget, DoNotRenderWidget
 from velo.registration.models import Application
 from velo.velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
@@ -67,7 +67,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                         messages.info(self.request,
                                       _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
                     else:
-                        self.success_url = create_application_bank_transaction(instance, active_payment_type)
+                        self.success_url = create_bank_transaction(instance, active_payment_type, self.request)
 
             except:
                 # TODO We need to catch exception and log it to sentry
@@ -286,7 +286,7 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
                     messages.info(self.request,
                                   _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
                 else:
-                    self.success_url = create_team_bank_transaction(instance, active_payment_type)
+                    self.success_url = create_bank_transaction(instance, active_payment_type, self.request)
 
             except:
                 #     TODO We need to catch exception and log it to sentry

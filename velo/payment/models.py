@@ -102,6 +102,19 @@ class PaymentChannel(models.Model):
     is_bill = models.BooleanField(default=False)
     params = JSONField(default={})
 
+    url = models.CharField(max_length=255, blank=True)
+    server_url = models.CharField(max_length=255, blank=True)
+
+    account = models.CharField(max_length=100, blank=True)
+
+    public_key = models.TextField(blank=True)
+
+    key_file = models.FileField(null=True, blank=True)
+    cert_file = models.FileField(null=True, blank=True)
+
+    private_key = models.TextField(blank=True)
+    certificate_password = models.CharField(max_length=255, blank=True)
+
     def __str__(self):
         return ugettext(self.title)
 
@@ -185,3 +198,46 @@ class Invoice(TimestampMixin, models.Model):
 
     class Meta:
         unique_together = ("series", "number")
+
+
+class Transaction(TimestampMixin, models.Model):
+    STATUSES = Choices(
+        (-70, 'id_not_found', _('ID not found')),
+        (-60, 'error', _('Error')),
+        (-50, 'failed', _('Failed')),
+        (-40, 'declined', _('Declined')),
+        (-30, 'timeout', _('Timeout')),
+        (-20, 'cancelled', _('Cancelled')),
+        (-10, 'reversed', _('Reversed')),
+        (10, 'new', _('New')),
+        (20, 'pending', _('Pending')),
+        (30, 'ok', _('OK')),
+    )
+    link = models.ForeignKey(PaymentChannel)
+    payment_set = models.ForeignKey(Payment)
+    code = models.CharField(max_length=36, default=uuid.uuid4, unique=True)
+    status = models.SmallIntegerField(choices=STATUSES, default=STATUSES.new)
+    external_code = models.CharField(max_length=50, blank=True)
+    external_code_requested = models.DateTimeField(blank=True, null=True)
+
+    amount = models.DecimalField(_("Total amount"), max_digits=20, decimal_places=2, default=0.0)
+
+    information = models.CharField(max_length=255, blank=True)
+
+    language = models.CharField(max_length=10, default="LVL")
+
+    created_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    server_response_at = models.DateTimeField(blank=True, null=True)
+    user_response_at = models.DateTimeField(blank=True, null=True)
+
+    server_response = models.TextField(blank=True)
+    user_response = models.TextField(blank=True)
+
+    returned_user_ip = models.GenericIPAddressField(blank=True, null=True)
+    returned_server_ip = models.GenericIPAddressField(blank=True, null=True)
+
+    should_be_reviewed = models.BooleanField(default=False)  # This is set if something is weird in transaction.
+
+    integration_id = models.CharField(max_length=50, blank=True)
+
