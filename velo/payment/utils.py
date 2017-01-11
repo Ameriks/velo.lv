@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+import logging
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, Http404
 from django.utils import timezone
 from django.conf import settings
@@ -11,13 +13,11 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, activate
 
-import json
 import datetime
 from urllib.parse import quote
 from premailer import transform
 
 from velo.core.models import Insurance, Log
-from velo.payment.bank import FirstDataIntegration
 from velo.payment.models import Payment, Invoice, Transaction
 from velo.payment.pdf import InvoiceGenerator
 from velo.registration.models import Application
@@ -368,16 +368,8 @@ def create_bank_transaction(instance, active_payment_type, request):
         created_ip=get_client_ip(request),
         information=information,
     )
-    if active_payment_type.payment_channel.title == "FirstData":
-        link = FirstDataIntegration(transaction).response()
-    elif active_payment_type.payment_channel.title == "IBanka":
-        pass
-    elif active_payment_type.payment_channel.title == "Swedbanka":
-        pass
-    else:
-        generate_pdf_invoice()
 
-    return link.url
+    return reverse('payment:transaction', kwargs=({'slug': transaction.code}))
 
 
 def approve_payment(payment, user=False, request=None):
@@ -484,3 +476,18 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+logger = logging.getLogger('submission')
+
+
+def log_message(action, message='', params='{}', user=None, object=None):
+    try:
+        log = Log(action=action, message=message, params=params)
+        if user:
+            log.user = user
+        if object:
+            log.content_type = ContentType.objects.get(app_label="bank", model__iexact=object.__class__.__name__)
+            log.object_id = object.id
+        log.save()
+    except:
+        logger.exception("Exception writing logs")
