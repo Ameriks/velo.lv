@@ -1,5 +1,6 @@
 import datetime
 
+from braces.views import CsrfExemptMixin
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
@@ -14,7 +15,7 @@ from django_downloadview import ObjectDownloadView
 from braces.views import JsonRequestResponseMixin, LoginRequiredMixin
 
 from velo.core.models import Competition
-from velo.payment.bank import FirstDataIntegration
+from velo.payment.bank import FirstDataIntegration, SwedbankIntegration, IBankIntegration
 from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
 from velo.payment.models import Payment, Invoice, Transaction
 from velo.payment.utils import get_form_message, validate_payment, \
@@ -265,3 +266,78 @@ class FirstDataReturnView(View):
         transaction = Transaction.objects.filter(external_code=self.request.POST.get("trans_id")).get()
         first_data = FirstDataIntegration(transaction)
         return first_data.verify_return(request)
+
+
+class TransactionReturnView(CsrfExemptMixin, View):
+    integration_object = None
+
+    def get(self, request, *args, **kwargs):
+        transaction = Transaction.objects.get(code=kwargs.get('code'))
+
+        if transaction.link.title == "Swedbank":
+            self.integration_object = SwedbankIntegration()
+        elif transaction.link.title == "IBanka":
+            self.integration_object = IBankIntegration()
+        elif transaction.link.title == "FirstData":
+            self.integration_object = FirstDataIntegration()
+            pass
+        else:
+            raise Exception("Unknown bank")
+
+        if not request.GET:
+            raise Http404
+
+        return self.integration_object.verify_return(request)
+
+    def post(self, request, *args, **kwargs):
+        transaction = Transaction.objects.get(code=kwargs.get('code'))
+
+        if transaction.link.title == "Swedbank":
+            self.integration_object = SwedbankIntegration()
+        elif transaction.link.title == "IBanka":
+            self.integration_object = IBankIntegration()
+        elif transaction.link.title == "FirstData":
+            self.integration_object = FirstDataIntegration()
+            pass
+        else:
+            raise Exception("Unknown bank")
+
+        if not request.GET and not request.POST:
+            raise Http404
+
+        return self.integration_object.verify_return(request)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TransactionRedirectView(DetailView):
+    model = Transaction
+    slug_field = 'code'
+    integration_object = None
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.status not in (Transaction.STATUSES.new, Transaction.STATUSES.pending):
+            raise Http404('Transaction already finished.')
+
+        if self.object.link.title == "Swedbank":
+            self.integration_object = SwedbankIntegration(transaction=self.object)
+        elif self.object.link.title == "IBanka":
+            self.integration_object = IBankIntegration(transaction=self.object)
+        elif self.object.link.title == "FirstData":
+            self.integration_object = FirstDataIntegration(transaction=self.object)
+            pass
+        else:
+            raise Exception("Unknown bank")
+
+        response = self.integration_object.response()
+
+        if isinstance(response, str):
+            context = self.get_context_data(object=self.object, response=response)
+            return self.render_to_response(context)
+        else:
+            return response
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'form': self.integration_object.generate_form(), 'form_action': self.object.link.url})
+        return context
