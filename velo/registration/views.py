@@ -286,7 +286,7 @@ class CompanyApplicationDetail(NeverCacheMixin, LoginRequiredMixin, SingleTableV
         competition = self.companyapplication.competition
         return Competition.objects.filter(Q(id=competition.id) | Q(parent_id=competition.id)).filter(
             Q(complex_payment_enddate__gt=now) | Q(price__end_registering__gt=now,
-                                                   price__start_registering__lte=now)).distinct().order_by(
+                                                   price__start_registering__lte=now)).defer("params").distinct().order_by(
             'complex_payment_enddate', 'competition_date')
 
     def get(self, request, *args, **kwargs):
