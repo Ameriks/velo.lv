@@ -486,7 +486,7 @@ def log_message(action, message='', params='{}', user=None, object=None):
         if user:
             log.user = user
         if object:
-            log.content_type = ContentType.objects.get(app_label="bank", model__iexact=object.__class__.__name__)
+            log.content_type = ContentType.objects.get(app_label="payment", model__iexact=object.__class__.__name__)
             log.object_id = object.id
         log.save()
     except:
