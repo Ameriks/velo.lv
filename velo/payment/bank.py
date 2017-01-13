@@ -1,5 +1,7 @@
-import requests
 import datetime
+import json
+import pytz
+import requests
 
 from base64 import b64encode, b64decode
 
@@ -16,7 +18,7 @@ from django.utils.safestring import SafeText
 from OpenSSL.crypto import load_certificate, load_privatekey, FILETYPE_PEM
 from OpenSSL import crypto
 
-from velo.payment.models import Transaction
+from velo.payment.models import Transaction, PaymentChannel, DailyTransactionTotals
 from velo.payment.utils import log_message, get_client_ip
 
 
@@ -143,8 +145,10 @@ class FirstDataIntegration(BankIntegrationBase):
             return super.final_redirect(False)
         else:
             self.transaction.user_response = status_dict.get('RESULT')
+            self.transaction.server_response = self.transaction.user_response
             self.transaction.returned_user_ip = get_client_ip(request)
             self.transaction.user_response_at = timezone.now()
+            self.transaction.server_response_at = self.transaction.user_response_at
             self.transaction.status = self.get_transaction_status(status_dict.get('RESULT'))
             self.transaction.save()
             return super().final_redirect(status_dict.get('RESULT') == 'OK')
@@ -384,7 +388,8 @@ class SEBPaymentRequestForm(PaymentRequestForm):
             'IB_AMOUNT': float(self.transaction.amount),
             'IB_CURR': 'EUR',
             'IB_PAYMENT_DESC': self.transaction.information,
-            'IB_FEEDBACK': "%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('first_data_return')),
+            'IB_FEEDBACK': "%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('payment:transaction_done', 
+                                                                         kwargs={'code': self.transaction.code})),
             'IB_LANG': self.transaction.language,
         })
 
@@ -488,3 +493,56 @@ class IBankIntegration(BankIntegrationBase):
                 return super().final_redirect(status_dict.get('IB_STATUS') == 'ACCOMPLISHED')
             else:
                 return HttpResponse('Something went wrong')
+
+
+def close_business_day():
+    riga_tz = pytz.timezone("Europe/Riga")
+    dt = timezone.now()
+    end_date = datetime.datetime.now(riga_tz).replace(hour=0, minute=0, second=0, microsecond=0)
+    start_date = datetime.datetime.now(riga_tz).replace(day=dt.day - 1, hour=0, minute=0, second=0, microsecond=0)
+    datetime.datetime.now(riga_tz)
+    
+    transactions = Transaction.objects.filter(
+        status=Transaction.STATUSES.ok,
+        user_response_at__range=[start_date, end_date]
+    ).values('link_id', 'amount')
+    
+    payment_totals_by_bank = {}
+    for trans in transactions:
+        link_id = trans.get('link_id')
+        if trans.get('link_id') in payment_totals_by_bank:
+            amount = payment_totals_by_bank.get(link_id)
+            payment_totals_by_bank.update({link_id: amount + trans.get('amount')})
+        else:
+            payment_totals_by_bank.update({link_id: trans.get('amount')})
+    
+    payment_channel_ids = PaymentChannel.objects.all().values('id', 'title').order_by('id')
+    
+    for channel in payment_channel_ids:
+        reported_totals = 0
+        params = {}
+
+        if channel.get('title') == "FirstData":
+            try:
+                payment_channel_object = PaymentChannel.objects.filter(pk=4).get()
+                resp = requests.post(
+                    payment_channel_object.server_url,
+                    cert=(payment_channel_object.cert_file.path, payment_channel_object.key_file.path),
+                    data={'command': 'b'},
+                    verify=False, )
+                params = {}
+                for field in resp.text.split('\n'):
+                    values = field.split(': ')
+                    params.update({values[0]: values[1]})
+                reported_totals = params.get('FLD_086') + params.get('FLD_088')
+                params = json.dumps(params)
+            except:
+                continue
+    
+        DailyTransactionTotals.objects.create(
+            date=None,
+            channel=PaymentChannel.objects.filter(pk=channel.get('id')),
+            calculated_total=payment_totals_by_bank.get(channel.get('id'), default=0),
+            reported_total=reported_totals,
+            params=params
+        )

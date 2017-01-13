@@ -241,3 +241,11 @@ class Transaction(TimestampMixin, models.Model):
 
     integration_id = models.CharField(max_length=50, blank=True)
 
+
+class DailyTransactionTotals(TimestampMixin, models.Model):
+    date = models.DateTimeField(default=datetime.datetime.now(), blank=False, null=False)
+    channel = models.ForeignKey(PaymentChannel)
+    calculated_total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0, blank=False, null=False)
+    reported_total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0, blank=False, null=False)
+    params = JSONField(default={}, null=False, blank=False)
+
