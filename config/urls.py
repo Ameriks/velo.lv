@@ -4,7 +4,7 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 from django.core.cache import cache
 from django.db.utils import ProgrammingError
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import RedirectView
 from django.utils.translation import ugettext_lazy as _
@@ -105,3 +105,7 @@ if settings.DEBUG:
         urlpatterns += [
             url(r'^rosetta/', include('rosetta.urls')),
         ]
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

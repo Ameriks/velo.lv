@@ -7,7 +7,8 @@ from velo.core.models import Distance
 from velo.payment.models import Invoice, Payment, ActivePaymentChannel
 from velo.team.models import Team
 
-def ImportErekinsTeamInvoices(apps, schema_editor):
+
+def import_erekins_invoices(apps, schema_editor):
     bill_payment = Team.objects.exclude(external_invoice_code='')
 
     for bill in bill_payment:
@@ -53,6 +54,7 @@ def ImportErekinsTeamInvoices(apps, schema_editor):
         bill.invoice = invoice_object
         bill.save()
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -61,5 +63,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(ImportErekinsTeamInvoices),
+        migrations.RunPython(import_erekins_invoices),
     ]

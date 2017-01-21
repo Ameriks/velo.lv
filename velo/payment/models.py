@@ -9,13 +9,38 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext, ugettext_lazy as _
 from model_utils import Choices
+from slugify import slugify
 
 from velo.velo.mixins.models import TimestampMixin
 import os
 
+import logging
+from django.db import connection
+
+logger = logging.getLogger('velo.payment')
+
+
+def _get_next_sequence_value(series, kind="payment"):
+    if not series or series == "":
+        return False
+
+    series = slugify(series, only_ascii=True, ok="_")
+    cursor = connection.cursor()
+    sequence_name = "%s_sequence_%s" % (kind, series)
+    cursor.execute('CREATE SEQUENCE IF NOT EXISTS %s START 1;' % sequence_name)
+    cursor.execute("SELECT nextval('%s');" % sequence_name)
+    return cursor.fetchone()[0]
+
 
 def get_invoice_upload(instance, filename):
-    return os.path.join("payment", "invoice", str(datetime.date.today().year), filename)
+    series = instance.series
+    if not series or series == "":
+        series = "unknown"
+    return os.path.join("payment", "invoice", series, filename)
+
+
+def current_year():
+    return datetime.date.today().year
 
 
 class ActivePriceManager(models.Manager):
@@ -176,7 +201,7 @@ class Invoice(TimestampMixin, models.Model):
     invoice_show_names = models.BooleanField(_('Show participant names in invoice'), default=True)
 
     slug = models.CharField(max_length=50, default=uuid.uuid4, unique=True)
-    file = models.FileField(_("Invoice URL"), upload_to=get_invoice_upload, default="")
+    file = models.FileField(_("Invoice"), upload_to=get_invoice_upload, blank=True)
     series = models.CharField(_('Competition series'), max_length=10, blank=True)
     number = models.IntegerField(_('Series invoice number'), null=True, blank=True)
 
@@ -187,13 +212,12 @@ class Invoice(TimestampMixin, models.Model):
     def invoice_nr(self):
         return "%s-%03d" % (self.series, self.number)
 
-    def save(self, *args, **kwargs):
+    def set_number(self):
         if not self.number:
-            try:
-                self.number = Invoice.objects.filter(series=self.series).order_by("-number")[0].number + 1
-            except:
-                self.number = 1
+            self.number = _get_next_sequence_value(self.series)
 
+    def save(self, *args, **kwargs):
+        self.set_number()
         return super().save(*args, **kwargs)
 
     class Meta:
@@ -243,7 +267,7 @@ class Transaction(TimestampMixin, models.Model):
 
 
 class DailyTransactionTotals(TimestampMixin, models.Model):
-    date = models.DateTimeField(default=datetime.datetime.now(), blank=False, null=False)
+    date = models.DateTimeField(default=timezone.now, blank=False, null=False)
     channel = models.ForeignKey(PaymentChannel)
     calculated_total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0, blank=False, null=False)
     reported_total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0, blank=False, null=False)

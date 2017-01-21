@@ -1,34 +1,37 @@
-postgres:
-  build: compose/postgres
-  volumes:
-    - /var/lib/postgresql/data
-  ports:
-      - "0.0.0.0:5432:5432"
-  environment:
+version: '2'
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile.dev
+    command: python /app/manage.py runserver_plus 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - C_FORCE_ROOT=true
+      - SECRET_KEY=CHANGEME
+      - SMS_PASSWORD=CHANGEME
+      - SMS_USERNAME=CHANGEME
+      - AWS_ACCESS_KEY_ID=CHANGEME
+      - AWS_SECRET_ACCESS_KEY=CHANGEME
+      - DJANGO_ADMIN_URL=admin/
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - VIMEO_KEY=CHANGEME
+      - VIMEO_SECRET=CHANGEME
+      - VIMEO_TOKEN=CHANGEME
+      - DATABASE_URL=postgis://velolv:velolv@postgres/velolv
+      - MAIN_LIST_ID=CHANGEME
+
+  postgres:
+    build:
+      context: ./compose/postgres/
+      dockerfile: Dockerfile.dev
+    environment:
       - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    restart: always
 
-
-django:
-  dockerfile: Dockerfile-dev
-  build: .
-  command: python /app/manage.py runserver_plus 0.0.0.0:8000
-  volumes:
-    - .:/app
-  ports:
-    - "8000:8000"
-  links:
-    - postgres
-  environment:
-    - C_FORCE_ROOT=true
-    - SECRET_KEY=CHANGEME
-    - SMS_PASSWORD=CHANGEME
-    - SMS_USERNAME=CHANGEME
-    - AWS_ACCESS_KEY_ID=CHANGEME
-    - AWS_SECRET_ACCESS_KEY=CHANGEME
-    - DJANGO_ADMIN_URL=admin/
-    - DJANGO_SETTINGS_MODULE=config.settings.local
-    - VIMEO_KEY=CHANGEME
-    - VIMEO_SECRET=CHANGEME
-    - VIMEO_TOKEN=CHANGEME
-    - DATABASE_URL=postgis://velolv:velolv@postgres/velolv
-    - MAIN_LIST_ID=CHANGEME

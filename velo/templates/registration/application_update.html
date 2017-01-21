@@ -15,7 +15,7 @@
                             </h1>
                             {% include "registration/_top_steps.html" with active=1 %}
 
-                            <form method="post" class="w100 js-form-participants"
+                            <form method="post" class="w100 js-form-participants" novalidate="novalidate"
                                   data-team-search="{% url 'competition:teams_json' object.competition_id %}"
                                   data-team-search-term="{% url 'competition:teams_json' object.competition_id %}?search=%QUERY"
                                   data-check-price="{% url "payment:check_price"  object.competition_id %}"

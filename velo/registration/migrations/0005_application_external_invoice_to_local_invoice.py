@@ -6,9 +6,9 @@ from velo.payment.models import Invoice, Payment, ActivePaymentChannel
 from velo.registration.models import Application
 
 
-def ImportErekinsApplicationInvoices(apps, schema_editor):
+def import_erekins_invoices(apps, schema_editor):
 
-    bill_payment = Application.objects.exclude(external_invoice_code='').filter(created__year=2016).order_by('-id')
+    bill_payment = Application.objects.exclude(external_invoice_code='').filter(created__year__gte=2016).order_by('-id')
 
     for bill in bill_payment:
         bill_url = 'https://www.e-rekins.lv/d/i/%s/' % bill.external_invoice_code
@@ -65,5 +65,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(ImportErekinsApplicationInvoices),
+        migrations.RunPython(import_erekins_invoices),
     ]
