@@ -14,7 +14,8 @@ from django.conf import settings
 
 from django_tables2 import SingleTableView
 from extra_views import UpdateWithInlinesView, NamedFormsetsMixin, InlineFormSet
-from braces.views import JsonRequestResponseMixin, LoginRequiredMixin, JSONResponseMixin
+from braces.views import JsonRequestResponseMixin, JSONResponseMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from extra_views.advanced import BaseUpdateWithInlinesView
 
 from velo.core.formsets import CustomBaseInlineFormSet, OnlyAddBaseInlineFormSet

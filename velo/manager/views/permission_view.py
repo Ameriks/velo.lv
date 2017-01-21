@@ -1,4 +1,4 @@
-from braces.views import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from velo.velo.mixins.views import NeverCacheMixin
 

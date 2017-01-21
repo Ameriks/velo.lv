@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from difflib import get_close_matches
 from django_tables2 import SingleTableView
-from braces.views import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from extra_views import NamedFormsetsMixin, CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
 import datetime
 

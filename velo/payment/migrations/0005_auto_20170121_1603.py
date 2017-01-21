@@ -6,7 +6,7 @@ from django.db import migrations
 from django.db.models import Count, Max
 from slugify import slugify
 
-from velo.payment.models import Invoice
+from velo.payment.models import Invoice, PaymentChannel
 from django.db import connection
 
 
@@ -19,6 +19,18 @@ def set_sequences(apps, schema_editor):
         sql = 'CREATE SEQUENCE %s START %i;' % (sequence_name, current)
         print(sql)
         cursor.execute(sql)
+    invoice1 = PaymentChannel.objects.get(id=1)
+    invoice1.params = {
+                        "name": "Latvijas Kalnu divriteņu federācija",
+                        "juridical_address": "Brīvības gatve 222, Rīga, Latvija, LV-1039",
+                        "number": "40008071001",
+                        "vat": "",
+                        "account_name": "SEB banka A/S",
+                        "account_code": "UNLALV2X",
+                        "account_number": "LV43UNLA0050013169379"
+                        }
+    invoice1.save()
+
 
 
 class Migration(migrations.Migration):

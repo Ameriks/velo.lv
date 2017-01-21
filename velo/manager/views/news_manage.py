@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 from django.core.urlresolvers import reverse, reverse_lazy
 
-from braces.views import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from velo.manager.forms import NewsForm
 from velo.manager.tables import ManageNewsTable

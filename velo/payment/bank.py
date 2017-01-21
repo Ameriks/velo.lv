@@ -13,7 +13,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.http import urlencode
-from django.utils.safestring import SafeText
+from django.utils.safestring import mark_safe
 
 from OpenSSL.crypto import load_certificate, load_privatekey, FILETYPE_PEM
 from OpenSSL import crypto
@@ -32,7 +32,7 @@ class BankSignature(object):
     def create_signature(self, digest):
         pk_string = open(self.transaction.link.key_file.path, 'rt').read()
         key = load_privatekey(FILETYPE_PEM, pk_string)
-        
+
         signed = crypto.sign(key, str(digest), 'sha1')
         b21 = b64encode(signed)
         return b21
@@ -40,7 +40,7 @@ class BankSignature(object):
     def verify_signature(self, signature, digest):
         signature = str(signature)
         cert = load_certificate(FILETYPE_PEM, self.transaction.link.public_key)
-        
+
         if crypto.verify(cert, b64decode(signature), digest, 'sha1') is None:
             return True
         else:
@@ -56,7 +56,11 @@ class PaymentRequestForm(forms.Form):
             'id': 'auto_redirect'
         }
         attrs = flatatt(attrs)
-        return format_html('<form{0}>{1}</form><script type="text/javascript">document.forms["auto_redirect"].submit();</script>', attrs, SafeText(''.join(fields)))
+        return format_html(
+            """<form{0}>{1}</form>
+            <script type="text/javascript">
+                document.forms["auto_redirect"].submit();
+            </script>""", attrs, mark_safe(''.join(fields)))
 
 
 class BankIntegrationBase(object):
@@ -95,7 +99,7 @@ class BankIntegrationBase(object):
             digest += str(len(value)).rjust(3, u'0')
             digest += str(value)
         return digest
-    
+
     def final_redirect(self, success):
         if self.transaction.payment_set.content_type.model == 'application':
             return HttpResponseRedirect(
@@ -109,7 +113,7 @@ class BankIntegrationBase(object):
                         ))
         else:
             return HttpResponse('Something went wrong')
-        
+
 
 class FirstDataIntegration(BankIntegrationBase):
     @staticmethod
@@ -142,7 +146,7 @@ class FirstDataIntegration(BankIntegrationBase):
     def verify_return(self, request):
         status_dict = self.check_transaction()
         if not status_dict:
-            return super.final_redirect(False)
+            return super().final_redirect(False)
         else:
             self.transaction.user_response = status_dict.get('RESULT')
             self.transaction.server_response = self.transaction.user_response
@@ -260,7 +264,7 @@ class SwedbankPaymentRequestForm(PaymentRequestForm):
             'VK_CURR': 'EUR',
             'VK_REF': self.transaction.id,
             'VK_MSG': self.transaction.information,
-            'VK_RETURN': "%s%s" % (settings.MY_DEFAULT_DOMAIN, 
+            'VK_RETURN': "%s%s" % (settings.MY_DEFAULT_DOMAIN,
                                    reverse('payment:transaction_done', kwargs=({'code': transaction.code}))),
             'VK_LANG': self.transaction.language,
             'VK_ENCODING': 'UTF-8',
@@ -388,7 +392,7 @@ class SEBPaymentRequestForm(PaymentRequestForm):
             'IB_AMOUNT': float(self.transaction.amount),
             'IB_CURR': 'EUR',
             'IB_PAYMENT_DESC': self.transaction.information,
-            'IB_FEEDBACK': "%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('payment:transaction_done', 
+            'IB_FEEDBACK': "%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('payment:transaction_done',
                                                                          kwargs={'code': self.transaction.code})),
             'IB_LANG': self.transaction.language,
         })
@@ -501,12 +505,12 @@ def close_business_day():
     end_date = datetime.datetime.now(riga_tz).replace(hour=0, minute=0, second=0, microsecond=0)
     start_date = datetime.datetime.now(riga_tz).replace(day=dt.day - 1, hour=0, minute=0, second=0, microsecond=0)
     datetime.datetime.now(riga_tz)
-    
+
     transactions = Transaction.objects.filter(
         status=Transaction.STATUSES.ok,
         user_response_at__range=[start_date, end_date]
     ).values('link_id', 'amount')
-    
+
     payment_totals_by_bank = {}
     for trans in transactions:
         link_id = trans.get('link_id')
@@ -515,9 +519,9 @@ def close_business_day():
             payment_totals_by_bank.update({link_id: amount + trans.get('amount')})
         else:
             payment_totals_by_bank.update({link_id: trans.get('amount')})
-    
+
     payment_channel_ids = PaymentChannel.objects.all().values('id', 'title').order_by('id')
-    
+
     for channel in payment_channel_ids:
         reported_totals = 0
         params = {}
@@ -538,7 +542,7 @@ def close_business_day():
                 params = json.dumps(params)
             except:
                 continue
-    
+
         DailyTransactionTotals.objects.create(
             date=None,
             channel=PaymentChannel.objects.filter(pk=channel.get('id')),

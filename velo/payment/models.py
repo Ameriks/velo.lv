@@ -1,4 +1,5 @@
 import datetime
+import importlib
 import uuid
 
 from django.db import models
@@ -6,8 +7,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.core.files.storage import FileSystemStorage
 from model_utils import Choices
 from slugify import slugify
 
@@ -17,7 +18,10 @@ import os
 import logging
 from django.db import connection
 
+
 logger = logging.getLogger('velo.payment')
+
+upload_storage = FileSystemStorage(location="config/certificates/")
 
 
 def _get_next_sequence_value(series, kind="payment"):
@@ -48,7 +52,6 @@ class ActivePriceManager(models.Manager):
         return self.get_queryset().filter(start_registering__lte=timezone.now(), end_registering__gte=timezone.now())
 
 
-@python_2_unicode_compatible
 class Price(TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
@@ -70,7 +73,6 @@ class Price(TimestampMixin, models.Model):
         return str(self.price)
 
 
-@python_2_unicode_compatible
 class DiscountCampaign(models.Model):
     title = models.CharField(max_length=50)
     competition = models.ForeignKey('core.Competition')
@@ -92,7 +94,6 @@ class DiscountCampaign(models.Model):
         return name
 
 
-@python_2_unicode_compatible
 class DiscountCode(TimestampMixin, models.Model):
     campaign = models.ForeignKey('payment.DiscountCampaign')
     code = models.CharField(max_length=20, unique=True)
@@ -116,7 +117,6 @@ class DiscountCode(TimestampMixin, models.Model):
             return fee * float(100 - self.campaign.discount_insurance_percent) / 100
 
 
-@python_2_unicode_compatible
 class PaymentChannel(models.Model):
     payment_channel = models.CharField(max_length=20, default='LKDF')
     title = models.CharField(max_length=50)
@@ -134,8 +134,8 @@ class PaymentChannel(models.Model):
 
     public_key = models.TextField(blank=True)
 
-    key_file = models.FileField(null=True, blank=True)
-    cert_file = models.FileField(null=True, blank=True)
+    key_file = models.FileField(null=True, blank=True, storage=upload_storage)
+    cert_file = models.FileField(null=True, blank=True, storage=upload_storage)
 
     private_key = models.TextField(blank=True)
     certificate_password = models.CharField(max_length=255, blank=True)
@@ -146,8 +146,20 @@ class PaymentChannel(models.Model):
     def translations(self):  # This is just place holder for translation strings for unicode function
         ugettext("Receive Bill")
 
+    @property
+    def get_class(self):
+        MAPPING = {
+            "Swedbank": 'SwedbankIntegration',
+            "IBanka": 'IBankIntegration',
+            "FirstData": 'FirstDataIntegration',
+        }
+        class_str = MAPPING.get(self.title, None)
+        if not class_str:
+            raise Exception("Incorrent BankLink")
+        module = importlib.import_module("velo.payment.bank")
+        return getattr(module, class_str)
 
-@python_2_unicode_compatible
+
 class ActivePaymentChannel(models.Model):
     payment_channel = models.ForeignKey('payment.PaymentChannel')
     competition = models.ForeignKey('core.Competition')
