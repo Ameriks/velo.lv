@@ -1,0 +1,21 @@
+God. sportist!
+Nosūtām Jums elektronisko rēķinu no velo.lv elektronisko rēķinu sistēmas.
+Rēķina nr.: {{ invoice.name }}
+Rēķina sūtīšanas laiks: {% now "d.m.Y H:i" %}
+Samaksas summa: {{ invoice.total_price }} {{ invoice.currency }}
+Apmaksas datums: {{ invoice.due_date|date:"d.m.Y" }}
+
+Lūdzu, lejupielādējiet rēķinu, izmantojot šo saiti: {{ url }}
+{% if invoice.sign_document.all %}
+Nosūtītais dokuments(i) ir parakstīts ar (drošu) elektronisko parakstu atbilstoši Latvijas "Elektronisko dokumentu likuma" prasībām.<
+{% endif %}
+
+Rēķina saņēmējs: {{ invoice.client_data.name }} ({{ invoice.email }})
+
+velo.lv kontaktinformācija:
+Telefons: +371 67314150
+E-pasts: pieteikumi@velo.lv
+
+Lai labi ripo velo!
+Ar cieņu,
+www.velo.lv

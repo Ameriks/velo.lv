@@ -1,21 +1,25 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
+import datetime
 
+from braces.views import CsrfExemptMixin
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView, UpdateView, View
 from django.views.generic.edit import BaseUpdateView
 from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
+from django.views.decorators.csrf import csrf_exempt
+from django_downloadview import ObjectDownloadView
 
 from braces.views import JsonRequestResponseMixin, LoginRequiredMixin
 
 from velo.core.models import Competition
+from velo.payment.bank import FirstDataIntegration, SwedbankIntegration, IBankIntegration
 from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
-from velo.payment.models import Payment
+from velo.payment.models import Payment, Invoice, Transaction
 from velo.payment.utils import get_form_message, validate_payment, \
-    get_participant_fee_from_price, get_insurance_fee_from_insurance
+    get_participant_fee_from_price, get_insurance_fee_from_insurance, get_client_ip
 from velo.registration.models import Application
 from velo.team.models import Team
 from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin
@@ -33,7 +37,8 @@ class CheckPriceView(JsonRequestResponseMixin, DetailView):
                 raise ValueError
         except ValueError:
             return self.render_json_response({
-                'message': _("<div class='fs14 fw700 c-white uppercase text-align--right'>Please enter all details</div>"),
+                'message': _(
+                    "<div class='fs14 fw700 c-white uppercase text-align--right'>Please enter all details</div>"),
                 'success': False
             })
         messages = get_form_message(self.get_object(), distance_id, year, insurance_id=insurance_id)
@@ -96,7 +101,7 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                 messages.error(self.request, _('Not all participants have price added. Did you press save & pay?'))
                 valid = False
             else:
-                if not self.object.external_invoice_code and not participant.is_participating:
+                if not self.object.invoice and not participant.is_participating:
                     if participant.price.start_registering > now or participant.price.end_registering < now:
                         participant.price = None
                         participant.save()
@@ -237,3 +242,102 @@ class PaymentReturnView(NeverCacheMixin, DetailView):
             elif self.object.content_type.model == 'team':
                 return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': self.object.content_object.id}))
         return validate_payment(self.object, user=True, request=request)
+
+
+class InvoiceDownloadView(ObjectDownloadView):
+    model = Invoice
+
+    def get_file(self):
+        invoice = self.model.objects.get(slug=self.request.resolver_match.kwargs.get('slug'))
+        if not self.request.user.has_perm('registration.add_number'):
+            if not invoice.access_time or not invoice.access_ip:
+                if invoice.payment_set.status == 10:
+                    invoice.payment_set.status = 20
+                invoice.access_ip = get_client_ip(self.request)
+                invoice.access_time = datetime.datetime.now()
+                invoice.save()
+        return super(InvoiceDownloadView, self).get_file()
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FirstDataReturnView(View):
+
+    def post(self, request, *args, **kwargs):
+        transaction = Transaction.objects.filter(external_code=self.request.POST.get("trans_id")).get()
+        first_data = FirstDataIntegration(transaction)
+        return first_data.verify_return(request)
+
+
+class TransactionReturnView(CsrfExemptMixin, View):
+    integration_object = None
+
+    def get(self, request, *args, **kwargs):
+        transaction = Transaction.objects.get(code=kwargs.get('code'))
+
+        if transaction.link.title == "Swedbank":
+            self.integration_object = SwedbankIntegration()
+        elif transaction.link.title == "IBanka":
+            self.integration_object = IBankIntegration()
+        elif transaction.link.title == "FirstData":
+            self.integration_object = FirstDataIntegration()
+            pass
+        else:
+            raise Exception("Unknown bank")
+
+        if not request.GET:
+            raise Http404
+
+        return self.integration_object.verify_return(request)
+
+    def post(self, request, *args, **kwargs):
+        transaction = Transaction.objects.get(code=kwargs.get('code'))
+
+        if transaction.link.title == "Swedbank":
+            self.integration_object = SwedbankIntegration()
+        elif transaction.link.title == "IBanka":
+            self.integration_object = IBankIntegration()
+        elif transaction.link.title == "FirstData":
+            self.integration_object = FirstDataIntegration()
+            pass
+        else:
+            raise Exception("Unknown bank")
+
+        if not request.GET and not request.POST:
+            raise Http404
+
+        return self.integration_object.verify_return(request)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TransactionRedirectView(DetailView):
+    model = Transaction
+    slug_field = 'code'
+    integration_object = None
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.status not in (Transaction.STATUSES.new, Transaction.STATUSES.pending):
+            raise Http404('Transaction already finished.')
+
+        if self.object.link.title == "Swedbank":
+            self.integration_object = SwedbankIntegration(transaction=self.object)
+        elif self.object.link.title == "IBanka":
+            self.integration_object = IBankIntegration(transaction=self.object)
+        elif self.object.link.title == "FirstData":
+            self.integration_object = FirstDataIntegration(transaction=self.object)
+            pass
+        else:
+            raise Exception("Unknown bank")
+
+        response = self.integration_object.response()
+
+        if isinstance(response, str):
+            context = self.get_context_data(object=self.object, response=response)
+            return self.render_to_response(context)
+        else:
+            return response
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'form': self.integration_object.generate_form(), 'form_action': self.object.link.url})
+        return context

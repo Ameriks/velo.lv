@@ -17,7 +17,7 @@ from sitetree import sitetreeapp
 
 from velo.core.sitetrees import sitetrees_build
 from velo.core.views import CalendarView, IndexView
-from velo.payment.views import ApplicationPayView, ApplicationOKView
+from velo.payment.views import ApplicationPayView, ApplicationOKView, FirstDataReturnView
 from velo.registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
     CompanyApplicationUpdate, ParticipantPDF
@@ -83,6 +83,7 @@ urlpatterns = i18n_patterns(
 
 urlpatterns += [
     url(r'^$', RedirectView.as_view(url='/lv/')),
+    url(_(r'^transaction/first-data/done/$'), FirstDataReturnView.as_view(), name='first_data_return'),
 
     # url('^s/', include('shorturls.urls')),
     url(_(r'^pdf/(?P<slug>\w+)/'), ParticipantPDF.as_view(), name="participant_number_pdf"),

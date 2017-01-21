@@ -13,8 +13,8 @@ from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML, Field
 from crispy_forms.helper import FormHelper
 
 from velo.payment.models import ActivePaymentChannel, Payment
-from velo.payment.utils import create_application_invoice, create_application_bank_transaction, create_team_invoice, \
-    create_team_bank_transaction, approve_payment
+from velo.payment.utils import create_application_invoice, create_bank_transaction, create_team_invoice, \
+     approve_payment
 from velo.payment.widgets import PaymentTypeWidget, DoNotRenderWidget
 from velo.registration.models import Application
 from velo.velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
@@ -62,13 +62,12 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                     active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
 
                     if active_payment_type.payment_channel.is_bill:
-                        instance.external_invoice_code, instance.external_invoice_nr = create_application_invoice(instance,
-                                                                                                                  active_payment_type)
+                        create_application_invoice(instance, active_payment_type)
                         self.success_url = reverse('application_ok', kwargs={'slug': instance.code})
                         messages.info(self.request,
                                       _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
                     else:
-                        self.success_url = create_application_bank_transaction(instance, active_payment_type)
+                        self.success_url = create_bank_transaction(instance, active_payment_type, self.request)
 
             except:
                 # TODO We need to catch exception and log it to sentry
@@ -92,7 +91,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
     def clean_donation(self):
         donation = self.cleaned_data.get('donation', 0.00)
         # If person have already taken invoice, then we do not allow changing donation amount
-        if self.instance.external_invoice_code:
+        if self.instance.invoice:
             return float(self.instance.donation)
         else:
             return donation
@@ -153,7 +152,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         payments = competition.activepaymentchannel_set.filter(from_date__lte=now, till_date__gte=now).select_related(
             'payment_channel')
         # If user have already requested bill, then we are not showing possibility to request one more.
-        if self.instance.external_invoice_code:
+        if self.instance.invoice:
             payments = payments.filter(payment_channel__is_bill=False)
 
         if self.instance.final_price == 0:
@@ -282,13 +281,12 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
                 active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
 
                 if active_payment_type.payment_channel.is_bill:
-                    instance.external_invoice_code, instance.external_invoice_nr = create_team_invoice(instance,
-                                                                                                       active_payment_type)
+                    create_team_invoice(instance, active_payment_type)
                     self.success_url = reverse('account:team', kwargs={'pk2': instance.id})
                     messages.info(self.request,
                                   _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
                 else:
-                    self.success_url = create_team_bank_transaction(instance, active_payment_type)
+                    self.success_url = create_bank_transaction(instance, active_payment_type, self.request)
 
             except:
                 #     TODO We need to catch exception and log it to sentry
@@ -323,7 +321,7 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
         payments = competition.activepaymentchannel_set.filter(from_date__lte=now, till_date__gte=now).select_related(
             'payment_channel')
         # If user have already requested bill, then we are not showing possibility to request one more.
-        if self.instance.external_invoice_code:
+        if self.instance.invoice:
             payments = payments.filter(payment_channel__is_bill=False)
 
         self.fields['payment_type'].choices = [(obj.id, obj) for obj in payments]
