@@ -43,7 +43,7 @@ class BankSignature(object):
 
     def verify_signature(self, signature, digest):
         signature = str(signature)
-        pk_string = open(self.transaction.channel.public_key.path, 'rb').read()
+        pk_string = open(self.transaction.channel.cert_file.path, 'rb').read()
         cert = load_certificate(FILETYPE_PEM, pk_string)
 
         if crypto.verify(cert, b64decode(signature), digest, 'sha1') is None:
@@ -282,8 +282,7 @@ class SwedbankPaymentRequestForm(PaymentRequestForm):
             'VK_CURR': 'EUR',
             'VK_REF': self.transaction.id,
             'VK_MSG': self.transaction.information,
-            'VK_RETURN': "%s%s" % (settings.MY_DEFAULT_DOMAIN,
-                                   reverse('payment:transaction_done', kwargs=({'code': transaction.code}))),
+            'VK_RETURN': "%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('payment_bank_return')),
             'VK_LANG': self.transaction.language_bank,
             'VK_ENCODING': 'UTF-8',
         })
@@ -407,14 +406,13 @@ class SEBPaymentRequestForm(PaymentRequestForm):
         initial.update({
             'IB_SERVICE': '0002',
             'IB_VERSION': '001',
-            'IB_NAME': "LATVIJAS+KALNU+DIVRITEŅU",
+            'IB_NAME': "LATVIJAS KALNU DIVRITEŅU",
             'IB_SND_ID': "MTBASOC",
             'IB_PAYMENT_ID': self.transaction.id,
             'IB_AMOUNT': float(self.transaction.amount),
             'IB_CURR': 'EUR',
             'IB_PAYMENT_DESC': self.transaction.information,
-            'IB_FEEDBACK': "%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('payment:transaction_done',
-                                                                         kwargs={'code': self.transaction.code})),
+            'IB_FEEDBACK': "%s%s" % ("https://lkdf.e-rekins.lv", reverse('payment_bank_return')),  # settings.MY_DEFAULT_DOMAIN
             'IB_LANG': self.transaction.language_bank,
         })
 
@@ -478,7 +476,7 @@ class IBankIntegration(BankIntegrationBase):
         if resp_obj.verify_signature(_get.get('IB_CRC'), self.generate_digest(_get, _get.get('IB_SERVICE'))):
             log_message('VERIFIED Transaction', params=_get, object=self.transaction)
             if _get.get('IB_SERVICE') == '0003':
-                self.transaction.status = Transaction.STATUSES.pendind
+                self.transaction.status = Transaction.STATUSES.pending
             else:
                 self.transaction.server_response = _get.get('IB_STATUS', '')
                 self.transaction.status = self.get_transaction_status(_get.get('IB_STATUS'))

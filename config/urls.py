@@ -82,7 +82,7 @@ urlpatterns = i18n_patterns(
 
 urlpatterns += [
     url(r'^$', RedirectView.as_view(url='/lv/')),
-    url(_(r'^transaction/first-data/done/$'), TransactionReturnView.as_view(), name='first_data_return'),
+    url(_(r'^bank/return/$'), TransactionReturnView.as_view(), name='payment_bank_return'),
 
     # url('^s/', include('shorturls.urls')),
     url(_(r'^pdf/(?P<slug>\w+)/'), ParticipantPDF.as_view(), name="participant_number_pdf"),

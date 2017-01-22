@@ -359,9 +359,9 @@ def create_application_invoice(application, active_payment_type, action="send"):
 def create_bank_transaction(instance, active_payment_type, request):
     instance_name = instance.__class__.__name__
     if instance_name == 'Application':
-        information = "Pieteikums nr.%i" % instance.id \
-            if not instance.invoice else "Rekins nr.%s" % instance.invoice.invoice_nr
-        information += (" + %s" % instance.competition.params_dict.get("donation", {}).get("bank_code", "Ziedojums - %s")) % instance.donation
+        information = "Pieteikums nr.%i" % instance.id if not instance.invoice else "Rekins nr.%s" % instance.invoice.invoice_nr
+        if instance.donation > 0:
+            information += (" + %s" % instance.competition.params_dict.get("donation", {}).get("bank_code", "Ziedojums - %s")) % instance.donation
     elif instance_name == 'Team':
         information = "Komandas %s profila apmaksa %s" % (str(instance), instance.distance.competition.get_full_name) \
             if not instance.invoice else "Rekins nr.%s" % instance.invoice.invoice_nr

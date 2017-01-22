@@ -10,5 +10,4 @@ urlpatterns = [
                        url(_(r'^invoice/(?P<slug>.+)/$'), InvoiceDownloadView.as_view(), name='invoice_pdf'),
 
                        url(_(r'^transaction/(?P<slug>.+)/$'), TransactionRedirectView.as_view(), name='transaction'),
-                       url(_(r'^transaction/(?P<code>.+)/done$'), TransactionReturnView.as_view(), name='transaction_done'),
 ]

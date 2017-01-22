@@ -17,16 +17,23 @@ class TransactionReturnView(View):
     def dispatch(self, request, *args, **kwargs):
         log = log_message('TransactionReturnView %s' % request.method, params={'GET': request.GET, 'POST': request.POST})
 
-        if kwargs.get('code'):
-            transaction = Transaction.objects.get(code=kwargs.get('code'))
-        elif request.POST.get("trans_id"):
+        if request.POST.get("trans_id", None):
             transaction = Transaction.objects.get(external_code=request.POST.get("trans_id"))
         else:
-            log.set_message("ERROR")
-            raise Http404("ERROR")
+            if request.POST.get('VK_REF', None):
+                _id = request.POST.get('VK_REF', None)
+            elif request.GET.get('VK_REF', None):
+                _id = request.GET.get('VK_REF', None)
+            elif request.POST.get('IB_PAYMENT_ID', None):
+                _id = request.POST.get('IB_PAYMENT_ID', None)
+            elif request.GET.get('IB_PAYMENT_ID', None):
+                _id = request.GET.get('IB_PAYMENT_ID', None)
+            else:
+                log.set_message("ERROR")
+                raise Http404("ERROR")
+            transaction = Transaction.objects.get(id=_id)
 
         log.set_object(transaction)
 
         integration_object = transaction.channel.get_class(transaction)
-
         return integration_object.verify_return(request)
