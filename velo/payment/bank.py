@@ -25,6 +25,11 @@ from velo.payment.models import Transaction, PaymentChannel, DailyTransactionTot
 from velo.core.utils import log_message, get_client_ip
 from velo.payment.utils import approve_payment
 
+proxies = {
+  'http': 'http://85.254.49.16:18080',
+  'https': 'http://85.254.49.16:18080',
+}
+
 
 class BankSignature(object):
     transaction = None
@@ -188,7 +193,8 @@ class FirstDataIntegration(BankIntegrationBase):
             self.transaction.channel.server_url,
             cert=(self.transaction.channel.cert_file.path, self.transaction.channel.key_file.path),
             data=params,
-            verify=False
+            verify=False,
+            proxies=proxies,
         )
         if resp.status_code != 200:
             log_message('FAILED VERIFY Transaction', "%i -- %s" % (resp.status_code, resp.text), object=self.transaction)
@@ -242,7 +248,9 @@ class FirstDataIntegration(BankIntegrationBase):
             self.transaction.channel.server_url,
             cert=(self.transaction.channel.cert_file.path, self.transaction.channel.key_file.path),
             data=params,
-            verify=False,)
+            verify=False,
+            proxies=proxies,
+        )
 
         log_message('GOT FD response', resp.text, object=self.transaction)
         if resp.text[0:14] == 'TRANSACTION_ID':
@@ -555,7 +563,9 @@ def close_business_day():
                     payment_channel_object.server_url,
                     cert=(payment_channel_object.cert_file.path, payment_channel_object.key_file.path),
                     data={'command': 'b'},
-                    verify=False, )
+                    verify=False,
+                    proxies=proxies,
+                )
                 params = {}
                 for field in resp.text.split('\n'):
                     values = field.split(': ')
