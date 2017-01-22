@@ -195,8 +195,8 @@ class FirstDataIntegration(BankIntegrationBase):
             self.request_transaction_code()
 
         if self.transaction.external_code:
-            from velo.payment.tasks import process_server_response
-            process_server_response.apply_async(args=[self.transaction.id], countdown=120)
+            from velo.payment.tasks import check_firstdata_transaction
+            check_firstdata_transaction.apply_async(args=[self.transaction.id], countdown=120)
             return HttpResponseRedirect(
                 "%s?%s" % (self.transaction.link.url, urlencode({'trans_id': self.transaction.external_code}))
             )

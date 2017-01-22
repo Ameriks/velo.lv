@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 import logging
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -14,15 +11,17 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, activate
 
 import datetime
-from urllib.parse import quote
+
 from premailer import transform
 
 from velo.core.models import Insurance, Log
 from velo.payment.models import Payment, Invoice, Transaction
 from velo.payment.pdf import InvoiceGenerator
 from velo.registration.models import Application
-from velo.velo.utils import SessionWHeaders
+
 from velo.registration.tasks import send_success_email
+
+logger = logging.getLogger('velo.payment')
 
 
 def get_price(competition, distance_id, year):
@@ -356,15 +355,17 @@ def create_bank_transaction(instance, active_payment_type, request):
     else:
         raise Exception()
 
-    transaction = Transaction.objects.create(
-        link=active_payment_type.payment_channel,
-        payment=Payment.objects.create(
+    payment = Payment.objects.create(
                 content_object=instance,
                 channel=active_payment_type,
                 total=instance.final_price,
                 status=Payment.STATUSES.pending,
                 donation=instance.donation if hasattr(instance, "donation") else 0.0
-            ),
+            )
+
+    transaction = Transaction.objects.create(
+        link=active_payment_type.payment_channel,
+        payment=payment,
         language=request.LANGUAGE_CODE,
         status=Transaction.STATUSES.new,
         amount=instance.final_price,
@@ -406,72 +407,6 @@ def approve_payment(payment, user=False, request=None):
             return True
 
 
-def validate_payment(payment, user=False, request=None):
-    prefix = payment.channel.payment_channel.erekins_url_prefix
-    # Create new requests session with Auth keys and prepended url
-    session = SessionWHeaders({'Authorization': 'ApiKey %s' % payment.channel.payment_channel.erekins_auth_key},
-                              url="https://%s.e-rekins.lv" % prefix)
-
-    transaction_obj = session.get('/api/v1/transaction/?code=%s' % quote(payment.erekins_code))
-
-    transactions = transaction_obj.json()
-    if transactions.get('meta').get('total_count') == 0:
-        if payment.status != payment.STATUSES.ok:
-            payment.status = payment.STATUSES.id_not_found
-            payment.save()
-            Log.objects.create(content_object=payment, action="TRANSACTION_VALIDATE",
-                               message="Not found transaction id in e-rekins.lv", params={'code': payment.erekins_code})
-        if user:
-            raise Http404
-        else:
-            return False
-
-    transaction = transactions.get('objects')[0]
-    status = transaction.get('status')
-
-    payment.status = status
-    payment.save()
-
-    if status == 30:
-        # Transaction is successful.
-        return approve_payment(payment, user, request)
-    elif status < 0:
-
-        other_active_payments = Payment.objects.filter(content_type=payment.content_type, object_id=payment.object_id,
-                                                       status__gte=0).exclude(id=payment.id)
-        if payment.content_type.model == 'application':
-            application = payment.content_object
-            # If there are no other active payments and user haven't taken invoice, then lets reset application payment status.
-            if not other_active_payments and not application.invoice:
-                application.payment_status = application.PAY_STATUS.not_payed
-                application.save()
-
-        Log.objects.create(content_object=payment, action="TRANSACTION_VALIDATE",
-                           message="Transaction unsuccessful. Redirecting to payment view.", params={'user': user})
-
-        if user:
-            messages.error(request, _('Transaction unsuccessful. Try again.'))
-            if payment.content_type.model == 'application':
-                return HttpResponseRedirect(reverse('application_pay', kwargs={'slug': payment.content_object.code}))
-            elif payment.content_type.model == 'team':
-                return HttpResponseRedirect(reverse('account:team_pay', kwargs={'pk2': payment.content_object.id}))
-        else:
-            return False
-    else:
-        Log.objects.create(content_object=payment, action="TRANSACTION_VALIDATE",
-                           message="UNKNOWN STATUS. This must be fixed.", params={'user': user})
-
-        if user:
-            messages.info(request, _(
-                'Transaction status unknown. If you paid, then wait a while until status is updated - you will receive email.'))
-            if payment.content_type.model == 'application':
-                return HttpResponseRedirect(reverse('application_pay', kwargs={'slug': payment.content_object.code}))
-            elif payment.content_type.model == 'team':
-                return HttpResponseRedirect(reverse('account:team_pay', kwargs={'pk2': payment.content_object.id}))
-        else:
-            return False
-
-
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -479,8 +414,6 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
-
-logger = logging.getLogger('submission')
 
 
 def log_message(action, message='', params='{}', user=None, object=None):

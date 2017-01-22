@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django import forms
 from django.contrib import messages
-from django.template.defaultfilters import floatformat
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from crispy_forms.layout import Layout, Row, Column, Div, Fieldset, HTML, Field
+from crispy_forms.layout import Layout, Div, HTML, Field
 from crispy_forms.helper import FormHelper
 
 from velo.payment.models import ActivePaymentChannel, Payment
