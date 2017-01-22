@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.db import models
 from django.db.models import signals
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
 
 from djcelery.models import PeriodicTask, PeriodicTasks, CrontabSchedule
 from easy_thumbnails.fields import ThumbnailerImageField
@@ -151,7 +147,6 @@ class ChipScan(models.Model):
     url_sync = models.ForeignKey(UrlSync, blank=True, null=True)
 
 
-@python_2_unicode_compatible
 class DistanceAdmin(models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
@@ -266,7 +261,7 @@ class Result(models.Model):
             return True  # if any of variables is updated, then return true
         return False
 
-@python_2_unicode_compatible
+
 class Leader(models.Model):
     COLORS = (
         ('blue', 'blue'),

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import UpdateView

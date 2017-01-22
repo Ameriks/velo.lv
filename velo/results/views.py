@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Min
 from django.utils import timezone

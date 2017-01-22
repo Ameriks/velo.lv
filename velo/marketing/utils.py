@@ -1,5 +1,3 @@
-# coding=utf-8
-from __future__ import unicode_literals  # u'' strings by default # Awesome :)
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string

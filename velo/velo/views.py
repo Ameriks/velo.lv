@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import last_modified

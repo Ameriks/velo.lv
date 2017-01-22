@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Q
+from django.db.models import Q, Value as V, CharField
+from django.db.models.functions import Concat
 from django.template.defaultfilters import slugify
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -99,8 +97,13 @@ class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
 
         if query_attrs.get('search').initial:
             slug = slugify(query_attrs.get('search').initial)
+            queryset = self.model.objects.annotate(
+                invoice_nr=Concat('invoice__series', V('-'), 'invoice__number',
+                output_field=CharField())
+            )
+
             queryset = queryset.filter(
-                Q(external_invoice_nr__icontains=slug) |
+                Q(invoice_nr__icontains=slug) |
                 Q(email__icontains=query_attrs.get('search').initial.upper()) |
                 Q(participant__slug__icontains=slug) |
                 Q(participant__team_name__icontains=query_attrs.get('search').initial.upper())

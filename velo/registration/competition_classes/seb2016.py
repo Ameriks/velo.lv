@@ -1,6 +1,3 @@
-# coding=utf-8
-from __future__ import unicode_literals
-
 import csv
 from difflib import get_close_matches
 import datetime

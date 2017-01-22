@@ -1,5 +1,3 @@
-# coding=utf-8
-from __future__ import unicode_literals
 import datetime
 from sitetree.utils import item
 from velo.registration.competition_classes.base import CompetitionScriptBase

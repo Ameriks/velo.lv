@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.core.urlresolvers import reverse
-from django.utils.encoding import python_2_unicode_compatible
 
 from base64 import b32encode
 from hashlib import sha1
@@ -32,7 +28,6 @@ def notification_slug():
     return pk
 
 
-@python_2_unicode_compatible
 class Notification(StatusMixin, models.Model):
     slug = models.CharField(max_length=6, default=notification_slug)
     title = models.CharField(max_length=255)
@@ -50,7 +45,6 @@ class NewsManagerPublished(models.Manager):
         return queryset
 
 
-@python_2_unicode_compatible
 class News(StatusMixin, TimestampMixin, models.Model):
 
     language = models.CharField("Language", max_length=20, db_index=True, default='lv', choices=settings.LANGUAGES)

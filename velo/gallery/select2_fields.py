@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
-# from django_select2 import AutoModelSelect2MultipleField
-
 from velo.core.models import Competition
-from velo.registration.models import Number
 
 
 class NumberMixin(object):
@@ -29,6 +23,3 @@ class NumberMixin(object):
 
         return qs
 
-
-# class PhotoNumberChoices(NumberMixin, AutoModelSelect2MultipleField):
-#     queryset = Number.objects.exclude(participant_slug='')

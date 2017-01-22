@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-from builtins import str
-
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
 
 import uuid
 from django_countries.fields import CountryField
@@ -49,6 +44,7 @@ class Application(TimestampMixin, models.Model):
 
     external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
     external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
+    invoice = models.ForeignKey('payment.Invoice', null=True, blank=True)
 
     donation = models.DecimalField(_('Donation'), max_digits=20, decimal_places=2, default=0.0)
 
@@ -79,7 +75,6 @@ class Application(TimestampMixin, models.Model):
             return str(self.competition)
 
 
-@python_2_unicode_compatible
 class Participant(TimestampMixin, models.Model):
     GENDER_CHOICES = (
         ('M', _('Male')),
@@ -264,7 +259,6 @@ class Participant(TimestampMixin, models.Model):
         return number_queryset
 
 
-@python_2_unicode_compatible
 class Number(StatusMixin, TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
@@ -340,7 +334,6 @@ class CompanyParticipant(TimestampMixin, models.Model):
         return super(CompanyParticipant, self).save(*args, **kwargs)
 
 
-@python_2_unicode_compatible
 class ChangedName(models.Model):
     slug = models.SlugField()
     new_slug = models.SlugField()

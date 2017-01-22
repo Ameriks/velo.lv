@@ -114,10 +114,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'abstract': False,
-            },
-            managers=[
-                ('_default_manager', django.db.models.manager.Manager()),
-            ],
+            }
         ),
         migrations.CreateModel(
             name='CustomSlug',

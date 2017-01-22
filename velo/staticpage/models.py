@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key

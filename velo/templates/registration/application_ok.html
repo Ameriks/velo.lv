@@ -37,15 +37,14 @@
 
                                             <div class="w100 bottom-margin--20">
                                                 <div class="row row--gutters-50">
-                                                    {% if object.external_invoice_code %}
-                                                        <a href="https://www.e-rekins.lv/d/i/{{ object.external_invoice_code }}/"
-                                                           class="col-xl-24">
+                                                    {% if object.invoice %}
+                                                        <a href="/payment/invoice/{{ object.invoice.slug }}/" class="col-xl-24" download>
                                                             <div class="btn btn--50 btn--blue btn--blue-hover btn--blue-active btn--no-borders w100 bottom-margin--20">
                                                                 {% trans "To download invoice, press here." %}
                                                             </div>
                                                         </a>
                                                     {% endif %}
-                                                    {% if object.external_invoice_code and not object.payment_status == object.PAY_STATUS.payed %}
+                                                    {% if object.invoice and not object.payment_status == object.PAY_STATUS.payed %}
                                                         <a href="{% url "application_pay" object.code %}"
                                                            class="col-xl-24">
                                                             <div class="btn btn--50 btn--blue btn--blue-hover btn--blue-active btn--no-borders w100 bottom-margin--20">

@@ -7,7 +7,7 @@
 # WSGI Handler
 # ------------------------------------------------
 
-gevent==1.1.2
+gevent==1.2.1
 
 gunicorn==19.6.0
 
@@ -20,7 +20,7 @@ gunicorn==19.6.0
 # Mailgun Support
 # ---------------
 #django-mailgun==0.8.0
-django-ses==0.8.0
+django-ses==0.8.1
 
 # Raven is the Sentry client
 # --------------------------

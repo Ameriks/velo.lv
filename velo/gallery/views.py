@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 import random
 
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -13,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _, get_language
 from django.utils import timezone
 from django.db.models import Count, F
 
-from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from PIL import Image
 import datetime
 import uuid

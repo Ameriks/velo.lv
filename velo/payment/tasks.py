@@ -1,22 +1,30 @@
-# coding=utf-8
-from __future__ import unicode_literals
-
+import celery
 import datetime
 from celery.schedules import crontab
 from celery.task import periodic_task
 
 from django.utils import timezone
 
-from velo.payment.models import Payment
-from velo.payment.utils import validate_payment
+from velo.payment.models import Transaction
+from velo.core.utils import log_message
 
 
-@periodic_task(run_every=crontab(minute="*/10", ))
-def get_transaction_statuses():
-    payments = Payment.objects.filter(status__in=(Payment.STATUSES.new, Payment.STATUSES.pending),
-                                      created__lt=(timezone.now() - datetime.timedelta(minutes=10)))
+@celery.task
+def check_firstdata_transaction(transaction_id):
+    transaction = Transaction.objects.get(id=transaction_id)
+    instance = transaction.channel.get_class(transaction)
 
-    for payment in payments:
-        validate_payment(payment)
+    if not instance.server_check_transaction():
+        check_firstdata_transaction.apply_async(args=[transaction_id], countdown=30)
 
     return True
+
+
+@periodic_task(run_every=crontab(minute="*/10"))
+def timeout_old_transactions():
+    transactions = Transaction.objects.filter(status__in=[Transaction.STATUS.new, Transaction.STATUS.pending],
+                                              modified__lt=(timezone.now() - datetime.timedelta(minutes=15)))
+    for t in transactions:
+        log_message('TIMEOUT Transaction', object=t)
+        t.status = Transaction.STATUS_TIMEOUT
+        t.save()

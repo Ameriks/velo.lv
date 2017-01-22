@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 import random
 import time
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils.translation import get_language
@@ -11,7 +10,6 @@ from django.utils import timezone
 from django.db.models import Count, F
 
 from django_downloadview import ObjectDownloadView
-from braces.views import LoginRequiredMixin
 from easy_thumbnails.alias import aliases
 from easy_thumbnails.exceptions import InvalidImageFormatError
 

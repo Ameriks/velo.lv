@@ -1,10 +1,16 @@
-FROM ameriks/django_geowebapp:latest
+FROM alpine:edge
+
+ENV S6_KEEP_ENV 1
 
 COPY ./requirements /tmp/requirements
-RUN pip3 install -r /tmp/requirements/production.txt
+COPY ./compose/django/base_install /tmp/install
 
-COPY ./compose/django/s6 /etc/services.d
+RUN /tmp/install/install.sh
 
-RUN rm -fr /tmp/*
+COPY ./compose/django/s6 /etc/services.d.installed
 
-WORKDIR /app
+VOLUME ["/etc/services.d", "/var/run"]
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 5000
