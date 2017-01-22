@@ -33,12 +33,12 @@ def set_sequences(apps, schema_editor):
                         }
     invoice1.save()
 
-    for payment in Payment.objects.filter(created__year__gte=2016):
-        payment.transaction_set.create(
-            channel=payment.channel.payment_channel,
-            status=payment.status,
-            amount=payment.total,
-        )
+    # for payment in Payment.objects.filter(created__year__gte=2016):
+    #     payment.transaction_set.create(
+    #         channel=payment.channel.payment_channel,
+    #         status=payment.status,
+    #         amount=payment.total,
+    #     )
 
 
 
