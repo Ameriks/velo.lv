@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                 ('competition', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.Competition', verbose_name='Competition')),
                 ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='created_invoice_set', to=settings.AUTH_USER_MODEL)),
                 ('modified_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='modified_invoice_set', to=settings.AUTH_USER_MODEL)),
-                ('payment_set', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='payment.Payment', verbose_name='Payment')),
+                ('payment', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='payment.Payment', verbose_name='Payment')),
             ],
         ),
         migrations.AddField(

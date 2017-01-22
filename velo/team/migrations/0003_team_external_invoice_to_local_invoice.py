@@ -29,7 +29,7 @@ def import_erekins_invoices(apps, schema_editor):
         except:
             continue
 
-        payment_set = Payment.objects.create(
+        payment = Payment.objects.create(
             content_object=bill,
             channel=active_payment_type,
             total=bill.final_price,
@@ -48,7 +48,7 @@ def import_erekins_invoices(apps, schema_editor):
             file=ContentFile(request.content, '%s-%03d.pdf' % (series, int(number))),
             series=series,
             number=number,
-            payment_set=payment_set
+            payment=payment
         )
 
         bill.invoice = invoice_object

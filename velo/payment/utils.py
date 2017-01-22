@@ -149,7 +149,7 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type):
         series=invoice_data.get('bill_series'),
     )
 
-    invoice_object.payment_set = Payment.objects.create(
+    invoice_object.payment = Payment.objects.create(
         content_object=instance,
         channel=active_payment_type,
         total=instance.final_price,
@@ -353,16 +353,19 @@ def create_bank_transaction(instance, active_payment_type, request):
     elif instance_name == 'Team':
         information = "Komandas %s profila apmaksa %s" % (str(instance), instance.distance.competition.get_full_name) \
             if not instance.invoice else "Rekins nr.%s" % instance.invoice.invoice_nr
+    else:
+        raise Exception()
 
     transaction = Transaction.objects.create(
         link=active_payment_type.payment_channel,
-        payment_set=Payment.objects.create(
+        payment=Payment.objects.create(
                 content_object=instance,
                 channel=active_payment_type,
                 total=instance.final_price,
                 status=Payment.STATUSES.pending,
                 donation=instance.donation if hasattr(instance, "donation") else 0.0
             ),
+        language=request.LANGUAGE_CODE,
         status=Transaction.STATUSES.new,
         amount=instance.final_price,
         created_ip=get_client_ip(request),

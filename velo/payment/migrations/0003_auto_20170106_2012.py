@@ -54,21 +54,13 @@ class Migration(migrations.Migration):
             name='cert_file',
             field=models.FileField(blank=True, null=True, upload_to=''),
         ),
-        migrations.AddField(
-            model_name='paymentchannel',
-            name='certificate_password',
-            field=models.CharField(blank=True, max_length=255),
-        ),
+
         migrations.AddField(
             model_name='paymentchannel',
             name='key_file',
             field=models.FileField(blank=True, null=True, upload_to=''),
         ),
-        migrations.AddField(
-            model_name='paymentchannel',
-            name='private_key',
-            field=models.TextField(blank=True),
-        ),
+
         migrations.AddField(
             model_name='paymentchannel',
             name='public_key',
@@ -96,7 +88,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='transaction',
-            name='payment_set',
+            name='payment',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='payment.Payment'),
         ),
     ]

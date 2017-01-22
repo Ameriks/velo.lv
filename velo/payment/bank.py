@@ -17,6 +17,7 @@ from django.utils.safestring import mark_safe
 
 from OpenSSL.crypto import load_certificate, load_privatekey, FILETYPE_PEM
 from OpenSSL import crypto
+from django.utils.translation import activate
 
 from velo.payment.models import Transaction, PaymentChannel, DailyTransactionTotals
 from velo.payment.utils import log_message, get_client_ip
@@ -39,7 +40,8 @@ class BankSignature(object):
 
     def verify_signature(self, signature, digest):
         signature = str(signature)
-        cert = load_certificate(FILETYPE_PEM, self.transaction.link.public_key)
+        pk_string = open(self.transaction.link.public_key.path, 'rb').read()
+        cert = load_certificate(FILETYPE_PEM, pk_string)
 
         if crypto.verify(cert, b64decode(signature), digest, 'sha1') is None:
             return True
@@ -101,15 +103,16 @@ class BankIntegrationBase(object):
         return digest
 
     def final_redirect(self, success):
-        if self.transaction.payment_set.content_type.model == 'application':
+        activate(self.transaction.language)
+        if self.transaction.payment.content_type.model == 'application':
             return HttpResponseRedirect(
                 reverse('application_ok' if success else 'application_pay',
-                        kwargs={'slug': self.transaction.payment_set.content_object.code}
+                        kwargs={'slug': self.transaction.payment.content_object.code}
                         ))
-        elif self.transaction.payment_set.content_type.model == 'team':
+        elif self.transaction.payment.content_type.model == 'team':
             return HttpResponseRedirect(
                 reverse('account:team' if success else 'account:team_pay',
-                        kwargs={'pk2': self.transaction.payment_set.content_object.id}
+                        kwargs={'pk2': self.transaction.payment.content_object.id}
                         ))
         else:
             return HttpResponse('Something went wrong')
@@ -203,9 +206,8 @@ class FirstDataIntegration(BankIntegrationBase):
     def request_transaction_code(self):
         transaction_id = None
 
-        if self.transaction.language == 'LVL':
-            language = "lv"
-        else:
+        language = self.transaction.language
+        if language == "ru":
             language = "en"
 
         params = {
@@ -230,7 +232,7 @@ class FirstDataIntegration(BankIntegrationBase):
         if resp.text[0:14] == 'TRANSACTION_ID':
             transaction_id = resp.text.strip()[16:]
             self.transaction.external_code = transaction_id
-            self.transaction.external_code_requested = datetime.datetime.now()
+            self.transaction.external_code_requested = timezone.now()
             self.transaction.save()
             return transaction_id
         else:
@@ -266,7 +268,7 @@ class SwedbankPaymentRequestForm(PaymentRequestForm):
             'VK_MSG': self.transaction.information,
             'VK_RETURN': "%s%s" % (settings.MY_DEFAULT_DOMAIN,
                                    reverse('payment:transaction_done', kwargs=({'code': transaction.code}))),
-            'VK_LANG': self.transaction.language,
+            'VK_LANG': self.transaction.language_bank,
             'VK_ENCODING': 'UTF-8',
         })
 
@@ -394,7 +396,7 @@ class SEBPaymentRequestForm(PaymentRequestForm):
             'IB_PAYMENT_DESC': self.transaction.information,
             'IB_FEEDBACK': "%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('payment:transaction_done',
                                                                          kwargs={'code': self.transaction.code})),
-            'IB_LANG': self.transaction.language,
+            'IB_LANG': self.transaction.language_bank,
         })
 
         super(PaymentRequestForm, self).__init__(initial, *args)

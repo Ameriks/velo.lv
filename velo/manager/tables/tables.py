@@ -307,7 +307,7 @@ class ChangedNameTable(GetRequestTableKwargs, tables.Table):
 
 class ManageInvoiceTable(GetRequestTableKwargs, tables.Table):
 
-    status = LinkColumn('manager:invoice', args=[A('competition_id'), A('id')], accessor="payment_set.status", verbose_name=_('Invoice status'), )
+    status = LinkColumn('manager:invoice', args=[A('competition_id'), A('id')], accessor="payment.status", verbose_name=_('Invoice status'), )
 
     class Meta:
         model = Invoice

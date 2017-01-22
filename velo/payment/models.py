@@ -132,13 +132,8 @@ class PaymentChannel(models.Model):
 
     account = models.CharField(max_length=100, blank=True)
 
-    public_key = models.TextField(blank=True)
-
-    key_file = models.FileField(null=True, blank=True, storage=upload_storage)
-    cert_file = models.FileField(null=True, blank=True, storage=upload_storage)
-
-    private_key = models.TextField(blank=True)
-    certificate_password = models.CharField(max_length=255, blank=True)
+    key_file = models.FileField(verbose_name="Private Key", null=True, blank=True, storage=upload_storage)
+    cert_file = models.FileField(verbose_name="Certificate or Public Key", null=True, blank=True, storage=upload_storage)
 
     def __str__(self):
         return ugettext(self.title)
@@ -201,7 +196,7 @@ class Payment(TimestampMixin, models.Model):
 
 class Invoice(TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition', verbose_name=_('Competition'), blank=True, null=True)
-    payment_set = models.ForeignKey(Payment, verbose_name=_('Payment'), blank=True, null=True)
+    payment = models.ForeignKey(Payment, verbose_name=_('Payment'), blank=True, null=True)
 
     company_name = models.CharField(_('Company name / Full Name'), max_length=100, blank=True)
     company_vat = models.CharField(_('VAT Number'), max_length=100, blank=True)
@@ -250,7 +245,7 @@ class Transaction(TimestampMixin, models.Model):
         (30, 'ok', _('OK')),
     )
     link = models.ForeignKey(PaymentChannel)
-    payment_set = models.ForeignKey(Payment)
+    payment = models.ForeignKey(Payment)
     code = models.CharField(max_length=36, default=uuid.uuid4, unique=True)
     status = models.SmallIntegerField(choices=STATUSES, default=STATUSES.new)
     external_code = models.CharField(max_length=50, blank=True)
@@ -260,7 +255,7 @@ class Transaction(TimestampMixin, models.Model):
 
     information = models.CharField(max_length=255, blank=True)
 
-    language = models.CharField(max_length=10, default="LVL")
+    language = models.CharField(max_length=10, default="lv")
 
     created_ip = models.GenericIPAddressField(blank=True, null=True)
 
@@ -276,6 +271,10 @@ class Transaction(TimestampMixin, models.Model):
     should_be_reviewed = models.BooleanField(default=False)  # This is set if something is weird in transaction.
 
     integration_id = models.CharField(max_length=50, blank=True)
+
+    @property
+    def language_bank(self):
+        return {'en': 'ENG', 'lv': 'LAT', 'ru': 'RUS'}.get(self.language)
 
 
 class DailyTransactionTotals(TimestampMixin, models.Model):

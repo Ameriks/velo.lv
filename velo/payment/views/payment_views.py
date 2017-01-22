@@ -234,8 +234,8 @@ class InvoiceDownloadView(ObjectDownloadView):
         invoice = self.model.objects.get(slug=self.request.resolver_match.kwargs.get('slug'))
         if not self.request.user.has_perm('registration.add_number'):
             if not invoice.access_time or not invoice.access_ip:
-                if invoice.payment_set.status == 10:
-                    invoice.payment_set.status = 20
+                if invoice.payment.status == 10:
+                    invoice.payment.status = 20
                 invoice.access_ip = get_client_ip(self.request)
                 invoice.access_time = datetime.datetime.now()
                 invoice.save()

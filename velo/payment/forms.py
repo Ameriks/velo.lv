@@ -43,7 +43,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         }
 
     def _post_clean(self):
-        super(ApplicationPayUpdateForm, self)._post_clean()
+        super()._post_clean()
         if not bool(self.errors):
             try:
                 instance = self.instance
