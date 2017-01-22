@@ -22,7 +22,7 @@ def check_firstdata_transaction(transaction_id):
 
 @periodic_task(run_every=crontab(minute="*/10"))
 def timeout_old_transactions():
-    transactions = Transaction.objects.filter(status__in=[Transaction.STATUS.new, Transaction.STATUS.pending],
+    transactions = Transaction.objects.filter(status__in=[Transaction.STATUSES.new, Transaction.STATUSES.pending],
                                               modified__lt=(timezone.now() - datetime.timedelta(minutes=15)))
     for t in transactions:
         log_message('TIMEOUT Transaction', object=t)
