@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.http import Http404
 from django.views.generic import DetailView
 from django.core.exceptions import ObjectDoesNotExist

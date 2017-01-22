@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
@@ -15,7 +12,7 @@ from django.conf import settings
 from django_tables2 import SingleTableView
 from extra_views import UpdateWithInlinesView, NamedFormsetsMixin, InlineFormSet
 from braces.views import JsonRequestResponseMixin, JSONResponseMixin
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from extra_views.advanced import BaseUpdateWithInlinesView
 
 from velo.core.formsets import CustomBaseInlineFormSet, OnlyAddBaseInlineFormSet

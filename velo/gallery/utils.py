@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from functools import partial
 from urllib.parse import urlparse, parse_qs
 

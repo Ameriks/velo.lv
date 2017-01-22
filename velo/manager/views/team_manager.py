@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.core.urlresolvers import reverse
 from django.forms.models import BaseInlineFormSet
 from django.views.generic import DetailView

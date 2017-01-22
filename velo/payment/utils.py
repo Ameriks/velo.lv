@@ -15,6 +15,7 @@ import datetime
 from premailer import transform
 
 from velo.core.models import Insurance, Log
+from velo.core.utils import get_client_ip
 from velo.payment.models import Payment, Invoice, Transaction
 from velo.payment.pdf import InvoiceGenerator
 from velo.registration.models import Application
@@ -405,25 +406,3 @@ def approve_payment(payment, user=False, request=None):
             return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': payment.content_object.id}))
         else:
             return True
-
-
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
-
-
-def log_message(action, message='', params='{}', user=None, object=None):
-    try:
-        log = Log(action=action, message=message, params=params)
-        if user:
-            log.user = user
-        if object:
-            log.content_type = ContentType.objects.get(app_label="payment", model__iexact=object.__class__.__name__)
-            log.object_id = object.id
-        log.save()
-    except:
-        logger.exception("Exception writing logs")

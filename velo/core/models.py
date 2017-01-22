@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -8,7 +6,6 @@ from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.postgres.fields import JSONField
 
 import datetime
@@ -53,7 +50,6 @@ def _get_gpx_upload_path(instance, filename):
     return os.path.join("competition", "gpx", folder, filename)
 
 
-@python_2_unicode_compatible
 class FailedTask(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True, blank=True)
@@ -96,7 +92,6 @@ class FailedTask(models.Model):
         return func.delay(*args, **kwargs)
 
 
-@python_2_unicode_compatible
 class Choices(models.Model):  # TODO: Rename model
     KINDS = XChoices((10, 'bike_brand', _('Bike Brand')),
                     (20, 'occupation', _('Occupation')),
@@ -111,7 +106,6 @@ class Choices(models.Model):  # TODO: Rename model
         return self.title
 
 
-@python_2_unicode_compatible
 class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_STATUS = XChoices((10, 'not_validated', _('Not yet validated')),
                            (20, 'bounced', _('Bounced')),
@@ -197,7 +191,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-@python_2_unicode_compatible
 class Competition(MPTTModel):
     KINDS = XChoices((0, 'velo', _('Velo')),
                     (1, 'cross_country', _('Cross Country')), )
@@ -337,7 +330,6 @@ class Competition(MPTTModel):
         return reverse('competition:competition', args=[self.id])
 
 
-@python_2_unicode_compatible
 class Distance(TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     name = models.CharField(max_length=100)
@@ -362,7 +354,6 @@ class Distance(TimestampMixin, models.Model):
         return self.team_set.all()
 
 
-@python_2_unicode_compatible
 class InsuranceCompany(models.Model):
     name = models.CharField(max_length=50)
     term = models.TextField(blank=True)
@@ -373,7 +364,6 @@ class InsuranceCompany(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class Insurance(StatusMixin, models.Model):
     insurance_company = models.ForeignKey(InsuranceCompany)
     competition = models.ForeignKey(Competition)
@@ -389,7 +379,6 @@ class Insurance(StatusMixin, models.Model):
         return self.title
 
 
-@python_2_unicode_compatible
 class CustomSlug(models.Model):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)
@@ -414,7 +403,6 @@ class Log(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
 
-@python_2_unicode_compatible
 class Map(models.Model):
     competition = models.ForeignKey(Competition)
     title = models.CharField(max_length=255)

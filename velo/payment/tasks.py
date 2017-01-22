@@ -6,7 +6,7 @@ from celery.task import periodic_task
 from django.utils import timezone
 
 from velo.payment.models import Transaction
-from velo.payment.utils import log_message
+from velo.core.utils import log_message
 
 
 @celery.task

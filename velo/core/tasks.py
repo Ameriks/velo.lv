@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-from builtins import str
-
-from celery.task import task
 from celery import Task
 from django.utils import timezone
 import json

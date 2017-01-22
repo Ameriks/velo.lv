@@ -14,10 +14,11 @@ from django_downloadview import ObjectDownloadView
 from braces.views import JsonRequestResponseMixin
 
 from velo.core.models import Competition
+from velo.core.utils import get_client_ip
 from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
 from velo.payment.models import Invoice, Transaction
 from velo.payment.utils import get_form_message, \
-    get_participant_fee_from_price, get_insurance_fee_from_insurance, get_client_ip
+    get_participant_fee_from_price, get_insurance_fee_from_insurance
 from velo.registration.models import Application
 from velo.team.models import Team
 from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin

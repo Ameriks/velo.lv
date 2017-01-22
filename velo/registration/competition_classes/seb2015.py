@@ -1,5 +1,3 @@
-# coding=utf-8
-from __future__ import unicode_literals
 from difflib import get_close_matches
 import datetime
 from django.db.models import Sum

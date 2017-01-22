@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.dispatch import receiver
-from django.utils.encoding import python_2_unicode_compatible
 
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.signals import saved_file
@@ -30,7 +26,7 @@ class PhotoNumber(TimestampMixin, models.Model):
     y2 = models.FloatField(blank=True, null=True)
 
 
-@python_2_unicode_compatible
+
 class Video(StatusMixin, TimestampMixin, models.Model):
     VIDEO_KIND = (
         (1, 'YouTube'),
@@ -87,7 +83,7 @@ class AlbumManager(models.Manager):
         return super(AlbumManager, self).get_queryset().select_related('primary_image')
 
 
-@python_2_unicode_compatible
+
 class Album(TimestampMixin, models.Model):
     title = models.CharField(max_length=255)
 

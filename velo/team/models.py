@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
 
 import os
 import uuid
@@ -23,7 +19,6 @@ def get_team_upload(instance, filename):
     return os.path.join("teams", "%s%s" % (filename, ext))
 
 
-@python_2_unicode_compatible
 class Team(StatusMixin, TimestampMixin, models.Model):
     distance = models.ForeignKey('core.Distance')
     title = models.CharField(_('Title'), max_length=100)
@@ -68,7 +63,6 @@ class Team(StatusMixin, TimestampMixin, models.Model):
         return self.distance.competition
 
 
-@python_2_unicode_compatible
 class Member(StatusMixin, models.Model):
     GENDER_CHOICES = (
         ('M', _('Male')),

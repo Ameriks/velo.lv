@@ -20,7 +20,7 @@ from OpenSSL import crypto
 from django.utils.translation import activate
 
 from velo.payment.models import Transaction, PaymentChannel, DailyTransactionTotals
-from velo.payment.utils import log_message, get_client_ip
+from velo.core.utils import log_message, get_client_ip
 
 
 class BankSignature(object):
@@ -195,8 +195,9 @@ class FirstDataIntegration(BankIntegrationBase):
             self.request_transaction_code()
 
         if self.transaction.external_code:
-            from velo.payment.tasks import check_firstdata_transaction
-            check_firstdata_transaction.apply_async(args=[self.transaction.id], countdown=120)
+            if not settings.DEBUG:
+                from velo.payment.tasks import check_firstdata_transaction
+                check_firstdata_transaction.apply_async(args=[self.transaction.id], countdown=120)
             return HttpResponseRedirect(
                 "%s?%s" % (self.transaction.link.url, urlencode({'trans_id': self.transaction.external_code}))
             )

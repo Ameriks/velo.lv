@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.contrib import messages
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from difflib import get_close_matches
 from django_tables2 import SingleTableView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from extra_views import NamedFormsetsMixin, CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
 import datetime
 

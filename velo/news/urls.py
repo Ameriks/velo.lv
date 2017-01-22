@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 

@@ -19,6 +19,8 @@ def set_sequences(apps, schema_editor):
         sql = 'CREATE SEQUENCE %s START %i;' % (sequence_name, current)
         print(sql)
         cursor.execute(sql)
+
+    cursor.execute("ALTER TABLE core_log ALTER COLUMN params TYPE JSON USING params::JSON;")
     invoice1 = PaymentChannel.objects.get(id=1)
     invoice1.params = {
                         "name": "Latvijas Kalnu divriteņu federācija",

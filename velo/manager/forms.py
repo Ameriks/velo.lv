@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django import forms
 from django.db.models import Count
 from django.template.defaultfilters import slugify
@@ -9,12 +6,10 @@ from django.utils.translation import ugettext as _
 from crispy_forms.bootstrap import StrictButton, FieldWithButtons
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Submit, Fieldset, HTML, Div, Field
-# from django_select2 import AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget
 import math
 import requests
 
 from velo.core.models import Competition, Distance, Insurance
-# from velo.manager.select2_fields import NumberChoices, UserChoices, NumberChoice, ParticipantChoices, NumberAllChoices
 from velo.manager.select2_fields import NumberChoices, UserChoices, NumberAllChoices, ParticipantChoices
 from velo.manager.tasks import update_results_for_participant
 from velo.manager.widgets import PhotoPickWidget

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django import forms
 from django.conf import settings
 from django.contrib import messages
@@ -17,12 +14,9 @@ import re
 import zipfile
 import os
 
-#from django_select2 import AutoHeavySelect2MultipleWidget
-
 from velo.core.models import Competition
 from velo.core.widgets import SplitDateWidget
 from velo.gallery.models import Video, Photo, Album
-# from velo.gallery.select2_fields import PhotoNumberChoices
 from velo.gallery.utils import youtube_video_id, sync_album
 from velo.velo.mixins.forms import RequestKwargModelFormMixin
 import environ

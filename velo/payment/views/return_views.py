@@ -1,27 +1,22 @@
-from braces.views import CsrfExemptMixin
-
 from django.http import Http404
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 
 from velo.payment.models import Transaction
-from velo.velo.mixins.views import NeverCacheMixin
+from velo.core.utils import log_message
 
 __all__ = ['TransactionReturnView', ]
 
 
-class TransactionReturnView(CsrfExemptMixin, NeverCacheMixin, View):
-    integration_object = None
+class TransactionReturnView(View):
 
-    def get(self, request, *args, **kwargs):
-        transaction = Transaction.objects.get(code=kwargs.get('code'))
-        self.integration_object = transaction.link.get_class(transaction)
+    @method_decorator(never_cache)
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        log = log_message('TransactionReturnView %s' % request.method, params={'GET': request.GET, 'POST': request.POST})
 
-        if not request.GET:
-            raise Http404
-
-        return self.integration_object.verify_return(request)
-
-    def post(self, request, *args, **kwargs):
         if kwargs.get('code'):
             transaction = Transaction.objects.get(code=kwargs.get('code'))
         elif request.POST.get("trans_id"):
@@ -29,9 +24,9 @@ class TransactionReturnView(CsrfExemptMixin, NeverCacheMixin, View):
         else:
             raise Http404("ERROR")
 
-        self.integration_object = transaction.link.get_class(transaction)
+        log.content_object = transaction
+        log.save()
 
-        if not request.GET and not request.POST:
-            raise Http404
+        integration_object = transaction.link.get_class(transaction)
 
-        return self.integration_object.verify_return(request)
+        return integration_object.verify_return(request)
