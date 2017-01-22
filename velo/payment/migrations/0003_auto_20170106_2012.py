@@ -46,11 +46,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='paymentchannel',
-            name='account',
-            field=models.CharField(blank=True, max_length=100),
-        ),
-        migrations.AddField(
-            model_name='paymentchannel',
             name='cert_file',
             field=models.FileField(blank=True, null=True, upload_to=''),
         ),
@@ -61,11 +56,6 @@ class Migration(migrations.Migration):
             field=models.FileField(blank=True, null=True, upload_to=''),
         ),
 
-        migrations.AddField(
-            model_name='paymentchannel',
-            name='public_key',
-            field=models.TextField(blank=True),
-        ),
         migrations.AddField(
             model_name='paymentchannel',
             name='server_url',

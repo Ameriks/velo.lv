@@ -130,8 +130,6 @@ class PaymentChannel(models.Model):
     url = models.CharField(max_length=255, blank=True)
     server_url = models.CharField(max_length=255, blank=True)
 
-    account = models.CharField(max_length=100, blank=True)
-
     key_file = models.FileField(verbose_name="Private Key", null=True, blank=True, storage=upload_storage)
     cert_file = models.FileField(verbose_name="Certificate or Public Key", null=True, blank=True, storage=upload_storage)
 
