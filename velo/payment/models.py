@@ -53,8 +53,8 @@ class ActivePriceManager(models.Manager):
 
 
 class Price(TimestampMixin, models.Model):
-    competition = models.ForeignKey('core.Competition')
-    distance = models.ForeignKey('core.Distance')
+    competition = models.ForeignKey('core.Competition', on_delete=models.PROTECT)
+    distance = models.ForeignKey('core.Distance', on_delete=models.PROTECT)
     from_year = models.IntegerField(default=0)
     till_year = models.IntegerField(default=2050)
     price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
@@ -75,7 +75,7 @@ class Price(TimestampMixin, models.Model):
 
 class DiscountCampaign(models.Model):
     title = models.CharField(max_length=50)
-    competition = models.ForeignKey('core.Competition')
+    competition = models.ForeignKey('core.Competition', on_delete=models.PROTECT)
     discount_entry_fee_percent = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     discount_entry_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     discount_insurance_percent = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
@@ -95,7 +95,7 @@ class DiscountCampaign(models.Model):
 
 
 class DiscountCode(TimestampMixin, models.Model):
-    campaign = models.ForeignKey('payment.DiscountCampaign')
+    campaign = models.ForeignKey('payment.DiscountCampaign', on_delete=models.PROTECT)
     code = models.CharField(max_length=20, unique=True)
     usage_times = models.IntegerField(default=1)
     usage_times_left = models.IntegerField(default=1)
@@ -156,8 +156,8 @@ class PaymentChannel(models.Model):
 
 
 class ActivePaymentChannel(models.Model):
-    payment_channel = models.ForeignKey('payment.PaymentChannel')
-    competition = models.ForeignKey('core.Competition')
+    payment_channel = models.ForeignKey('payment.PaymentChannel', on_delete=models.PROTECT)
+    competition = models.ForeignKey('core.Competition', on_delete=models.PROTECT)
     from_date = models.DateTimeField()
     till_date = models.DateTimeField()
 
@@ -178,13 +178,12 @@ class Payment(TimestampMixin, models.Model):
                        (-70, 'id_not_found', _('ID not found')),
                        )
 
-    legacy_id = models.IntegerField(blank=True, null=True)
-
     # This model can have relation to either Application or Team
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    # Remove next 2 fields
     channel = models.ForeignKey('payment.ActivePaymentChannel', blank=True, null=True)
     erekins_code = models.CharField(max_length=100, blank=True)  # Erekins code
 
@@ -195,8 +194,9 @@ class Payment(TimestampMixin, models.Model):
 
 
 class Invoice(TimestampMixin, models.Model):
-    competition = models.ForeignKey('core.Competition', verbose_name=_('Competition'), blank=True, null=True)
-    payment = models.ForeignKey(Payment, verbose_name=_('Payment'), blank=True, null=True)
+    channel = models.ForeignKey('payment.PaymentChannel', on_delete=models.PROTECT)
+    competition = models.ForeignKey('core.Competition', verbose_name=_('Competition'), blank=True, null=True, on_delete=models.PROTECT)
+    payment = models.ForeignKey(Payment, verbose_name=_('Payment'), blank=True, null=True, on_delete=models.PROTECT)
 
     company_name = models.CharField(_('Company name / Full Name'), max_length=100, blank=True)
     company_vat = models.CharField(_('VAT Number'), max_length=100, blank=True)
@@ -244,8 +244,8 @@ class Transaction(TimestampMixin, models.Model):
         (20, 'pending', _('Pending')),
         (30, 'ok', _('OK')),
     )
-    link = models.ForeignKey(PaymentChannel)
-    payment = models.ForeignKey(Payment)
+    channel = models.ForeignKey('payment.PaymentChannel', on_delete=models.PROTECT)
+    payment = models.ForeignKey(Payment, on_delete=models.PROTECT)
     code = models.CharField(max_length=36, default=uuid.uuid4, unique=True)
     status = models.SmallIntegerField(choices=STATUSES, default=STATUSES.new)
     external_code = models.CharField(max_length=50, blank=True)
@@ -279,7 +279,7 @@ class Transaction(TimestampMixin, models.Model):
 
 class DailyTransactionTotals(TimestampMixin, models.Model):
     date = models.DateTimeField(default=timezone.now, blank=False, null=False)
-    channel = models.ForeignKey(PaymentChannel)
+    channel = models.ForeignKey(PaymentChannel, on_delete=models.PROTECT)
     calculated_total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0, blank=False, null=False)
     reported_total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0, blank=False, null=False)
     params = JSONField(default={}, null=False, blank=False)

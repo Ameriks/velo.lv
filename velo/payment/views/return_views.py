@@ -22,11 +22,11 @@ class TransactionReturnView(View):
         elif request.POST.get("trans_id"):
             transaction = Transaction.objects.get(external_code=request.POST.get("trans_id"))
         else:
+            log.set_message("ERROR")
             raise Http404("ERROR")
 
-        log.content_object = transaction
-        log.save()
+        log.set_object(transaction)
 
-        integration_object = transaction.link.get_class(transaction)
+        integration_object = transaction.channel.get_class(transaction)
 
         return integration_object.verify_return(request)

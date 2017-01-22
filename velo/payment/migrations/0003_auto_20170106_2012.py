@@ -78,8 +78,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='transaction',
-            name='link',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='payment.PaymentChannel'),
+            name='channel',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payment.PaymentChannel'),
         ),
         migrations.AddField(
             model_name='transaction',
@@ -89,6 +89,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transaction',
             name='payment',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='payment.Payment'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payment.Payment'),
         ),
     ]

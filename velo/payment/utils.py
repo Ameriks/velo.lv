@@ -138,7 +138,20 @@ def get_form_message(competition, distance_id, year, insurance_id=None):
 
 
 def generate_pdf_invoice(instance, invoice_data, active_payment_type):
-    invoice_object = Invoice.objects.create(
+    content_type = ContentType.objects.get_for_model(instance)
+
+    payment, created = Payment.objects.get_or_create(
+        content_type=content_type,
+        object_id=instance.id,
+        total=instance.final_price,
+        donation=instance.donation if hasattr(instance, "donation") else 0.0,
+        defaults={"status": Payment.STATUSES.pending}
+    )
+    if not created and payment.status != Payment.STATUSES.ok:
+        payment.status = Payment.STATUSES.new
+        payment.save()
+
+    invoice_object = Invoice(
         competition=instance.competition,
         company_name=instance.company_name,
         company_vat=instance.company_vat,
@@ -147,21 +160,20 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type):
         company_juridical_address=instance.company_juridical_address,
         email=instance.email,
         series=invoice_data.get('bill_series'),
+        channel=active_payment_type.payment_channel,
+        payment=payment,
     )
+    invoice_object.set_number()
 
-    invoice_object.payment = Payment.objects.create(
-        content_object=instance,
-        channel=active_payment_type,
-        total=instance.final_price,
-        status=Payment.STATUSES.new,
-    )
     invoice_data.update({'name': invoice_object.invoice_nr})
     invoice = InvoiceGenerator(invoice_data)
     invoice_pdf = invoice.build()
     invoice_object.file = ContentFile(invoice_pdf.read(), str("%s-%03d.pdf" % (invoice_object.series, invoice_object.number)))
     invoice_object.save()
+
     instance.invoice = invoice_object
-    instance.save()
+    instance.save(update_fields=['invoice'])
+
     total_price = 0
     for item in invoice_data.get('items'):
         total_price += item.get('price')
@@ -356,16 +368,23 @@ def create_bank_transaction(instance, active_payment_type, request):
     else:
         raise Exception()
 
-    payment = Payment.objects.create(
-                content_object=instance,
-                channel=active_payment_type,
+    content_type = ContentType.objects.get_for_model(instance)
+    payment, created = Payment.objects.get_or_create(
+                content_type=content_type,
+                object_id=instance.id,
                 total=instance.final_price,
-                status=Payment.STATUSES.pending,
-                donation=instance.donation if hasattr(instance, "donation") else 0.0
+                donation=instance.donation if hasattr(instance, "donation") else 0.0,
+                defaults={"status": Payment.STATUSES.pending}
             )
 
+    if not created:
+        if payment.status == Payment.STATUSES.ok:
+            raise Exception("Already payed")
+        payment.status = Payment.STATUSES.pending
+        payment.save()
+
     transaction = Transaction.objects.create(
-        link=active_payment_type.payment_channel,
+        channel=active_payment_type.payment_channel,
         payment=payment,
         language=request.LANGUAGE_CODE,
         status=Transaction.STATUSES.new,
@@ -378,6 +397,9 @@ def create_bank_transaction(instance, active_payment_type, request):
 
 
 def approve_payment(payment, user=False, request=None):
+    payment.status = Payment.STATUSES.ok
+    payment.save(update_fields=['status'])
+
     if payment.content_type.model == 'application':
         application = payment.content_object
         application.payment_status = Application.PAY_STATUS.payed

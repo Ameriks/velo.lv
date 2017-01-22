@@ -402,6 +402,16 @@ class Log(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
+    def set_message(self, message, commit=True):
+        self.message = message
+        if commit:
+            self.save()
+
+    def set_object(self, obj, commit=True):
+        self.content_object = obj
+        if commit:
+            self.save()
+
 
 class Map(models.Model):
     competition = models.ForeignKey(Competition)

@@ -14,6 +14,8 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 from OpenSSL.crypto import load_certificate, load_privatekey, FILETYPE_PEM
 from OpenSSL import crypto
@@ -21,6 +23,7 @@ from django.utils.translation import activate
 
 from velo.payment.models import Transaction, PaymentChannel, DailyTransactionTotals
 from velo.core.utils import log_message, get_client_ip
+from velo.payment.utils import approve_payment
 
 
 class BankSignature(object):
@@ -31,7 +34,7 @@ class BankSignature(object):
         self.transaction = transaction
 
     def create_signature(self, digest):
-        pk_string = open(self.transaction.link.key_file.path, 'rt').read()
+        pk_string = open(self.transaction.channel.key_file.path, 'rt').read()
         key = load_privatekey(FILETYPE_PEM, pk_string)
 
         signed = crypto.sign(key, str(digest), 'sha1')
@@ -40,7 +43,7 @@ class BankSignature(object):
 
     def verify_signature(self, signature, digest):
         signature = str(signature)
-        pk_string = open(self.transaction.link.public_key.path, 'rb').read()
+        pk_string = open(self.transaction.channel.public_key.path, 'rb').read()
         cert = load_certificate(FILETYPE_PEM, pk_string)
 
         if crypto.verify(cert, b64decode(signature), digest, 'sha1') is None:
@@ -53,7 +56,7 @@ class PaymentRequestForm(forms.Form):
     def redirect_html(self):
         fields = [str(field) for field in self]
         attrs = {
-            'action': self.transaction.link.url,
+            'action': self.transaction.channel.url,
             'method': 'POST',
             'id': 'auto_redirect'
         }
@@ -89,6 +92,9 @@ class BankIntegrationBase(object):
     def server_check_transaction(self, request):
         pass
 
+    def is_user(self, request):
+        pass
+
     def expected_values(self, kind=None):
         raise Exception('Not Implemented')
 
@@ -102,20 +108,26 @@ class BankIntegrationBase(object):
             digest += str(value)
         return digest
 
-    def final_redirect(self, success):
+    def final_redirect(self, success, request=None):
         activate(self.transaction.language)
-        if self.transaction.payment.content_type.model == 'application':
-            return HttpResponseRedirect(
-                reverse('application_ok' if success else 'application_pay',
-                        kwargs={'slug': self.transaction.payment.content_object.code}
-                        ))
-        elif self.transaction.payment.content_type.model == 'team':
-            return HttpResponseRedirect(
-                reverse('account:team' if success else 'account:team_pay',
-                        kwargs={'pk2': self.transaction.payment.content_object.id}
-                        ))
+
+        if success:
+            return approve_payment(self.transaction.payment, self.is_user(request), request)
         else:
-            return HttpResponse('Something went wrong')
+            if request:
+                messages.error(request, _('Transaction unsuccessful. Try again.'))
+            if self.transaction.payment.content_type.model == 'application':
+                return HttpResponseRedirect(
+                    reverse('application_pay',
+                            kwargs={'slug': self.transaction.payment.content_object.code}
+                            ))
+            elif self.transaction.payment.content_type.model == 'team':
+                return HttpResponseRedirect(
+                    reverse('account:team_pay',
+                            kwargs={'pk2': self.transaction.payment.content_object.id}
+                            ))
+            else:
+                return HttpResponse('Something went wrong')
 
 
 class FirstDataIntegration(BankIntegrationBase):
@@ -146,10 +158,13 @@ class FirstDataIntegration(BankIntegrationBase):
         else:
             raise Exception('Error retrieving status')
 
+    def is_user(self, request):
+        return True
+
     def verify_return(self, request):
         status_dict = self.check_transaction()
         if not status_dict:
-            return super().final_redirect(False)
+            return super().final_redirect(False, request)
         else:
             self.transaction.user_response = status_dict.get('RESULT')
             self.transaction.server_response = self.transaction.user_response
@@ -158,7 +173,7 @@ class FirstDataIntegration(BankIntegrationBase):
             self.transaction.server_response_at = self.transaction.user_response_at
             self.transaction.status = self.get_transaction_status(status_dict.get('RESULT'))
             self.transaction.save()
-            return super().final_redirect(status_dict.get('RESULT') == 'OK')
+            return super().final_redirect(status_dict.get('RESULT') == 'OK', request)
 
     def check_transaction(self, request=None):
         params = {
@@ -170,8 +185,8 @@ class FirstDataIntegration(BankIntegrationBase):
         except AttributeError:
             params.update({'client_ip_addr': '127.0.0.1'})
         resp = requests.post(
-            self.transaction.link.server_url,
-            cert=(self.transaction.link.cert_file.path, self.transaction.link.key_file.path),
+            self.transaction.channel.server_url,
+            cert=(self.transaction.channel.cert_file.path, self.transaction.channel.key_file.path),
             data=params,
             verify=False
         )
@@ -199,7 +214,7 @@ class FirstDataIntegration(BankIntegrationBase):
                 from velo.payment.tasks import check_firstdata_transaction
                 check_firstdata_transaction.apply_async(args=[self.transaction.id], countdown=120)
             return HttpResponseRedirect(
-                "%s?%s" % (self.transaction.link.url, urlencode({'trans_id': self.transaction.external_code}))
+                "%s?%s" % (self.transaction.channel.url, urlencode({'trans_id': self.transaction.external_code}))
             )
         else:
             return super().final_redirect(False)
@@ -224,8 +239,8 @@ class FirstDataIntegration(BankIntegrationBase):
             params.update({'client_ip_addr': '127.0.0.1'})
 
         resp = requests.post(
-            self.transaction.link.server_url,
-            cert=(self.transaction.link.cert_file.path, self.transaction.link.key_file.path),
+            self.transaction.channel.server_url,
+            cert=(self.transaction.channel.cert_file.path, self.transaction.channel.key_file.path),
             data=params,
             verify=False,)
 
@@ -340,6 +355,9 @@ class SwedbankIntegration(BankIntegrationBase):
             log_message('ERROR Transaction', 'Invalid MAC', params=_get, object=self.transaction)
             raise Exception('Invalid MAC')
 
+    def is_user(self, request):
+        return request.POST.get('VK_AUTO', None) is not None
+
     def verify_return(self, request):
         # if user is forwarded, then we receive POST request. From SERVER bank sends GET request.
         if request.POST.get('VK_AUTO', None) == 'N':
@@ -354,7 +372,7 @@ class SwedbankIntegration(BankIntegrationBase):
         status_dict = self.check_transaction(request)
 
         if not status_dict:
-            return super().final_redirect(False)
+            return super().final_redirect(False, request)
         else:
             # User response.
             if status_dict.get('VK_SERVICE') == '1101':
@@ -366,7 +384,7 @@ class SwedbankIntegration(BankIntegrationBase):
             self.transaction.user_response_at = timezone.now()
             self.transaction.save()
 
-            return super().final_redirect(status_dict.get('VK_SERVICE') == '1101')
+            return super().final_redirect(status_dict.get('VK_SERVICE') == '1101', request)
 
 
 class SEBPaymentRequestForm(PaymentRequestForm):
@@ -473,6 +491,9 @@ class IBankIntegration(BankIntegrationBase):
             log_message('ERROR Transaction', 'Invalid MAC', params=_get, object=self.transaction)
             raise Exception('Invalid MAC')
 
+    def is_user(self, request):
+        return request.POST.get('IB_FROM_SERVER', None) is not None
+
     def verify_return(self, request):
         # if user is forwarded, then we receive POST request. From SERVER bank sends GET request.
         if request.POST.get('IB_FROM_SERVER', None) == 'N':
@@ -487,7 +508,7 @@ class IBankIntegration(BankIntegrationBase):
         status_dict = self.check_transaction(request)
 
         if not status_dict:
-            return super().final_redirect(False)
+            return super().final_redirect(False, request)
         else:
             # User response.
             if status_dict.get('IB_SERVICE') == '0004':
@@ -497,7 +518,7 @@ class IBankIntegration(BankIntegrationBase):
                 self.transaction.user_response_at = timezone.now()
                 self.transaction.save()
 
-                return super().final_redirect(status_dict.get('IB_STATUS') == 'ACCOMPLISHED')
+                return super().final_redirect(status_dict.get('IB_STATUS') == 'ACCOMPLISHED', request)
             else:
                 return HttpResponse('Something went wrong')
 

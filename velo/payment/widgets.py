@@ -64,3 +64,8 @@ class DoNotRenderWidget(Widget):
 
     def render(self, name, value, attrs=None):
         return ''
+
+    def value_from_datadict(self, data, files, name):
+        if name == 'donation' and isinstance(data.get(name), str):
+            return data.get(name).replace('€', '').strip()
+        return data.get(name)

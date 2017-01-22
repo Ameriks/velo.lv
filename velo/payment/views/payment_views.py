@@ -253,7 +253,7 @@ class TransactionRedirectView(NeverCacheMixin, CsrfExemptMixin, DetailView):
         if self.object.status not in (Transaction.STATUSES.new, Transaction.STATUSES.pending):
             raise Http404('Transaction already finished.')
 
-        self.integration_object = self.object.link.get_class(self.object)
+        self.integration_object = self.object.channel.get_class(self.object)
         response = self.integration_object.response()
 
         if isinstance(response, str):
@@ -264,5 +264,5 @@ class TransactionRedirectView(NeverCacheMixin, CsrfExemptMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'form': self.integration_object.generate_form(), 'form_action': self.object.link.url})
+        context.update({'form': self.integration_object.generate_form(), 'form_action': self.object.channel.url})
         return context

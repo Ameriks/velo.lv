@@ -12,7 +12,7 @@ from velo.core.utils import log_message
 @celery.task
 def check_firstdata_transaction(transaction_id):
     transaction = Transaction.objects.get(id=transaction_id)
-    instance = transaction.link.get_class(transaction)
+    instance = transaction.channel.get_class(transaction)
 
     if not instance.server_check_transaction():
         check_firstdata_transaction.apply_async(args=[transaction_id], countdown=30)

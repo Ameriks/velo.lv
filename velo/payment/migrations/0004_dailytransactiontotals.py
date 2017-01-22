@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('calculated_total', models.DecimalField(decimal_places=2, default=0.0, max_digits=20)),
                 ('reported_total', models.DecimalField(decimal_places=2, default=0.0, max_digits=20)),
                 ('params', django.contrib.postgres.fields.jsonb.JSONField(default={})),
-                ('channel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='payment.PaymentChannel')),
+                ('channel', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payment.PaymentChannel')),
                 ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='created_dailytransactiontotals_set', to=settings.AUTH_USER_MODEL)),
                 ('modified_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='modified_dailytransactiontotals_set', to=settings.AUTH_USER_MODEL)),
             ],

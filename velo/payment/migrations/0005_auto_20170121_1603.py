@@ -6,7 +6,7 @@ from django.db import migrations
 from django.db.models import Count, Max
 from slugify import slugify
 
-from velo.payment.models import Invoice, PaymentChannel
+from velo.payment.models import Invoice, PaymentChannel, Payment
 from django.db import connection
 
 
@@ -32,6 +32,14 @@ def set_sequences(apps, schema_editor):
                         "account_number": "LV43UNLA0050013169379"
                         }
     invoice1.save()
+
+    for payment in Payment.objects.filter(created__year__gte=2016):
+        payment.transaction_set.create(
+            channel=payment.channel.payment_channel,
+            status=payment.status,
+            amount=payment.total,
+        )
+
 
 
 
