@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.cache import never_cache
@@ -31,6 +32,11 @@ class TransactionReturnView(View):
             else:
                 log.set_message("ERROR")
                 raise Http404("ERROR")
+
+            # Stuck transaction loop fix.
+            if int(_id) == 18107:
+                HttpResponse("OK!")
+
             try:
                 transaction = Transaction.objects.get(id=_id)
             except Transaction.DoesNotExist:
