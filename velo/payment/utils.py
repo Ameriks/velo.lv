@@ -368,6 +368,10 @@ def create_bank_transaction(instance, active_payment_type, request):
     else:
         raise Exception()
 
+    # For testing purposes. To test successful SEB and Swedbank transactions.
+    if request.user.is_authenticated() and request.user.id == 6:
+        instance.final_price = 0.01
+
     content_type = ContentType.objects.get_for_model(instance)
     payment, created = Payment.objects.get_or_create(
                 content_type=content_type,
