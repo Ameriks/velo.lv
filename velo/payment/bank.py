@@ -439,7 +439,7 @@ class IBankIntegration(BankIntegrationBase):
         if value == 'ACCOMPLISHED':
             return Transaction.STATUSES.ok
         elif value == 'CANCELLED':
-            return Transaction.STATUSES.canceled
+            return Transaction.STATUSES.cancelled
         else:
             return Transaction.STATUSES.failed
 
