@@ -503,9 +503,9 @@ class IBankIntegration(BankIntegrationBase):
     def verify_return(self, request):
         # if user is forwarded, then we receive POST request. From SERVER bank sends GET request.
         if request.POST.get('IB_FROM_SERVER', None) == 'N':
-            self.transaction = request.account.transaction_set.get(id=request.POST.get('IB_PAYMENT_ID'))
+            self.transaction = Transaction.objects.get(id=request.POST.get('IB_PAYMENT_ID'))
         else:
-            self.transaction = request.account.transaction_set.get(id=request.GET.get('IB_PAYMENT_ID'))
+            self.transaction = Transaction.objects.get(id=request.GET.get('IB_PAYMENT_ID'))
 
         if request.POST.get('IB_FROM_SERVER', None) is None:
             self.server_check_transaction(request)
