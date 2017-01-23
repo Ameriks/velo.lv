@@ -299,9 +299,7 @@ class SwedbankPaymentRequestForm(PaymentRequestForm):
             'VK_ENCODING': 'UTF-8',
         })
 
-        super(PaymentRequestForm, self).__init__(initial, *args)
-        self.transaction.status = Transaction.STATUSES.pending
-        self.transaction.save()
+        super().__init__(initial, *args)
 
         if self.is_valid():
             digest = self.integrator.generate_digest(values=self.cleaned_data)
@@ -429,7 +427,7 @@ class SEBPaymentRequestForm(PaymentRequestForm):
             'IB_LANG': self.transaction.language_bank,
         })
 
-        super(PaymentRequestForm, self).__init__(initial, *args)
+        super().__init__(initial, *args)
 
         if self.is_valid():
             digest = self.integrator.generate_digest(values=self.cleaned_data, kind='0002')
