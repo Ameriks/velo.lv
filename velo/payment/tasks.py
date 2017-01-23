@@ -26,5 +26,5 @@ def timeout_old_transactions():
                                               modified__lt=(timezone.now() - datetime.timedelta(minutes=15)))
     for t in transactions:
         log_message('TIMEOUT Transaction', object=t)
-        t.status = Transaction.STATUS_TIMEOUT
+        t.status = Transaction.STATUSES.timeout
         t.save()
