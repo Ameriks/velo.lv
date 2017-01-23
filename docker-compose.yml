@@ -1,15 +1,3 @@
-elk:
-  build: ./compose/elk
-  volumes:
-       - /var/lib/elasticsearch:/var/lib/elasticsearch
-  ports:
-       - "127.0.0.1:12201:12201/udp" # Nginx log receiver
-       - "127.0.0.1:12202:12202/udp"  # App log receiver
-  links:
-    - redis
-  restart: always
-
-
 postgres:
   build: ./compose/postgres
   volumes:
@@ -52,10 +40,7 @@ projectvelo:
       - /var/lib/app/sendy/uploads/templates:/sendy
   env_file: .env
   restart: always
-  log_driver: gelf
-  log_opt:
-      gelf-address: udp://127.0.0.1:12202
-      gelf-tag: projectvelo
+
 
 mainrouter:
   build: ./compose/nginx
@@ -73,10 +58,6 @@ mainrouter:
     - /var/lib/app/project_velo/staticfiles:/var/lib/app/project_velo/staticfiles:ro
     - /var/lib/app/project_velo/velo/media:/var/lib/app/project_velo/velo/media:ro
   restart: always
-  log_driver: gelf
-  log_opt:
-      gelf-address: udp://127.0.0.1:12201
-      gelf-tag: mainrouter
 
 
 letsencrypt:
@@ -85,10 +66,6 @@ letsencrypt:
       - /var/lib/app/letsencrypt:/var/lib/app/letsencrypt
       - /var/lib/app/letsencrypt_certs:/etc/letsencrypt
   restart: always
-  log_driver: gelf
-  log_opt:
-      gelf-address: udp://127.0.0.1:12201
-      gelf-tag: letsencrypt
 
 
 duplicity:

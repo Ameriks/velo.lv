@@ -1,19 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
-from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.utils.cache import patch_response_headers
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import ListView, CreateView, UpdateView
-from django.utils.safestring import mark_safe
-from django.utils import timezone
+
 from django.core.cache import cache
-from django.utils.translation import ugettext_lazy as _
 
 from django_tables2 import SingleTableView
-import datetime
 
 from velo.advert.models import Banner
 from velo.core.models import Competition, Distance

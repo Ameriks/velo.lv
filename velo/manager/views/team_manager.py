@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.core.urlresolvers import reverse
 from django.forms.models import BaseInlineFormSet
 from django.views.generic import DetailView
@@ -58,7 +55,7 @@ class ManageTeams(ManagerPermissionMixin, SingleTableViewWithRequest):
 
     def get_queryset(self):
         queryset = super(ManageTeams, self).get_queryset()
-        queryset = queryset.filter(distance__competition_id__in=self.competition.get_ids()).distinct()
+        queryset = queryset.filter(distance__competition_id__in=self.competition.get_ids()).defer('distance__competition__params').distinct()
         queryset = queryset.select_related('distance', 'distance__competition')
 
         applied = self.request.GET.get('applied', None)
@@ -94,7 +91,7 @@ class ManageTeamList(ManagerPermissionMixin, SingleTableViewWithRequest):
 
     def get_queryset(self):
         queryset = super(ManageTeamList, self).get_queryset()
-        queryset = queryset.filter(member__memberapplication__competition=self.competition).distinct()
+        queryset = queryset.filter(member__memberapplication__competition=self.competition).defer('member__memberapplication__competition__params').distinct()
         queryset = queryset.select_related('distance', )
         return queryset
 

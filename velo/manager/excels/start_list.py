@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
-
 import pytz
 import xlwt
 from io import BytesIO
@@ -370,7 +366,7 @@ def create_team_list(competition=None, competition_id=None):
 
 
         row = 5
-        for index, team in enumerate(distance.team_set.filter(member__memberapplication__competition=competition).distinct(), start=1):
+        for index, team in enumerate(distance.team_set.filter(member__memberapplication__competition=competition).defer('member__memberapplication__competition__params').distinct(), start=1):
             col_add = 0 if index % 2 == 1 else 6
             sheet.write(row, 0 + col_add, str(index))
             sheet.write(row, 1 + col_add, str(team))

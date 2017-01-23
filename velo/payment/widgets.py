@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.forms.utils import flatatt
 from django.forms.widgets import Select, Widget
-from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -68,3 +64,8 @@ class DoNotRenderWidget(Widget):
 
     def render(self, name, value, attrs=None):
         return ''
+
+    def value_from_datadict(self, data, files, name):
+        if name == 'donation' and isinstance(data.get(name), str):
+            return data.get(name).replace('€', '').strip()
+        return data.get(name)

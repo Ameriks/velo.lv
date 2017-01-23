@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
@@ -9,7 +6,7 @@ import django_tables2 as tables
 import itertools
 
 from velo.registration.models import Participant, Application, CompanyParticipant
-from velo.velo.tables import CustomCheckBoxColumn, CustomSelectionCheckBoxColumn
+from velo.velo.tables import CustomSelectionCheckBoxColumn
 
 
 class ApplicationTable(tables.Table):

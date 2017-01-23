@@ -1,5 +1,3 @@
-# coding=utf-8
-from __future__ import unicode_literals
 from velo.registration.competition_classes.base_seb import SEBCompetitionBase
 
 

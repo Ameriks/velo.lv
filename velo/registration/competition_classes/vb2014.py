@@ -1,5 +1,3 @@
-# coding=utf-8
-from __future__ import unicode_literals
 from io import BytesIO
 from velo.registration.competition_classes.base_vb import VBCompetitionBase
 from velo.registration.models import Participant

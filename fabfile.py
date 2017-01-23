@@ -59,7 +59,7 @@ class VeloDeploy(Task):
     def restart_services(self):
         # Restart all services
         run("docker exec -it %s s6-svc -h /var/run/s6/services/gunicorn" % self.docker_id)
-        run("docker exec -it %s s6-svc -h /var/run/s6/services/celery" % self.docker_id)
+        run("docker exec -it %s s6-svc -h /var/run/s6/services/celeryworker" % self.docker_id)
         run("docker exec -it %s s6-svc -h /var/run/s6/services/celerybeat" % self.docker_id)
 
     def migrate(self):

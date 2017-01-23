@@ -38,10 +38,11 @@ class Migration(migrations.Migration):
                 ('number', models.IntegerField(blank=True, null=True, verbose_name='Series invoice number')),
                 ('access_time', models.TimeField(blank=True, null=True)),
                 ('access_ip', models.CharField(blank=True, max_length=100, null=True)),
-                ('competition', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.Competition', verbose_name='Competition')),
+                ('channel', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='payment.PaymentChannel', verbose_name='Competition')),
+                ('competition', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='core.Competition', verbose_name='Competition')),
                 ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='created_invoice_set', to=settings.AUTH_USER_MODEL)),
                 ('modified_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='modified_invoice_set', to=settings.AUTH_USER_MODEL)),
-                ('payment_set', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='payment.Payment', verbose_name='Payment')),
+                ('payment', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='payment.Payment', verbose_name='Payment')),
             ],
         ),
         migrations.AddField(

@@ -128,7 +128,7 @@
 
     Autocomplete.formatResult = function (suggestion, currentValue) {
         var pattern = '(' + utils.escapeRegExChars(currentValue) + ')';
-        
+
         return suggestion.value
             .replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>')
             .replace(/&/g, '&amp;')
@@ -217,7 +217,7 @@
         onBlur: function () {
             this.enableKillerFn();
         },
-        
+
         abortAjax: function () {
             var that = this;
             if (that.currentRequest) {
@@ -350,7 +350,7 @@
                     that.el.val(that.currentValue);
                     that.hide();
                 }
-                
+
                 that.stopKillSuggestions();
             }, 50);
         },
@@ -1297,8 +1297,8 @@ e&&d()}return c});
 
     window.onunload = function(){
         $('.click-circle').remove();
-    }; 
-  
+    };
+
     $('body').on('click', 'a, button, input, select, textarea, label, .js-click-feedback', function(e){
         var clickX = e.clientX - 10;
         var clickY = e.clientY - 10;
@@ -1316,21 +1316,21 @@ e&&d()}return c});
     var deferBackgroundImageLoading = function() {
         var imgBackgroundDefer = $('.js-background-image');
         var windowWidth = window.innerWidth;
-        
+
         imgBackgroundDefer.each(function(){
             var $this = $(this);
             var imgBackgroundSrc = $this.attr('data-background-image');
             var imgDeferScreenSize = Number($this.attr('data-load-on'));
-            
+
             var loadImage = function(){
                 $('<img/>').attr('src', imgBackgroundSrc).load(function() {
                     $(this).remove();
                     $this
                     .css({'background-image': 'url('+imgBackgroundSrc+')'})
                     .addClass('image-loaded');
-                });                
+                });
             }
-            
+
             if (!isNaN(imgDeferScreenSize)){
                 if(imgDeferScreenSize < windowWidth){
                     loadImage();
@@ -1340,9 +1340,9 @@ e&&d()}return c});
             }
         });
     };
-    
+
     $(window).on('load orientationchange', deferBackgroundImageLoading);
-    
+
     var resizeTimer;
     $(window).on('resize', function (e) {
         clearTimeout(resizeTimer);
@@ -1387,7 +1387,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 });
 (function(){
     //menu
-    $('body').on('click', '.js-burger', function() {        
+    $('body').on('click', '.js-burger', function() {
         $('.mobile-nav').toggleClass('active');
         $(this).toggleClass('active');
     });
@@ -1396,7 +1396,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         $('.mobile-nav').removeClass('active');
         $('.js-burger').removeClass('active');
     });
-    
+
     //close opened stuff
     $(document).on('click', function(e) {
         //close mobile-nav
@@ -1423,7 +1423,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             }
         }
     });
-    
+
     slider.trigger('to.owl.carousel', [slideTo]);
 
     var loadSliderImages = function(containingObject){
@@ -1492,20 +1492,20 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 })();
 
 (function () {
-    var dragBar = $('.js-drag-bar'); 
+    var dragBar = $('.js-drag-bar');
     var dragHandle = $('.js-drag-handle');
     var dragContainer = $('.js-drag-container');
     var dragContent = $('.js-drag-content');
-    
+
     var dragFlag = false;
     var contentDragFlag = false;
     var handleLastPosition = 0;
     var scrollLastPosition = 0;
     var handleDifference;
-    
+
     var pointerStartPosition;
     var scrollStartPosition;
-    
+
     var pointerPosition = function(e){
         var clientX;
         if((e.originalEvent.clientX)){
@@ -1515,14 +1515,14 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
         return clientX;
     };
-    
+
     var relativeTo = function(numberOne, numberTow){
-        return numberTow * 100 / numberOne; 
+        return numberTow * 100 / numberOne;
     }
     var absoluteTo = function(precentage, numberOne){
-        return precentage * numberOne / 100; 
+        return precentage * numberOne / 100;
     }
-    
+
     var setDragHandleWidth = function(){
         var dragContentWidth = dragContent.width();
         var dragContainerWidth = dragContainer.width();
@@ -1531,14 +1531,14 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }else{
             dragHandle.css({width:'100%'});
         }
-        
+
     }
-    
+
     var updateHandlePosition = function(e, pointerStartPosition){
         var handlePosition;
         var handleDifference = dragBar.width() - dragHandle.width();
         var pointerDelta = pointerPosition(e) - pointerStartPosition;
-        
+
         if(pointerDelta <= -handleLastPosition){
             handlePosition = 0;
         }else if(pointerDelta >= handleDifference - handleLastPosition){
@@ -1546,15 +1546,15 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }else{
             handlePosition = handleLastPosition + pointerDelta;
         }
-        
+
         return relativeTo(dragBar.width(), handlePosition);
     }
-    
+
     var updateScrollPosition = function(e, scrollStartPosition){
         var scrollPosition;
         var contentDifference = dragContent.width() - dragContainer.width();
         var scrollDelta = scrollStartPosition - pointerPosition(e);
-        
+
         if(scrollDelta <= -scrollLastPosition || contentDifference < 0){
             scrollPosition = 0;
         }else if(scrollDelta >= contentDifference - scrollLastPosition){
@@ -1564,38 +1564,38 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
         return scrollPosition;
     }
-        
+
     dragContainer.on('mousedown touchstart', function (e) {
         contentDragFlag = true;
         scrollStartPosition = pointerPosition(e);
     });
-    
+
     dragHandle.on('mousedown touchstart', function(e){
         dragFlag = true;
         pointerStartPosition = pointerPosition(e);
-        
+
     });
-    
+
     $(window).on('mousemove touchmove', function(e){
         //dragContainer move
         if(contentDragFlag == true){
 
             var setScrollPosition = updateScrollPosition(e, scrollStartPosition);
-            
+
             dragContainer.scrollLeft(setScrollPosition);
             dragHandle.css({left:relativeTo(dragContent.width(), setScrollPosition)+'%'});
         }
-        
+
         //dragBar move
         if(dragFlag == true){
 
             var setHandlePosition = updateHandlePosition(e, pointerStartPosition);
-            
+
             dragHandle.css({left:setHandlePosition+'%'});
             dragContainer.scrollLeft(absoluteTo(setHandlePosition, dragContent.width()));
         }
     });
-    
+
     $(window).on('mouseup touchend', function(e){
         dragFlag = false;
         contentDragFlag = false;
@@ -1604,9 +1604,9 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             scrollLastPosition = dragContainer.scrollLeft();
         }
     });
-    
+
     $(window).on('load orientationchange resize', setDragHandleWidth);
-    
+
 })();
 (function(){
     $('.dropdown').on('click', function(){
@@ -1631,17 +1631,17 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
     });
 })();
-(function(){
-    var registrationForm = $('.js-form-participants');
-    
-    registrationForm.validate({
-        ignore: [],
-        errorElement: 'p',
-        errorPlacement: function(error, element) {
-            error.appendTo(element.closest('.input-wrap'));
-        }
-    });
-})();
+// (function(){
+    // var registrationForm = $('.js-form-participants');
+    //
+    // registrationForm.validate({
+    //     ignore: [],
+    //     errorElement: 'p',
+    //     errorPlacement: function(error, element) {
+    //         error.appendTo(element.closest('.input-wrap'));
+    //     }
+    // });
+// })();
 (function(){
     var resultsForm = $('.js-form-results');
     var resultsFormInput = $('.js-form-results-input');
@@ -1669,17 +1669,17 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     });
 })();
 
-(function(){
-    var registrationForm = $('.js-form');
-    
-    registrationForm.validate({
-        ignore: [],
-        errorElement: 'p',
-        errorPlacement: function(error, element) {
-            error.appendTo(element.closest('.input-wrap'));
-        }
-    });
-})();
+// (function(){
+//     var registrationForm = $('.js-form');
+//
+//     registrationForm.validate({
+//         ignore: [],
+//         errorElement: 'p',
+//         errorPlacement: function(error, element) {
+//             error.appendTo(element.closest('.input-wrap'));
+//         }
+//     });
+// })();
 
 (function(){
     var onTransitionEnd = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -1688,7 +1688,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     var lightboxAnimatingFlag = false;
     var html = $('html');
     var galleryInitialized = false;
-    
+
     var initializeGallery = function($this){
         var sync1    = $('#sync1'),
             sync2    = $('#sync2'),
@@ -1701,7 +1701,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         var syncCarousels = function(itemIndex){
             sync2.trigger('to.owl.carousel', [itemIndex, duration, true]);
             sync1.trigger('to.owl.carousel', [itemIndex, duration, true]);
-            
+
             gallerySliderItem = itemIndex + 2;
             for(var i = gallerySlideReached; i < gallerySliderItem; i++) {
                 var thisImage = sync1.find('.gallery-slider__slide img:eq('+i+')');
@@ -1709,7 +1709,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
                 gallerySlideReached ++;
             }
         }
-        
+
         sync1.on('initialized.owl.carousel', function(e) {
 
             for(var i = gallerySlideReached; i < 3; i++) {
@@ -1718,11 +1718,11 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
                 gallerySlideReached ++;
             }
             gallerySliderItem = e.item.index + 1;
-            sync1   
+            sync1
                 .trigger('next.owl.carousel')
                 .trigger('prev.owl.carousel');
         });
-        
+
         // Start Carousel
         sync1.owlCarousel({
             rtl: false,
@@ -1736,7 +1736,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             dots:false,
             mouseDrag:navSlider,
             lazyLoad:false
-        });        
+        });
         sync2.owlCarousel({
             rtl: false,
             center: true,
@@ -1747,7 +1747,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             dots:false,
             mouseDrag:navSlider
         });
-        
+
         sync1.on('changed.owl.carousel', function (e) {
             syncCarousels(e.item.index);
         });
@@ -1758,13 +1758,13 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             syncCarousels(e.item.index);
         });
     }
-    
+
     var openLightbox = function(lightboxTrigger){
         if(lightboxAnimatingFlag == false){
             lightboxAnimatingFlag = true;
             lightboxLink = lightboxTrigger.attr('data-lightbox');
             articleLightbox = $(lightboxLink);
-            
+
             if (articleLightbox[0]!==void(0)) {
                 articleLightbox.addClass('animate');
                 articleLightbox.on(onTransitionEnd, function () {
@@ -1773,7 +1773,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
                 });
 
                 html.addClass('overflow--hidden');
-                
+
                 if(galleryInitialized == false){
                     galleryInitialized = true;
                     initializeGallery(lightboxTrigger);
@@ -1781,7 +1781,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             }
         }
     }
-    
+
     var closeLightbox = function(){
         if(lightboxAnimatingFlag == false){
             lightboxAnimatingFlag = true;
@@ -1796,12 +1796,12 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             });
         }
     }
-    
+
     $('.js-open-gallery-lightbox').on('click', function(){
         var $this = $(this);
         openLightbox($this);
     });
-    
+
     $(document).on('click', '.js-close-gallery-lightbox', function(){
         closeLightbox();
     });
@@ -1811,11 +1811,11 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     var indexResults = $('.js-index-results');
     var showWinner = $('.js-show-winner');
     var winner = $('.js-winner');
-    
+
     var loadWinnerImage = function(winnerObject){
         var winnerImage = winnerObject.find('.js-winner-image');
         var winnerImageSrc = winnerImage.attr('data-background-image');
-        
+
         $('<img/>').attr('src', winnerImageSrc).load(function() {
             $(this).remove();
             winnerImage
@@ -1823,8 +1823,8 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             .addClass('image-loaded');
         });
     }
-    
-    
+
+
     showResults.on('click', function(){
         var $this = $(this);
         var dataShow = $this.attr('data-show');
@@ -1833,50 +1833,50 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         indexResults.addClass('hidden');
         $(dataShow).removeClass('hidden');
     });
-    
+
     showWinner.on('click', function(){
         var $this = $(this);
         var dataShow = $this.attr('data-show');
-        
+
         winner.addClass('hidden');
         $(dataShow).removeClass('hidden');
-        
+
         loadWinnerImage($(dataShow));
     });
-    
+
     $(window).on('load', function(){
         loadWinnerImage(winner.eq(0));
     });
 })();
-(function(){   
+(function(){
     var inputAmount = $('.js-input-amount');
-    
+
     var incrementAmount = function(inputValue){
         var amount = inputValue.val();
-        
+
         amount ++
-        
+
         inputValue.val(parseInt(amount));
     }
-    
+
     var decrementAmount = function(inputValue){
         var amount = inputValue.val();
-        
+
         if(amount <= 1){
             amount = 1
         }else{
             amount --
         }
-        
+
         inputValue.val(parseInt(amount));
     }
-    
+
     inputAmount.each(function(){
         var $this = $(this);
         var inputPlus = $this.find('.js-input-amount-plus');
         var inputMinus = $this.find('.js-input-amount-minus');
         var inputValue = $this.find('.js-input-amount-value');
-        
+
         inputPlus.on('click', function(){
             incrementAmount(inputValue);
         });
@@ -1887,14 +1887,14 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 })();
 (function(){
     var fieldSelectGroupSelect = $('.js-input-field-with-select__select');
-    
+
     var updateFieldValue = function(triggerElement){
         var fieldSelectGroup = triggerElement.closest('.js-input-field-with-select');
         var fieldSelectGroupField = fieldSelectGroup.find('.js-input-field-with-select__field');
         var selectVal = triggerElement.val();
         fieldSelectGroupField.val('€ '+ selectVal);
     }
-    
+
     fieldSelectGroupSelect.on('change', function(){
         updateFieldValue($(this));
     });
@@ -1909,7 +1909,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
         return true;
     }
-    
+
     $('.js-input-file').each(function () {
         var $input = $(this),
             $label = $input.next('.js-input-file__label'),
@@ -1918,23 +1918,23 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
             allowedSize = $input.attr('data-filesize'),
             errorMessage = $input.parent().find('.js-input-file__error'),
             errorMessageFileSize = errorMessage.find('.js-allowed-size');
-        
+
         errorMessageFileSize.html(Math.round(allowedSize/1024/1024));
-        
+
         $input.on('change', function (e) {
             var files = this.files;
             var filesLength = files.length;
             var fileName = '';
-            
+
             if(isFileSize(files, allowedSize)){
                 errorMessage.addClass('hidden');
-                
+
                 if (files && filesLength > 1){
                     fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', filesLength);
                 }else if (e.target.value){
                     fileName = e.target.value.split('\\').pop();
                 }
-                
+
                 if (fileName){
                     labelText.html(fileName);
                 }else{
@@ -1960,7 +1960,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     languageNav.on('click', function(){
         languageNav.toggleClass('active');
     });
-    
+
     //close opened stuff
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.js-language-nav').length) {
@@ -1968,14 +1968,14 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         }
     });
 })();
-(function(){    
+(function(){
     var deparmentMap = $('#js-map');
-    
+
     function initialize() {
         var longitude = Number(deparmentMap.attr('data-lng'));
         var lattitude = Number(deparmentMap.attr('data-lat'));
         var mapCanvas = document.getElementById('js-map');
-        
+
         var myLatLng = {lat: lattitude, lng: longitude};
         var mapOptions = {
             center: {lat: lattitude, lng: longitude-0.005},
@@ -2002,12 +2002,12 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     var playVideo = function(triggerElement){
         var videoIframe = triggerElement.find('.js-video-iframe');
         var videoIframeSrc = videoIframe.attr('data-src');
-        
+
         triggerElement.off('click');
         triggerElement.addClass('brief--video-playing');
         videoIframe.attr('src', videoIframeSrc);
     }
-    
+
     $('.js-play-video').on('click', function(){
         playVideo($(this));
     });
@@ -2017,7 +2017,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     languageNav.on('click', function(){
         languageNav.toggleClass('active');
     });
-    
+
     //close opened stuff
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.js-profile-nav').length) {
@@ -2028,7 +2028,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
 (function(){
     var scrollElement = $('.js-scroll-along');
     var scrollBlock = $('.js-scroll-along-block');
-    
+
     if(scrollElement.length){
         var initialOffsetTop;
         var scrollBlockHeight;
@@ -2036,13 +2036,13 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
         var tableHeadHeight;
         var tableThead = scrollBlock.find('thead');
         var clonedThead = tableThead.clone();
-        
+
         var createSecondHead = function(){
             clonedThead.addClass('scroll-along__thead');
             $('.js-scroll-append').append(clonedThead);
         }
         createSecondHead();
-        
+
         var seteDimensions = function(){
             tableThead.find('th').each(function(){
                 var $this = $(this);
@@ -2056,15 +2056,15 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
                 var cellIndex = $this.index();
                 clonedThead.find('tr:eq('+cellIndex+')').width(cellWidth);
             });
-            
+
             scrollBlockHeight = scrollBlock.height();
             scrollBlockOffset = scrollBlock.offset().top;
             tableHeadHeight = tableThead.height();
         }
-        
+
         var toggleScrollClass = function($this){
             var thisScroll = $this.scrollTop();
-            
+
             if (thisScroll > initialOffsetTop) {
                 scrollElement.addClass('scroll-along');
             }
@@ -2072,23 +2072,23 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
                 scrollElement.removeClass('scroll-along');
             }
         }
-        
+
         $(window).scroll(function () {
             toggleScrollClass($(this));
         });
-        
+
         $(window).on('load resize orientationchange', function(){
             initialOffsetTop = scrollElement.offset().top;
             seteDimensions();
         });
-    }    
+    }
 })();
 (function(){
     var scrollBanner = document.querySelector('.js-scroll-banner');
-    
+
     if($(scrollBanner).length){
         $('html').addClass('overflow--hidden');
-        
+
         $(scrollBanner).on('mousewheel DOMMouseScroll', function(e){
             if ($(this)[0].scrollHeight !== $(this).outerHeight()) {
                 var e0 = e.originalEvent,
@@ -2129,11 +2129,11 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     secondaryNavScroll.on('touchstart', function(){
         touchFlag = true;
     });
-    
+
     secondaryNavScroll.on('touchend', function(){
         touchFlag = false;
     });
-    
+
     secondaryNavScroll.on('mousedown', function (e) {
         if(touchFlag == false){
             mouseDown = true;
@@ -2151,7 +2151,7 @@ $('.js-prevent-scroll').bind('mousewheel DOMMouseScroll', function (e) {
     $(window).on('mouseup', function (e) {
         mouseDown = false;
     });
-    
+
     $('.secondary-nav__link').on('click', function(e){
         if(Math.abs(cursorXStartPosition - e.clientX) > 20){
             e.preventDefault();

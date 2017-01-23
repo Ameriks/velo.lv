@@ -68,7 +68,7 @@ INSTALLED_APPS += (
 CELERY_ALWAYS_EAGER = True
 
 
-MY_DEFAULT_DOMAIN = 'http://dev.docker.local:48000'
-SHORT_BASE_URL = 'http://dev.docker.local:48000/s/'
+MY_DEFAULT_DOMAIN = 'http://localhost:48000'
+SHORT_BASE_URL = 'http://localhost:48000/s/'
 
 SITETREE_RAISE_ITEMS_ERRORS_ON_DEBUG = False

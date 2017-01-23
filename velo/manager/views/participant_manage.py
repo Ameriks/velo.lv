@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q, Value as V, CharField
 from django.db.models.functions import Concat
@@ -112,7 +109,7 @@ class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
                 Q(participant__team_name__icontains=query_attrs.get('search').initial.upper())
             )
 
-        queryset = queryset.select_related('competition').distinct()
+        queryset = queryset.select_related('competition').defer('competition__params').distinct()
         return queryset
 
 
@@ -229,7 +226,7 @@ class ManagePreNumberAssignList(ManagerPermissionMixin, SingleTableViewWithReque
         queryset = super(ManagePreNumberAssignList, self).get_queryset()
         queryset = queryset.filter(competition_id=self.competition.id)
 
-        queryset = queryset.select_related('competition', 'distance').distinct()
+        queryset = queryset.select_related('competition', 'distance').defer('competition__params').distinct()
         return queryset
 
 

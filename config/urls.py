@@ -4,7 +4,7 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 from django.core.cache import cache
 from django.db.utils import ProgrammingError
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import RedirectView
 from django.utils.translation import ugettext_lazy as _
@@ -17,7 +17,7 @@ from sitetree import sitetreeapp
 
 from velo.core.sitetrees import sitetrees_build
 from velo.core.views import CalendarView, IndexView
-from velo.payment.views import ApplicationPayView, ApplicationOKView, FirstDataReturnView
+from velo.payment.views import ApplicationPayView, ApplicationOKView, TransactionReturnView
 from velo.registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
     CompanyApplicationUpdate, ParticipantPDF
@@ -47,7 +47,6 @@ js_info_dict = {
 }
 
 urlpatterns = i18n_patterns(
-    #url(r'^$', RedirectView.as_view(url='/lv/sacensibas/42/rezultati/'), name='index'),
     url(r'^$', IndexView.as_view(), name='index'),
 
     url(_(r'^application/$'), ApplicationCreate.as_view(), name='application'),
@@ -83,7 +82,7 @@ urlpatterns = i18n_patterns(
 
 urlpatterns += [
     url(r'^$', RedirectView.as_view(url='/lv/')),
-    url(_(r'^transaction/first-data/done/$'), FirstDataReturnView.as_view(), name='first_data_return'),
+    url(_(r'^bank/return/$'), TransactionReturnView.as_view(), name='payment_bank_return'),
 
     # url('^s/', include('shorturls.urls')),
     url(_(r'^pdf/(?P<slug>\w+)/'), ParticipantPDF.as_view(), name="participant_number_pdf"),
@@ -105,3 +104,7 @@ if settings.DEBUG:
         urlpatterns += [
             url(r'^rosetta/', include('rosetta.urls')),
         ]
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

@@ -1,24 +1,24 @@
 import datetime
 
+from braces.views import CsrfExemptMixin
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
-from django.views.generic import DetailView, UpdateView, View
+from django.views.generic import DetailView, UpdateView
 from django.views.generic.edit import BaseUpdateView
 from django.core.urlresolvers import reverse
-from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
-from django.views.decorators.csrf import csrf_exempt
 from django_downloadview import ObjectDownloadView
 
-from braces.views import JsonRequestResponseMixin, LoginRequiredMixin
+from braces.views import JsonRequestResponseMixin
 
 from velo.core.models import Competition
-from velo.payment.bank import FirstDataIntegration
+from velo.core.utils import get_client_ip
 from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
-from velo.payment.models import Payment, Invoice, Transaction
-from velo.payment.utils import get_form_message, validate_payment, \
-    get_participant_fee_from_price, get_insurance_fee_from_insurance, get_client_ip
+from velo.payment.models import Invoice, Transaction
+from velo.payment.utils import get_form_message, \
+    get_participant_fee_from_price, get_insurance_fee_from_insurance
 from velo.registration.models import Application
 from velo.team.models import Team
 from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin
@@ -228,21 +228,6 @@ class TeamPayView(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, U
         return super(BaseUpdateView, self).post(request, *args, **kwargs)
 
 
-class PaymentReturnView(NeverCacheMixin, DetailView):
-    model = Payment
-    slug_field = 'erekins_code'
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        if self.object.status == Payment.STATUSES.ok:
-            if self.object.content_type.model == 'application':
-                return HttpResponseRedirect(reverse('application_ok', kwargs={'slug': self.object.content_object.code}))
-            elif self.object.content_type.model == 'team':
-                return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': self.object.content_object.id}))
-        return validate_payment(self.object, user=True, request=request)
-
-
 class InvoiceDownloadView(ObjectDownloadView):
     model = Invoice
 
@@ -250,18 +235,34 @@ class InvoiceDownloadView(ObjectDownloadView):
         invoice = self.model.objects.get(slug=self.request.resolver_match.kwargs.get('slug'))
         if not self.request.user.has_perm('registration.add_number'):
             if not invoice.access_time or not invoice.access_ip:
-                if invoice.payment_set.status == 10:
-                    invoice.payment_set.status = 20
+                if invoice.payment.status == 10:
+                    invoice.payment.status = 20
                 invoice.access_ip = get_client_ip(self.request)
                 invoice.access_time = datetime.datetime.now()
                 invoice.save()
         return super(InvoiceDownloadView, self).get_file()
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class FirstDataReturnView(View):
+class TransactionRedirectView(NeverCacheMixin, CsrfExemptMixin, DetailView):
+    model = Transaction
+    slug_field = 'code'
+    integration_object = None
 
-    def post(self, request, *args, **kwargs):
-        transaction = Transaction.objects.filter(external_code=self.request.POST.get("trans_id")).get()
-        first_data = FirstDataIntegration(transaction)
-        return first_data.verify_return(request)
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.status not in (Transaction.STATUSES.new, Transaction.STATUSES.pending):
+            raise Http404('Transaction already finished.')
+
+        self.integration_object = self.object.channel.get_class(self.object)
+        response = self.integration_object.response()
+
+        if isinstance(response, str):
+            context = self.get_context_data(object=self.object, response=response)
+            return self.render_to_response(context)
+        else:
+            return response
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'form': self.integration_object.generate_form(), 'form_action': self.object.channel.url})
+        return context

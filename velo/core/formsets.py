@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import BaseInlineFormSet
@@ -15,7 +12,8 @@ class CustomBaseInlineFormSet(GetClassNameMixin, BaseInlineFormSet):
     can_add_new = True
     max_num = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, data=None, files=None, instance=None,
+                 save_as_new=False, prefix=None, queryset=None, **kwargs):
         self.application = kwargs.pop('application', None)
         self.required = kwargs.pop('required', 0)
         self.max_num = kwargs.pop('max_num', 1000)
@@ -23,7 +21,22 @@ class CustomBaseInlineFormSet(GetClassNameMixin, BaseInlineFormSet):
         self.can_add_new = kwargs.pop('can_add_new', self.can_add_new)
         self.can_delete = kwargs.pop('can_delete', self.can_delete)
 
-        super(CustomBaseInlineFormSet, self).__init__(*args, **kwargs)
+        if instance is None:
+            self.instance = self.fk.remote_field.model()
+        else:
+            self.instance = instance
+        self.save_as_new = save_as_new
+        if queryset is None:
+            queryset = self.model._default_manager
+        if self.instance.pk is not None:
+            qs = queryset.filter(**{self.fk.name: self.instance})
+        else:
+            qs = queryset.none()
+        self.unique_fields = {self.fk.name}
+        super(BaseInlineFormSet, self).__init__(data, files, prefix=prefix,
+                                                queryset=qs, **kwargs)
+
+
 
     def clean(self):
         super(CustomBaseInlineFormSet, self).clean()

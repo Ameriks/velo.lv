@@ -57,6 +57,13 @@ server {
         access_log off;
         alias /var/lib/app/project_velo/staticfiles;
     }
+
+    location /media/payment/invoice {
+        expires off;
+        access_log off;
+        return 403;
+    }
+
     location /media {
         expires off;
         access_log off;

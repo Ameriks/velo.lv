@@ -98,7 +98,7 @@ class ApplicationCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         now = timezone.now()
         competitions = Competition.objects.filter(Q(complex_payment_enddate__gt=now) | Q(price__end_registering__gt=now,
-                                                                                         price__start_registering__lte=now)).distinct().order_by(
+                                                                                         price__start_registering__lte=now)).defer("params").distinct().order_by(
             'complex_payment_enddate', 'competition_date')
 
         if not self.request.GET.get('all', None):

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, division, print_function
-
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.db.models import Q
@@ -85,7 +82,7 @@ class ManageInvoiceList(ManagerPermissionMixin, SingleTableViewWithRequest):
         query_attrs = self.request.GET.copy()
 
         if query_attrs.get('status'):
-            queryset = queryset.filter(payment_set__status=query_attrs.get('status'))
+            queryset = queryset.filter(payment__status=query_attrs.get('status'))
 
         if query_attrs.get('series'):
             queryset = queryset.filter(series=query_attrs.get('series'))
@@ -111,7 +108,7 @@ class ManageInvoice(ManagerPermissionMixin, SetCompetitionContextMixin, DetailVi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'participants': gather_participants(self.object.payment_set)})
+        context.update({'participants': gather_participants(self.object.payment)})
         context.update({'old_invoice': self.object.created < timezone.now() - timezone.timedelta(weeks=26)})
         return context
 
@@ -121,7 +118,7 @@ class ManageInvoice(ManagerPermissionMixin, SetCompetitionContextMixin, DetailVi
     def process_post(self, request):
         action = request.POST.get('action', '')
         if action == 'mark_as_payed' and not self.object.created < timezone.now() - timezone.timedelta(weeks=26):
-            payment_object = self.object.payment_set
+            payment_object = self.object.payment
             if approve_payment(payment_object):
                 payment_object.status = payment_object.STATUSES.ok
                 payment_object.save()
