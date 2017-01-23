@@ -35,7 +35,7 @@ class TransactionReturnView(View):
 
             # Stuck transaction loop fix.
             if int(_id) == 18107:
-                HttpResponse("OK!")
+                return HttpResponse("OK!")
 
             try:
                 transaction = Transaction.objects.get(id=_id)
