@@ -401,6 +401,8 @@ def create_bank_transaction(instance, active_payment_type, request):
 
 
 def approve_payment(payment, user=False, request=None):
+    send_email = payment.status != Payment.STATUSES.ok
+
     payment.status = Payment.STATUSES.ok
     payment.save(update_fields=['status'])
 
@@ -415,7 +417,8 @@ def approve_payment(payment, user=False, request=None):
                 participant.company_participant.is_participating = True
                 participant.company_participant.save()
 
-        send_success_email.delay(application.id)
+        if send_email:
+            send_success_email.delay(application.id)
 
         if user:
             return HttpResponseRedirect(reverse('application_ok', kwargs={'slug': payment.content_object.code}))

@@ -113,6 +113,10 @@ class BankIntegrationBase(object):
             digest += str(value)
         return digest
 
+    def check_transaction_status(self):
+        if self.transaction.status == Transaction.STATUSES.ok:
+            approve_payment(self.transaction.payment)
+
     def final_redirect(self, success, request=None):
         activate(self.transaction.language)
 
@@ -374,6 +378,7 @@ class SwedbankIntegration(BankIntegrationBase):
 
         if request.POST.get('VK_AUTO', None) is None:
             self.server_check_transaction(request)
+            self.check_transaction_status()
             return HttpResponse('OK')
 
         status_dict = self.check_transaction(request)
@@ -509,6 +514,7 @@ class IBankIntegration(BankIntegrationBase):
 
         if request.POST.get('IB_FROM_SERVER', None) is None:
             self.server_check_transaction(request)
+            self.check_transaction_status()
             return HttpResponse('OK')
 
         status_dict = self.check_transaction(request)
