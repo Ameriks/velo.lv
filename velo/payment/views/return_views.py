@@ -4,7 +4,7 @@ from django.views import View
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 
-from velo.payment.models import Transaction
+from velo.payment.models import Transaction, Payment
 from velo.core.utils import log_message
 
 __all__ = ['TransactionReturnView', ]
@@ -31,7 +31,11 @@ class TransactionReturnView(View):
             else:
                 log.set_message("ERROR")
                 raise Http404("ERROR")
-            transaction = Transaction.objects.get(id=_id)
+            try:
+                transaction = Transaction.objects.get(id=_id)
+            except Transaction.DoesNotExist:
+                pay = Payment.objects.get(id=_id)
+                transaction = pay.transaction_set.all()[0]
 
         log.set_object(transaction)
 
