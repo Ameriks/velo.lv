@@ -33,15 +33,7 @@ class TransactionReturnView(View):
                 log.set_message("ERROR")
                 raise Http404("ERROR")
 
-            # Stuck transaction loop fix.
-            if int(_id) == 18107:
-                return HttpResponse("OK!")
-
-            try:
-                transaction = Transaction.objects.get(id=_id)
-            except Transaction.DoesNotExist:
-                pay = Payment.objects.get(id=_id)
-                transaction = pay.transaction_set.all()[0]
+            transaction = Transaction.objects.get(id=_id)
 
         log.set_object(transaction)
 
