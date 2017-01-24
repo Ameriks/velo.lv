@@ -8,6 +8,7 @@ from base64 import b64encode, b64decode
 from django import forms
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db.models import Sum
 from django.forms.utils import flatatt
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
@@ -526,34 +527,28 @@ class IBankIntegration(BankIntegrationBase):
                 return HttpResponse('Something went wrong')
 
 
-def close_business_day():
+def close_business_day(end_date=None):
     riga_tz = pytz.timezone("Europe/Riga")
-    dt = timezone.now()
-    end_date = datetime.datetime.now(riga_tz).replace(hour=0, minute=0, second=0, microsecond=0)
-    start_date = datetime.datetime.now(riga_tz).replace(day=dt.day - 1, hour=0, minute=0, second=0, microsecond=0)
-    datetime.datetime.now(riga_tz)
 
-    transactions = Transaction.objects.filter(
-        status=Transaction.STATUSES.ok,
-        user_response_at__range=[start_date, end_date]
-    ).values('link_id', 'amount')
+    if end_date is None:
+        end_date = riga_tz.localize(datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0))
+        automated = True
+    else:
+        end_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        automated = False
 
-    payment_totals_by_bank = {}
-    for trans in transactions:
-        link_id = trans.get('link_id')
-        if trans.get('link_id') in payment_totals_by_bank:
-            amount = payment_totals_by_bank.get(link_id)
-            payment_totals_by_bank.update({link_id: amount + trans.get('amount')})
-        else:
-            payment_totals_by_bank.update({link_id: trans.get('amount')})
+    start_date = end_date - datetime.timedelta(days=1)
 
-    payment_channel_ids = PaymentChannel.objects.all().values('id', 'title').order_by('id')
+    transaction_totals_by_channel = Transaction.objects.\
+        filter(created__range=[start_date, end_date], status=Transaction.STATUSES.ok).\
+        values('channel_id').\
+        annotate(total_sum=Sum('amount')).all()
 
-    for channel in payment_channel_ids:
+    for channel_totals in transaction_totals_by_channel:
         reported_totals = 0
         params = {}
 
-        if channel.get('title') == "FirstData":
+        if automated and channel_totals.get('channel__title') == "FirstData":
             try:
                 payment_channel_object = PaymentChannel.objects.filter(pk=4).get()
                 resp = requests.post(
@@ -571,10 +566,10 @@ def close_business_day():
             except:
                 continue
 
-        DailyTransactionTotals.objects.create(
-            date=None,
-            channel=PaymentChannel.objects.filter(pk=channel.get('id')),
-            calculated_total=payment_totals_by_bank.get(channel.get('id'), default=0),
+        DailyTransactionTotals.objects.update_or_create(
+            date=start_date,
+            channel=PaymentChannel.objects.filter(pk=channel_totals.get('channel_id')).get(),
+            calculated_total=channel_totals.get('total_sum'),
             reported_total=reported_totals,
             params=params
         )
