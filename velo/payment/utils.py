@@ -148,7 +148,7 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type):
         defaults={"status": Payment.STATUSES.pending}
     )
     if not created and payment.status != Payment.STATUSES.ok:
-        payment.status = Payment.STATUSES.new
+        payment.status = Payment.STATUSES.pending
         payment.save()
 
     invoice_object = Invoice(
