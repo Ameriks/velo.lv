@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('contenttypes', '0003_auto_20170126_1840'),
+        ('contenttypes', '0002_remove_content_type_name'),
         ('sitetree', '0002_auto_20170126_1840'),
         ('auth', '0008_alter_user_username_max_length'),
     ]
