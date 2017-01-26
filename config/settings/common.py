@@ -99,9 +99,6 @@ MIDDLEWARE_CLASSES = (
 
 # MIGRATIONS CONFIGURATION
 # ------------------------------------------------------------------------------
-MIGRATION_MODULES = {
-    'sites': 'velo.contrib.sites.migrations'
-}
 
 
 
