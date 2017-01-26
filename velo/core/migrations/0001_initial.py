@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('contenttypes', '0003_auto_20170126_1840'),
         ('sitetree', '0002_auto_20170126_1840'),
-        ('auth', '0009_auto_20170126_1840'),
+        ('auth', '0008_alter_user_username_max_length'),
     ]
 
     operations = [
