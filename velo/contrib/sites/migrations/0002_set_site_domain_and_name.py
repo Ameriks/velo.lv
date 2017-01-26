@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import django.contrib.sites.models
 from django.conf import settings
-from django.db import migrations
+from django.db import migrations, models
 
 
 def update_site_forward(apps, schema_editor):
@@ -37,4 +38,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(update_site_forward, update_site_backward),
+        migrations.AlterModelManagers(
+            name='site',
+            managers=[
+                ('objects', django.contrib.sites.models.SiteManager()),
+            ],
+        ),
+        migrations.AlterField(
+            model_name='site',
+            name='domain',
+            field=models.CharField(max_length=100, unique=True,
+                                   validators=[django.contrib.sites.models._simple_domain_name_validator],
+                                   verbose_name='domain name'),
+        ),
     ]
