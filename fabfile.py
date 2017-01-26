@@ -48,6 +48,7 @@ class VeloDeploy(Task):
     need_migrate = False
     need_service_restart = False
     need_full_restart = False
+    pull_new = False
 
     def get_projectvelo_id(self):
         self.docker_id = run('docker ps | grep "velo_projectvelo_1" | cut -c1-12')
@@ -67,7 +68,7 @@ class VeloDeploy(Task):
         self.need_migrate = False
 
     def git_pull(self):
-        git_output = run("docker exec -it %s git pull" % self.docker_id)
+        git_output = run("docker exec -it %s sh -c 'cd /app && git pull'" % self.docker_id)
         if "static/" in git_output or 'requirements/' in git_output:
             self.need_static_regenerate = True
 
@@ -95,7 +96,8 @@ class VeloDeploy(Task):
         if self.need_static_regenerate:
             self.collect_static()
 
-        self.pull_docker()
+        if self.pull_new:
+            self.pull_docker()
 
         if not self.need_full_restart and self.need_service_restart:
             self.restart_services()
