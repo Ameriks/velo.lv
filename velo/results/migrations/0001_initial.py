@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
         ('team', '0001_initial'),
         ('registration', '0002_auto_20170126_1843'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('contenttypes', '0003_auto_20170126_1840'),
-        ('djcelery', '0003_auto_20170126_1843'),
+        ('contenttypes', '0002_remove_content_type_name'),
+        ('djcelery', '__first__'),
         ('core', '0001_initial'),
     ]
 
