@@ -45,7 +45,7 @@
 
                                             {% if item.logo_svg %}
                                             <figure class="calendar-tile__logo img-wrapper flex--1 flex justify--center align-items--center loaded">
-                                                <img onload="imgLoaded(this)" src="{{ item.logo_svg.url }}">
+                                                <img onload="imgLoaded(this)" src="{{ item.logo_svg.url }}" style="height: 100%">
                                             </figure>
                                             {% endif %}
 
@@ -120,8 +120,9 @@
                                         <a href="{% url "competition:competition" competition.id %}"
                                            class="logo-tiles__tile img-wrapper">
                                             <img
-                                                    data-src="{{ competition.logo_svg.url }}"
-                                                    onload="imgLoaded(this)"
+                                                data-src="{{ competition.logo_svg.url }}"
+                                                onload="imgLoaded(this)"
+                                                style="height: 100%"
                                             >
                                             <div class="logo-tiles__tile__btn btn btn--60 btn--blue btn--blue-active flex--important wrap--nowrap direction--column justify--center align-items--center">
                                                 <span class="bottom-margin--5">{{ competition }}</span>
