@@ -32,6 +32,7 @@ def _get_next_sequence_value(series, kind="payment"):
     series = slugify(series, only_ascii=True, ok="_")
     cursor = connection.cursor()
     sequence_name = "%s_sequence_%s" % (kind, series)
+    cursor.execute('CREATE SEQUENCE IF NOT EXISTS %s START 1;' % sequence_name)
     cursor.execute("SELECT nextval('%s');" % sequence_name)
     return cursor.fetchone()[0]
 
