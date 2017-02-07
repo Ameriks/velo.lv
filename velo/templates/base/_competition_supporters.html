@@ -16,7 +16,7 @@
     {% if competition.logo_svg %}
         <div class="sponsors__group">
             <figure class="sponsors__image sponsors__image--large img-wrapper">
-                <img data-load-on="768" onload="imgLoaded(this)" src="{{ competition.logo_svg.url }}">
+                <img data-load-on="768" onload="imgLoaded(this)" src="{{ competition.logo_svg.url }}" style="height: 100%">
             </figure>
         </div>
     {% endif %}
@@ -37,7 +37,7 @@
             <figure class="img-wrapper {% if not supporter.is_large_logo %}sponsors__image--small{% endif %}">
                 <img data-load-on="768" onload="imgLoaded(this)" src="
                         {% if supporter.logo.svg_logo %}{{ supporter.logo.svg_logo.url }}{% else %}{{ logo.url }}{% endif %}"
-                     alt="{{ supporter.supporter }}">
+                     alt="{{ supporter.supporter }}" style="height: 100%">
             </figure>
         </a>
 
