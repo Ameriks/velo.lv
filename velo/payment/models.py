@@ -2,6 +2,7 @@ import datetime
 import importlib
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -218,8 +219,10 @@ class Invoice(TimestampMixin, models.Model):
         return "%s-%03d" % (self.series, self.number)
 
     def set_number(self):
-        if not self.number:
+        if not self.number and not settings.TESTING:
             self.number = _get_next_sequence_value(self.series)
+        else:
+            self.number = 1
 
     def save(self, *args, **kwargs):
         self.set_number()

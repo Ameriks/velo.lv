@@ -60,7 +60,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                     if active_payment_type.payment_channel.is_bill:
                         create_application_invoice(instance, active_payment_type)
                         self.success_url = reverse('application_ok', kwargs={'slug': instance.code})
-                        messages.info(self.request,
+                        messages.success(self.request,
                                       _('Invoice successfully created and sent to %(email)s') % {'email': instance.email})
                     else:
                         self.success_url = create_bank_transaction(instance, active_payment_type, self.request)
