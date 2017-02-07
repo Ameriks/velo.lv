@@ -308,24 +308,24 @@ HASH_ALPHABET = 'abcdefghjkmnprstuvwxyzABCDEFGHJKMNPRSTUVWXYZ23456789'
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_IMAGE_BACKEND = "pillow"
 # CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'toolbar_Basic': [
-            ['Source', '-', 'Bold', 'Italic']
-        ],
-        'toolbar_full': [
-            ['PasteText', 'PasteFromWord', 'RemoveFormat'],
-            ['Styles', 'Format', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
-            ['JustifyLeft', 'JustifyCenter', 'JustifyRight'],
-            ['NumberedList', 'BulletedList'],
-            ['Link', 'Unlink', 'Anchor'],
-            ['Image', 'Flash', 'Table', 'HorizontalRule'],
-            ['TextColor', 'BGColor'],
-            ['SpecialChar', 'Iframe'], ['Source'],
-        ],
-    },
-}
+# CKEDITOR_CONFIGS = {
+#     'default': {
+#         'toolbar': 'full',
+#         'toolbar_Basic': [
+#             ['Source', '-', 'Bold', 'Italic']
+#         ],
+#         'toolbar_full': [
+#             ['PasteText', 'PasteFromWord', 'RemoveFormat'],
+#             ['Styles', 'Format', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
+#             ['JustifyLeft', 'JustifyCenter', 'JustifyRight'],
+#             ['NumberedList', 'BulletedList'],
+#             ['Link', 'Unlink', 'Anchor'],
+#             ['Image', 'Flash', 'Table', 'HorizontalRule'],
+#             ['TextColor', 'BGColor'],
+#             ['SpecialChar', 'Iframe'], ['Source'],
+#         ],
+#     },
+# }
 
 VIMEO_KEY = env('VIMEO_KEY')
 VIMEO_SECRET = env('VIMEO_SECRET')

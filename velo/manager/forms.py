@@ -459,20 +459,6 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
             'city', 'bike_brand2', 'occupation', 'price', 'insurance', 'registration_dt',
         )
 
-    class Media:
-        js = ('plugins/jquery.maskedinput.js',
-              'plugins/mailgun_validator.js',
-              'plugins/typeahead.js/typeahead.bundle.min.js',
-              'plugins/handlebars-v3.0.1.js',
-              'plugins/moment.min.js',
-              'plugins/datetimepicker/bootstrap-datetimepicker.min.js',
-              'coffee/manager/participant_add.js')
-        css = {
-            'all': (
-              'plugins/datetimepicker/bootstrap-datetimepicker.min.css',
-            ),
-        }
-
     def clean(self):
         super(ParticipantIneseCreateForm, self).clean()
 
@@ -615,9 +601,6 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
             'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'is_participating',
             'ssn', 'phone_number', 'email',  'country', 'team_name',)
             # 'primary_number')
-
-    class Media:
-        js = ('plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js')
 
 
     def clean(self):
@@ -974,13 +957,6 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
             'time': forms.TimeInput(format='%H:%M:%S.%f'),
             'number': NumberAllChoices,
             'participant': ParticipantChoices,
-        }
-
-    class Media:
-        js = ('js/jquery.formset.js', 'plugins/datepicker/bootstrap-datepicker.min.js',
-              'plugins/jquery.maskedinput.js', 'plugins/mailgun_validator.js')
-        css = {
-            'all': ('plugins/datepicker/datepicker.css', )
         }
 
     def clean(self):
