@@ -12,13 +12,14 @@ from django.utils.translation import ugettext as _
 from django_downloadview import ObjectDownloadView
 
 from braces.views import JsonRequestResponseMixin
+from pathlib import Path
 
 from velo.core.models import Competition
 from velo.core.utils import get_client_ip
 from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
-from velo.payment.models import Invoice, Transaction
+from velo.payment.models import Invoice, Transaction, ActivePaymentChannel, PaymentChannel
 from velo.payment.utils import get_form_message, \
-    get_participant_fee_from_price, get_insurance_fee_from_insurance
+    get_participant_fee_from_price, get_insurance_fee_from_insurance, create_team_invoice, create_application_invoice
 from velo.registration.models import Application
 from velo.team.models import Team
 from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin
@@ -233,14 +234,32 @@ class InvoiceDownloadView(ObjectDownloadView):
 
     def get_file(self):
         invoice = self.model.objects.get(slug=self.request.resolver_match.kwargs.get('slug'))
-        if not self.request.user.has_perm('registration.add_number'):
-            if not invoice.access_time or not invoice.access_ip:
-                if invoice.payment.status == 10:
-                    invoice.payment.status = 20
-                invoice.access_ip = get_client_ip(self.request)
-                invoice.access_time = datetime.datetime.now()
-                invoice.save()
-        return super(InvoiceDownloadView, self).get_file()
+        my_file = Path(invoice.file.path)
+
+        if not my_file.is_file():
+            if invoice.payment.channel is not None:
+                active_channel = invoice.payment.channel
+            else:
+                payment_channel = PaymentChannel.objects.values_list('id', flat=True).filter(is_bill=True)
+                active_channel = ActivePaymentChannel.objects.filter(competition_id=invoice.competition.id, payment_channel_id__in=payment_channel).get()
+
+            if invoice.payment.content_type.name == 'team':
+                new_invoice = create_team_invoice(invoice.payment.content_object, active_channel, action="")
+            elif invoice.payment.content_type.name == 'application':
+                new_invoice = create_application_invoice(invoice.payment.content_object, active_channel, action="")
+            else:
+                raise Exception("Unknown invoice.payment.content_type.name %s" % invoice.payment.content_type.name)
+            return HttpResponseRedirect(reverse('payment:invoice_pdf', kwargs={'slug': new_invoice.slug}))
+
+        else:
+            if not self.request.user.has_perm('registration.add_number'):
+                if not invoice.access_time or not invoice.access_ip:
+                    if invoice.payment.status == 10:
+                        invoice.payment.status = 20
+                    invoice.access_ip = get_client_ip(self.request)
+                    invoice.access_time = datetime.datetime.now()
+                    invoice.save()
+            return super(InvoiceDownloadView, self).get_file()
 
 
 class TransactionRedirectView(NeverCacheMixin, CsrfExemptMixin, DetailView):

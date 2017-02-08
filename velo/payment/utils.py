@@ -145,7 +145,8 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type):
         object_id=instance.id,
         total=instance.final_price,
         donation=instance.donation if hasattr(instance, "donation") else 0.0,
-        defaults={"status": Payment.STATUSES.pending}
+        defaults={"status": Payment.STATUSES.pending},
+        channel=active_payment_type
     )
     if not created and payment.status != Payment.STATUSES.ok:
         payment.status = Payment.STATUSES.pending

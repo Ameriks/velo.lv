@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import environ
+import sys
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('velo')
@@ -420,3 +421,4 @@ MC_USER = env('MC_USER', default=None)
 MC_USERID = env('MC_USERID', default=None)
 MC_PASSWORD = env('MC_PASSWORD', default=None)
 MC_APIKEY = env('MC_APIKEY', default=None)
+TESTING = len(sys.argv) > 1 and sys.argv[1] == False

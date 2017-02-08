@@ -219,10 +219,10 @@ class Invoice(TimestampMixin, models.Model):
         return "%s-%03d" % (self.series, self.number)
 
     def set_number(self):
-        if not self.number and not settings.TESTING:
-            self.number = _get_next_sequence_value(self.series)
-        else:
+        if settings.TESTING:
             self.number = 1
+        elif not self.number:
+            self.number = _get_next_sequence_value(self.series)
 
     def save(self, *args, **kwargs):
         self.set_number()
