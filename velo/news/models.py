@@ -1,5 +1,7 @@
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.conf import settings
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db import models
 from django.utils import timezone
 from django.core.urlresolvers import reverse
@@ -69,6 +71,7 @@ class News(StatusMixin, TimestampMixin, models.Model):
         return reverse('news:news', args=[self.slug])
 
     def save(self, *args, **kwargs):
+        cache.delete(make_template_fragment_key("index_news", [self.language]))
         if not self.slug:
             self.slug = slugify(self.title)
         return super(News, self).save(*args, **kwargs)
