@@ -39,8 +39,13 @@
                                        class="calendar-tile__info flex--1 js-calendar-slider-link">
                                         <div class="w100 flex wrap--nowrap direction--row justify--space-between align-items--center">
                                             <div class="calendar-tile__date">
-                                                <div class="calendar-tile__day">{{ item.competition_date.day }}</div>
-                                                <div class="calendar-tile__month">{{ item.competition_date|date:"M" }}</div>
+                                                {% if item.id in parent_ids %}
+                                                    <div class="calendar-tile__day" style="font-size: 40px">MTB</div>
+                                                    <div class="calendar-tile__month">{{ item.competition_date|date:"Y" }}</div>
+                                                {% else %}
+                                                    <div class="calendar-tile__day">{{ item.competition_date.day }}</div>
+                                                    <div class="calendar-tile__month">{{ item.competition_date|date:"M" }}</div>
+                                                {% endif %}
                                             </div>
 
                                             {% if item.logo_svg %}
