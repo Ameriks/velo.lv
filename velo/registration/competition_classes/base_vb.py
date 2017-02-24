@@ -370,6 +370,8 @@ class VBCompetitionBase(CompetitionScriptBase):
 
         print(chip)
 
+    def recalculate_all_points(self):
+        self.assign_result_place()
 
     def assign_result_place(self):
         """
