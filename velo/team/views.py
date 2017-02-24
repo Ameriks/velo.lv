@@ -301,7 +301,10 @@ class TeamApplyList(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin,
             key = list(member_ids.keys())[0]
             competition = Competition.objects.get(id=key)
 
-            application = Application.objects.create(competition_id=key, email=request.user.email)
+            if request.POST.get('kind') == 'all_season' and competition.parent.complex_payment_enddate > timezone.now():
+                competition = competition.parent
+
+            application = Application.objects.create(competition=competition, email=request.user.email)
             for member_id in member_ids.get(key):
                 member = self.object.member_set.get(id=member_id)
 

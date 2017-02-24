@@ -84,10 +84,20 @@
                                                                 href="{% url 'account:team_apply_list' object.id competition.id %}"
                                                                 class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">{% trans 'Update Registration' %}</a>
                                                         </div>
-                                                        <div class="col-sm-3" style="float:right;">
-                                                            <button type="submit"
+
+                                                        <div class="col-sm-2" style="float:right;">
+                                                            <button type="submit" name="kind" value="this_competition"
                                                                     class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">{% trans 'Pay' %}</button>
+
                                                         </div>
+                                                        {% if competition.competition_date == competition.parent.competition_date %}
+                                                        <div class="col-sm-2" style="float:right;">
+                                                            <button type="submit" name="kind" value="all_season"
+                                                                    class="btn btn--50 btn--blue btn--blue-hover btn--blue-active w100">{% trans 'Pay for season' %}</button>
+
+
+                                                        </div>
+                                                            {% endif %}
                                                     </div>
                                                 {% endif %}
                                             {% else %}

@@ -41,6 +41,9 @@ msgstr "Информационные бюллетени"
 msgid "Important dates"
 msgstr "Важные даты"
 
+msgid "Pay for season"
+msgstr "Платить за сезон"
+
 #: velo/core/forms.py:22 velo/core/models.py:125
 #: velo/manager/tables/results_tables.py:18 velo/registration/models.py:109
 #: velo/registration/models.py:318 velo/registration/models.py:355
