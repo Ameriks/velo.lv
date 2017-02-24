@@ -1,0 +1,60 @@
+{% extends 'bootstrap/base/base.html' %}
+{% load crispy_forms_tags i18n staticfiles %}
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block js %}
+<script>
+    function silentPost(id, elInput, action) {
+        var jqInput = $(elInput);
+        token = jqInput.closest('form').find('input:hidden').val();
+        if (action == 'delete' || action == 'primary'){
+            $.ajax({
+                type: "POST",
+                data: {action:action,id:id, csrfmiddlewaretoken:token},
+                url: "",
+                success: function(data){
+                    if (data=="OK"){
+                        if(action == "delete"){
+                            jqInput.closest('div').fadeOut(250);
+                        } else {
+                            jqInput.closest('form').find('input:disabled').prop('disabled', false);
+                            $('#primary_img_'+id).prop('disabled', true);
+                            $('#delete_img_'+id).prop('disabled', true);
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="container content">
+<h1>Edit album "{{ album.title }}"</h1>
+
+    {% crispy form %}
+
+    <form method="post" action="" style="margin-top: 30px">
+    {% csrf_token %}
+        <div class="row" style="margin-bottom:20px;">
+        {% for object in photo %}
+            <div class="col-sm-2 sm-margin-bottom-30">
+                <span>
+                    <img class="img-responsive" src="{% if forloop.counter < 20 %}{{ object.image.thumb.url }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}" data-src="{{ object.image.thumb.url }}" alt="{% firstof object.description object.filename %}" />
+                </span>
+                <input id="primary_img_{{ object.id }}" type="button" name="primary_image" value="Primary" class="btn btn-success btn-sm" style="margin: 5px 0 20px"
+                   {% if object.id == album.primary_image_id %}disabled{% endif %} onclick="silentPost({{ object.id }}, this, 'primary')" />
+
+                <input id="delete_img_{{ object.id }}" type="button" name="delete_image" value="Delete" class="btn btn-danger btn-sm" style="margin: 5px 0 20px"
+                   {% if object.id == album.primary_image_id %}disabled{% endif %} onclick="silentPost({{ object.id }}, this, 'delete')" />
+            </div>
+        {% endfor %}
+        </div>
+    </form>
+</div>
+
+{% endblock %}
