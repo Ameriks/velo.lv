@@ -37,7 +37,7 @@ class InvoiceCreateForm(RequestKwargModelFormMixin, forms.ModelForm):
         try:
             active_payment_type = ActivePaymentChannel.objects.filter(competition=instance.competition, payment_channel__is_bill=True)[:1]
             if active_payment_type:
-                create_application_invoice(instance, active_payment_type[0], action="approve")
+                create_application_invoice(instance, active_payment_type[0], action="approve", invoice_object=instance.invoice)
             else:
                 self._errors['company_name'] = self.error_class([_("There is not created invoice link for this competition.")])
         except:
@@ -415,6 +415,7 @@ class ManageTeamForm(TeamForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = True
+        self.helper.attrs.update({'novalidate': 'novalidate'})
         self.helper.layout = Layout(
             Row(
                 Column(

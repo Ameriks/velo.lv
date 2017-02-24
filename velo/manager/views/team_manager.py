@@ -12,7 +12,6 @@ from velo.manager.tables.tables import ManageTeamApplyTable
 from velo.manager.views.permission_view import ManagerPermissionMixin
 from velo.team.models import MemberApplication, Team, Member
 from velo.velo.mixins.views import SetCompetitionContextMixin, SingleTableViewWithRequest, RequestFormKwargsMixin
-from velo.velo.utils import load_class
 
 __all__ = [
     'ManageAppliedTeamMembersList', 'ManageTeamList', 'ManageTeamUpdate', 'ManageTeams', 'ManageTeamApplyList'
@@ -100,11 +99,14 @@ class TeamMemberBaseInlineFormSet(BaseInlineFormSet):
     empty_form_class = None
     can_add_new = True
 
+    request = None
+    request_kwargs = None
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.request_kwargs = kwargs.pop('request_kwargs', None)
         self.empty_form_class = kwargs.pop('empty_form_class', self.form)
-        super(TeamMemberBaseInlineFormSet, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def empty_form(self):
         data = {
@@ -118,6 +120,9 @@ class TeamMemberBaseInlineFormSet(BaseInlineFormSet):
         self.add_fields(form, None)
         return form
 
+    def _construct_form(self, i, **kwargs):
+        return super()._construct_form(i, request=self.request, request_kwargs=self.request_kwargs, **kwargs)
+
 
 class ManageTeamMemberInline(InlineFormSet):
     can_order = False
@@ -127,12 +132,6 @@ class ManageTeamMemberInline(InlineFormSet):
     extra = 0
     can_delete = False
     fields = ManageTeamMemberForm.Meta.fields
-
-    def get_extra_form_kwargs(self):
-        kwargs = super(ManageTeamMemberInline, self).get_extra_form_kwargs()
-        kwargs.update({'request': self.request})
-        kwargs.update({'request_kwargs': self.kwargs})
-        return kwargs
 
     def get_formset_kwargs(self):
         kwargs = super(ManageTeamMemberInline, self).get_formset_kwargs()

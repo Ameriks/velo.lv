@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.bootstrap import StrictButton, Tab, TabHolder
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Div, HTML, Field
+from crispy_forms.layout import Layout, Row, Div, HTML, Field, ButtonHolder, Submit
 import datetime
 import re
 import zipfile
@@ -358,3 +358,42 @@ class GallerySearchForm(RequestKwargModelFormMixin, forms.Form):
                 ),
             )
         )
+
+
+class ChangeAlbumDataUpdateForm(RequestKwargModelFormMixin, forms.ModelForm):
+
+    class Meta:
+        model = Album
+        fields = {'title', 'gallery_date', 'photographer', 'competition', 'gallery_date'}
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+        competitions = Competition.objects.filter(competition_date__year=datetime.datetime.now().year)
+        self.fields['competition'].choices = ((obj.id, obj.get_full_name) for obj in competitions)
+
+        self.helper = FormHelper()
+        self.helper.form_class = "form-horizontal"
+        self.helper.form_method = "POST"
+        self.helper.label_class = "control-label col-sm-2"
+        self.helper.field_class = "form-control  col-sm-4"
+        self.helper.layout = Layout(
+            Field(
+                "title",
+            ),
+            Field(
+                "photographer",
+            ),
+            'competition',
+            Field(
+                "gallery_date",
+            ),
+            ButtonHolder(
+                Submit(
+                    'submit',
+                    _('Submit'),
+                    css_class='btn-sm col-sm-offset-2'
+                ),
+            )
+        )
+

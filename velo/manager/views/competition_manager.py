@@ -154,7 +154,7 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             match_team_members_to_participants.delay(self.competition.id)
             messages.info(request, 'Sinhronizācijas process veiksmīgi palaists.')
         elif request.POST.get('action') == 'recalculate_all_points':
-            self._competition_class.recalculate_all_points()
+            recalculate_all_points.delay(self.competition.id)
             messages.info(request, 'Veiksmīgi atjaunots')
 
         elif request.POST.get('action') == 'update_helper_result_table':
