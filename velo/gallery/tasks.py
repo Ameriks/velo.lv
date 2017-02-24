@@ -22,7 +22,7 @@ def generate_thumbnails(pk, field, model_class=None):
     fieldfile = getattr(instance, field)
 
     # optimize file
-    call(["/usr/local/bin/jpegoptim", fieldfile.path])
+    call(["/usr/bin/jpegoptim", fieldfile.path])
 
     generate_all_aliases(fieldfile, include_global=True)
 

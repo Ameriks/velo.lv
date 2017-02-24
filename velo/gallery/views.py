@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.utils import timezone
 from django.db.models import Count, F
@@ -16,7 +16,8 @@ import datetime
 import uuid
 
 from velo.advert.models import Banner
-from velo.gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm, AddPhotoAlbumForm, GallerySearchForm
+from velo.gallery.forms import AssignNumberForm, VideoSearchForm, AddVideoForm, AddPhotoAlbumForm, GallerySearchForm, \
+    ChangeAlbumDataUpdateForm
 from velo.gallery.models import Photo, Album, PhotoNumber, Video
 from velo.velo.mixins.views import RequestFormKwargsMixin, SearchMixin, SingleTableViewWithRequest
 from velo.gallery.tables import AlbumTable
@@ -221,18 +222,61 @@ class AlbumPickListView(SearchMixin, PermissionRequiredMixin, LoginRequiredMixin
         return super(AlbumPickListView, self).get(request, *args, **kwargs)
 
 
-class PhotoPickListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
-    model = Photo
-    allow_empty = False
-    template_name = 'bootstrap/gallery/photo_picklist.html'
+class PhotoListUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    model = Album
     permission_required = "gallery.add_photo"
+    template_name = 'bootstrap/gallery/photo_update_form.html'
+    form_class = ChangeAlbumDataUpdateForm
+    pk_url_kwarg = 'album_pk'
+
 
     def get_queryset(self):
-        queryset = super(PhotoPickListView, self).get_queryset()
-        queryset = queryset.filter(album_id=self.kwargs.get('album_pk')).filter(is_processed=True)
+        cache.clear()
+        queryset = super().get_queryset()
+        queryset = queryset.filter(pk=self.kwargs.get('album_pk')).filter(is_processed=True)
+        cache.clear()
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(PhotoPickListView, self).get_context_data(**kwargs)
+        cache.clear()
+        context = super().get_context_data(**kwargs)
+        cache.clear()
         context.update({'album': Album.objects.get(id=self.kwargs.get('album_pk'))})
+        context.update({'photo': Photo.objects.filter(album_id=self.kwargs.get('album_pk')).all()})
+        cache.clear()
         return context
+
+    def get_success_url(self):
+        cache.clear()
+        return reverse('gallery:album_pick', kwargs={'album_pk': self.object.pk})
+
+    def post(self, request, *args, **kwargs):
+        cache.clear()
+        action = self.request.POST.get('action')
+        if action == 'delete' or action == 'primary':
+            success = False
+            image_id = int(self.request.POST.get('id'))
+            album_id = self.kwargs.get('album_pk')
+            album = Album.objects.get(id=album_id)
+            photo_list = Photo.objects.filter(album_id=album_id).values_list('pk', flat=True)
+
+            photo_id_list = []
+            for photo_id in photo_list:
+                photo_id_list.append(photo_id)
+
+            if image_id in photo_id_list:
+                if action == 'primary':
+                    if not album.primary_image_id == image_id:
+                        album.primary_image_id = image_id
+                        album.save()
+                        success = True
+                else:
+                    if not image_id == album.primary_image_id:
+                        Photo.objects.filter(id=image_id).delete()
+                        success = True
+            else:
+                raise Exception("Trying to manipulate image %i from another album" % image_id)
+            from django.http import HttpResponse
+            return HttpResponse("OK" if success else "Error!")
+
+        return super().post(request, *args, **kwargs)
