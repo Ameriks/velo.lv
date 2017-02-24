@@ -415,6 +415,7 @@ class ManageTeamForm(TeamForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = True
+        self.helper.attrs.update({'novalidate': 'novalidate'})
         self.helper.layout = Layout(
             Row(
                 Column(
