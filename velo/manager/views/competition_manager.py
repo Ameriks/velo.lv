@@ -17,6 +17,8 @@ from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionCon
 from velo.velo.utils import load_class
 from velo.manager.tasks import *
 from velo.team.tasks import match_team_members_to_participants
+from velo.results.tasks import update_helper_result_table
+
 
 __all__ = [
     'ManageCompetitionList', 'ManageCompetitionDetail', 'ManageApplicationExternalPay'
@@ -154,6 +156,10 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         elif request.POST.get('action') == 'recalculate_all_points':
             self._competition_class.recalculate_all_points()
             messages.info(request, 'Veiksmīgi atjaunots')
+
+        elif request.POST.get('action') == 'update_helper_result_table':
+            update_helper_result_table.delay(self.competition.id, update=True)
+            messages.info(request, 'Starta saraksta punktu pārrēķināšanas process veiksmīgi palaists.')
         elif request.POST.get('action') == 'marketing_create_csv_seb':
             if request.user.is_superuser:
                 # create_csv_seb(request.user) # TODO: Fix this
