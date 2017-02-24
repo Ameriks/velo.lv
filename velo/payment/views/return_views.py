@@ -1,11 +1,10 @@
 from django.http import Http404
-from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 
-from velo.payment.models import Transaction, Payment
+from velo.payment.models import Transaction
 from velo.core.utils import log_message
 
 __all__ = ['TransactionReturnView', ]

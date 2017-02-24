@@ -43,6 +43,11 @@ class IndexView(TemplateView):
         calendar = Competition.objects.filter(id__gte=first_id).select_related('parent').extra(select={'is_past': "core_competition.competition_date < now()::date  - interval '3 days'"}).order_by('is_past', 'competition_date', '-name_lv')
         context.update({'calendar': calendar})
 
+        parent_ids = []
+        for competition in calendar:
+            parent_ids.append(competition.parent_id)
+        context.update({'parent_ids': parent_ids})
+
         cache_key = 'image_top_%s' % get_language()
         front_photo = cache.get(cache_key, None)
         if front_photo is None:

@@ -114,3 +114,11 @@ def result_process(competition_id, action, user_id):
         return True
 
     return False
+
+
+@celery.task(base=LogErrorsTask)
+def recalculate_all_points(competition_id):
+    competition = Competition.objects.get(id=competition_id)
+    class_ = load_class(competition.processing_class)
+    competition_class = class_(competition=competition)
+    competition_class.recalculate_all_points()

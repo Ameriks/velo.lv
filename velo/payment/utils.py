@@ -137,7 +137,7 @@ def get_form_message(competition, distance_id, year, insurance_id=None):
     return messages
 
 
-def generate_pdf_invoice(instance, invoice_data, active_payment_type):
+def generate_pdf_invoice(instance, invoice_data, active_payment_type, invoice_object=None):
     content_type = ContentType.objects.get_for_model(instance)
 
     payment, created = Payment.objects.get_or_create(
@@ -145,27 +145,30 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type):
         object_id=instance.id,
         total=instance.final_price,
         donation=instance.donation if hasattr(instance, "donation") else 0.0,
-        defaults={"status": Payment.STATUSES.pending}
+        defaults={"status": Payment.STATUSES.pending},
+        channel=active_payment_type
     )
     if not created and payment.status != Payment.STATUSES.ok:
         payment.status = Payment.STATUSES.pending
         payment.save()
 
-    invoice_object = Invoice(
-        competition=instance.competition,
-        company_name=instance.company_name,
-        company_vat=instance.company_vat,
-        company_regnr=instance.company_regnr,
-        company_address=instance.company_address,
-        company_juridical_address=instance.company_juridical_address,
-        email=instance.email,
-        series=invoice_data.get('bill_series'),
-        channel=active_payment_type.payment_channel,
-        payment=payment,
-    )
-    invoice_object.set_number()
+    if invoice_object is None:
+        invoice_object = Invoice(
+            competition=instance.competition,
+            company_name=instance.company_name,
+            company_vat=instance.company_vat,
+            company_regnr=instance.company_regnr,
+            company_address=instance.company_address,
+            company_juridical_address=instance.company_juridical_address,
+            email=instance.email,
+            series=invoice_data.get('bill_series'),
+            channel=active_payment_type.payment_channel,
+            payment=payment,
+        )
+        invoice_object.set_number()
 
-    invoice_data.update({'name': invoice_object.invoice_nr})
+        invoice_data.update({'name': invoice_object.invoice_nr})
+
     invoice = InvoiceGenerator(invoice_data)
     invoice_pdf = invoice.build()
     invoice_object.file = ContentFile(invoice_pdf.read(), str("%s-%03d.pdf" % (invoice_object.series, invoice_object.number)))
@@ -213,7 +216,7 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type):
 
     return invoice_object
 
-def create_team_invoice(team, active_payment_type, action="send"):
+def create_team_invoice(team, active_payment_type, action="send", invoice_object=None):
     due_date = datetime.datetime.now() + datetime.timedelta(days=7)
     invoice_data = {
         "bill_series": team.distance.competition.bill_series,
@@ -256,12 +259,12 @@ def create_team_invoice(team, active_payment_type, action="send"):
         "comments": "Nesaņemot apmaksu līdz norādītajam termiņam, rēķins zaudē spēku un dalībnieki starta sarakstā neparādās, kā arī netiek pielaisti pie starta.",
         "action": action
     }
-    invoice_pdf = generate_pdf_invoice(team, invoice_data, active_payment_type)
+    invoice_pdf = generate_pdf_invoice(team, invoice_data, active_payment_type, invoice_object)
 
     return invoice_pdf
 
 
-def create_application_invoice(application, active_payment_type, action="send"):
+def create_application_invoice(application, active_payment_type, action="send", invoice_object=None):
     items = []
     for participant in application.participant_set.all():
         activate(application.language)
@@ -351,7 +354,7 @@ def create_application_invoice(application, active_payment_type, action="send"):
         "comments": "Nesaņemot apmaksu līdz norādītajam termiņam, rēķins zaudē spēku un dalībnieki starta sarakstā neparādās, kā arī netiek pielaisti pie starta.",
         "action": action
     }
-    invoice_object = generate_pdf_invoice(application, invoice_data, active_payment_type)
+    invoice_object = generate_pdf_invoice(application, invoice_data, active_payment_type, invoice_object)
 
     return invoice_object
 
