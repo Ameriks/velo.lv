@@ -171,8 +171,7 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type, invoice_ob
 
     invoice = InvoiceGenerator(invoice_data)
     invoice_pdf = invoice.build()
-    invoice_object.file = ContentFile(invoice_pdf.read(), str("%s-%03d.pdf" % (invoice_object.series, invoice_object.number)))
-    invoice_object.save()
+    invoice_object.file.save(str("%s-%03d.pdf" % (invoice_object.series, invoice_object.number)), ContentFile(invoice_pdf.read()))
 
     instance.invoice = invoice_object
     instance.save(update_fields=['invoice'])

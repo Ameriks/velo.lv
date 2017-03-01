@@ -15,7 +15,8 @@
                 <form method="post" class="w100 js-form-participants"
                       data-team-search="{% url 'competition:teams_json' object.competition_id %}"
                       data-team-search-term="{% url 'competition:teams_json' object.competition_id %}?search=%QUERY"
-                      data-check-price="{% url "payment:check_price"  object.competition_id %}">
+                      data-check-price="{% url "payment:check_price"  object.competition_id %}"
+                      novalidate="novalidate" >
                     {% csrf_token %}
                     <div class="w100 bgc-dgray">
                         <div class="row">

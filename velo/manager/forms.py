@@ -1071,15 +1071,6 @@ class PriceForm(RequestKwargModelFormMixin, forms.ModelForm):
         model = Price
         fields = ('distance', 'from_year', 'till_year', 'price', 'start_registering', 'end_registering')
 
-    class Media:
-        js = ('plugins/moment.min.js',
-              'plugins/datetimepicker/bootstrap-datetimepicker.min.js',
-              'coffee/manager/price_form.js')
-        css = {
-            'all': (
-              'plugins/datetimepicker/bootstrap-datetimepicker.min.css',
-            ),
-        }
 
     def save(self, commit=True):
         self.instance.competition = self.competition
