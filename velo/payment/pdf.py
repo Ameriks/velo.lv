@@ -13,35 +13,7 @@ from reportlab.graphics.barcode import code128
 from io import BytesIO
 
 from velo.payment.pdf_utils import BreakingParagraph
-
-
-def numbers_in_latvian(number):
-    str_number = ''
-    names = {
-        0: 'nulle', 1: 'viens', 2: 'divi', 3: 'trīs', 4: 'četri', 5: 'pieci', 6: 'seši', 7: 'septiņi', 8: 'astoņi', 9: 'deviņi',
-        10: 'desmit', 11: 'vienpadsmit', 12: 'divpadsmit', 13: 'trīspadsmit', 14: 'četrpadsmit', 15: 'piecpadsmit',
-        16: 'sešpadsmit', 17: 'septiņpadsmit', 18: 'astoņpadsmit', 19: 'deviņpadsmit',
-        20: 'div', 30: 'trīs', 40: 'četr', 50: 'piec', 60: 'seš', 70: 'septiņ', 80: "astoņ", 90: 'deviņ'
-    }
-    number = abs(number)
-    ones = number % 10
-    tens = (number - ones) % 100
-    hundreds = (number - number % 100) // 100
-    if tens == 10:
-        str_number = names[ones+tens]
-    elif tens == 0 and ones:
-        str_number = names[ones]
-    elif tens>10:
-        str_number = ('%sdesmit%s' % (names[tens], ' ' + names[ones] if ones else ""))
-    if hundreds:
-        if hundreds == 1:
-            str_number = 'viens simts ' + str_number
-        elif number < 1000:
-            str_number = ('%s simti ' % names[hundreds]) + str_number
-    elif not str_number:
-        str_number = str(number)
-    return str_number
-
+from velo.payment.skaitlis import num_to_text
 
 class PS(ParagraphStyle):
     def __init__(self, name, parent=None, **kw):
@@ -241,7 +213,7 @@ class InvoiceGenerator(object):
         invoice_small = (final_amount - invoice_big) * 100
 
         self.elements.append(Paragraph("%s %s un %i %s." % (
-            numbers_in_latvian(invoice_big).capitalize(), self.invoice.get('currency'), invoice_small, "centi"), normal))
+            num_to_text(invoice_big).capitalize(), self.invoice.get('currency'), invoice_small, "centi"), normal))
 
         self.elements.append(Spacer(2 * mm, 2 * mm))
         self.elements.append(code128.Code128("*%s*%s*" % (self.invoice.get('name'), str(final_amount)), humanReadable=1))
