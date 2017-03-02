@@ -167,7 +167,7 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type, invoice_ob
         )
         invoice_object.set_number()
 
-        invoice_data.update({'name': invoice_object.invoice_nr})
+    invoice_data.update({'name': invoice_object.invoice_nr})
 
     invoice = InvoiceGenerator(invoice_data)
     invoice_pdf = invoice.build()
