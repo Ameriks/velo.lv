@@ -417,7 +417,7 @@ class SEBPaymentRequestForm(PaymentRequestForm):
             'IB_AMOUNT': float(self.transaction.amount),
             'IB_CURR': 'EUR',
             'IB_PAYMENT_DESC': self.transaction.information,
-            'IB_FEEDBACK': "%s%s" % ("https://velo.lv", reverse('payment_bank_return')),  # settings.MY_DEFAULT_DOMAIN
+            'IB_FEEDBACK': "%s%s" % ("https://www.velo.lv", reverse('payment_bank_return')),  # settings.MY_DEFAULT_DOMAIN
             'IB_LANG': self.transaction.language_bank,
         })
 
