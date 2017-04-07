@@ -1,5 +1,8 @@
 import csv
 import datetime
+import requests
+import re
+from bs4 import BeautifulSoup
 from velo.core.models import Competition
 
 
@@ -61,3 +64,45 @@ def update_uci_category(filename):
                                                   code=row[8].upper(),
                                                   birthday=birthday,
                                                   issued=issued)
+
+
+def import_lrf_licences():
+    from velo.registration.models import UCICategory
+    lrf_licence_html = requests.get('http://lrf.lv/index.php/licences/2017-gada-licencu-saraksts?limit=false&start=0')
+    beautiful_lrf_licence = BeautifulSoup(lrf_licence_html.text, 'html.parser')
+    table = beautiful_lrf_licence.find('table', id="licences")
+    columns = table.find('thead').find_all('th')
+    col = []
+    for column in columns:
+        col.append(column.string)
+    rows = table.find('tbody').find_all('tr')
+    for row in rows:
+        row_dict = {}
+        for idx, cell in enumerate(row):
+            value = "" if cell.string is None else cell.string
+            if col[idx] == "UCI ID":
+                if value.isnumeric():
+                    row_dict.update({"code": "LAT" + value})
+                else:
+                    # UCI ID column contains not only numeric values!
+                    print(value)
+                    row_dict.update({"code": "LAT" + ''.join(re.findall(r'\b\d+\b', value))})
+            elif col[idx] == 'Dzimšanas dati':
+                if not value == "00.00.":
+                    row_dict.update({"birthday": datetime.datetime.strptime(value, '%d.%m.%Y')})
+            elif col[idx] == 'Uzvārds':
+                row_dict.update({"last_name": value})
+            elif col[idx] == 'Vārds':
+                row_dict.update({"first_name": value})
+            elif col[idx] == 'Veids':
+                row_dict.update({"category": value})
+            elif col[idx] == 'Licence derīga':
+                try:
+                    row_dict.update({"valid_until": datetime.datetime.strptime(value, '%d.%m.%Y')})
+                except ValueError:
+                    print(value, row_dict)
+                    row_dict.update({"valid_until": datetime.datetime.strptime("31.12.2017", '%d.%m.%Y')})
+            else:
+                continue
+        UCICategory.objects.update_or_create(**row_dict)
+
