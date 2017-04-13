@@ -1,13 +1,22 @@
+    <script type="application/javascript">
+        function set_iframe_url(iframe) {
+            var url = iframe.getAttribute('data-url');
+            if (url) {
+                iframe.contentDocument.addEventListener('click', function(event) {window.open(url)}, false);
+            }
+        }
+    </script>
+
 {% for banner in side_banner %}
 
     <div class="banner bottom-margin--20">
 
         {% if banner.kind == 20 %}
-            <iframe src="{{ banner.banner_url }}" frameborder="0" scrolling="no"
+            <iframe src="{{ banner.banner_url }}" frameborder="0" scrolling="no"  onload="set_iframe_url(this);" {% if banner.url %}data-url="https://velo.lv{% url "advert:banner_redirect" banner.id %}"{% endif %}
                     class="scroll-banner__banner-content" style="width:{{ banner.width }}px;height:{{ banner.height }}px;">
             </iframe>
         {% elif banner.kind == 10 %}
-            <iframe src="{% url "advert:banner" banner.id %}" frameborder="0" scrolling="no"
+            <iframe src="{% url "advert:banner" banner.id %}" frameborder="0" scrolling="no"  onload="set_iframe_url(this);" {% if banner.url %}data-url="https://velo.lv{% url "advert:banner_redirect" banner.id %}"{% endif %}
                     class="scroll-banner__banner-content" style="width:{{ banner.width }}px;height:{{ banner.height }}px;">
             </iframe>
         {% elif banner.kind == 30 %}

@@ -1,6 +1,5 @@
     <script type="application/javascript">
         function set_iframe_url(iframe) {
-            console.log(iframe);
             var url = iframe.getAttribute('data-url');
             if (url) {
                 iframe.contentDocument.addEventListener('click', function(event) {window.open(url)}, false);
