@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from random import shuffle
 
 from django.core.cache import cache
@@ -59,17 +60,30 @@ class NewsDetailView(NewsMixin, DetailView):
         cache_key = 'banners_news_%s' % get_language()
         side_banner = cache.get(cache_key, None)
         if side_banner is None:
-            side_banner = list(Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.news, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width'))
+            side_banner = list(Banner.objects.filter(status=1, location=Banner.BANNER_LOCATIONS.news, show_start__lte=timezone.now(), show_end__gte=timezone.now(), language__in=['', get_language()]).order_by('ordering').values('id', 'kind', 'banner', 'banner_url', 'competition', 'converted', 'show_end', 'show_start', 'url', 'height', 'width', 'ordering'))
             cache.set(cache_key, side_banner, 60*30)  # Cache for 30 minutes
 
+        picked_banners = []
         if side_banner and len(side_banner) > 1:
-            shuffle(side_banner)
-            side_banner = side_banner[:3]
 
-        if side_banner:
-            Banner.objects.filter(id__in=[obj.get('id') for obj in side_banner]).update(view_count=F('view_count') + 1)
+            banners = OrderedDict()
+            for banner in side_banner:
+                p_ban = banners.get(banner.get('ordering'), [])
+                p_ban.append(banner)
+                banners.update({banner.get('ordering'): p_ban})
+
+            for index in list(banners.keys())[:3]:
+                b = banners.get(index)
+                if len(b) == 1:
+                    picked_banners.append(b[0])
+                else:
+                    shuffle(b)
+                    picked_banners.append(b[0])
+
+        if picked_banners:
+            Banner.objects.filter(id__in=[obj.get('id') for obj in picked_banners]).update(view_count=F('view_count') + 1)
 
         context.update({
-            'side_banner': side_banner,
+            'side_banner': picked_banners,
         })
         return context
