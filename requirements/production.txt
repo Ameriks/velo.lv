@@ -9,7 +9,7 @@
 
 gevent==1.2.1
 
-gunicorn==19.6.0
+gunicorn==19.7.1
 
 # Static and Media Storage
 # ------------------------------------------------
@@ -20,7 +20,7 @@ gunicorn==19.6.0
 # Mailgun Support
 # ---------------
 #django-mailgun==0.8.0
-django-ses==0.8.1
+django-ses==0.8.2
 
 # Raven is the Sentry client
 # --------------------------
