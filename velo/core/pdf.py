@@ -149,6 +149,7 @@ class ParagraphStyle(PropertySet):
                                 #string or object with text and optional fontName, fontSize, textColor & backColor
                                 #dy
         'splitLongWords':1,     #make best efforts to split long words
+        'spaceShrinkage': 0.05,
         }
 
 
