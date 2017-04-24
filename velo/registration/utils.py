@@ -89,6 +89,9 @@ def import_lrf_licences():
                     row_dict.update({"code": "LAT" + ''.join(re.findall(r'\b\d+\b', value))})
             elif col[idx] == 'Dzimšanas dati':
                 if not value == "00.00.":
+                    if value == '24.11.92':
+                        value = '24.11.1992'
+                    value = value.rstrip('.')
                     row_dict.update({"birthday": datetime.datetime.strptime(value, '%d.%m.%Y')})
             elif col[idx] == 'Uzvārds':
                 row_dict.update({"last_name": value})
