@@ -527,20 +527,20 @@ class IBankIntegration(BankIntegrationBase):
                 return HttpResponse('Something went wrong')
 
 
-def close_business_day(end_date=None):
+def close_business_day(processing_date=None):
     riga_tz = pytz.timezone("Europe/Riga")
 
-    if end_date is None:
-        end_date = riga_tz.localize(datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0))
+    if processing_date is None:
+        end_date = riga_tz.normalize(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0)
+        start_date = end_date - datetime.timedelta(days=1)
         automated = True
     else:
-        end_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        start_date = riga_tz.localize(datetime.datetime.combine(processing_date, datetime.time(0, 0, 0, 0)))
+        end_date = start_date + datetime.timedelta(days=1)
         automated = False
 
-    start_date = end_date - datetime.timedelta(days=1)
-
     transaction_totals_by_channel = Transaction.objects.\
-        filter(created__range=[start_date, end_date], status=Transaction.STATUSES.ok).\
+        filter(created__gte=start_date, created__lt=end_date, status=Transaction.STATUSES.ok).\
         values('channel_id', 'channel__title').\
         annotate(total_sum=Sum('amount')).all()
 
