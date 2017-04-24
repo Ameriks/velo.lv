@@ -191,6 +191,8 @@ class Payment(TimestampMixin, models.Model):
 
     status = models.SmallIntegerField(choices=STATUSES, default=STATUSES.new)
 
+    competition = models.ForeignKey('core.Competition', null=True, blank=True)  # used for payment matching in analytics
+
 
 class Invoice(TimestampMixin, models.Model):
     channel = models.ForeignKey('payment.PaymentChannel', on_delete=models.PROTECT)

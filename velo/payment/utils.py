@@ -143,6 +143,7 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type, invoice_ob
     payment, created = Payment.objects.get_or_create(
         content_type=content_type,
         object_id=instance.id,
+        competition=instance.competition,
         total=instance.final_price,
         donation=instance.donation if hasattr(instance, "donation") else 0.0,
         defaults={"status": Payment.STATUSES.pending},
@@ -378,6 +379,7 @@ def create_bank_transaction(instance, active_payment_type, request):
     payment, created = Payment.objects.get_or_create(
                 content_type=content_type,
                 object_id=instance.id,
+                competition=instance.competition,
                 total=instance.final_price,
                 donation=instance.donation if hasattr(instance, "donation") else 0.0,
                 defaults={"status": Payment.STATUSES.pending}

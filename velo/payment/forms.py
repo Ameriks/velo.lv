@@ -50,7 +50,8 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                 if instance.final_price == 0:
                     payment = Payment.objects.create(content_object=instance,
                                                      total=instance.final_price,
-                                                     status=Payment.STATUSES.ok, )
+                                                     status=Payment.STATUSES.ok,
+                                                     competition=instance.competition)
                     approve_payment(payment, self.request.user, self.request)
                     self.success_url = reverse('application_ok', kwargs={'slug': instance.code})
                 else:
