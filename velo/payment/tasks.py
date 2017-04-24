@@ -5,6 +5,7 @@ from celery.task import periodic_task
 
 from django.utils import timezone
 
+from velo.payment.bank import close_business_day
 from velo.payment.models import Transaction
 from velo.core.utils import log_message
 
@@ -28,3 +29,8 @@ def timeout_old_transactions():
         log_message('TIMEOUT Transaction', object=t)
         t.status = Transaction.STATUSES.timeout
         t.save()
+
+
+@periodic_task(run_every=crontab(minute="35", hour="0"))
+def close_business_day_task():
+    close_business_day()
