@@ -12,9 +12,8 @@ from velo.manager.excels.start_list import create_start_list, create_standing_li
 from velo.manager.tables import ManageCompetitionTable
 from velo.manager.views import ManageApplication
 from velo.manager.views.permission_view import ManagerPermissionMixin
-from velo.registration.models import Participant, Application
+from velo.registration.utils import import_lrf_licences
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
-from velo.velo.utils import load_class
 from velo.manager.tasks import *
 from velo.team.tasks import match_team_members_to_participants
 from velo.results.tasks import update_helper_result_table
@@ -156,6 +155,9 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         elif request.POST.get('action') == 'recalculate_all_points':
             recalculate_all_points.delay(self.competition.id)
             messages.info(request, 'Veiksmīgi atjaunots')
+        elif request.POST.get('action') == 'update_licence_list':
+            import_lrf_licences()
+            messages.info(request, 'Licenšu saraksts atjaunots.')
 
         elif request.POST.get('action') == 'update_helper_result_table':
             update_helper_result_table.delay(self.competition.id, update=True)
