@@ -36,12 +36,6 @@ def rebuild_docker():
 
 
 @task
-def upgrade():
-    sudo('apt-get update')
-    sudo('apt-get upgrade -y')
-
-
-@task
 def update_all_dockers():
     with cd('/var/lib/app/project_velo'):
         # Pull all base images
@@ -64,36 +58,45 @@ def update_all_dockers():
         run('docker rmi -f $(docker images | grep "<none>" | awk "{print \$3}")')
 
 
-class VeloDeploy(Task):
+class Deploy(Task):
     name = "deploy"
+    image_name = "ameriks/project_velo:latest"
+    project_dir = "/var/lib/app/project_velo"
+    container_name = "velo_projectvelo_1"
     docker_id = None
     need_static_regenerate = False
+    requirements_updated = False
     need_migrate = False
     need_service_restart = False
     need_full_restart = False
-    pull_new = False
 
-    def get_projectvelo_id(self):
-        self.docker_id = run('docker ps | grep "velo_projectvelo_1" | cut -c1-12')
+    def get_project_id(self):
+        self.docker_id = run('docker ps | grep "%s" | cut -c1-12' % self.container_name)
 
     def collect_static(self):
-        run("docker exec -it %s /app/manage.py collectstatic --no-input" % self.docker_id)
+        run("docker exec %s /app/manage.py collectstatic --no-input" % self.docker_id)
         self.need_static_regenerate = False
 
     def restart_services(self):
         # Restart all services
-        run("docker exec -it %s s6-svc -h /var/run/s6/services/gunicorn" % self.docker_id)
-        run("docker exec -it %s s6-svc -h /var/run/s6/services/celeryworker" % self.docker_id)
-        run("docker exec -it %s s6-svc -h /var/run/s6/services/celerybeat" % self.docker_id)
+        run("docker exec %s s6-svc -h /var/run/s6/services/gunicorn" % self.docker_id)
+        run("docker exec %s s6-svc -h /var/run/s6/services/celeryworker" % self.docker_id)
+        run("docker exec %s s6-svc -h /var/run/s6/services/celerybeat" % self.docker_id)
 
     def migrate(self):
-        run("docker exec -it %s /app/manage.py migrate" % self.docker_id)
+        self.get_project_id()
+        run("docker exec %s /app/manage.py migrate" % self.docker_id)
         self.need_migrate = False
 
     def git_pull(self):
-        git_output = run("docker exec -it %s sh -c 'cd /app && git pull'" % self.docker_id)
-        if "static/" in git_output or 'requirements/' in git_output:
+
+        git_output = sudo("su - django -c 'cd %s && git pull'" % self.project_dir)
+
+        if "static/" in git_output:
             self.need_static_regenerate = True
+
+        if 'requirements/' in git_output:
+            self.requirements_updated = True
 
         if "migrations/" in git_output:
             self.need_migrate = True
@@ -102,30 +105,34 @@ class VeloDeploy(Task):
             self.need_service_restart = True
 
     def pull_docker(self):
-        pull_result = run("docker pull ameriks/project_velo:latest")
+        pull_result = run("docker pull %s" % self.image_name)
         if 'Image is up to date' not in pull_result:
             self.need_full_restart = True
 
     def restart_docker_compose(self):
-        with cd('/var/lib/app/project_velo'):
-            run("docker-compose -p velo up -d projectvelo")
+        with cd(self.project_dir):
+            run("docker-compose -p velo up -d -t 30 django")
 
     def run(self):
-        self.get_projectvelo_id()
+        self.get_project_id()
         self.git_pull()
-        if self.need_migrate:
-            self.migrate()
 
         if self.need_static_regenerate:
             self.collect_static()
 
-        if self.pull_new:
+        if self.requirements_updated:
             self.pull_docker()
 
         if not self.need_full_restart and self.need_service_restart:
             self.restart_services()
         elif self.need_full_restart:
             self.restart_docker_compose()
-instance = VeloDeploy()
+            self.get_project_id()
 
+        if self.need_static_regenerate:
+            self.collect_static()
 
+        if self.need_migrate:
+            self.migrate()
+
+instance = Deploy()
