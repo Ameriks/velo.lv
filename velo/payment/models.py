@@ -279,7 +279,7 @@ class Transaction(TimestampMixin, models.Model):
 
 
 class DailyTransactionTotals(TimestampMixin, models.Model):
-    date = models.DateTimeField(default=timezone.now, blank=False, null=False)
+    date = models.DateField()
     channel = models.ForeignKey(PaymentChannel, on_delete=models.PROTECT)
     calculated_total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0, blank=False, null=False)
     reported_total = models.DecimalField(max_digits=20, decimal_places=2, default=0.0, blank=False, null=False)

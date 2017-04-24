@@ -562,7 +562,6 @@ def close_business_day(end_date=None):
                     values = field.split(': ')
                     params.update({values[0]: values[1]})
                 reported_totals = params.get('FLD_086') + params.get('FLD_088')
-                params = json.dumps(params)
             except:
                 continue
 
