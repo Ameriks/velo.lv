@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         ('registration', '0002_auto_20170126_1843'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('contenttypes', '0002_remove_content_type_name'),
-        ('djcelery', '__first__'),
+        # ('djcelery', '__first__'),
         ('core', '0001_initial'),
     ]
 
@@ -210,14 +210,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UrlSync',
             fields=[
-                ('periodictask_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='djcelery.PeriodicTask')),
+                ('periodictask_ptr', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                # ('periodictask_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='djcelery.PeriodicTask')),
                 ('url', models.CharField(max_length=255)),
                 ('current_line', models.IntegerField(default=0)),
                 ('kind', models.CharField(default='FINISH', max_length=30)),
                 ('index', models.IntegerField(blank=True, null=True)),
                 ('competition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Competition')),
             ],
-            bases=('djcelery.periodictask',),
+            # bases=('djcelery.periodictask',),
         ),
         migrations.AddField(
             model_name='lapresult',

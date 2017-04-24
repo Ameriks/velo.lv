@@ -48,7 +48,8 @@ THIRD_PARTY_APPS = (
     'django_select2',
 
     'mptt',
-    'djcelery',
+    # 'djcelery',
+    'django_celery_beat',
     'ckeditor',
     'ckeditor_uploader',
     'impersonate',
@@ -342,7 +343,7 @@ SMS_USERNAME = env('SMS_USERNAME')
 SMS_PASSWORD = env('SMS_PASSWORD')
 SMS_GATEWAY = 'https://smsmarketing.bpo.lv'
 
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+# CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'

@@ -1036,7 +1036,7 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
 class UrlSyncForm(RequestKwargModelFormMixin, forms.ModelForm):
     class Meta:
         model = UrlSync
-        fields = ('competition', 'url', 'expires', 'enabled', )
+        fields = ('competition', 'url', )#'expires', 'enabled', )
 
 
     def __init__(self, *args, **kwargs):
@@ -1053,10 +1053,10 @@ class UrlSyncForm(RequestKwargModelFormMixin, forms.ModelForm):
                 Column('url', css_class='col-sm-12'),
             ),
             Row(
-                Column('expires', css_class='col-sm-12'),
+            #    Column('expires', css_class='col-sm-12'),
             ),
             Row(
-                Column('enabled', css_class='col-sm-12'),
+         #       Column('enabled', css_class='col-sm-12'),
             Row(
                 Column(Submit('submit', 'Saglabāt'), css_class='col-sm-12'),
             ),

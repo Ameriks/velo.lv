@@ -4,7 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 
-from djcelery.models import PeriodicTask, PeriodicTasks, CrontabSchedule
+from django_celery_beat.models import PeriodicTask, PeriodicTasks, CrontabSchedule
 from easy_thumbnails.fields import ThumbnailerImageField
 import os
 import time

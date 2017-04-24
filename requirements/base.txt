@@ -45,7 +45,8 @@ redis>=2.10.5
 
 
 celery==4.0.2
-django-celery==3.2.1
+#django-celery==3.1.17
+django-celery-beat==1.0.1
 
 # Your custom requirements go here
 
