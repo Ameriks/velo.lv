@@ -541,7 +541,7 @@ def close_business_day(end_date=None):
 
     transaction_totals_by_channel = Transaction.objects.\
         filter(created__range=[start_date, end_date], status=Transaction.STATUSES.ok).\
-        values('channel_id').\
+        values('channel_id', 'channel__title').\
         annotate(total_sum=Sum('amount')).all()
 
     for channel_totals in transaction_totals_by_channel:
