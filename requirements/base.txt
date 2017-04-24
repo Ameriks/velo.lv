@@ -73,7 +73,7 @@ django-impersonate>=0.9.2
 
 pyinotify==0.9.6
 
-pyopenssl==16.2.0
+pyopenssl==17.0.0
 django-form-utils==1.0.3
 django-filter==1.0.2
 PyVimeo==0.3.9
@@ -86,4 +86,4 @@ google-api-python-client
 
 django-modeltranslation==0.12.1
 
-django-markdownx==1.8.1
+django-markdownx==2.0.1

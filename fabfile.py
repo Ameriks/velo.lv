@@ -1,8 +1,31 @@
-from fabric.api import run, env, hosts, sudo, cd, task, local
+import datetime
+
+from fabric.api import run, env, hosts, sudo, cd, task, local, get
 from fabric.tasks import Task
 
 env.hosts = ['velo', ]
 env.use_ssh_config = True
+
+@task
+def dump_db():
+    name = "velo_%s.backup" % int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    path = "/var/backups/postgresql/%s" % name
+    postgres_id = run('docker ps | grep "velo_postgres_1" | cut -c1-12')
+    run("docker exec %(postgres_id)s sh -c \"su - postgres -c 'pg_dump -F c -b -v -f %(path)s velolv'\"" % locals())
+
+    get(path, "~/dumps/")
+
+    local_postgres_id = local('docker ps | grep "source_postgres_1" | cut -c1-12', capture=True)
+
+    # TERMINATE existing sessions
+    local("docker exec %(local_postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid();\\\"'\"" % locals())
+
+    # DROP and CREATE database
+    local("docker exec %(local_postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"DROP DATABASE IF EXISTS velolv;\\\"'\"" % locals())
+    local("docker exec %(local_postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"CREATE DATABASE velolv WITH OWNER = velolv;\\\"'\"" % locals())
+
+    # RESTORE
+    local("docker exec %(local_postgres_id)s sh -c \"su - postgres -c 'pg_restore -d velolv -v %(path)s'\"" % locals())
 
 
 @task

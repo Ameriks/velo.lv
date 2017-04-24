@@ -3,6 +3,7 @@ postgres:
   volumes:
     - /var/lib/postgresql/data:/var/lib/postgresql/data
     - /var/lib/postgresql/config:/home/postgres
+    - /var/backups/postgresql:/var/backups/postgresql
   restart: always
   env_file: .env
   links:
