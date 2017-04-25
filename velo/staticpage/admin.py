@@ -16,4 +16,8 @@ class StaticPageAdmin(MarkdownxModelAdmin):
     list_filter = ('enable_comments', 'competition')
     search_fields = ('url', 'title')
 
+    add_form_template = "admin/change_news.html"
+    change_form_template = "admin/change_news.html"
+
+
 admin.site.register(StaticPage, StaticPageAdmin)
