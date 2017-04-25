@@ -6,12 +6,14 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DetailView, TemplateView
 
 from velo.core.models import Competition
+from velo.manager.excels.income_list import create_income_list
 from velo.manager.excels.insured import create_insured_list
 from velo.manager.excels.start_list import create_start_list, create_standing_list, team_member_list, \
     create_team_list, payment_list, create_donations_list, start_list_have_participated_this_year, create_temporary_participant_list
 from velo.manager.tables import ManageCompetitionTable
 from velo.manager.views import ManageApplication
 from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.payment.models import Payment
 from velo.registration.utils import import_lrf_licences
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
 from velo.manager.tasks import *
@@ -142,6 +144,13 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
+        elif request.POST.get('action') == 'income_list' and request.user.has_perm('payment.can_see_totals'):
+            file_obj = create_income_list(competition=self.competition)
+            response = HttpResponse(content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename=income_list.xls'
+            response.write(file_obj.getvalue())
+            file_obj.close()
+            return response
         elif request.POST.get('action') == 'create_insured_list':
             file_obj = create_insured_list(competition=self.competition)
             response = HttpResponse(content_type='application/vnd.ms-excel')
@@ -188,29 +197,14 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             team_count += counter
             distances_teams_w_counter.append((distance, counter))
 
+
         incomes = []
-        # Income calculator
+        if self.competition.level == 2:
+            incomes.append((self.competition.parent,
+                    Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
+                        Sum('total'))),)
 
-        for distance in distances:
-            # calculate parent income.
-            parent_income = None
-            parent_count = None
-            if self.object.level == 2:
-                parent_dict = Participant.objects.filter(is_participating=True, competition=self.competition.parent,
-                                                         distance=distance).exclude(price=None).aggregate(
-                    Sum('price__price'), Count('id'))
-                parent_count = parent_dict.get('id__count')
-                try:
-                    parent_income = parent_dict.get('price__price__sum', 0) * (
-                    100 - self.competition.parent.complex_discount) / 100
-                except TypeError:
-                    parent_income = None
-
-            income_dict = Participant.objects.filter(is_participating=True, competition=self.competition,
-                                                     distance=distance).exclude(price=None).aggregate(
-                Sum('price__price'), Sum('discount_amount'), Count('id'))
-            income = (income_dict.get('price__price__sum') or 0) - (income_dict.get('discount_amount__sum') or 0)
-            incomes.append(IncomeObject(distance, parent_income, income, parent_count, income_dict.get('id__count')))
+        incomes.append((self.competition, Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition).aggregate(Sum('total'))),)
 
         context.update({'participant_count': Participant.objects.filter(competition_id__in=self.competition.get_ids(),
                                                                         is_participating=True).count()})
