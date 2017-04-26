@@ -179,6 +179,11 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             'birthday': SplitDateWidget,
         }
 
+    def has_changed(self):
+        if not self.instance.price:
+            return True
+        return super().has_changed()
+    
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
             return self.cleaned_data.get('ssn', '').replace('-', '').replace(' ', '')
