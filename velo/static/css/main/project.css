@@ -503,7 +503,7 @@ main {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
-/* 
+/*
  *  Owl Carousel - Animate Plugin
  */
 .owl-carousel .animated {
@@ -534,7 +534,7 @@ main {
   100% {
     opacity: 0; } }
 
-/* 
+/*
  * 	Owl Carousel - Auto Height Plugin
  */
 .owl-height {
@@ -544,7 +544,7 @@ main {
   -o-transition: height 500ms ease-in-out;
   transition: height 500ms ease-in-out; }
 
-/* 
+/*
  *  Core Owl Carousel CSS File
  */
 .owl-carousel {
@@ -637,7 +637,7 @@ main {
 .no-js .owl-carousel {
   display: block; }
 
-/* 
+/*
  * 	Owl Carousel - Lazy Load Plugin
  */
 .owl-carousel .owl-item .owl-lazy {
@@ -651,7 +651,7 @@ main {
 .owl-carousel .owl-item img {
   transform-style: preserve-3d; }
 
-/* 
+/*
  * 	Owl Carousel - Video Plugin
  */
 .owl-carousel .owl-video-wrapper {
@@ -893,20 +893,6 @@ main {
 .cover-img {
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-  object-fit: cover; }
-
-.no-objectfit .cover-img,
-.no-object-fit .cover-img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: auto;
-  height: auto;
-  min-width: 100%;
-  min-height: 100%;
-  -webkit-transform: translate3d(-50%, -50%, 0);
-  transform: translate3d(-50%, -50%, 0);
   -o-object-fit: cover;
   object-fit: cover; }
 
