@@ -10,7 +10,14 @@
 
             <div class="row row--gutters-20">
 
-
+                    {% if competition.map_url %}
+                    <div class="col-xl-24 col-l-24 col-m-24 col-s-24 flex direction--column justify--start align-items--stretch">
+                        <div class="card border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
+                            <iframe src="{{ competition.map_url }}"
+                                    frameborder="0" style="min-height:415px;"></iframe>
+                        </div>
+                    </div>
+                    {% endif %}
 
                 {% for object in object_list %}
 
