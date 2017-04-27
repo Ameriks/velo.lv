@@ -13,6 +13,17 @@ class Seb2017(Seb2016):
     def _update_year(self, year):
         return year + 3
 
+    def number_ranges(self):
+        """
+        Returns number ranges for each distance.
+        """
+        return {
+            self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 400, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 701, 'end': 3200, 'group': ''}, ],
+            self.VESELIBAS_DISTANCE_ID: [{'start': 5000, 'end': 5200, 'group': ''}, ],
+            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 150, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
+        }
+
     @property
     def groups(self):
         """
