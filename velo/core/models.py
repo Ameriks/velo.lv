@@ -196,7 +196,7 @@ class Competition(MPTTModel):
                     (1, 'cross_country', _('Cross Country')), )
 
     name = models.CharField(max_length=100)
-    alias = AutoSlugField(populate_from='name')
+    alias = AutoSlugField(populate_from='name', always_update=True)
     short_name = models.CharField(max_length=50, blank=True)
 
     created_by = models.ForeignKey('core.User', related_name='created_%(class)s_set', null=True, blank=True)

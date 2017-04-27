@@ -22,7 +22,7 @@ def get_team_upload(instance, filename):
 class Team(StatusMixin, TimestampMixin, models.Model):
     distance = models.ForeignKey('core.Distance')
     title = models.CharField(_('Title'), max_length=100)
-    slug = AutoSlugField(populate_from='title')
+    slug = AutoSlugField(populate_from='title', always_update=True)
 
     description = models.TextField(_('Description'), blank=True)
     img = models.ImageField(_('Image'), upload_to=get_team_upload, blank=True)
