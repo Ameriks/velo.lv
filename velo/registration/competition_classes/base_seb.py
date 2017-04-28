@@ -498,11 +498,6 @@ AND r.id = res2.id
 
                 # Exceptions
 
-                # In 1.stage all women will be starting from 3.passage (except those with better results and already in better passage)
-                if passage_nr == 3 and self.competition_index == 1 and distance_id == self.SPORTA_DISTANCE_ID:
-                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__gender='F').order_by('-calculated_total', 'participant__registration_dt')
-                    women.update(passage_assigned=passage_nr)
-
                 # In 1.stage 10 girls and 50 women that are not in first 3 passages will be assigned to 4.passage
                 if passage_nr == 4 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
                     girls = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('W-16', 'T W-18')).order_by('-calculated_total', 'participant__registration_dt')[0:10]
