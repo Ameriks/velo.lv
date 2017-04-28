@@ -268,7 +268,8 @@ class Seb2016(SEBCompetitionBase):
                     # If last year participant was riding in Tautas and this year he is riding in Sport distance, then he must be after those who where riding sport distance.
                     # To sort participants correctly we have to give less points to them but still keep order based on last years results.
                     # If we divide by 10, then we will get them at the end of list.
-                    if standing.distance.kind == 'T' and participant.distance.kind == 'S':
+                    # If participant from Mammadaba now participates in tauta distance, then their points are reduced.
+                    if (standing.distance.kind == 'T' and participant.distance.kind == 'S') or (standing.distance.kind == 'M' and participant.distance.kind == 'T'):
                         helper.calculated_total /= 10.0
 
                     if self.competition_index == 2:
