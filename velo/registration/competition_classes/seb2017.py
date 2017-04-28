@@ -73,7 +73,7 @@ class Seb2017(SEBCompetitionBase):
         return {
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 400, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 701, 'end': 3200, 'group': ''}, ],
-            self.VESELIBAS_DISTANCE_ID: [{'start': 5000, 'end': 5200, 'group': ''}, ],
+            self.VESELIBAS_DISTANCE_ID: [{'start': 5001, 'end': 5200, 'group': ''}, {'start': 4001, 'end': 4200, 'group': ''}, ],
             self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 150, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
         }
 
