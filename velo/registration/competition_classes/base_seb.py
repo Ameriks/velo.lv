@@ -547,7 +547,7 @@ AND r.id = res2.id
             if not assign_children and participant.distance_id == self.BERNU_DISTANCE_ID:
                 continue
 
-            if participant.distance_id == self.VESELIBAS_DISTANCE_ID and participant.birthday.year not in (2001, 2002, 2003):
+            if participant.distance_id == self.VESELIBAS_DISTANCE_ID and participant.birthday.year not in (2003, 2004, 2005):
                 continue # In Helth distance we assign only to those participants that have born on 2001, 2002, 2003
 
             group = self.get_group_for_number_search(participant.distance_id, participant.gender, participant.birthday)
