@@ -183,6 +183,11 @@ class Seb2017(SEBCompetitionBase):
 
         return ()
 
+    def get_group_for_number_search(self, distance_id, gender, birthday, group=None):
+        if group is None:
+            group = super().get_group_for_number_search(distance_id, gender, birthday)
+        return group
+
     def create_helper_results(self, participants):
         if self.competition.level != 2:
             raise Exception('We allow creating helper results only for stages.')
