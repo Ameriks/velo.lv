@@ -557,11 +557,7 @@ AND r.id = res2.id
                     participant.primary_number = number
                     participant.save()
             except:
-                order_by = 'number'
-                if participant.group in self.groups[self.BERNU_DISTANCE_ID][:2] and participant.gender == 'M':
-                    order_by = '-number'
-
-                next_number = Number.objects.filter(participant_slug='', distance=participant.distance, group=group).order_by(order_by)[0]
+                next_number = Number.objects.filter(participant_slug='', distance=participant.distance, group=group).order_by('number')[0]
                 next_number.participant_slug = participant.slug
                 next_number.number_text = str(participant.registration_dt)
                 print("%s - %s" % (next_number, participant.slug))
