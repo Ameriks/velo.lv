@@ -63,3 +63,4 @@ velo/gallery/youtube-oauth2.json
 velo/media
 config/certificates
 staticfiles
+fabfile_secret.py

@@ -34,6 +34,20 @@ class RMCompetitionBase(CompetitionScriptBase):
             self.TAUTAS_DISTANCE_ID: ('T M', 'T W', )
         }
 
+    def result_select_extra(self, distance_id):
+        if distance_id == self.SPORTA_DISTANCE_ID:
+            return {
+                'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+                'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
+                'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
+                'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+                'l5': 'SELECT time FROM results_lapresult l5 WHERE l5.result_id = results_result.id and l5.index=5',
+            }
+        else:
+            return {
+                'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+            }
+
     def assign_group(self, distance_id, gender, birthday, participant=None):
         return NotImplementedError
 

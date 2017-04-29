@@ -66,6 +66,14 @@ class RM2016(RMCompetitionBase):
             ],
         }
 
+    def result_select_extra(self, distance_id):
+        return {
+            'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+            'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
+            'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
+            'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+        }
+
     def _update_year(self, year):
         return year + 2
 

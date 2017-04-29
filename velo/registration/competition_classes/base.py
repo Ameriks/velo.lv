@@ -123,6 +123,5 @@ AND r.id = res2.id
         for distance in self.competition.get_distances():
             cache.delete('team_results_by_name_%i_%i' % (self.competition.id, distance.id))
 
-
-
-
+    def result_select_extra(self, distance_id):
+        return {}
