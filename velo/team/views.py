@@ -40,7 +40,7 @@ class TeamAppliedView(SetCompetitionContextMixin, ListView):
     def get_queryset(self):
         queryset = super(TeamAppliedView, self).get_queryset()
 
-        queryset = queryset.filter(distance=self.distance, member__memberapplication__competition=self.competition)
+        queryset = queryset.filter(distance=self.distance, member__memberapplication__competition=self.competition, status__gte=0)
 
         search = self.request.GET.get('search', None)
         if search:
