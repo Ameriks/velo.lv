@@ -30,6 +30,7 @@ def _get_gpx_upload_path(instance, filename):
 
 
 def trigger_celerybeat_sync(sender, **kwargs):
+    print("TRIGGERED CELERYBEAT SYNC")
     PeriodicTasks.objects.update(last_update=datetime.datetime.now())
 
 
