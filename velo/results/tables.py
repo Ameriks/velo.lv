@@ -220,6 +220,11 @@ class ResultDistanceTable(tables.Table):
         text = strip_tags(record.participant.last_name)
         if record.leader:
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
+
+        if record.competition.params_dict.get('have_diploma', False):
+            text = '<a href="%s">%s</a>' % (
+            reverse('competition:result_diploma', kwargs={'pk': record.competition_id, 'pk2': record.id}), text)
+
         return mark_safe(text)
 
     def render_team(self, record, *args, **kwargs):
