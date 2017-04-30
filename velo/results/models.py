@@ -29,6 +29,9 @@ def _get_gpx_upload_path(instance, filename):
     return os.path.join("competition", "gpx", folder, filename)
 
 
+def trigger_celerybeat_sync(sender, **kwargs):
+    PeriodicTasks.objects.update(last_update=datetime.datetime.now())
+
 
 class LegacyResult(models.Model):
     competition = models.ForeignKey('core.Competition')
@@ -130,8 +133,8 @@ class UrlSync(PeriodicTask):
         self.args = "[%i]" % self.id
         return super(UrlSync, self).save(*args, **kwargs)
 
-signals.pre_delete.connect(PeriodicTasks.changed, sender=UrlSync)
-signals.pre_save.connect(PeriodicTasks.changed, sender=UrlSync)
+signals.pre_delete.connect(trigger_celerybeat_sync, sender=UrlSync)
+signals.pre_save.connect(trigger_celerybeat_sync, sender=UrlSync)
 
 
 class ChipScan(models.Model):
