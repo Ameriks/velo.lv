@@ -134,8 +134,8 @@ class UrlSync(PeriodicTask):
         self.args = "[%i]" % self.id
         return super(UrlSync, self).save(*args, **kwargs)
 
-signals.pre_delete.connect(trigger_celerybeat_sync, sender=UrlSync)
-signals.pre_save.connect(trigger_celerybeat_sync, sender=UrlSync)
+signals.pre_delete.connect(PeriodicTasks.changed, sender=UrlSync)
+signals.pre_save.connect(PeriodicTasks.changed, sender=UrlSync)
 
 
 class ChipScan(models.Model):
