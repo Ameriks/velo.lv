@@ -56,10 +56,10 @@ class CompetitionScriptBase(object):
         return 0
 
     def build_flat_pages(self, competition, items, lang):
-        for page in competition.parent.staticpage_set.filter(is_published=True, language__in=[lang, '']):
+        for page in competition.staticpage_set.filter(is_published=True, language__in=[lang, '']):
             items.append(item(page.title, 'competition:staticpage %i %s' % (competition.id, page.url)))
 
-        for page in competition.staticpage_set.filter(is_published=True, language__in=[lang, '']):
+        for page in competition.parent.staticpage_set.filter(is_published=True, language__in=[lang, '']):
             items.append(item(page.title, 'competition:staticpage %i %s' % (competition.id, page.url)))
 
     def calculate_time(self, chip):

@@ -120,11 +120,11 @@ class SEBCompetitionBase(CompetitionScriptBase):
                 item(_("Maps"), 'competition:maps %i' % child.id),
             ]
 
-            self.build_flat_pages(child, children, lang)
-
             if child.competition_date <= current_date + datetime.timedelta(days=1):
                 children.append(item(_("Results"), 'competition:result_distance_list %i' % child.id))
                 children.append(item(_("Team Results"), 'competition:result_team_list %i' % child.id, in_menu=False))
+
+            self.build_flat_pages(child, children, lang)
 
             child_items.append(item(str(child), '#', children=children))
 
