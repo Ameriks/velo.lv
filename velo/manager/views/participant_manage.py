@@ -13,6 +13,7 @@ from velo.manager.tables import ManageParticipantTable, ManageApplicationTable
 from velo.manager.tables.tables import PreNumberAssignTable, ChangedNameTable
 from velo.manager.views.permission_view import ManagerPermissionMixin
 from velo.registration.models import Participant, Application, PreNumberAssign, ChangedName
+from velo.results.tasks import master_update_helper_result_table
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, \
     CreateViewWithCompetition, UpdateViewWithCompetition
 
@@ -183,6 +184,7 @@ class ManageParticipantCreate(ManagerPermissionMixin, CreateViewWithCompetition)
     form_class = ParticipantCreateForm
 
     def get_success_url(self):
+        master_update_helper_result_table.delay(False, self.object.id)
         if self.request.POST.get('submit_and_next', None):
             return reverse('manager:participant_create', kwargs={'pk': self.kwargs.get('pk')})
         elif self.request.POST.get('submit_and_continue', None):
@@ -204,6 +206,7 @@ class ManageParticipantIneseCreate(ManageParticipantCreate):
         return context
 
     def get_success_url(self):
+        master_update_helper_result_table.delay(False, self.object.id)
         if self.request.POST.get('submit_and_next', None):
             return reverse('manager:participant_createi', kwargs={'pk': self.kwargs.get('pk')})
         elif self.request.POST.get('submit_and_continue', None):

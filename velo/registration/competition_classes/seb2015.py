@@ -75,6 +75,11 @@ class Seb2015(SEBCompetitionBase):
             self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 100, 'group': group} for group in ('B 05-04', 'B 06', 'B 07', 'B 08', 'B 09', 'B 10', 'B 11-', )],
         }
 
+    def result_select_extra(self, distance_id):
+        return {
+            'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+        }
+
     def get_startlist_table_class(self, distance=None):
         if distance.id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
             are_passages_assigned = HelperResults.objects.filter(competition=self.competition).exclude(passage_assigned=None).count()

@@ -194,7 +194,7 @@ def update_helper_result_table(competition_id, update=False, participant_id=None
 def master_update_helper_result_table(update=False, participant_id=None):
     competitions = Competition.objects.filter(competition_date__gte=(timezone.now() - datetime.timedelta(days=1)))\
         .exclude(participant=None)\
-        .exclude(competition_date__lte=datetime.date.today())\
+        .exclude(competition_date__lte=(datetime.date.today() - datetime.timedelta(days=1)))\
         .filter(complex_payment_enddate=None)
     for competition in competitions:
         update_helper_result_table(competition_id=competition.id, update=update, participant_id=participant_id)
