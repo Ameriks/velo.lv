@@ -9,7 +9,6 @@ from django.core.urlresolvers import reverse
 from base64 import b32encode
 from hashlib import sha1
 from random import random
-from ckeditor.fields import RichTextField
 from slugify import slugify
 
 from velo.velo.mixins.models import StatusMixin, TimestampMixin
@@ -57,7 +56,7 @@ class News(StatusMixin, TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition', blank=True, null=True, limit_choices_to={'level__lte': 1})
     published_on = models.DateTimeField(default=timezone.now)
 
-    intro_content = RichTextField()
+    intro_content = RichTextUploadingField()
     content = RichTextUploadingField(blank=True)
 
     objects = NewsManagerPublished()
