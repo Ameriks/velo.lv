@@ -271,7 +271,10 @@ class Number(StatusMixin, TimestampMixin, models.Model):
         if not self.group:
             return str(self.number)
         else:
-            return '%s - %i' % (self.group, self.number)
+            if self.number > 1000:
+                return '%s - %i' % (self.group, int(str(self.number)[1:]))
+            else:
+                return '%s - %i' % (self.group, self.number)
 
     class Meta:
         unique_together = ('competition', 'number', 'group')

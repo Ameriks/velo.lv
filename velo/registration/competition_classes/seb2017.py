@@ -72,7 +72,7 @@ class Seb2017(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: ('M', 'M 19-34 CFA', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
             self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-40', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
             self.VESELIBAS_DISTANCE_ID: ('M-14', 'W-14', ),
-            self.BERNU_DISTANCE_ID: ('B 07-06 Z', 'B 07-06 M', 'B 08', 'B 09', 'B 10', 'B 11', 'B 12', 'B 13-', )
+            self.BERNU_DISTANCE_ID: ('B 13-', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08', 'B 07-06 M', 'B 07-06 Z',)
         }
 
     def number_ranges(self):
@@ -83,7 +83,7 @@ class Seb2017(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 400, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 701, 'end': 3200, 'group': ''}, ],
             self.VESELIBAS_DISTANCE_ID: [{'start': 5001, 'end': 5200, 'group': ''}, {'start': 4001, 'end': 4200, 'group': ''}, ],
-            self.BERNU_DISTANCE_ID: [{'start': 1, 'end': 150, 'group': group} for group in self.groups.get(self.BERNU_DISTANCE_ID)],
+            self.BERNU_DISTANCE_ID: [{'start': (1000*index)+1, 'end': (1000*index)+150, 'group': group} for index, group in enumerate(self.groups.get(self.BERNU_DISTANCE_ID), start=1)],
         }
 
     def result_select_extra(self, distance_id):
@@ -456,6 +456,20 @@ class Seb2017(SEBCompetitionBase):
             results = csv.reader(csvfile)
             next(results)  # header line
             for row in results:
+
+                first_name = row[1]
+                last_name = row[2]
+                birthyear = row[3]
+                team_name = row[4]
+                index = row[5]
+                status = row[6]
+                time = row[7]
+                place = row[8]
+                points = row[9]
+                group = row[10]
+
+
+
                 print(row)
                 if int(row[5]) != self.competition_index:
                     print("Not processing.")
@@ -489,14 +503,14 @@ class Seb2017(SEBCompetitionBase):
 
                 number_group = self.get_group_for_number_search(self.BERNU_DISTANCE_ID, 'M', datetime.date(int(row[3]), 1, 1))
 
-                number = Number.objects.filter(competition=self.competition.parent, distance_id=self.BERNU_DISTANCE_ID, number=int(row[0][1:]), group=number_group).order_by('-id')
+                number = Number.objects.filter(competition=self.competition.parent, distance_id=self.BERNU_DISTANCE_ID, number=int(row[0]), group=number_group).order_by('-id')
                 number.update(participant_slug=participant.slug)
                 if number:
                     participant.primary_number = number.get()
                     participant.save()
 
                 if row[8]:
-                    time = row[7]
+
                     status = ''
                     if time == 'NFL':
                         time = None
