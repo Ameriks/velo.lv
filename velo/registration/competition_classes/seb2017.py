@@ -5,6 +5,7 @@ import datetime
 from io import BytesIO
 
 import pytz
+from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
 from reportlab.lib.colors import HexColor
@@ -452,77 +453,80 @@ class Seb2017(SEBCompetitionBase):
         return super().calculate_points_distance(result, top_result)
 
     def import_children_csv(self, filename):
-        with open(filename, 'r') as csvfile:
-            results = csv.reader(csvfile)
-            next(results)  # header line
-            for row in results:
+        with transaction.atomic():
+            with open(filename, 'r') as csvfile:
+                results = csv.reader(csvfile)
+                next(results)  # header line
+                for row in results:
 
-                first_name = row[1]
-                last_name = row[2]
-                birthyear = row[3]
-                team_name = row[4]
-                index = row[5]
-                status = row[6]
-                time = row[7]
-                place = row[8]
-                points = row[9]
-                group = row[10]
+                    nr = int(row[0])
+                    first_name = row[1]
+                    last_name = row[2]
+                    birthyear = int(row[3])
+                    team_name = row[4]
+                    index = int(row[5])
+                    status = row[6]
+                    time = row[7]
+                    place = row[8]
+                    points = row[9]
+                    group = row[10]
 
+                    print(row)
 
+                    if index != self.competition_index:
+                        print("Not processing.")
+                        continue
 
-                print(row)
-                if int(row[5]) != self.competition_index:
-                    print("Not processing.")
-                    continue
+                    if not first_name or not last_name or not birthyear:
+                        print("Don't have all required data. Skipping.")
+                        continue
 
-                if not row[1] or not row[2] or not row[3]:
-                    print("Don't have all required data. Skipping.")
-                    continue
+                    if not time:
+                        print("Don't have time data. Skipping.")
+                        continue
 
-                slug = slugify("%s-%s-%s" % (row[1], row[2], row[3]))
-                participant = Participant.objects.filter(slug=slug, competition_id__in=self.competition.get_ids(), is_participating=True, distance_id=self.BERNU_DISTANCE_ID)
-                if participant:
-                    participant = participant[0]
-                else:
-                    data = {
-                        'competition_id': self.competition_id,
-                        'distance_id': self.BERNU_DISTANCE_ID,
-                        'team_name': row[4],
-                        'is_participating': True,
-                        'first_name': row[1],
-                        'last_name': row[2],
-                        'birthday': datetime.date(int(row[3]), 1, 1),
-                        'is_only_year': True,
-                        'gender': '',
-                    }
+                    number = Number.objects.get(distance_id=self.BERNU_DISTANCE_ID, number=nr)
+                    if not number.participant_slug:
+                        number.participant_slug = slugify("%s-%s-%s" % (row[1], row[2], row[3]))
+                        number.save()
 
-                    if row[13] in ('F', 'M'):
-                        data.update({'gender': row[13]})
+                    chip = ChipScan(competition=self.competition, nr=number, time=datetime.time(*map(int, time.split(':'))))
 
-                    participant = Participant.objects.create(**data)
+                    results = Result.objects.filter(competition=chip.competition, number=chip.nr).exclude(time=None)
+                    if results:
+                        Log.objects.create(content_object=chip, action="Chip process",
+                                           message="Chip ignored. Already have result")
+                    else:
+                        participant = self.process_chip_create_participant(chip)
 
-                number_group = self.get_group_for_number_search(self.BERNU_DISTANCE_ID, 'M', datetime.date(int(row[3]), 1, 1))
+                        # If participant is not previously created in system, we create it using data provided in CSV
+                        if not participant:
+                            data = {
+                                'competition_id': self.competition_id,
+                                'distance_id': self.BERNU_DISTANCE_ID,
+                                'team_name': team_name,
+                                'is_participating': True,
+                                'first_name': first_name,
+                                'last_name': last_name,
+                                'birthday': datetime.date(birthyear, 1, 1),
+                                'is_only_year': True,
+                                'gender': '',
+                                'primary_number': number
+                            }
+                            participant = [Participant.objects.create(**data), ]
 
-                number = Number.objects.filter(competition=self.competition.parent, distance_id=self.BERNU_DISTANCE_ID, number=int(row[0]), group=number_group).order_by('-id')
-                number.update(participant_slug=participant.slug)
-                if number:
-                    participant.primary_number = number.get()
-                    participant.save()
+                        result_time, seconds = self.calculate_time(chip)
+                        result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant[0], number=chip.nr)
+                        result.time = time  # result_time
+                        # TODO: function to calculate the place and points.
+                        result.result_group = place
+                        result.points_group = points
+                        if status:
+                            result.status = status
+                        result.save()
 
-                if row[8]:
-
-                    status = ''
-                    if time == 'NFL':
-                        time = None
-                        status = 'NFL'
-
-                    result, created = Result.objects.get_or_create(competition=self.competition, participant=participant, number=number.get(),
-                                                                   result_group=row[8] if row[8] else None, points_group=row[9] if row[9] else 0,
-                                                                   status=status, time=time)
-                    self.recalculate_standing_for_result(result)
-                else:
-                    print('didnt participate')
-        self.assign_standing_places()
+                        self.recalculate_standing_for_result(result)
+            self.assign_standing_places()
 
 
     def generate_diploma(self, result):
