@@ -159,7 +159,7 @@ class RM2014(RMCompetitionBase):
 
 
 
-    def process_chip_result(self, chip_id, sendsms=True):
+    def process_chip_result(self, chip_id, sendsms=True, recalc=False):
         """
         This is here for reference, because in 2014 there was zero time for every chip.
         """

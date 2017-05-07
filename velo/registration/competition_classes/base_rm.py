@@ -128,7 +128,7 @@ class RMCompetitionBase(CompetitionScriptBase):
             return ''
 
 
-    def process_chip_result(self, chip_id, sendsms=True):
+    def process_chip_result(self, chip_id, sendsms=True, recalc=False):
         """
         Function processes chip result and recalculates all standings
         """
@@ -250,9 +250,9 @@ AND r.id = res2.id
 
         super(RM2014, self).reset_cache()
 
-    def process_unprocessed_chips(self, send_sms=False):
+    def process_unprocessed_chips(self, send_sms=False, recalc=False):
         for chip in self.competition.chipscan_set.filter(is_processed=False).order_by('time'):
-            self.process_chip_result(chip.id, send_sms)
+            self.process_chip_result(chip.id, send_sms, recalc)
 
     def generate_diploma(self, result):
         raise NotImplementedError

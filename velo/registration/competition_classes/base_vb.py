@@ -309,7 +309,7 @@ class VBCompetitionBase(CompetitionScriptBase):
         elif standing.distance_id == self.BERNU_DISTANCE_ID:
             return sum(points[0:5])
 
-    def process_chip_result(self, chip_id, sendsms=True):
+    def process_chip_result(self, chip_id, sendsms=True, recalc=False):
         """
         Function processes chip result and recalculates all standings
         """
@@ -443,9 +443,9 @@ AND r.id = res2.id
             cache.delete('team_results_by_name_%i_%i' % (self.competition.id, distance.id))
 
 
-    def process_unprocessed_chips(self, send_sms=False):
+    def process_unprocessed_chips(self, send_sms=False, recalc=False):
         for chip in self.competition.chipscan_set.filter(is_processed=False).order_by('time'):
-            self.process_chip_result(chip.id, send_sms)
+            self.process_chip_result(chip.id, send_sms, recalc)
 
     def generate_diploma(self, result):
         output = BytesIO()

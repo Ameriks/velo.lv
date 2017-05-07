@@ -328,13 +328,13 @@ class Seb2015(SEBCompetitionBase):
 
         return standing
 
-    def process_chip_result(self, chip_id, sendsms=True):
+    def process_chip_result(self, chip_id, sendsms=True, recalc=False):
         """
         Function processes chip result and recalculates all standings
         """
 
         if self.competition_index != 7:
-            return super(Seb2015, self).process_chip_result(chip_id, sendsms)
+            return super(Seb2015, self).process_chip_result(chip_id, sendsms, recalc)
 
         chip = ChipScan.objects.get(id=chip_id)
 
@@ -344,7 +344,7 @@ class Seb2015(SEBCompetitionBase):
 
 
         if chip.url_sync.kind == 'FINISH':
-            return super(Seb2015, self).process_chip_result(chip_id, sendsms)
+            return super(Seb2015, self).process_chip_result(chip_id, sendsms, recalc)
         else:
             result_time, seconds = self.calculate_time(chip)
 

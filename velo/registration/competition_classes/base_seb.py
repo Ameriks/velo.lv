@@ -302,7 +302,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
                 return False
         return participant
 
-    def process_chip_result(self, chip_id, sendsms=True):
+    def process_chip_result(self, chip_id, sendsms=True, recalc=False):
         """
         Function processes chip result and recalculates all standings
         """
@@ -322,7 +322,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             return None
 
         results = Result.objects.filter(competition=chip.competition, number=chip.nr).exclude(time=None)
-        if results:
+        if results and not recalc:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip ignored. Already have result")
         else:
             participant = self.process_chip_create_participant(chip)

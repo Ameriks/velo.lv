@@ -72,7 +72,7 @@ class EC2016(CompetitionScriptBase):
     def recalculate_all_standings(self):
         pass
 
-    def process_chip_result(self, chip_id, sendsms=True):
+    def process_chip_result(self, chip_id, sendsms=True, recalc=False):
         """
         Function processes chip result and recalculates all standings
         """

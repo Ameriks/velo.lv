@@ -370,7 +370,7 @@ class Seb2017(SEBCompetitionBase):
 
         return standing
 
-    def process_chip_result(self, chip_id, sendsms=True):
+    def process_chip_result(self, chip_id, sendsms=True, recalc=False):
         """
         Function processes chip result and recalculates all standings
         """
@@ -381,12 +381,8 @@ class Seb2017(SEBCompetitionBase):
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
             return None
 
-        if chip.nr.number < 500 and self.competition_index == 3:
-            # We are not processing any numbers that are less than 500 in 3rd stage, as they are calculated in XCO competition.
-            return False
-
         if chip.url_sync.kind == 'FINISH':
-            return super().process_chip_result(chip_id, sendsms)
+            return super().process_chip_result(chip_id, sendsms, recalc)
         else:
             result_time, seconds = self.calculate_time(chip)
 
@@ -403,7 +399,7 @@ class Seb2017(SEBCompetitionBase):
 
             result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant[0], number=chip.nr, )
             lap, created = result.lapresult_set.get_or_create(index=chip.url_sync.index)
-            if lap.time:
+            if lap.time and not recalc:
                 Log.objects.create(content_object=chip, action="Chip process", message="Lap time already set.")
                 return None
 

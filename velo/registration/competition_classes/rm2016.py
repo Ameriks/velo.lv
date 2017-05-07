@@ -219,7 +219,7 @@ class RM2016(RMCompetitionBase):
 
             helper.save()
 
-    def process_chip_result(self, chip_id, sendsms=True):
+    def process_chip_result(self, chip_id, sendsms=True, recalc=False):
         """
         Function processes chip result and recalculates all standings
         """
