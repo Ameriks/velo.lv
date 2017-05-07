@@ -354,6 +354,10 @@ class SEBCompetitionBase(CompetitionScriptBase):
         This function is called in case there are errors in given points.
         """
         distances = [self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.VESELIBAS_DISTANCE_ID]
+
+        if hasattr(self, "VESELIBAS_DISTANCE2_ID"):
+            distances.append(self.VESELIBAS_DISTANCE2_ID)
+        
         recalculate_places = False
         results = Result.objects.filter(competition=self.competition, participant__distance_id__in=distances)
         for result in results:
