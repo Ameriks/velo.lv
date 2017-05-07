@@ -31,7 +31,7 @@ class Seb2017(SEBCompetitionBase):
     TAUTAS_DISTANCE_ID = 61
     VESELIBAS_DISTANCE_ID = 62
     BERNU_DISTANCE_ID = 63
-
+    VESELIBAS_DISTANCE2_ID = 72
     STAGES_COUNT = 7
 
     @property
@@ -72,7 +72,7 @@ class Seb2017(SEBCompetitionBase):
         return {
             self.SPORTA_DISTANCE_ID: ('M', 'M 19-34 CFA', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
             self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-40', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
-            self.VESELIBAS_DISTANCE_ID: ('M-14', 'W-14', ),
+            self.VESELIBAS_DISTANCE2_ID: ('M-14', 'W-14', ),
             self.BERNU_DISTANCE_ID: ('B 13-', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08', 'B 07-06 M', 'B 07-06 Z',)
         }
 
@@ -83,7 +83,8 @@ class Seb2017(SEBCompetitionBase):
         return {
             self.SPORTA_DISTANCE_ID: [{'start': 1, 'end': 400, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 701, 'end': 3200, 'group': ''}, ],
-            self.VESELIBAS_DISTANCE_ID: [{'start': 5001, 'end': 5200, 'group': ''}, {'start': 4001, 'end': 4200, 'group': ''}, ],
+            self.VESELIBAS_DISTANCE_ID: [{'start': 4001, 'end': 4200, 'group': ''}, ],
+            self.VESELIBAS_DISTANCE2_ID: [{'start': 5001, 'end': 5200, 'group': ''}, ],
             self.BERNU_DISTANCE_ID: [{'start': (1000*index)+1, 'end': (1000*index)+150, 'group': group} for index, group in enumerate(self.groups.get(self.BERNU_DISTANCE_ID), start=1)],
         }
 
@@ -176,14 +177,14 @@ class Seb2017(SEBCompetitionBase):
                 else:
                     return 'B 07-06 M'
 
-        elif distance_id == self.VESELIBAS_DISTANCE_ID:
+        elif distance_id == self.VESELIBAS_DISTANCE2_ID:
             if year in (self._update_year(2000), self._update_year(2001), self._update_year(2002)):
                 if gender == 'M':
                     return 'M-14'
                 else:
                     return 'W-14'
-            else:
-                return ''
+        elif distance_id == self.VESELIBAS_DISTANCE_ID:
+            return ''
 
         print('here I shouldnt be...')
         raise Exception('Invalid group assigning.')
