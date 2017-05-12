@@ -84,6 +84,8 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
 
         if self.request.GET.get('group', None):
             queryset = queryset.filter(participant__group=self.request.GET.get('group', None))
+        if self.request.GET.get('gender', None):
+            queryset = queryset.filter(participant__gender=self.request.GET.get('gender', None))
 
         search = self.request.GET.get('search', None)
         if search:
@@ -138,6 +140,8 @@ class SebStandingResultList(SetCompetitionContextMixin, SingleTableView):
 
         if self.request.GET.get('group', None):
             queryset = queryset.filter(participant__group=self.request.GET.get('group', None))
+        if self.request.GET.get('gender', None):
+            queryset = queryset.filter(participant__gender=self.request.GET.get('gender', None))
 
         search = self.request.GET.get('search', None)
         if search:

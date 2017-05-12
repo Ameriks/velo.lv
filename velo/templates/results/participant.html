@@ -50,7 +50,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-10 col-s-24 bottom-margin--20">
+                            <div class="col-xl-8 col-s-24 bottom-margin--20">
                                 <div class="input-wrap">
                                     <select
                                         class="select-hide js-select select"
@@ -62,7 +62,7 @@
                                     </select>
                                 </div>
                             </div>
-                        <div class="col-xl-6 col-m-24 bottom-margin--20">
+                        <div class="col-xl-4 col-m-24 bottom-margin--20">
                                 <div class="input-wrap">
                                     <select
                                         class="select-hide js-select select"
@@ -75,6 +75,19 @@
                                     </select>
                                 </div>
                             </div>
+
+
+                        <div class="col-xl-4 col-m-24 bottom-margin--20">
+                                <div class="input-wrap">
+                                    <select class="select-hide js-select select" name="gender" >
+                                        <option value="">{% trans "Gender" %}</option>
+                                        <option value="M" {% if request.GET.gender == 'M' %}selected{% endif %}>{% trans 'Male' %}</option>
+                                        <option value="F" {% if request.GET.gender == 'F' %}selected{% endif %}>{% trans 'Female' %}</option>
+                                    </select>
+                                </div>
+                        </div>
+
+
                         </div>
                     </form>
                 </div>
