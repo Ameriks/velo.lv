@@ -259,13 +259,14 @@ class SEBCompetitionBase(CompetitionScriptBase):
         row_number() OVER (PARTITION BY res.competition_id, res.distance_id ORDER BY
         res.distance_id, res.distance_total desc,
         res.distance_points7 desc, res.distance_points6 desc, res.distance_points5 desc, res.distance_points4 desc,
-        res.distance_points3 desc, res.distance_points2 desc, res.distance_points1 desc) as distance_row_nr,
+        res.distance_points3 desc, res.distance_points2 desc, res.distance_points1 desc, r.time ASC) as distance_row_nr,
         row_number() OVER (PARTITION BY res.competition_id, res.distance_id, p.group ORDER BY
         res.distance_id, p.group, res.group_total desc, res.group_points7 desc, res.group_points6 desc, res.group_points5 desc,
-        res.group_points4 desc, res.group_points3 desc, res.group_points2 desc, res.group_points1 desc
+        res.group_points4 desc, res.group_points3 desc, res.group_points2 desc, res.group_points1 desc, r.time ASC
         ) as group_row_nr
         FROM results_sebstandings As res
         INNER JOIN registration_participant p ON res.participant_id = p.id
+        INNER JOIN (Select DISTINCT ON (standings_object_id) * from results_result order by standings_object_id ) r on r.standings_object_id = res.id
         ) res2
         WHERE res2.competition_id = %s AND r.id = res2.id
         """, [self.competition.parent.id, ])
