@@ -14,6 +14,7 @@ from velo.manager.tables import ManageCompetitionTable
 from velo.manager.views import ManageApplication
 from velo.manager.views.permission_view import ManagerPermissionMixin
 from velo.payment.models import Payment
+from velo.registration.models import Application
 from velo.registration.utils import import_lrf_licences
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
 from velo.manager.tasks import *
@@ -200,11 +201,25 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
 
         incomes = []
         if self.competition.level == 2:
-            incomes.append((self.competition.parent,
-                    Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
-                        Sum('total'))),)
+            parent_total = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
+                        Sum('total')).get('total__sum')
+            parent_donations = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
+                Sum('donation')).get('donation__sum')
+            parent_insurance = Application.objects.filter(payment_status=Application.PAY_STATUS.payed, competition=self.competition.parent).aggregate(
+                        Sum('total_insurance_fee')).get('total_insurance_fee__sum')
+            incomes.append((self.competition.parent, parent_total-parent_donations-parent_insurance))
+            incomes.append(('Ziedojumi', parent_donations))
+            incomes.append(('Apdrošināšana', parent_insurance))
 
-        incomes.append((self.competition, Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition).aggregate(Sum('total'))),)
+
+        distance_donations = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition).aggregate(
+            Sum('donation')).get('donation__sum')
+        distance_insurance = Application.objects.filter(payment_status=Application.PAY_STATUS.payed, competition=self.competition).aggregate(
+                    Sum('total_insurance_fee')).get('total_insurance_fee__sum')
+        distance_total = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition).aggregate(Sum('total')).get('total__sum')
+        incomes.append((self.competition, distance_total-distance_donations-distance_insurance),)
+        incomes.append(('Ziedojumi', distance_donations))
+        incomes.append(('Apdrošināšana', distance_insurance))
 
         context.update({'participant_count': Participant.objects.filter(competition_id__in=self.competition.get_ids(),
                                                                         is_participating=True).count()})
