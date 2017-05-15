@@ -23,6 +23,7 @@ class Application(TimestampMixin, models.Model):
     PAY_STATUS = XChoices((0, 'not_payed', _("Haven't Payed")),
                           (10, 'waiting', _('Waiting for Payment')),
                           (20, 'payed', _('Payed')),
+                          (30, 'never', _('Won\'t pay')),
                           (-10, 'cancelled', _('Cancelled')), )
 
     competition = models.ForeignKey('core.Competition', verbose_name=_('Competition'))

@@ -12,6 +12,7 @@ from velo.manager.forms import ParticipantListSearchForm, ParticipantForm, Parti
 from velo.manager.tables import ManageParticipantTable, ManageApplicationTable
 from velo.manager.tables.tables import PreNumberAssignTable, ChangedNameTable
 from velo.manager.views.permission_view import ManagerPermissionMixin
+from velo.payment.models import Payment
 from velo.registration.models import Participant, Application, PreNumberAssign, ChangedName
 from velo.results.tasks import master_update_helper_result_table
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, \
@@ -54,6 +55,9 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
         action = request.POST.get('action', '')
         if action == 'mark_as_payed':
             self.object.payment_status = Application.PAY_STATUS.payed
+            payment_object = self.object.payment_set.get(channel__payment_channel__is_bill=True)
+            payment_object.status = Payment.STATUSES.ok
+            payment_object.save()
             for participant in self.object.participant_set.all():
                 participant.is_participating = True
                 participant.save()
@@ -62,6 +66,15 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
             self.create_invoice_form()
             if self.invoice_form.is_valid():
                 self.invoice_form.save()
+        elif action == 'mark_as_never_payed':
+            self.object.payment_status = Application.PAY_STATUS.never
+            payment_object = self.object.payment_set.get(channel__payment_channel__is_bill=True)
+            payment_object.status = Payment.STATUSES.pending
+            payment_object.save()
+            for participant in self.object.participant_set.all():
+                participant.is_participating = True
+                participant.save()
+            self.object.save()
 
     @method_decorator(xframe_options_exempt)
     def post(self, request, *args, **kwargs):
