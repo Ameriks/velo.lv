@@ -68,6 +68,9 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
                 self.invoice_form.save()
         elif action == 'mark_as_never_payed':
             self.object.payment_status = Application.PAY_STATUS.never
+            payment_object = self.object.payment_set.get(channel__payment_channel__is_bill=True)
+            payment_object.status = Payment.STATUSES.pending
+            payment_object.save()
             for participant in self.object.participant_set.all():
                 participant.is_participating = True
                 participant.save()
