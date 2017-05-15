@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:latest
 
 RUN apk -U add certbot && rm -f /var/cache/apk/*
 
