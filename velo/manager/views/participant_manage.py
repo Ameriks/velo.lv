@@ -66,6 +66,12 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
             self.create_invoice_form()
             if self.invoice_form.is_valid():
                 self.invoice_form.save()
+        elif action == 'mark_as_never_payed':
+            self.object.payment_status = Application.PAY_STATUS.never
+            for participant in self.object.participant_set.all():
+                participant.is_participating = True
+                participant.save()
+            self.object.save()
 
     @method_decorator(xframe_options_exempt)
     def post(self, request, *args, **kwargs):
