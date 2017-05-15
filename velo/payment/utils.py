@@ -289,7 +289,7 @@ def create_application_invoice(application, active_payment_type, action="send", 
         })
         if participant.insurance:
             items.append({
-                "description": "&nbsp;-&nbsp;Apdrošināšana %(insurance)s" % {
+                "description": "Apdrošināšana %(insurance)s" % {
                     "insurance": participant.insurance,
                 },
                 "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
