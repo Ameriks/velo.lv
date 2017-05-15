@@ -56,11 +56,11 @@
 
     {% if perms.payment.can_see_totals %}
         <div class="row margin-bottom-40">
-            <p>Kopējie ienākošie maksājumi, ieskaitot apdrošināšanu, ziedojumus. Šajās summās ir ieskaitīti arī apstiprinātie rēķini.</p>
+            <p>Kopējie ienākošie maksājumi. Šajās summās ir ieskaitīti arī apstiprinātie rēķini.</p>
             {% for income in incomes %}
-            <div class="counters col-sm-3">
-                <span class="counter">{{ income.1.total__sum|intcomma }} euro</span>
+            <div class="counters col-sm-4">
                 <h4>{{ income.0 }}</h4>
+                <span class="counter">{{ income.1|intcomma }} euro</span>
             </div>
             {% endfor %}
             <form method="post" action="">
