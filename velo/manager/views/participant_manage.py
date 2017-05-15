@@ -36,6 +36,11 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
         context = super(ManageApplication, self).get_context_data(**kwargs)
         context.update({'invoice_form': self.invoice_form})
         context.update({'payments': self.object.payment_set.all()})
+        try:
+            context.update({'bill': self.object.payment_set.get(channel__payment_channel__is_bill=True)})
+            context.update({'payed': self.object.payment_set.filter(status=30, channel__payment_channel__is_bill=False)})
+        except Payment.DoesNotExist:
+            pass
         return context
 
     def create_invoice_form(self):

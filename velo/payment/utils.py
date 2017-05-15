@@ -1,4 +1,6 @@
 import logging
+
+from decimal import Decimal
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
@@ -373,7 +375,7 @@ def create_bank_transaction(instance, active_payment_type, request):
 
     # For testing purposes. To test successful SEB and Swedbank transactions.
     if request.user.is_authenticated() and request.user.id == 6:
-        instance.final_price = 0.01
+        instance.final_price = Decimal('0.01')
 
     content_type = ContentType.objects.get_for_model(instance)
     payment, created = Payment.objects.get_or_create(
@@ -381,7 +383,7 @@ def create_bank_transaction(instance, active_payment_type, request):
                 object_id=instance.id,
                 competition=instance.competition,
                 total=instance.final_price,
-                donation=instance.donation if hasattr(instance, "donation") else 0.0,
+                donation=instance.donation if hasattr(instance, "donation") else 0.00,
                 defaults={"status": Payment.STATUSES.pending}
             )
 

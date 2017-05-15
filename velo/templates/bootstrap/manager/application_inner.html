@@ -51,14 +51,25 @@
             </thead>
             <tbody>
             {% for obj in payments %}
-                <tr class="{% if obj.status != 30 %}danger{% endif %}">
-                    <td>{{ obj.id }}</td>
-                    <td>{{ obj.channel }}</td>
-                    <td>{{ obj.total }} €</td>
-                    <td>{{ obj.get_status_display }}</td>
-                    <td>{{ obj.created }}</td>
-                    <td>{{ obj.modified }}</td>
-                </tr>
+                {% for transaction in obj.transaction_set.all %}
+                    <tr class="{% if transaction.status != 30 %}danger{% endif %}">
+                        <td>{{ obj.id }}</td>
+                        <td>{{ transaction.channel }}</td>
+                        <td>{{ obj.total }} €</td>
+                        <td>{{ obj.get_status_display }}</td>
+                        <td>{{ obj.created }}</td>
+                        <td>{{ obj.modified }}</td>
+                    </tr>
+                {% empty %}
+                    <tr class="{% if obj.status != 30 %}danger{% endif %}">
+                        <td>{{ obj.id }}</td>
+                        <td>{{ obj.channel }}</td>
+                        <td>{{ obj.total }} €</td>
+                        <td>{{ obj.get_status_display }}</td>
+                        <td>{{ obj.created }}</td>
+                        <td>{{ obj.modified }}</td>
+                    </tr>
+                {% endfor %}
             {% endfor %}
             </tbody>
         </table>
@@ -68,21 +79,21 @@
     {% if object.invoice %}
     <p>Rēķina numurs: <a href="/payment/invoice/{{ object.invoice.slug }}/">{{ object.invoice.invoice_nr }}</a>.</p>
     {% endif %}
-
-    {% if object.payment_status != object.PAY_STATUS.payed and object.payment_status != object.PAY_STATUS.never %}
-    <button class="btn btn-primary" type="submit" name="action" value="mark_as_payed">Atzīmēt, ka pieteikums apmaksāts</button>
-    {% else %}
-        {% if object.payment_status != object.PAY_STATUS.never %}
-            <p>Atzīmēts, kā samakstāts.</p>
+    {% if not payed %}
+        {% if bill.status < bill.STATUSES.ok or  object.payment_status < object.PAY_STATUS.payed %}
+        <button class="btn btn-primary" type="submit" name="action" value="mark_as_payed">Atzīmēt, ka pieteikums apmaksāts</button>
         {% else %}
-            <p>Atzīmēts, kā netiks apmaksāts.</p>
+            {% if object.payment_status != object.PAY_STATUS.never %}
+                <p>Atzīmēts, kā samakstāts.</p>
+            {% else %}
+                <p>Atzīmēts, kā netiks apmaksāts.</p>
+            {% endif %}
+        {% endif %}
+
+        {% if object.payment_status != object.PAY_STATUS.never %}
+            <button class="btn btn-warning" type="submit" name="action" value="mark_as_never_payed">Atzīmēt, ka pieteikums netiks apmaksāts</button>
         {% endif %}
     {% endif %}
-
-    {% if object.payment_status != object.PAY_STATUS.never %}
-        <button class="btn btn-warning" type="submit" name="action" value="mark_as_never_payed">Atzīmēt, ka pieteikums netiks apmaksāts</button>
-    {% endif %}
-
     </form>
 
     {% if object.payment_status != object.PAY_STATUS.payed and object.payment_status != object.PAY_STATUS.never %}

@@ -220,7 +220,7 @@ class ApplicationListSearchForm(RequestKwargModelFormMixin, forms.Form):
         competition = kwargs.pop('competition', None)
         super(ApplicationListSearchForm, self).__init__(*args, **kwargs)
 
-        self.fields['status'].choices = [('', '------'), (-10, 'Atcelts'), (0, 'Nav apmaksāts'), (10, 'Gaida maksājumu'), (20, 'Apmaksāts')]
+        self.fields['status'].choices = [('', '------'), (-10, 'Atcelts'), (0, 'Nav apmaksāts'), (10, 'Gaida maksājumu'), (20, 'Apmaksāts'), (30, 'Nemaksās',), ]
 
         self.fields['status'].initial = self.request.session['manager__application_list__status'] = self.request.GET.get('status', self.request.session.get('manager__application_list__status', ''))
         self.fields['search'].initial = self.request.session['manager__participant_list__search'] = self.request.GET.get('search', self.request.session.get('manager__participant_list__search', ''))

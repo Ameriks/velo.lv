@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Sum, Count
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
@@ -198,7 +199,7 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             team_count += counter
             distances_teams_w_counter.append((distance, counter))
 
-
+        team_content_type = ContentType.objects.get(app_label="team", model="team")
         incomes = []
         if self.competition.level == 2:
             parent_total = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
@@ -207,9 +208,14 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
                 Sum('donation')).get('donation__sum')
             parent_insurance = Application.objects.filter(payment_status=Application.PAY_STATUS.payed, competition=self.competition.parent).aggregate(
                         Sum('total_insurance_fee')).get('total_insurance_fee__sum')
-            incomes.append((self.competition.parent, parent_total-parent_donations-parent_insurance))
+
+            team_payments = Payment.objects.filter(competition=self.competition.parent, content_type=team_content_type, status=Payment.STATUSES.ok).aggregate(
+                        Sum('total')).get('total__sum')
+
+            incomes.append((self.competition.parent, parent_total-parent_donations-parent_insurance-team_payments))
             incomes.append(('Ziedojumi', parent_donations))
             incomes.append(('Apdrošināšana', parent_insurance))
+            incomes.append(('Komandas maksājumi', team_payments))
 
 
         distance_donations = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition).aggregate(
@@ -217,9 +223,13 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         distance_insurance = Application.objects.filter(payment_status=Application.PAY_STATUS.payed, competition=self.competition).aggregate(
                     Sum('total_insurance_fee')).get('total_insurance_fee__sum')
         distance_total = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition).aggregate(Sum('total')).get('total__sum')
+
+        team_payments = Payment.objects.filter(competition=self.competition, content_type=team_content_type, status=Payment.STATUSES.ok).aggregate(Sum('total')).get('total__sum')
+
         incomes.append((self.competition, distance_total-distance_donations-distance_insurance),)
         incomes.append(('Ziedojumi', distance_donations))
         incomes.append(('Apdrošināšana', distance_insurance))
+        incomes.append(('Komandas maksājumi', team_payments))
 
         context.update({'participant_count': Participant.objects.filter(competition_id__in=self.competition.get_ids(),
                                                                         is_participating=True).count()})

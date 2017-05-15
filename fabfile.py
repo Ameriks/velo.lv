@@ -3,8 +3,11 @@ import datetime
 from fabric.api import run, env, hosts, sudo, cd, task, local, get
 from fabric.tasks import Task
 
+from fabfile_secret import sudo_password
+
 env.hosts = ['velo', ]
 env.use_ssh_config = True
+env.sudo_password = sudo_password
 
 @task
 def dump_db():
@@ -90,7 +93,7 @@ class Deploy(Task):
 
     def git_pull(self):
 
-        git_output = sudo("su - django -c 'cd %s && git pull'" % self.project_dir)
+        git_output = sudo("su - root -c 'cd %s && git pull'" % self.project_dir)
 
         if "static/" in git_output:
             self.need_static_regenerate = True
@@ -111,7 +114,7 @@ class Deploy(Task):
 
     def restart_docker_compose(self):
         with cd(self.project_dir):
-            run("docker-compose -p velo up -d -t 30 django")
+            run("docker-compose -p velo up -d -t 30 projectvelo")
 
     def run(self):
         self.get_project_id()
