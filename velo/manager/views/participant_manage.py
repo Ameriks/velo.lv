@@ -80,6 +80,12 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
                 participant.is_participating = True
                 participant.save()
             self.object.save()
+        elif action == 'mark_participants_as_active':
+            self.object.payment_status = Application.PAY_STATUS.payed
+            for participant in self.object.participant_set.all():
+                participant.is_participating = True
+                participant.save()
+            self.object.save()
 
     @method_decorator(xframe_options_exempt)
     def post(self, request, *args, **kwargs):
