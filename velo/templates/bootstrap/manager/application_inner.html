@@ -83,7 +83,7 @@
     {% endif %}
     {% if bill and not payed %}
         {% if bill.status < bill.STATUSES.ok or  object.payment_status < object.PAY_STATUS.payed %}
-        <button class="btn btn-primary" type="submit" name="action" value="mark_as_payed">Atzīmēt, ka pieteikums apmaksāts</button>
+        <button class="btn btn-primary" type="submit" name="action" value="mark_as_payed">Atzīmēt, ka rēķins apmaksāts</button>
         {% else %}
             {% if object.payment_status != object.PAY_STATUS.never %}
                 <p>Atzīmēts, kā samakstāts.</p>
@@ -93,7 +93,7 @@
         {% endif %}
 
         {% if object.payment_status != object.PAY_STATUS.never %}
-            <button class="btn btn-warning" type="submit" name="action" value="mark_as_never_payed">Atzīmēt, ka pieteikums netiks apmaksāts</button>
+            <button class="btn btn-warning" type="submit" name="action" value="mark_as_never_payed">Atzīmēt, ka rēķins netiks apmaksāts</button>
         {% endif %}
     {% elif not object.payment_status == 20 %}
         <button class="btn btn-default" type="submit" name="action" value="mark_participants_as_active">Reģistrēt dalībniekus</button>
