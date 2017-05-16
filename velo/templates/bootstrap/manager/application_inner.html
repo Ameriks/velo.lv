@@ -41,6 +41,7 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <td>Tips</td>
                     <td>Maksājuma ID</td>
                     <td>Maksājuma kanāls</td>
                     <td>Kopējā summa</td>
@@ -51,23 +52,24 @@
             </thead>
             <tbody>
             {% for obj in payments %}
+                <tr class="{% if obj.status != 30 %}danger{% endif %}">
+                    <td>Maks.</td>
+                    <td>{{ obj.id }}</td>
+                    <td>{{ obj.channel }}</td>
+                    <td>{{ obj.total }} €</td>
+                    <td>{{ obj.get_status_display }}</td>
+                    <td>{{ obj.created }}</td>
+                    <td>{{ obj.modified }}</td>
+                </tr>
                 {% for transaction in obj.transaction_set.all %}
                     <tr class="{% if transaction.status != 30 %}danger{% endif %}">
-                        <td>{{ obj.id }}</td>
+                        <td>-></td>
+                        <td>Trans. {{ transaction.id }}</td>
                         <td>{{ transaction.channel }}</td>
-                        <td>{{ obj.total }} €</td>
-                        <td>{{ obj.get_status_display }}</td>
-                        <td>{{ obj.created }}</td>
-                        <td>{{ obj.modified }}</td>
-                    </tr>
-                {% empty %}
-                    <tr class="{% if obj.status != 30 %}danger{% endif %}">
-                        <td>{{ obj.id }}</td>
-                        <td>{{ obj.channel }}</td>
-                        <td>{{ obj.total }} €</td>
-                        <td>{{ obj.get_status_display }}</td>
-                        <td>{{ obj.created }}</td>
-                        <td>{{ obj.modified }}</td>
+                        <td>{{ transaction.amount }} €</td>
+                        <td>{{ transaction.get_status_display }}</td>
+                        <td>{{ transaction.created }}</td>
+                        <td>{{ transaction.modified }}</td>
                     </tr>
                 {% endfor %}
             {% endfor %}
