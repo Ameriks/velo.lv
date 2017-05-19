@@ -200,6 +200,8 @@ class Seb2017(SEBCompetitionBase):
         return ()
 
     def get_group_for_number_search(self, distance_id, gender, birthday, group=None):
+        if distance_id == self.VESELIBAS_DISTANCE2_ID:
+            return ''
         if group is None:
             group = super().get_group_for_number_search(distance_id, gender, birthday)
         return group
