@@ -230,7 +230,8 @@ class Result(models.Model):
         if self.time:
             admin = DistanceAdmin.objects.get(competition=self.competition, distance=self.participant.distance)
             seconds = datetime.timedelta(hours=self.time.hour, minutes=self.time.minute, seconds=self.time.second).seconds
-            self.avg_speed = round((float(admin.distance_actual) / float(seconds))*3.6, 1)
+            if admin.distance_actual:
+                self.avg_speed = round((float(admin.distance_actual) / float(seconds))*3.6, 1)
             if avg_speed != self.avg_speed:
                 return True
         return False
