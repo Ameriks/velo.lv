@@ -7,7 +7,7 @@ import datetime
 
 from velo.core.models import Competition
 from velo.registration.models import Participant
-from velo.team.models import MemberApplication
+from velo.team.models import MemberApplication, Team
 
 
 @task
@@ -89,3 +89,18 @@ def master_match_team_members_to_participants(participant_id=None):
         match_team_members_to_participants(competition_id=competition.id, participant_id=participant_id)
         if not participant_id:
             check_participant_team_is_filled(competition_id=competition.id)
+
+
+def copy_registered_teams(competition_id):
+    competition = Competition.objects.get(id=competition_id)
+    prev_competition = competition.get_previous_sibling()
+    if competition.level != 2 or not prev_competition:
+        raise Exception('Nothing to copy')
+    teams = Team.objects.filter(distance__competition_id=competition.parent_id).exclude(status=-1)
+    for team in teams:
+        if not team.member_set.filter(memberapplication__competition_id=competition.id) and team.member_set.filter(memberapplication__competition_id=prev_competition.id):
+            ma = MemberApplication.objects.filter(member__team=team, competition=prev_competition)
+            for m in ma:
+                MemberApplication.objects.create(member=m.member, competition=competition, kind=m.kind, )
+
+    match_team_members_to_participants.delay(competition.id)

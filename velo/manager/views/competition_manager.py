@@ -19,7 +19,7 @@ from velo.registration.models import Application
 from velo.registration.utils import import_lrf_licences
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
 from velo.manager.tasks import *
-from velo.team.tasks import match_team_members_to_participants
+from velo.team.tasks import match_team_members_to_participants, copy_registered_teams
 from velo.results.tasks import update_helper_result_table
 
 
@@ -179,6 +179,9 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
                 messages.info(request, 'Nosūtīts e-pasts')
             else:
                 messages.info(request, 'Nav tiesību.')
+        elif request.POST.get('action') == 'copy_registered_teams':
+            copy_registered_teams(self.competition.id)
+            messages.info(request, 'Komandas reģistrētas')
 
         return super(ManageCompetitionDetail, self).get(request, *args, **kwargs)
 
