@@ -486,7 +486,7 @@ class Seb2017(SEBCompetitionBase):
 
                     number = Number.objects.get(distance_id=self.BERNU_DISTANCE_ID, number=nr)
                     if not number.participant_slug:
-                        number.participant_slug = slugify("%s-%s-%s" % (row[1], row[2], row[3]))
+                        number.participant_slug = slugify("%s-%s-%s" % (row[1], row[2], row[3]), only_ascii=True)
                         number.save()
 
                     chip = ChipScan(competition=self.competition, nr=number, time=datetime.time(*map(int, time.split(':'))))
