@@ -155,6 +155,113 @@ class PDFReports(object):
                 self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
 
+
+    def results_progressive(self):
+        prev_competition = self.competition.get_previous_sibling()
+        col_width = (
+            1 * cm, 1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 2 * cm, 2 * cm, 2 * cm, )
+        distances = self.competition.get_distances().filter(have_results=True).exclude(
+            id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
+        for distance in distances:
+            self.elements.append(self.header(str("Augstakais leciens")))
+            self.elements.append(Spacer(10, 10))
+            data = [[Paragraph("", styles["Heading2"]), '', '', str(distance), '', ''], ]
+
+            items = SebStandings.objects.raw("""
+            SELECT * from
+            (
+            SELECT (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(now)s) AS "now", 
+            (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(prev)s) AS "prev", 
+            ((Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(prev)s)- (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(now)s)) as "diff",
+            *
+            FROM "results_sebstandings" 
+            WHERE ("results_sebstandings"."competition_id" = %(top)s AND "results_sebstandings"."distance_id" = %(distance)s)
+            ) as x
+            where diff is not null
+            order by diff desc
+
+            """ % {"now": self.competition.id, "prev": prev_competition.id, "top": self.primary_competition.id, "distance": distance.id})
+
+            items = items
+            if items:
+                data_line = ['', 'Kopv.', '#', 'Vārds', 'Uzvārds', 'Gads', 'Grupa']
+                data_line.append(str(prev_competition))
+                data_line.append(str(self.competition))
+                data_line.append('Leciens')
+                data.append(data_line)
+                for index, obj in enumerate(items, start=1):
+                    data_line = [str(index),
+                                 str(obj.distance_place),
+                                 str(obj.participant.primary_number),
+                                 Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                                 Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                                 Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                                 Paragraph(str(obj.participant.group), styles["SmallNormal"]),
+                                 Paragraph(str(obj.prev), styles["SmallNormal"]),
+                                 Paragraph(str(obj.now), styles["SmallNormal"]),
+                                 Paragraph(str(obj.diff), styles["SmallNormal"]),
+                                 ]
+                    data.append(data_line)
+                self.elements.append(Table(data, style=group_table_style, colWidths=col_width))
+            else:
+                self.elements.append(Table(data, style=group_table_style))
+                self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
+            self.elements.append(PageBreak())
+
+
+    def results_most_active(self):
+        prev_competition = self.competition.get_previous_sibling()
+        col_width = (
+            1 * cm, 1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, )
+        distances = self.competition.get_distances().filter(have_results=True).exclude(
+            id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
+        for distance in distances:
+            self.elements.append(self.header(str("Augstākie rezultāti")))
+            self.elements.append(Spacer(10, 10))
+            data = [[Paragraph("", styles["Heading2"]), '', '', str(distance), '', ''], ]
+
+            items = SebStandings.objects.raw("""
+            SELECT * from
+            (
+            SELECT (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(now)s) AS "now", 
+            (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(prev)s) AS "prev", 
+            ((Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(prev)s)+ (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(now)s)) as "diff",
+            *
+            FROM "results_sebstandings" 
+            WHERE ("results_sebstandings"."competition_id" = %(top)s AND "results_sebstandings"."distance_id" = %(distance)s)
+            ) as x
+            where diff is not null
+            order by diff
+
+            """ % {"now": self.competition.id, "prev": prev_competition.id, "top": self.primary_competition.id, "distance": distance.id})
+
+            items = items
+            if items:
+                data_line = ['', 'Kopv.', '#', 'Vārds', 'Uzvārds', 'Gads', 'Grupa']
+                data_line.append(str(prev_competition))
+                data_line.append(str(self.competition))
+                data_line.append('Vietu summa')
+                data.append(data_line)
+                for index, obj in enumerate(items, start=1):
+                    data_line = [str(index),
+                                 str(obj.distance_place),
+                                 str(obj.participant.primary_number),
+                                 Paragraph(obj.participant.first_name, styles["SmallNormal"]),
+                                 Paragraph(obj.participant.last_name, styles["SmallNormal"]),
+                                 Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
+                                 Paragraph(str(obj.participant.group), styles["SmallNormal"]),
+                                 Paragraph(str(obj.prev), styles["SmallNormal"]),
+                                 Paragraph(str(obj.now), styles["SmallNormal"]),
+                                 Paragraph(str(obj.diff), styles["SmallNormal"]),
+                                 ]
+                    data.append(data_line)
+                self.elements.append(Table(data, style=group_table_style, colWidths=col_width))
+            else:
+                self.elements.append(Table(data, style=group_table_style))
+                self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
+            self.elements.append(PageBreak())
+
+
     def results_standings_gender(self, top=10000):
         col_width = (
             1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm,
@@ -279,6 +386,7 @@ class PDFReports(object):
                     self.elements.append(Table(header, style=group_table_style))
                     self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
+
 
     def results_gender(self, top=10):
         col_width = (

@@ -72,6 +72,10 @@ def generate_pdfreport(competition_id, action, user_id):
         pdf_class.results_team()
     elif action == 'results_team_standings':
         pdf_class.results_team_standings()
+    elif action == 'results_progressive':
+        pdf_class.results_progressive()
+    elif action == 'results_most_active':
+        pdf_class.results_most_active()
 
     elif action == 'RM_results_distance':
         pdf_class.RM_results_distance()
