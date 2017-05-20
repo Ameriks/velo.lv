@@ -101,6 +101,7 @@ def copy_registered_teams(competition_id):
         if not team.member_set.filter(memberapplication__competition_id=competition.id) and team.member_set.filter(memberapplication__competition_id=prev_competition.id):
             ma = MemberApplication.objects.filter(member__team=team, competition=prev_competition)
             for m in ma:
-                MemberApplication.objects.create(member=m.member, competition=competition, kind=m.kind, )
+                if m.member.status != m.member.STATUS_DELETED:
+                    MemberApplication.objects.create(member=m.member, competition=competition, kind=m.kind, )
 
     match_team_members_to_participants.delay(competition.id)
