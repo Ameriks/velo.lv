@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.db.models import signals
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -14,6 +14,7 @@ import uuid
 from slugify import slugify
 
 from velo.core.models import Log
+from velo.core.utils import restart_celerybeat
 from velo.results.helper import time_to_seconds
 from velo.velo.mixins.models import TimestampMixin
 from velo.velo.utils import load_class
@@ -132,10 +133,11 @@ class UrlSync(PeriodicTask):
         self.crontab, created = CrontabSchedule.objects.get_or_create(minute='*', hour='*', day_of_week="*", day_of_month="*", month_of_year="*")
         super(UrlSync, self).save(*args, **kwargs)
         self.args = "[%i]" % self.id
+        transaction.on_commit(lambda: restart_celerybeat())
         return super(UrlSync, self).save(*args, **kwargs)
 
-signals.pre_delete.connect(PeriodicTasks.changed, sender=UrlSync)
-signals.pre_save.connect(PeriodicTasks.changed, sender=UrlSync)
+# signals.pre_delete.connect(PeriodicTasks.changed, sender=UrlSync)
+# signals.pre_save.connect(PeriodicTasks.changed, sender=UrlSync)
 
 
 class ChipScan(models.Model):

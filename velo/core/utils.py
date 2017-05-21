@@ -1,6 +1,7 @@
 import logging
 
 from velo.core.models import Log
+from subprocess import call
 
 logger = logging.getLogger('velo.core')
 
@@ -25,3 +26,7 @@ def log_message(action, message='', params='{}', user=None, object=None):
         return log
     except:
         logger.exception("Exception writing logs")
+
+
+def restart_celerybeat():
+    call(["s6-svc", "-h", "/var/run/s6/services/celerybeat"])
