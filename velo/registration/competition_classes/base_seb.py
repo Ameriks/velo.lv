@@ -360,7 +360,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
             distances.append(self.VESELIBAS_DISTANCE2_ID)
 
         recalculate_places = False
-        results = Result.objects.filter(competition=self.competition, participant__distance_id__in=distances)
+        results = Result.objects.filter(competition=self.competition, participant__distance_id__in=distances).exclude(time=None)
         for result in results:
             print(result.id)
             if result.set_all():
