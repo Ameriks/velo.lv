@@ -424,3 +424,5 @@ MC_USERID = env('MC_USERID', default=None)
 MC_PASSWORD = env('MC_PASSWORD', default=None)
 MC_APIKEY = env('MC_APIKEY', default=None)
 TESTING = len(sys.argv) > 1 and sys.argv[1] == False
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
