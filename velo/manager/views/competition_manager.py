@@ -205,6 +205,7 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         team_content_type = ContentType.objects.get(app_label="team", model="team")
         incomes = []
         if self.competition.level == 2:
+
             parent_total = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
                         Sum('total')).get('total__sum')
             parent_donations = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
@@ -214,8 +215,11 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
 
             team_payments = Payment.objects.filter(competition=self.competition.parent, content_type=team_content_type, status=Payment.STATUSES.ok).aggregate(
                         Sum('total')).get('total__sum')
+            try:
+                incomes.append((self.competition.parent, parent_total-parent_donations-parent_insurance-team_payments))
+            except:
+                incomes.append((self.competition.parent, 0.0))
 
-            incomes.append((self.competition.parent, parent_total-parent_donations-parent_insurance-team_payments))
             incomes.append(('Ziedojumi', parent_donations))
             incomes.append(('Apdrošināšana', parent_insurance))
             incomes.append(('Komandas maksājumi', team_payments))
@@ -228,8 +232,10 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         distance_total = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition).aggregate(Sum('total')).get('total__sum')
 
         team_payments = Payment.objects.filter(competition=self.competition, content_type=team_content_type, status=Payment.STATUSES.ok).aggregate(Sum('total')).get('total__sum')
-
-        incomes.append((self.competition, distance_total-distance_donations-distance_insurance),)
+        try:
+            incomes.append((self.competition, distance_total-distance_donations-distance_insurance),)
+        except:
+            incomes.append((self.competition, 0.0))
         incomes.append(('Ziedojumi', distance_donations))
         incomes.append(('Apdrošināšana', distance_insurance))
         incomes.append(('Komandas maksājumi', team_payments))
