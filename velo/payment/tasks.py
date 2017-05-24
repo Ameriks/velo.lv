@@ -6,8 +6,9 @@ from celery.task import periodic_task
 from django.utils import timezone
 
 from velo.payment.bank import close_business_day
-from velo.payment.models import Transaction
+from velo.payment.models import Transaction, Payment
 from velo.core.utils import log_message
+from velo.payment.utils import approve_payment
 
 
 @celery.task
@@ -34,3 +35,10 @@ def timeout_old_transactions():
 @periodic_task(run_every=crontab(minute="35", hour="0"))
 def close_business_day_task():
     close_business_day()
+
+
+@periodic_task(run_every=crontab(minute="*/22"))
+def check_transactions():
+    ok_payments = Payment.objects.filter(status=Payment.STATUSES.pending, transaction__status=Transaction.STATUSES.ok)
+    for ok_payment in ok_payments:
+        approve_payment(ok_payment)
