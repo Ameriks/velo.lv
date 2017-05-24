@@ -39,6 +39,6 @@ def close_business_day_task():
 
 @periodic_task(run_every=crontab(minute="*/22"))
 def check_transactions():
-    ok_payments = Payment.objects.filter(status=Payment.STATUSES.pending, transaction__status=Transaction.STATUSES.ok)
+    ok_payments = list(Payment.objects.filter(status=Payment.STATUSES.pending, transaction__status=Transaction.STATUSES.ok))
     for ok_payment in ok_payments:
         approve_payment(ok_payment)
