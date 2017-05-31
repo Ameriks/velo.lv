@@ -88,7 +88,7 @@ class ToyotaFrameView(NeverCacheMixin, CsrfExemptMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ToyotaFrameView, self).get_context_data(**kwargs)
-        context.update({'iframe_src': 'http://dev.wrong.lv/toyota-promo/?lang=%s' % get_language()})
+        context.update({'iframe_src': 'https://dev.wrong.lv/toyota-promo/?lang=%s' % get_language()})
         return context
 
     def post(self, request, *args, **kwargs):
