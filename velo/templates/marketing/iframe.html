@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block content %}
+<script>
+  function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+  }
+</script>
+    <main>
+        <div class="w100 bottom-margin--30">
+            <div class="inner">
+                    <iframe src="{{ iframe_src }}"  frameborder="0" style="height:4537px;width:100%; background-color:#FFF;overflow:hidden"  height="4537" width="100%"  onload="resizeIframe(this)"></iframe>
+            </div>
+        </div>
+    </main>
+
+{% endblock content %}

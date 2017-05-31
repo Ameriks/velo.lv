@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View, TemplateView
 
@@ -15,6 +17,7 @@ from velo.marketing.forms import SendyCreateForm
 from velo.marketing.models import SMS
 from velo.marketing.tasks import copy_mc_template
 from velo.registration.models import Participant, Application
+from velo.velo.mixins.views import NeverCacheMixin
 
 
 class SMSReportView(CsrfExemptMixin, View):
@@ -78,3 +81,39 @@ class CreateSendyView(PermissionRequiredMixin, TemplateView):
         else:
             messages.error(request, "Kļūda.")
             return super(CreateSendyView, self).get(request, *args, **kwargs)
+
+
+class ToyotaFrameView(NeverCacheMixin, CsrfExemptMixin, TemplateView):
+    template_name = "marketing/iframe.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ToyotaFrameView, self).get_context_data(**kwargs)
+        context.update({'iframe_src': 'http://dev.wrong.lv/toyota-promo/?lang=%s' % get_language()})
+        return context
+
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+
+        email_text = """
+        Sveiki, nosūtīts pieprasījums no velo.lv lapas.
+        
+        Pārstāvis: %(dealer)s
+        Modelis: %(model)s
+        Vārds: %(name)s
+        E-pasts vai tel: %(contact)s
+        Ziņa: %(message)s
+        valoda: %(language)s
+        """ % data
+
+        emails = {
+            'Amserv Motors': ['info@amserv.lv', ],
+            'WESS Motors Rīgā': ['toyota@wess.lv', 'ruslans.baranovs@wess.lv'],
+            'WESS Motors Berģos': ['info@wess.lv', 'olegs.vandiss@wess.lv']
+        }
+
+        send_mail(subject='Ziņa no velo.lv',
+                  message=email_text,
+                  from_email=settings.SERVER_EMAIL,
+                  recipient_list=['ss@pd.lv', ],)
+
+        return HttpResponse("ok")

@@ -17,6 +17,7 @@ from sitetree import sitetreeapp
 
 from velo.core.sitetrees import sitetrees_build
 from velo.core.views import CalendarView, IndexView
+from velo.marketing.views import ToyotaFrameView
 from velo.payment.views import ApplicationPayView, ApplicationOKView, TransactionReturnView, InvoiceDownloadView
 from velo.registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
@@ -77,6 +78,8 @@ urlpatterns = i18n_patterns(
     url(_(r'^account/'), include('velo.core.urls', namespace='account')),
     url(_(r'^account/'), include('allauth.urls')),
     url(r'^jsi18n/$', cached_javascript_catalog, js_info_dict),
+
+    url(r'^toyota/$', ToyotaFrameView.as_view(), name='marketing_toyota'),
 )
 
 
