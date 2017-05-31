@@ -83,7 +83,7 @@ class CreateSendyView(PermissionRequiredMixin, TemplateView):
             return super(CreateSendyView, self).get(request, *args, **kwargs)
 
 
-class ToyotaFrameView(NeverCacheMixin, CsrfExemptMixin, TemplateView):
+class ToyotaFrameView(CsrfExemptMixin, NeverCacheMixin, TemplateView):
     template_name = "marketing/iframe.html"
 
     def get_context_data(self, **kwargs):
