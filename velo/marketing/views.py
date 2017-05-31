@@ -94,15 +94,17 @@ class ToyotaFrameView(CsrfExemptMixin, NeverCacheMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         data = request.POST
 
-        email_text = """
-        Sveiki, nosūtīts pieprasījums no velo.lv lapas.
-        
-        Pārstāvis: %(dealer)s
-        Modelis: %(model)s
-        Vārds: %(name)s
-        E-pasts vai tel: %(contact)s
-        Ziņa: %(message)s
-        valoda: %(language)s
+        email_text = """Sveiki, nosūtīts pieprasījums no velo.lv lapas.
+
+Pārstāvis: %(dealer)s
+Modelis: %(model)s
+Vārds: %(name)s
+E-pasts vai tel: %(contact)s
+Ziņa: %(message)s
+valoda: %(language)s
+
+Ar cieņu,
+velo.lv
         """ % data
 
         emails = {
