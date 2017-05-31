@@ -110,14 +110,14 @@ velo.lv
         """ % data
 
         emails = {
-            'Amserv Motors': ['info@amserv.lv', ],
-            'WESS Motors Rīgā': ['toyota@wess.lv', 'ruslans.baranovs@wess.lv'],
-            'WESS Motors Berģos': ['info@wess.lv', 'olegs.vandiss@wess.lv']
+            'Amserv Motors': ['info@amserv.lv', 'ss@pd.lv'],
+            'WESS Motors Rīgā': ['toyota@wess.lv', 'ruslans.baranovs@wess.lv', 'ss@pd.lv'],
+            'WESS Motors Berģos': ['info@wess.lv', 'olegs.vandiss@wess.lv', 'ss@pd.lv']
         }
 
         send_mail(subject='Ziņa no velo.lv',
                   message=email_text,
                   from_email=settings.SERVER_EMAIL,
-                  recipient_list=['ss@pd.lv', ],)
+                  recipient_list=emails.get(data.get('dealer', None), ['ss@pd.lv']),)
 
         return HttpResponse("ok")
