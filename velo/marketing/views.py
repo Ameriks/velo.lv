@@ -13,6 +13,7 @@ import hashlib
 import hmac
 
 from velo.core.models import Log
+from velo.core.utils import log_message
 from velo.marketing.forms import SendyCreateForm
 from velo.marketing.models import SMS
 from velo.marketing.tasks import copy_mc_template
@@ -93,6 +94,7 @@ class ToyotaFrameView(CsrfExemptMixin, NeverCacheMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         data = request.POST
+        log_message('TOYOTA Request', params=data)
 
         email_text = """Sveiki, nosūtīts pieprasījums no velo.lv lapas.
 
