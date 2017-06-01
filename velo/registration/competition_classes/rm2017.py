@@ -115,19 +115,18 @@ class RM2017(RM2016):
         fill_page_with_image("velo/media/competition/vestule/RVm_2017_vestule_ar_tekstu.jpg", c)
 
         c.setFont(_baseFontNameB, 18)
-        c.drawString(5*cm, 19.7*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
-        c.drawString(5*cm, 17.7*cm, str(participant.distance))
-
+        c.drawString(6*cm, 20.6*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
+        c.drawString(5*cm, 18.6*cm, str(participant.distance))
 
         if participant.primary_number:
             c.setFont(_baseFontNameB, 35)
-            c.drawString(15*cm, 18.6*cm, str(participant.primary_number))
+            c.drawString(16*cm, 19.6*cm, str(participant.primary_number))
         elif participant.distance_id == self.GIMENU_DISTANCE_ID:
             c.setFont(_baseFontNameB, 25)
-            c.drawString(14.5*cm, 18.6*cm, "Ģimeņu br.")
+            c.drawString(15*cm, 19.6*cm, "Ģimeņu br.")
         else:
             c.setFont(_baseFontNameB, 25)
-            c.drawString(15*cm, 18.6*cm, "-")
+            c.drawString(16.5*cm, 19.6*cm, "-")
 
         c.showPage()
         c.save()
