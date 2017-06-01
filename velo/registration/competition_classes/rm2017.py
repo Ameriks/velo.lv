@@ -7,7 +7,7 @@ from reportlab.pdfgen import canvas
 
 from velo.core.pdf import fill_page_with_image, _baseFontNameB
 from velo.registration.competition_classes import RM2016
-from velo.registration.models import UCICategory, Participant
+from velo.registration.models import UCICategory, Participant, PreNumberAssign
 
 
 class RM2017(RM2016):
@@ -133,3 +133,16 @@ class RM2017(RM2016):
         c.save()
         output.seek(0)
         return output
+
+    def assign_numbers(self, reassign=False, assign_special=False):
+        # TODO: Need to find all participants that have started in sport distance and now are in other distances.
+        prev_participants = [p.slug for p in Participant.objects.filter(is_participating=True, competition_id=61, distance_id=53)]
+        now_participants = Participant.objects.filter(distance_id=self.TAUTAS_DISTANCE_ID, is_participating=True, slug__in=prev_participants)
+        for now in now_participants:
+            try:
+                PreNumberAssign.objects.get(competition=self.competition, participant_slug=now.slug)
+            except:
+                PreNumberAssign.objects.create(competition=self.competition, distance=now.distance, participant_slug=now.slug, segment=1)
+
+        super().assign_numbers(reassign, assign_special)
+
