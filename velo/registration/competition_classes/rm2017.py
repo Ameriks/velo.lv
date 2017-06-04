@@ -26,7 +26,7 @@ class RM2017(RM2016):
         Returns defined groups for each competition type.
         """
         return {
-            self.SPORTA_DISTANCE_ID: ('M-18', 'M', 'Masters', 'M 19-34 CFA', ),
+            self.SPORTA_DISTANCE_ID: ('M-18', 'M', 'Masters', 'M 19-34 CFA', 'W-16', 'W'),
             self.TAUTAS_DISTANCE_ID: ('T M-16', 'T W-16', 'T M', 'T W', 'T M-35', 'T M-45', 'T M-55', 'T M-65'),
             self.TAUTAS1_DISTANCE_ID: ('T1 M', 'T1 W',)
         }
@@ -56,7 +56,10 @@ class RM2017(RM2016):
                 else:
                     return 'M'
             else:
-                return 'W'
+                if self._update_year(1999) >= year >= self._update_year(1996):
+                    return 'W-16'
+                else:
+                    return 'W'
 
         elif distance_id == self.TAUTAS_DISTANCE_ID:
             if gender == 'M':
