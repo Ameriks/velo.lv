@@ -8,6 +8,7 @@ from reportlab.pdfgen import canvas
 from velo.core.pdf import fill_page_with_image, _baseFontNameB
 from velo.registration.competition_classes import RM2016
 from velo.registration.models import UCICategory, Participant, PreNumberAssign
+from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable, ResultRMTautaDistanceTable
 
 
 class RM2017(RM2016):
@@ -145,3 +146,16 @@ class RM2017(RM2016):
 
         super().assign_numbers(reassign, assign_special)
 
+    def result_select_extra(self, distance_id):
+        return {
+            'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+        }
+
+    def get_result_table_class(self, distance, group=None):
+        if group:
+            return ResultRMGroupTable
+        else:
+            if distance.id in (self.SPORTA_DISTANCE_ID, self.TAUTAS1_DISTANCE_ID):
+                return ResultRMDistanceTable
+            else:
+                return ResultRMTautaDistanceTable
