@@ -30,3 +30,12 @@ def log_message(action, message='', params='{}', user=None, object=None):
 
 def restart_celerybeat():
     call(["s6-svc", "-h", "/var/run/s6/services/celerybeat"])
+
+
+def restart_gunicorn():
+    call(["s6-svc", "-h", "/var/run/s6/services/gunicorn"])
+
+
+def restart_celery():
+    call(["s6-svc", "-h", "/var/run/s6/services/celeryworker"])
+

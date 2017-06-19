@@ -8,10 +8,12 @@ from io import StringIO
 from urllib.parse import urlencode
 import uuid
 
+from django.core.cache import cache
 from django.db.models import Count
 
 from velo.core.models import Log, Competition
 from velo.core.tasks import LogErrorsTask
+from velo.core.utils import restart_gunicorn
 from velo.marketing.models import SMS
 from velo.marketing.utils import send_smses
 
@@ -237,3 +239,17 @@ def merge_standings(competition_id):
         if competition.processing_class:
             competition_class.recalculate_standing_points(standing)
         standing.save()
+
+
+@periodic_task(run_every=crontab(minute="2", hour="5"))
+def reset_sitetree_if_competition():
+    """
+    If competition is today, we need to reset sitetree, because sitetree doesn't have result tab available yet.
+    :return:
+    """
+    today = timezone.now()
+    competitions = Competition.objects.filter(competition_date=today.date())
+    if competitions.exists():
+        cache.delete('sitetrees')
+        cache.delete('tree_aliases')
+        restart_gunicorn()
