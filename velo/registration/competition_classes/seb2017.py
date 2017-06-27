@@ -495,28 +495,83 @@ class Seb2017(SEBCompetitionBase):
             total_participants = result.competition.result_set.filter(participant__distance=result.participant.distance).count()
             total_group_participants = result.competition.result_set.filter(participant__distance=result.participant.distance, participant__group=result.participant.group).count()
 
-        c = canvas.Canvas(output, pagesize=(29.7*cm, 33.55*cm))
+        if self.competition_index == 1:
+            c = canvas.Canvas(output, pagesize=(29.7*cm, 33.55*cm))
 
-        fill_page_with_image(path, c)
+            fill_page_with_image(path, c)
 
-        c.setFont(_baseFontNameB, 32)
-        c.setFillColor(HexColor(0x43455a))
-        c.drawString(c._pagesize[0] - 3.3 * cm, 23.7 * cm, str(result.participant.primary_number))
+            c.setFont(_baseFontNameB, 32)
+            c.setFillColor(HexColor(0x43455a))
+            c.drawString(c._pagesize[0] - 3.3 * cm, 23.7 * cm, str(result.participant.primary_number))
 
-        c.setFont(_baseFontNameB, 26)
-        c.setFillColor(HexColor(0x43455a))
-        c.drawCentredString(c._pagesize[0] - 6.5 * cm, 25.7*cm, result.participant.full_name)
+            c.setFont(_baseFontNameB, 26)
+            c.setFillColor(HexColor(0x43455a))
+            c.drawCentredString(c._pagesize[0] - 6.5 * cm, 25.7*cm, result.participant.full_name)
 
-        c.setFont(_baseFontName, 32)
-        c.drawCentredString(c._pagesize[0] - 7 * cm, 18.3 * cm, str(result.time.replace(microsecond=0)))
+            c.setFont(_baseFontName, 32)
+            c.drawCentredString(c._pagesize[0] - 7 * cm, 18.3 * cm, str(result.time.replace(microsecond=0)))
 
-        c.drawCentredString(c._pagesize[0] - 9.3 * cm, 14.5 * cm, str(result.result_distance))
-        c.drawCentredString(c._pagesize[0] - 4.7 * cm, 14.5 * cm, str(total_participants))
+            c.drawCentredString(c._pagesize[0] - 9.3 * cm, 14.5 * cm, str(result.result_distance))
+            c.drawCentredString(c._pagesize[0] - 4.7 * cm, 14.5 * cm, str(total_participants))
 
-        c.drawCentredString(c._pagesize[0] - 7 * cm, 7.3 * cm, "%s km/h" % result.avg_speed)
+            c.drawCentredString(c._pagesize[0] - 7 * cm, 7.3 * cm, "%s km/h" % result.avg_speed)
 
-        c.drawCentredString(c._pagesize[0] - 9.3 * cm, 10.8*cm, str(result.result_group))
-        c.drawCentredString(c._pagesize[0] - 4.7 * cm, 10.8*cm, str(total_group_participants))
+            c.drawCentredString(c._pagesize[0] - 9.3 * cm, 10.8*cm, str(result.result_group))
+            c.drawCentredString(c._pagesize[0] - 4.7 * cm, 10.8*cm, str(total_group_participants))
+
+        elif self.competition_index == 2:
+
+            c = canvas.Canvas(output, pagesize=(21*1.5*cm, 29.7*1.5*cm))
+
+            move_cm_w = 9*cm
+
+            fill_page_with_image(path, c)
+
+            c.setFont(_baseFontNameB, 32)
+            c.setFillColor(HexColor(0x43455a))
+            c.drawString(c._pagesize[0] - 3.3 * cm - move_cm_w, 23.7 * cm, str(result.participant.primary_number))
+
+            c.setFont(_baseFontNameB, 26)
+            c.setFillColor(HexColor(0x43455a))
+            c.drawCentredString(c._pagesize[0] - 6.5 * cm - move_cm_w, 26 * cm, result.participant.full_name)
+
+            c.setFont(_baseFontName, 32)
+            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 18.3 * cm, str(result.time.replace(microsecond=0)))
+
+            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 13.5 * cm, str(result.result_distance))
+            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 13.5 * cm, str(total_participants))
+
+            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 4 * cm, "%s km/h" % result.avg_speed)
+
+            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 8.8 * cm, str(result.result_group))
+            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 8.8 * cm, str(total_group_participants))
+
+        elif self.competition_index == 3:
+            c = canvas.Canvas(output, pagesize=(29.7 * cm, 42 * cm))
+
+            fill_page_with_image(path, c)
+
+            move_cm_w = 14*cm
+            move_cm_h = 3*cm
+
+            c.setFont(_baseFontNameB, 32)
+            c.setFillColor(HexColor(0x43455a))
+            c.drawString(c._pagesize[0] - 3.3 * cm - move_cm_w - 2*cm, 23.7 * cm - move_cm_h - 0.2*cm, str(result.participant.primary_number))
+
+            c.setFont(_baseFontNameB, 26)
+            c.setFillColor(HexColor(0x43455a))
+            c.drawCentredString(c._pagesize[0] - 6.5 * cm - move_cm_w, 25.7 * cm - move_cm_h, result.participant.full_name)
+
+            c.setFont(_baseFontName, 32)
+            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 18.3 * cm - move_cm_h, str(result.time.replace(microsecond=0)))
+
+            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 14.5 * cm - move_cm_h - 1*cm, str(result.result_distance))
+            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 14.5 * cm - move_cm_h - 1*cm, str(total_participants))
+
+            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 7.3 * cm - move_cm_h - 2*cm, "%s km/h" % result.avg_speed)
+
+            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 10.8 * cm - move_cm_h - 1.5*cm, str(result.result_group))
+            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 10.8 * cm - move_cm_h - 1.5*cm, str(total_group_participants))
 
         # c.setFont(_baseFontName, 18)
         # c.drawCentredString(c._pagesize[0] - 7 * cm, 10.1 * cm, str(result.participant.group))
