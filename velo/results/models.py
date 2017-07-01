@@ -301,6 +301,7 @@ class SebStandings(models.Model):
     group_points5 = models.IntegerField('5.', blank=True, null=True)
     group_points6 = models.IntegerField('6.', blank=True, null=True)
     group_points7 = models.IntegerField('7.', blank=True, null=True)
+    group_points8 = models.IntegerField('8.', blank=True, null=True)
 
     group_total = models.IntegerField(blank=True, null=True)
     group_place = models.IntegerField(blank=True, null=True)
@@ -312,6 +313,16 @@ class SebStandings(models.Model):
     distance_points5 = models.IntegerField('5.', blank=True, null=True)
     distance_points6 = models.IntegerField('6.', blank=True, null=True)
     distance_points7 = models.IntegerField('7.', blank=True, null=True)
+    distance_points8 = models.IntegerField('8.', blank=True, null=True)
+
+    distance_place1 = models.IntegerField('1.', blank=True, null=True)
+    distance_place2 = models.IntegerField('2.', blank=True, null=True)
+    distance_place3 = models.IntegerField('3.', blank=True, null=True)
+    distance_place4 = models.IntegerField('4.', blank=True, null=True)
+    distance_place5 = models.IntegerField('5.', blank=True, null=True)
+    distance_place6 = models.IntegerField('6.', blank=True, null=True)
+    distance_place7 = models.IntegerField('7.', blank=True, null=True)
+    distance_place8 = models.IntegerField('8.', blank=True, null=True)
 
     distance_total = models.IntegerField(blank=True, null=True)
     distance_total_seconds = models.FloatField(blank=True, null=True)
@@ -324,7 +335,7 @@ class SebStandings(models.Model):
 
     @property
     def stages_participated(self):
-        stages = [1, 2, 3, 4, 5, 6, 7]
+        stages = [1, 2, 3, 4, 5, 6, 7, 8]
         stages_participated = 0
         for stage in stages:
             if getattr(self, "distance_points%i" % stage) > 0:
@@ -332,7 +343,7 @@ class SebStandings(models.Model):
         return stages_participated
 
     def set_points(self):
-        stages = [1, 2, 3, 4, 5, 6, 7]
+        stages = [1, 2, 3, 4, 5, 6, 7, 8]
         mapping = {obj.id: index for index, obj in enumerate(self.competition.get_children(), start=1)}
 
         results = self.results
@@ -340,6 +351,7 @@ class SebStandings(models.Model):
         for result in results:
             setattr(self, "group_points%i" % mapping.get(result.competition_id), result.points_group)
             setattr(self, "distance_points%i" % mapping.get(result.competition_id), result.points_distance)
+            setattr(self, "distance_place%i" % mapping.get(result.competition_id), result.result_distance)
             try:
                 stages.remove(mapping.get(result.competition_id))
             except:
@@ -347,6 +359,7 @@ class SebStandings(models.Model):
         for stage in stages:
             setattr(self, "group_points%i" % stage, 0)
             setattr(self, "distance_points%i" % stage, 0)
+            setattr(self, "distance_place%i" % stage, None)
 
     def set_distance_total_seconds(self):
         self.distance_total_seconds = sum((time_to_seconds(obj.time) for obj in self.results))
@@ -367,6 +380,7 @@ class TeamResultStandings(models.Model):
     points5 = models.IntegerField('5.', blank=True, null=True, db_index=True)
     points6 = models.IntegerField('6.', blank=True, null=True, db_index=True)
     points7 = models.IntegerField('7.', blank=True, null=True, db_index=True)
+    points8 = models.IntegerField('8.', blank=True, null=True, db_index=True)
 
 
 class HelperResults(TimestampMixin, models.Model):

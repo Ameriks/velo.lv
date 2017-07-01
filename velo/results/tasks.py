@@ -18,10 +18,11 @@ from velo.marketing.models import SMS
 from velo.marketing.utils import send_smses
 
 from velo.registration.models import Number, Participant
-from velo.results.models import Result, UrlSync, ChipScan
+from velo.results.models import Result, UrlSync, ChipScan, HelperResults
 from velo.velo.utils import load_class
 import traceback
 from django.utils import timezone
+from django.db import connection
 
 
 @task(base=LogErrorsTask)
@@ -172,6 +173,14 @@ def fetch_results(_id):
 
 @task(base=LogErrorsTask)
 def update_helper_result_table(competition_id, update=False, participant_id=None):
+
+    # Delete duplicate HelperResults if any.
+    cursor = connection.cursor()
+    cursor.execute("Select participant_id, count(*) from results_helperresults where competition_id=%s group by participant_id having count(*)>1", [competition_id])
+    for participant_id, _ in cursor.fetchall():
+        HelperResults.objects.filter(competition_id=competition_id, participant_id=participant_id)[0].delete()
+    # END Delete duplicate
+
     competition = Competition.objects.get(id=competition_id)
 
     participants = Participant.objects.filter(competition_id__in=competition.get_ids(), is_participating=True).order_by('distance', 'registration_dt')

@@ -62,14 +62,20 @@ class PDFReports(object):
         self.elements = []
 
     def header(self, title):
-        image = Image.open(self.primary_competition.logo.path)
-        image_width, image_height = image.size
-        new_image_height = 100
-        new_image_width = (new_image_height * image_width) / image_height
-        data = [
-            [pdfImage(self.primary_competition.logo.path, width=new_image_width, height=new_image_height),
-             [Paragraph(str(self.title), styles["Heading1"]), Paragraph(title, styles["Heading2"])], ],
-        ]
+        try:
+            image = Image.open(self.primary_competition.logo.path)
+            image_width, image_height = image.size
+            new_image_height = 100
+            new_image_width = (new_image_height * image_width) / image_height
+            data = [
+                [pdfImage(self.primary_competition.logo.path, width=new_image_width, height=new_image_height),
+                 [Paragraph(str(self.title), styles["Heading1"]), Paragraph(title, styles["Heading2"])], ],
+            ]
+        except FileNotFoundError:
+            data = [
+                [Paragraph("", styles["Heading1"]),
+                 [Paragraph(str(self.title), styles["Heading1"]), Paragraph(title, styles["Heading2"])], ],
+            ]
         return Table(data, style=base_table_style)
 
     def result_table_group(self, items, point_attr='points_group'):
@@ -158,6 +164,9 @@ class PDFReports(object):
 
     def results_progressive(self):
         prev_competition = self.competition.get_previous_sibling()
+
+        index = self.processing_class.competition_index
+
         col_width = (
             1 * cm, 1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 2 * cm, 2 * cm, 2 * cm, )
         distances = self.competition.get_distances().filter(have_results=True).exclude(
@@ -167,38 +176,32 @@ class PDFReports(object):
             self.elements.append(Spacer(10, 10))
             data = [[Paragraph("", styles["Heading2"]), '', '', str(distance), '', ''], ]
 
-            items = SebStandings.objects.raw("""
-            SELECT * from
-            (
-            SELECT (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(now)s) AS "now", 
-            (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(prev)s) AS "prev", 
-            ((Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(prev)s)- (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(now)s)) as "diff",
-            *
-            FROM "results_sebstandings" 
-            WHERE ("results_sebstandings"."competition_id" = %(top)s AND "results_sebstandings"."distance_id" = %(distance)s)
-            ) as x
-            where diff is not null
-            order by diff desc
+            items = SebStandings.objects.filter(competition=self.primary_competition.id, distance=distance).extra(select={
+                "diff": "distance_place%s - distance_place%s"
+            }, select_params=[index, index-1]).order_by("diff")
 
-            """ % {"now": self.competition.id, "prev": prev_competition.id, "top": self.primary_competition.id, "distance": distance.id})
-
-            items = items
             if items:
                 data_line = ['', 'Kopv.', '#', 'Vārds', 'Uzvārds', 'Gads', 'Grupa']
                 data_line.append(str(prev_competition))
                 data_line.append(str(self.competition))
                 data_line.append('Leciens')
                 data.append(data_line)
-                for index, obj in enumerate(items, start=1):
-                    data_line = [str(index),
+                for i, obj in enumerate(items, start=1):
+
+                    # Records are sorted based on stage count participant has participated,
+                    # If loop has found that participant haven't participated, then we ignore and stop loop.
+                    if not obj.diff:
+                        break
+
+                    data_line = [str(i),
                                  str(obj.distance_place),
                                  str(obj.participant.primary_number),
                                  Paragraph(obj.participant.first_name, styles["SmallNormal"]),
                                  Paragraph(obj.participant.last_name, styles["SmallNormal"]),
                                  Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
                                  Paragraph(str(obj.participant.group), styles["SmallNormal"]),
-                                 Paragraph(str(obj.prev), styles["SmallNormal"]),
-                                 Paragraph(str(obj.now), styles["SmallNormal"]),
+                                 Paragraph(str(getattr(obj, "distance_place%i" % (index-1))), styles["SmallNormal"]),
+                                 Paragraph(str(getattr(obj, "distance_place%i" % index)), styles["SmallNormal"]),
                                  Paragraph(str(obj.diff), styles["SmallNormal"]),
                                  ]
                     data.append(data_line)
@@ -208,11 +211,8 @@ class PDFReports(object):
                 self.elements.append(Paragraph("Nav rezultātu", styles['Normal']))
             self.elements.append(PageBreak())
 
-
     def results_most_active(self):
-        prev_competition = self.competition.get_previous_sibling()
-        col_width = (
-            1 * cm, 1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm, )
+        col_width = [1 * cm, 1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 2 * cm, 1 * cm] + [1 * cm] * self.processing_class.competition_index
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -220,29 +220,28 @@ class PDFReports(object):
             self.elements.append(Spacer(10, 10))
             data = [[Paragraph("", styles["Heading2"]), '', '', str(distance), '', ''], ]
 
-            items = SebStandings.objects.raw("""
-            SELECT * from
-            (
-            SELECT (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(now)s) AS "now", 
-            (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(prev)s) AS "prev", 
-            ((Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(prev)s)+ (Select result_distance from results_result r1 where r1.participant_id=results_sebstandings.participant_id and r1.competition_id=%(now)s)) as "diff",
-            *
-            FROM "results_sebstandings" 
-            WHERE ("results_sebstandings"."competition_id" = %(top)s AND "results_sebstandings"."distance_id" = %(distance)s)
-            ) as x
-            where diff is not null
-            order by diff
+            competition_range = list(range(1, self.processing_class.competition_index+1))
 
-            """ % {"now": self.competition.id, "prev": prev_competition.id, "top": self.primary_competition.id, "distance": distance.id})
+            items = SebStandings.objects.filter(competition=self.primary_competition.id, distance=distance).extra(select={
+                "total_place": " + ".join(["case when distance_place%i is null then 0 else distance_place%i end" % (index, index) for index in competition_range]),
+                "total_stages": " + ".join(["case when distance_place%i is null then 0 else 1 end" % index for index in competition_range]),
+            }).order_by("-total_stages", "total_place")
 
-            items = items
+
             if items:
                 data_line = ['', 'Kopv.', '#', 'Vārds', 'Uzvārds', 'Gads', 'Grupa']
-                data_line.append(str(prev_competition))
-                data_line.append(str(self.competition))
+                for index in competition_range:
+                    data_line.append("%i." % index)
+
                 data_line.append('Vietu summa')
                 data.append(data_line)
                 for index, obj in enumerate(items, start=1):
+
+                    # Records are sorted based on stage count participant has participated,
+                    # If loop has found that participant haven't participated, then we ignore and stop loop.
+                    if obj.total_stages == 0:
+                        break
+
                     data_line = [str(index),
                                  str(obj.distance_place),
                                  str(obj.participant.primary_number),
@@ -250,10 +249,11 @@ class PDFReports(object):
                                  Paragraph(obj.participant.last_name, styles["SmallNormal"]),
                                  Paragraph(str(obj.participant.birthday.year), styles["SmallNormal"]),
                                  Paragraph(str(obj.participant.group), styles["SmallNormal"]),
-                                 Paragraph(str(obj.prev), styles["SmallNormal"]),
-                                 Paragraph(str(obj.now), styles["SmallNormal"]),
-                                 Paragraph(str(obj.diff), styles["SmallNormal"]),
                                  ]
+                    for index in competition_range:
+                        data_line.append("%s" % (getattr(obj, "distance_place%i" % index) or "-"))
+                    data_line.append("%s" % obj.total_place)
+
                     data.append(data_line)
                 self.elements.append(Table(data, style=group_table_style, colWidths=col_width))
             else:
