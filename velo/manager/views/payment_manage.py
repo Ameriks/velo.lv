@@ -122,6 +122,11 @@ class ManageInvoice(ManagerPermissionMixin, SetCompetitionContextMixin, DetailVi
             if approve_payment(payment_object):
                 payment_object.status = payment_object.STATUSES.ok
                 payment_object.save()
+        elif action == 'mark_as_unpayed':
+            payment_object = self.object.payment
+            payment_object.status = payment_object.STATUSES.new
+            payment_object.save()
+
 
 
     def post(self, request, *args, **kwargs):
