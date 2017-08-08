@@ -117,7 +117,7 @@ class ManageInvoice(ManagerPermissionMixin, SetCompetitionContextMixin, DetailVi
 
     def process_post(self, request):
         action = request.POST.get('action', '')
-        if action == 'mark_as_payed' and not self.object.created < timezone.now() - timezone.timedelta(weeks=26):
+        if action == 'mark_as_payed': # and not self.object.created < timezone.now() - timezone.timedelta(weeks=26):
             payment_object = self.object.payment
             if approve_payment(payment_object):
                 payment_object.status = payment_object.STATUSES.ok
