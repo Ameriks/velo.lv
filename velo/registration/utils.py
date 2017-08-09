@@ -8,7 +8,7 @@ from velo.core.models import Competition
 
 def recalculate_participant(participant, children=None, commit=True):
     if not children:
-        children = participant.competition.get_children()
+        children = participant.competition.get_children().filter(is_individual=False)
 
     pre_final_price = participant.final_price
     if (not participant.price and not participant.insurance_id) or not participant.is_participating or not participant.is_paying:

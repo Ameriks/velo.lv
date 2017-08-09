@@ -124,7 +124,7 @@ def create_start_list(competition=None, competition_id=None):
             final_price = item.final_price
 
             if root_competition.id == 1 and item.competition.level == 1:
-                child_count = item.competition.get_children().count()
+                child_count = item.competition.get_children().filter(is_individual=False).count()
                 total_entry_fee = total_entry_fee / child_count
                 total_insurance_fee = total_insurance_fee / child_count
                 final_price = final_price / child_count
@@ -187,7 +187,7 @@ def start_list_have_participated_this_year(competition=None, competition_id=None
             final_price = item.final_price
 
             if root_competition.id == 1 and item.competition.level == 1:
-                child_count = item.competition.get_children().count()
+                child_count = item.competition.get_children().filter(is_individual=False).count()
                 total_entry_fee = total_entry_fee / child_count
                 total_insurance_fee = total_insurance_fee / child_count
                 final_price = final_price / child_count

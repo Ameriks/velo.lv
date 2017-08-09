@@ -71,7 +71,10 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
         if self.request.GET.get('group', None):
             queryset = queryset.filter(group=self.request.GET.get('group', None))
 
-        queryset = queryset.filter(competition_id__in=self.competition.get_ids())
+        if self.competition.is_individual:
+            queryset = queryset.filter(competition=self.competition)
+        else:
+            queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
         queryset = queryset.select_related('competition', 'distance', 'team', 'primary_number')
 

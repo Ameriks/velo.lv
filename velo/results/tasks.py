@@ -183,7 +183,12 @@ def update_helper_result_table(competition_id, update=False, participant_id=None
 
     competition = Competition.objects.get(id=competition_id)
 
-    participants = Participant.objects.filter(competition_id__in=competition.get_ids(), is_participating=True).order_by('distance', 'registration_dt')
+    participants = Participant.objects.filter(is_participating=True).order_by('distance', 'registration_dt')
+
+    if competition.is_individual:
+        participants = participants.filter(competition=competition)
+    else:
+        participants = participants.filter(competition_id__in=competition.get_ids())
 
     if not update:
         participants = participants.extra(

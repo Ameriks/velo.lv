@@ -246,6 +246,8 @@ class Competition(MPTTModel):
 
     use_official_team_results = models.BooleanField(default=True)
 
+    is_individual = models.BooleanField(default=False, help_text="If the stage should have individual start list")
+
     class MPTTMeta:
         order_insertion_by = ['competition_date', 'id']
 

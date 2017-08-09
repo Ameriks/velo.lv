@@ -40,7 +40,7 @@ def get_participant_fee(competition, distance_id, year):
     parent_competition = None
     if competition.complex_payment_enddate and competition.complex_payment_enddate > timezone.now():
         parent_competition = competition
-        child_count = competition.get_children().count()
+        child_count = competition.get_children().filter(is_individual=False).count()
         competition = competition.get_children()[0]
 
     price_obj = get_price(competition, distance_id, year)
@@ -62,7 +62,7 @@ def get_participant_fee_from_price(competition, price_obj):
     parent_competition = None
     if competition.complex_payment_enddate and competition.complex_payment_enddate > timezone.now():
         parent_competition = competition
-        child_count = competition.get_children().count()
+        child_count = competition.get_children().filter(is_individual=False).count()
         competition = competition.get_children()[0]
 
     if not price_obj:
@@ -82,7 +82,7 @@ def get_insurance_fee(competition, insurance_id):
     try:
         insurance = competition.get_insurances().get(id=insurance_id)
         if competition.complex_payment_enddate and competition.complex_payment_enddate > timezone.now():
-            child_count = competition.get_children().count()
+            child_count = competition.get_children().filter(is_individual=False).count()
             insurance_fee = round(float(insurance.price) * child_count * ((100.0 - insurance.complex_discount) / 100.0),
                                   2)
         else:
@@ -101,7 +101,7 @@ def get_insurance_fee_from_insurance(competition, insurance):
         return 0.0
     try:
         if competition.complex_payment_enddate and competition.complex_payment_enddate > timezone.now():
-            child_count = competition.get_children().count()
+            child_count = competition.get_children().filter(is_individual=False).count()
             insurance_fee = round(float(insurance.price) * child_count * ((100.0 - insurance.complex_discount) / 100.0),
                                   2)
         else:

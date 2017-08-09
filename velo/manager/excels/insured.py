@@ -32,7 +32,7 @@ def create_insured_list(competition=None, competition_id=None):
         for index, item in enumerate(participants, start=1):
             insurance_price  = item.insurance.price
             if root_competition.id == 1 and item.competition.level == 1: # SEB complex
-                insurance_price = (insurance_price * (100 - item.competition.complex_discount) / 100) * len(item.competition.get_children())
+                insurance_price = (insurance_price * (100 - item.competition.complex_discount) / 100) * len(item.competition.get_children().filter(is_individual=False))
 
             row_values = (
                 index, str(item.competition), item.first_name, item.last_name, str(item.birthday), item.ssn, str(item.country), str(item.city) if item.city else '', item.phone_number, item.email, insurance_price, str(item.insurance),)
