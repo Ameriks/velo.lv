@@ -44,6 +44,11 @@ class VB2017(VB2016):
                     return 'M-55'
                 elif year <= self._update_year(1949):
                     return 'M-65'
+
+                if year <= self._update_year(1995):
+                    print("Problematic group - %s" % participant)
+                    return 'M-Elite'
+
             else:
                 if self._update_year(1997) >= year >= self._update_year(1996):
                     return 'W-18'
