@@ -107,9 +107,9 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
         self.build_flat_pages(self.competition, child_items, lang)
 
-        for index, child in enumerate(allchildren, start=1):
-            if index < len(allchildren) and allchildren[index].competition_date > current_date:
-                continue
+        for index, child in enumerate(allchildren, start=0):
+            # if index < len(allchildren) and allchildren[index].competition_date > current_date:
+            #     continue
 
             children = [
                 item(_("Competition"), 'competition:competition %i' % child.id, in_menu=False),
