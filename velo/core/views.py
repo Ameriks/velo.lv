@@ -167,6 +167,10 @@ class MapView(SetCompetitionContextMixin, ListView):
 
     def get_queryset(self):
         queryset = super(MapView, self).get_queryset()
+
+        if not self.competition:
+            return self.model.objects.none()
+
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
         return queryset

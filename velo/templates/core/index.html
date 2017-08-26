@@ -122,6 +122,7 @@
                             {% cache 300 front_competitions LANGUAGE_CODE %}
                                 {% for competition in front_competitions %}
                                     <div class="col-xl-8 border-left border-bottom">
+                                        {% if competition.id != 76 %}
                                         <a href="{% url "competition:competition" competition.id %}"
                                            class="logo-tiles__tile img-wrapper">
                                             <img
@@ -138,6 +139,11 @@
                                                 </svg>
                                             </div>
                                         </a>
+                                            {% else %}
+                                            <a href="{% url "competition:staticpage" 77 'retro_nolikums' %}">
+                                            <img src="{% static "img/2017_retro_velo.jpg" %}" style="width: 219px; height:115px;">
+                                            </a>
+                                    {% endif %}
                                     </div>
                                 {% endfor %}
                             {% endcache %}
