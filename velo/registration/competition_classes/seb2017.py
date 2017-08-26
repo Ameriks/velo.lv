@@ -421,6 +421,11 @@ class Seb2017(SEBCompetitionBase):
                     points = row[9]
                     group = row[10]
 
+                    if not place:
+                        place = None
+                    if not points:
+                        points = None
+
                     print(row)
 
                     if index != self.competition_index:
