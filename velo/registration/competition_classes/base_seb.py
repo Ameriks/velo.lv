@@ -22,6 +22,9 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class SEBCompetitionBase(CompetitionScriptBase):
+
+    CALCULATE_STANDING_FROM_STAGES = 5
+
     def __init__(self, *args, **kwargs):
         """
         Current competition have multiple stages. We need to set current stage index.
@@ -196,7 +199,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
         else:
             points = sorted((getattr(standing, 'group_points%i' % stage) for stage in stages), reverse=True)
 
-        return sum(points[0:5])
+        return sum(points[0:self.CALCULATE_STANDING_FROM_STAGES])
 
 
     def recalculate_standing_points(self, standing):
