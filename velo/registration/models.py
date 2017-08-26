@@ -348,6 +348,7 @@ class ChangedName(models.Model):
 
 class UCICategory(models.Model):
     category = models.CharField(max_length=60, blank=True)
+    group = models.CharField(max_length=60, blank=True)
     first_name = models.CharField(_('First Name'), max_length=60, blank=True)
     last_name = models.CharField(_('Last Name'), max_length=60, blank=True)
     issued = models.DateField(blank=True, null=True)

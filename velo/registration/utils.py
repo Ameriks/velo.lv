@@ -99,6 +99,8 @@ def import_lrf_licences():
                 row_dict.update({"first_name": value})
             elif col[idx] == 'Veids':
                 row_dict.update({"category": value})
+            elif col[idx] == 'Grupa':
+                row_dict.update({"group": value})
             elif col[idx] == 'Licence derīga':
                 try:
                     row_dict.update({"valid_until": datetime.datetime.strptime(value, '%d.%m.%Y')})
