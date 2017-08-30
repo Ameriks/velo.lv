@@ -95,8 +95,10 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
                     participant__team_name__icontains=search.upper()))
 
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
-
-        queryset = queryset.extra(select=self.get_competition_class().result_select_extra(self.distance.id))
+        try:
+            queryset = queryset.extra(select=self.get_competition_class().result_select_extra(self.distance.id))
+        except ValueError:
+            raise Http404
 
         queryset = queryset.select_related('competition', 'participant__distance', 'participant',
                                            'participant__bike_brand',
