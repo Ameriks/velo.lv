@@ -468,13 +468,17 @@ class ParticipantIneseCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, Clea
         birthday = self.cleaned_data.get('birthday')
 
         if distance and gender and birthday:
-
+            p = Participant(first_name=self.cleaned_data.get('first_name'),
+                            last_name=self.cleaned_data.get('last_name'),
+                            birthday=self.cleaned_data.get('birthday'),
+                            competition=self.cleaned_data.get('competition'))
+            p.set_slug()
             try:
                 competition = Competition.objects.get(id=self.request_kwargs.get('pk'))
                 if competition.processing_class:
                     class_ = load_class(competition.processing_class)
                     processing_class = class_(competition.id)
-                    processing_class.assign_group(distance.id, gender, birthday)
+                    processing_class.assign_group(distance.id, gender, birthday, p)
 
             except:
                 self._errors.update({'distance': ['Dalībnieks nevar startēt šajā distancē.', ]})
@@ -612,13 +616,18 @@ class ParticipantCreateForm(RequestKwargModelFormMixin, CleanSSNMixin, CleanEmai
         birthday = self.cleaned_data.get('birthday')
 
         if distance and gender and birthday:
+            p = Participant(first_name=self.cleaned_data.get('first_name'),
+                            last_name=self.cleaned_data.get('last_name'),
+                            birthday=self.cleaned_data.get('birthday'),
+                            competition=self.cleaned_data.get('competition'))
+            p.set_slug()
 
             try:
                 competition = Competition.objects.get(id=self.request_kwargs.get('pk'))
                 if competition.processing_class:
                     class_ = load_class(competition.processing_class)
                     processing_class = class_(competition.id)
-                    processing_class.assign_group(distance.id, gender, birthday)
+                    processing_class.assign_group(distance.id, gender, birthday, p)
 
             except:
                 self._errors.update({'distance': ['Dalībnieks nevar startēt šajā distancē.', ]})

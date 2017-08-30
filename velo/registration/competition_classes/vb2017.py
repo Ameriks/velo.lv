@@ -29,7 +29,7 @@ class VB2017(VB2016):
         elif distance_id == self.SOSEJAS_DISTANCE_ID:
             if gender == 'M':
 
-                if year <= self._update_year(1995) and UCICategory.objects.filter(group="Elite vīrieši", slug=participant.slug):
+                if year <= self._update_year(1995) and UCICategory.objects.filter(group__in=["Elite vīrieši", "U23"], slug=participant.slug):
                     return 'M-Elite'
 
                 if self._update_year(1997) >= year >= self._update_year(1996): #ok
@@ -47,7 +47,7 @@ class VB2017(VB2016):
 
                 if year <= self._update_year(1995):
                     print("Problematic group - %s" % participant)
-                    return 'M-Elite'
+                    return 'M CFA'
 
             else:
                 if self._update_year(1997) >= year >= self._update_year(1996):

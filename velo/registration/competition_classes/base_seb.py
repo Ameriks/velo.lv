@@ -179,10 +179,10 @@ class SEBCompetitionBase(CompetitionScriptBase):
         standing.save()
 
         # Log information about calculated values
-        Log.objects.create(content_object=team, action="Recalculated team standing", params={
-            'points_total': standing.points_total,
-            'points%i' % self.competition_index: getattr(standing, 'points%i' % self.competition_index)
-        })
+        # Log.objects.create(content_object=team, action="Recalculated team standing", params={
+        #     'points_total': standing.points_total,
+        #     'points%i' % self.competition_index: getattr(standing, 'points%i' % self.competition_index)
+        # })
 
         return standing
 
