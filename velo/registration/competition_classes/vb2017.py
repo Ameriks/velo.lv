@@ -1,3 +1,11 @@
+from io import BytesIO
+
+from django.utils.translation import activate
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.pdfgen import canvas
+
+from velo.core.pdf import fill_page_with_image, _baseFontNameB
 from velo.registration.competition_classes import VB2016
 from velo.registration.models import UCICategory, Participant
 from velo.team.models import Team, Member
@@ -96,3 +104,30 @@ class VB2017(VB2016):
                     p.save()
             except:
                 print('Not %s' % member.slug)
+
+    def number_pdf(self, participant_id):
+        participant = Participant.objects.get(id=participant_id)
+        activate(participant.application.language if participant.application else 'lv')
+        output = BytesIO()
+
+        c = canvas.Canvas(output, pagesize=A4)
+        fill_page_with_image("velo/media/competition/vestule/VB2017.jpg", c)
+
+        c.setFont(_baseFontNameB, 18)
+        c.drawString(9.0*cm, 21.65*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
+        c.drawString(5.8*cm, 18.2*cm, str(participant.distance))
+
+        if participant.primary_number:
+            c.setFont(_baseFontNameB, 35)
+            c.drawString(15*cm, 19.2*cm, str(participant.primary_number))
+        # elif participant.distance_id == self.GIMENU_DISTANCE_ID:
+        #     c.setFont(_baseFontNameB, 25)
+        #     c.drawString(15*cm, 18.5*cm, "Amway")
+        else:
+            c.setFont(_baseFontNameB, 25)
+            c.drawString(15*cm, 19.225*cm, "-")
+
+        c.showPage()
+        c.save()
+        output.seek(0)
+        return output
