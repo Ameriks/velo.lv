@@ -60,6 +60,7 @@ class VBCompetitionBase(CompetitionScriptBase):
             self.SOSEJAS_DISTANCE_ID: [{'start': 1, 'end': 250, 'group': ''}, ],
             self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1200, 'group': ''}, ],
             self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 6200, 'group': ''}, ],
+            self.RETRO_DISTANCE_ID: [{'start': 9001, 'end': 9450, 'group': ''}, ],
         }
 
 
@@ -95,6 +96,7 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (20, 5801, 6000, 0),
                                     (21, 6001, 6200, 0),
                                     ],
+            self.RETRO_DISTANCE_ID: [(1, 1, 450, 0), ],
         }
 
 

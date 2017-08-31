@@ -6,6 +6,7 @@ class VB2017(VB2016):
     SOSEJAS_DISTANCE_ID = 69
     MTB_DISTANCE_ID = 70
     TAUTAS_DISTANCE_ID = 71
+    RETRO_DISTANCE_ID = 78
     competition_index = 1
 
     @property
