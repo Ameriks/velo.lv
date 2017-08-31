@@ -188,7 +188,7 @@ class VBCompetitionBase(CompetitionScriptBase):
             if hasattr(self, "assign_numbers_special_additional"):
                 total_count = self.assign_numbers_special_additional()
 
-        for distance_id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+        for distance_id in (self.SOSEJAS_DISTANCE_ID, self.MTB_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.RETRO_DISTANCE_ID):
 
             for passage_nr, passage_start, passage_end, passage_extra in self.passages().get(distance_id):
                 special_in_passage = PreNumberAssign.objects.filter(competition=self.competition, number__gte=passage_start, number__lte=passage_end).count()
