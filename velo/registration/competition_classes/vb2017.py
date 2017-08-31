@@ -114,18 +114,18 @@ class VB2017(VB2016):
         fill_page_with_image("velo/media/competition/vestule/VB2017.jpg", c)
 
         c.setFont(_baseFontNameB, 18)
-        c.drawString(9.0*cm, 21.65*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
-        c.drawString(5.8*cm, 18.2*cm, str(participant.distance))
+        c.drawString(9.0*cm, 21.35*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
+        c.drawString(6.4*cm, 19.1*cm, str(participant.distance))
 
         if participant.primary_number:
             c.setFont(_baseFontNameB, 35)
-            c.drawString(15*cm, 19.2*cm, str(participant.primary_number))
+            c.drawString(16*cm, 20.1*cm, str(participant.primary_number))
         # elif participant.distance_id == self.GIMENU_DISTANCE_ID:
         #     c.setFont(_baseFontNameB, 25)
         #     c.drawString(15*cm, 18.5*cm, "Amway")
         else:
             c.setFont(_baseFontNameB, 25)
-            c.drawString(15*cm, 19.225*cm, "-")
+            c.drawString(16*cm, 20.1*cm, "-")
 
         c.showPage()
         c.save()
