@@ -96,7 +96,7 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (20, 5801, 6000, 0),
                                     (21, 6001, 6200, 0),
                                     ],
-            self.RETRO_DISTANCE_ID: [(1, 1, 450, 0), ],
+            self.RETRO_DISTANCE_ID: [(1, 9001, 9450, 0), ],
         }
 
 
