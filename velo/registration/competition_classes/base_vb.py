@@ -57,21 +57,20 @@ class VBCompetitionBase(CompetitionScriptBase):
         Returns number ranges for each distance.
         """
         return {
-            self.SOSEJAS_DISTANCE_ID: [{'start': 1, 'end': 350, 'group': ''}, ],
-            self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1300, 'group': ''}, ],
-            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 6900, 'group': ''}, ],
+            self.SOSEJAS_DISTANCE_ID: [{'start': 1, 'end': 250, 'group': ''}, ],
+            self.MTB_DISTANCE_ID: [{'start': 401, 'end': 1200, 'group': ''}, ],
+            self.TAUTAS_DISTANCE_ID: [{'start': 2001, 'end': 6200, 'group': ''}, ],
         }
 
 
     def passages(self):
         return {
-            self.SOSEJAS_DISTANCE_ID: [(1, 1, 350, 0), ],
+            self.SOSEJAS_DISTANCE_ID: [(1, 1, 250, 0), ],
             self.MTB_DISTANCE_ID: [
                                     (1, 401, 600, 20),
                                     (2, 601, 800, 20),
                                     (3, 801, 1000, 10),
-                                    (4, 1001, 1200, 5),
-                                    (5, 1201, 1300, 0),
+                                    (4, 1001, 1200, 0)
                                     ],
             self.TAUTAS_DISTANCE_ID: [
                                     (1, 2001, 2200, 20),
@@ -82,8 +81,8 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (6, 3001, 3200, 10),
                                     (7, 3201, 3400, 5),
                                     (8, 3401, 3600, 5),
-                                    (9, 3601, 3800, 0),
-                                    (10, 3801, 4000, 0),
+                                    (9, 3601, 3800, 5),
+                                    (10, 3801, 4000, 5),
                                     (11, 4001, 4200, 0),
                                     (12, 4201, 4400, 0),
                                     (13, 4401, 4600, 0),
@@ -95,10 +94,6 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (19, 5601, 5800, 0),
                                     (20, 5801, 6000, 0),
                                     (21, 6001, 6200, 0),
-                                    (22, 6201, 6400, 0),
-                                    (23, 6401, 6600, 0),
-                                    (24, 6601, 6800, 0),
-                                    (25, 6801, 6900, 0),
                                     ],
         }
 
