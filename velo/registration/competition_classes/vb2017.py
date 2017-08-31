@@ -1,5 +1,6 @@
 from velo.registration.competition_classes import VB2016
-from velo.registration.models import UCICategory
+from velo.registration.models import UCICategory, Participant
+from velo.team.models import Team, Member
 
 
 class VB2017(VB2016):
@@ -82,3 +83,16 @@ class VB2017(VB2016):
 
         print('here I shouldnt be...')
         raise Exception('Invalid group assigning. {0} {1} {2}'.format(gender, distance_id, birthday))
+
+    def pre_competition_run(self):
+        t = Team.objects.filter(distance__competition=self.competition)
+        members = Member.objects.filter(team__in=t)
+        for member in members:
+            try:
+                p = Participant.objects.get(slug=member.slug, is_participating=True, distance=member.team.distance)
+                if p.team_name != member.team.title:
+                    print("%i %s %s %s" % (p.id, p.slug, p.team_name, member.team.title))
+                    p.team_name = member.team.title
+                    p.save()
+            except:
+                print('Not %s' % member.slug)
