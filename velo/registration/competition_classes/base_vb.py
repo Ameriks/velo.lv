@@ -43,7 +43,7 @@ class VBCompetitionBase(CompetitionScriptBase):
         if self.competition.map_set.count():
             child_items.append(item(_("Maps"), 'competition:maps %i' % self.competition.id))
 
-        if self.competition.competition_date <= current_date:
+        if self.competition.competition_date <= current_date + datetime.timedelta(days=1):
             child_items.append(item(_("Results"), 'competition:result_distance_list %i' % self.competition.id))
             child_items.append(item(_("Team Results"), 'competition:result_team_by_name %i' % self.competition.id))
             if self.competition_id == 35:
