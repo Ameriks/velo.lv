@@ -1,11 +1,13 @@
 from io import BytesIO
 
+import os
 from django.utils.translation import activate
+from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
 
-from velo.core.pdf import fill_page_with_image, _baseFontNameB
+from velo.core.pdf import fill_page_with_image, _baseFontNameB, _baseFontName
 from velo.registration.competition_classes import VB2016
 from velo.registration.models import UCICategory, Participant
 from velo.team.models import Team, Member
@@ -126,6 +128,54 @@ class VB2017(VB2016):
         else:
             c.setFont(_baseFontNameB, 25)
             c.drawString(16*cm, 20.1*cm, "-")
+
+        c.showPage()
+        c.save()
+        output.seek(0)
+        return output
+
+    def result_select_extra(self, distance_id):
+        return {
+            'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+        }
+
+
+    def generate_diploma(self, result):
+        output = BytesIO()
+        path = 'velo/results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
+
+        if not os.path.isfile(path):
+            raise Exception
+
+        total_participants = result.competition.result_set.filter(participant__distance=result.participant.distance).count()
+        total_group_participants = result.competition.result_set.filter(participant__distance=result.participant.distance, participant__group=result.participant.group).count()
+
+        c = canvas.Canvas(output, pagesize=A4)
+
+        fill_page_with_image(path, c)
+
+        c.setFont(_baseFontNameB, 28)
+        c.setFillColor(HexColor(0x9F2B36))
+        c.drawString(7 * cm, 13 * cm, str(result.participant.primary_number))
+
+        c.setFont(_baseFontNameB, 25)
+        c.setFillColor(HexColor(0x46445c))
+        c.drawCentredString(c._pagesize[0]/2, 14.5*cm, result.participant.full_name)
+        print(c._pagesize[0])
+        c.setFont(_baseFontName, 25)
+        c.drawCentredString(176, 10.2 * cm, str(result.time.replace(microsecond=0)))
+
+        c.drawCentredString(128, 7*cm, str(result.result_group))
+        c.drawCentredString(230, 7*cm, str(total_group_participants))
+
+        c.drawCentredString(420, 7*cm, "%s km/h" % result.avg_speed)
+
+        c.drawCentredString(370, 10.2*cm, str(result.result_distance))
+        c.drawCentredString(472, 10.2*cm, str(total_participants))
+
+        c.setFont(_baseFontName, 16)
+        c.setFillColor(HexColor(0x9F2B36))
+        c.drawRightString(523, 11.6 * cm, str(result.participant.group))
 
         c.showPage()
         c.save()
