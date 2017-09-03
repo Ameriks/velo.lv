@@ -12,7 +12,7 @@ from velo.core.models import Log
 from velo.core.pdf import fill_page_with_image, _baseFontNameB, _baseFontName
 from velo.registration.competition_classes import VB2016
 from velo.registration.models import UCICategory, Participant
-from velo.results.models import ChipScan, Result
+from velo.results.models import ChipScan, Result, DistanceAdmin
 from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable, ResultRMTautaDistanceTable
 from velo.team.models import Team, Member
 
@@ -192,6 +192,7 @@ class VB2017(VB2016):
         """
 
         chip = ChipScan.objects.get(id=chip_id)
+        distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
 
         if chip.is_processed:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
@@ -203,8 +204,16 @@ class VB2017(VB2016):
             # Function used to fetch data - who is fastest in the last hill.
             result = Result.objects.get(competition=chip.competition, number=chip.nr)
 
-            delta = datetime.datetime.combine(datetime.date.today(), result.time) - datetime.datetime.combine(datetime.date.today(), datetime.time(0, 0, 0, 0))
-            result_time = (datetime.datetime.combine(datetime.date.today(), chip.time) - delta).time()
+            try:
+                finish_chip = ChipScan.objects.get(nr=result.number, url_sync__kind='FINISH')
+            except ChipScan.DoesNotExist:
+                return None
+
+            if chip.nr.number < 400:
+                return None
+
+            delta = datetime.datetime.combine(datetime.date.today(), chip.time) - datetime.datetime.combine(datetime.date.today(), datetime.time(0, 0, 0, 0))
+            result_time = (datetime.datetime.combine(datetime.date.today(), finish_chip.time) - delta).time()
 
             lap, created = result.lapresult_set.get_or_create(index=chip.url_sync.index)
             if lap.time and not recalc:
