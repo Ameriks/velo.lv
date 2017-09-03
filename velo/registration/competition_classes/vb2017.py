@@ -192,7 +192,6 @@ class VB2017(VB2016):
         """
 
         chip = ChipScan.objects.get(id=chip_id)
-        distance_admin = DistanceAdmin.objects.get(competition=chip.competition, distance=chip.nr.distance)
 
         if chip.is_processed:
             Log.objects.create(content_object=chip, action="Chip process", message="Chip already processed")
@@ -228,5 +227,7 @@ class VB2017(VB2016):
     def get_result_table_class(self, distance, group=None):
         if group:
             return ResultRMGroupTable
+        elif distance.id == self.SOSEJAS_DISTANCE_ID:
+            return ResultRMDistanceTable
         else:
             return ResultRMTautaDistanceTable
