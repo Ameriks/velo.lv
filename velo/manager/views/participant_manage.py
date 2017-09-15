@@ -113,7 +113,10 @@ class ManageApplicationList(ManagerPermissionMixin, SingleTableViewWithRequest):
 
     def get_queryset(self):
         queryset = super(ManageApplicationList, self).get_queryset()
-        queryset = queryset.filter(competition_id__in=self.competition.get_ids())
+        if self.competition.is_individual:
+            queryset = queryset.filter(competition=self.competition)
+        else:
+            queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
         query_attrs = self.get_search_form().fields
 
@@ -162,7 +165,10 @@ class ManageParticipantList(ManagerPermissionMixin, SingleTableViewWithRequest):
 
     def get_queryset(self):
         queryset = super(ManageParticipantList, self).get_queryset()
-        queryset = queryset.filter(competition_id__in=self.competition.get_ids())
+        if self.competition.is_individual:
+            queryset = queryset.filter(competition=self.competition)
+        else:
+            queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
         query_attrs = self.get_search_form().fields
 
