@@ -240,7 +240,7 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         incomes.append(('Apdrošināšana', distance_insurance))
         incomes.append(('Komandas maksājumi', team_payments))
 
-        context.update({'participant_count': Participant.objects.filter(competition_id__in=self.competition.get_ids(),
+        context.update({'participant_count': Participant.objects.filter(competition_id__in=self.competition.get_ids() if not self.competition.is_individual else [self.competition.id, ],
                                                                         is_participating=True).count()})
         context.update({'team_count': team_count})
         context.update({'distances_w_counter': distances_w_counter})
