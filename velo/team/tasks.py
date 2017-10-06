@@ -46,7 +46,7 @@ def match_team_members_to_participants(competition_id, participant_id=None, part
             member.save()
             continue
 
-        participants = Participant.objects.filter(competition_id__in=competition.get_ids(), slug=member.member.slug, distance=member.member.team.distance)
+        participants = Participant.objects.filter(competition_id__in=competition.get_ids() if not competition.is_individual else (competition.id, ), slug=member.member.slug, distance=member.member.team.distance)
         participants_payed = participants.filter(is_participating=True)
         if participants_payed:
             member.participant = participants_payed[0]
@@ -60,11 +60,11 @@ def match_team_members_to_participants(competition_id, participant_id=None, part
             member.save()
         else:
             if not slugs:
-                slugs = {distance.id: [obj.slug for obj in Participant.objects.filter(competition_id=competition.get_ids(),
+                slugs = {distance.id: [obj.slug for obj in Participant.objects.filter(competition_id=competition.get_ids() if not competition.is_individual else (competition.id, ),
                                                                               distance=distance, is_participating=True)] for distance in competition.get_distances().filter(can_have_teams=True)}
             matches = get_close_matches(member.member.slug, slugs.get(member.member.team.distance_id), 1, 0.5)
             if matches:
-                participants = Participant.objects.filter(competition_id__in=competition.get_ids(), slug=matches[0],
+                participants = Participant.objects.filter(competition_id__in=competition.get_ids() if not competition.is_individual else (competition.id, ), slug=matches[0],
                                               distance=member.member.team.distance).order_by('-id')
                 member.participant_potential = participants[0]
                 member.save()
