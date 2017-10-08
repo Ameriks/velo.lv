@@ -33,10 +33,10 @@ class ResultTeamStandingTable(tables.Table):
     class Meta:
         model = TeamResultStandings
         attrs = {"class": "table-block"}
-        fields = ("points_total", "points1", 'points2', 'points3', 'points4', 'points5', 'points6', 'points7')
+        fields = ("points_total", "points1", 'points2', 'points3', 'points4', 'points5', 'points6', 'points7', 'points8')
         sequence = (
         "place", "team_name", "points_total", "points1", "points2", "points3", "points4", "points5", "points6",
-        'points7',)
+        'points7',  'points8')
         empty_text = _("There are no results")
         order_by = ("-points_total",)
         per_page = 200
