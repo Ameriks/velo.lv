@@ -93,10 +93,10 @@ class ResultGroupStandingTable(tables.Table):
         model = SebStandings
         attrs = {"class": "table-block"}
         fields = ("group_points1", "group_points2", 'group_points3', 'group_points4', 'group_points5', 'group_points6',
-                  'group_points7', 'group_total')  # all_numbers
+                  'group_points7', 'group_points8', 'group_total')  # all_numbers
         sequence = (
-        "group_place", "number", "group", "first_name", "last_name", "year", "team", "group_points1", "group_points2",
-        'group_points3', 'group_points4', 'group_points5', 'group_points6', 'group_points7', 'group_total',)
+        "group_place", "number", "group", "first_name", "last_name", "year", "team", 'group_total', "group_points1", "group_points2",
+        'group_points3', 'group_points4', 'group_points5', 'group_points6', 'group_points7', 'group_points8', )
         empty_text = _("There are no results")
         order_by = ("group_place",)
         per_page = 200
@@ -124,11 +124,11 @@ class ResultDistanceStandingTable(tables.Table):
         model = SebStandings
         attrs = {"class": "table-block"}
         fields = ("distance_points1", "distance_points2", 'distance_points3', 'distance_points4', 'distance_points5',
-                  'distance_points6', 'distance_points7', 'distance_total')  # all_numbers
+                  'distance_points6', 'distance_points7', 'distance_points8', 'distance_total')  # all_numbers
         sequence = (
-        "distance_place", "number", "first_name", "last_name", "year", "team", "distance_points1", "distance_points2",
-        'distance_points3', 'distance_points4', 'distance_points5', 'distance_points6', 'distance_points7',
-        'distance_total',)
+        "distance_place", "number", "first_name", "last_name", "year", "team", 'distance_total', "distance_points1", "distance_points2",
+        'distance_points3', 'distance_points4', 'distance_points5', 'distance_points6', 'distance_points7', 'distance_points8',
+        )
         empty_text = _("There are no results")
         order_by = ("distance_place",)
         per_page = 200

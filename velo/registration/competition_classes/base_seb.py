@@ -169,11 +169,16 @@ class SEBCompetitionBase(CompetitionScriptBase):
         setattr(standing, 'points%i' % self.competition_index, sum([val[0] for val in team_member_results if val[0]]))
 
         # Recalculate total sum.
-        point_list = [standing.points1, standing.points2, standing.points3, standing.points4, standing.points5, standing.points6, standing.points7]
-        if team.distance_id == self.SPORTA_DISTANCE_ID:
-            point_list.pop(3)  # 4.stage is not taken because it is UCI category
+        point_list = [standing.points1, standing.points2, standing.points3, standing.points4, standing.points5, standing.points6, standing.points7, standing.points8]
+
+        # if team.distance_id == self.SPORTA_DISTANCE_ID:
+        #     point_list.pop(3)  # 4.stage is not taken because it is UCI category
 
         point_list = filter(None, point_list)  # remove None from list
+
+        # Get 7 best results.
+        point_list = sorted(point_list, reverse=True)[:7]
+
         setattr(standing, 'points_total', sum(point_list))
 
         standing.save()
