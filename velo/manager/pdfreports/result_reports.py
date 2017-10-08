@@ -126,7 +126,7 @@ class PDFReports(object):
     def results_standings(self, top=10000):
         col_width = (
             1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm,
-            1 * cm, 1 * cm)
+            1 * cm, 1 * cm,  1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -265,7 +265,7 @@ class PDFReports(object):
     def results_standings_gender(self, top=10000):
         col_width = (
             1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm,
-            1 * cm, 1 * cm)
+            1 * cm, 1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
         for distance in distances:
@@ -305,7 +305,7 @@ class PDFReports(object):
     def results_standings_groups(self, top=10000):
         col_width = (
             1 * cm, 1 * cm, 2.5 * cm, 2.5 * cm, 1.5 * cm, 1.5 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm, 1 * cm,
-            1 * cm, 1 * cm)
+            1 * cm, 1 * cm, 1 * cm)
         distances = self.competition.get_distances().filter(have_results=True).exclude(
             id=getattr(self.processing_class, 'BERNU_DISTANCE_ID', -1))
 
@@ -314,7 +314,7 @@ class PDFReports(object):
         for distance in distances:
             self.elements.append(self.header(str("Kopvērtējums pa grupām")))
 
-            for group in self.processing_class.groups.get(distance.id):
+            for group in self.processing_class.groups.get(distance.id) or []:
                 self.elements.append(Spacer(10, 10))
                 items = SebStandings.objects.filter(distance=distance, competition=self.primary_competition,
                                                     participant__group=group).order_by('-group_total').select_related(
