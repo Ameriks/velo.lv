@@ -47,8 +47,8 @@ def get_participant_fee(competition, distance_id, year):
     if not price_obj:
         return None
     if parent_competition:  # Means that complex.
-        entry_fee = round(
-            float(price_obj.price) * child_count * ((100.0 - parent_competition.complex_discount) / 100.0), 2)
+        entry_fee = float(int(
+            float(price_obj.price) * child_count * ((100.0 - parent_competition.complex_discount) / 100.0)))
     else:
         entry_fee = float(price_obj.price)
 
@@ -68,8 +68,8 @@ def get_participant_fee_from_price(competition, price_obj):
     if not price_obj:
         return None
     if parent_competition:  # Means that complex.
-        entry_fee = round(
-            float(price_obj.price) * child_count * ((100.0 - parent_competition.complex_discount) / 100.0), 2)
+        entry_fee = float(int(
+            float(price_obj.price) * child_count * ((100.0 - parent_competition.complex_discount) / 100.0)))
     else:
         entry_fee = float(price_obj.price)
 
@@ -83,8 +83,7 @@ def get_insurance_fee(competition, insurance_id):
         insurance = competition.get_insurances().get(id=insurance_id)
         if competition.complex_payment_enddate and competition.complex_payment_enddate > timezone.now():
             child_count = competition.get_children().filter(is_individual=False).count()
-            insurance_fee = round(float(insurance.price) * child_count * ((100.0 - insurance.complex_discount) / 100.0),
-                                  2)
+            insurance_fee = float(int(float(insurance.price) * child_count * ((100.0 - insurance.complex_discount) / 100.0)))
         else:
             insurance_fee = float(insurance.price)
     except Insurance.DoesNotExist:
@@ -102,8 +101,7 @@ def get_insurance_fee_from_insurance(competition, insurance):
     try:
         if competition.complex_payment_enddate and competition.complex_payment_enddate > timezone.now():
             child_count = competition.get_children().filter(is_individual=False).count()
-            insurance_fee = round(float(insurance.price) * child_count * ((100.0 - insurance.complex_discount) / 100.0),
-                                  2)
+            insurance_fee = float(int(float(insurance.price) * child_count * ((100.0 - insurance.complex_discount) / 100.0)))
         else:
             insurance_fee = float(insurance.price)
     except Insurance.DoesNotExist:
