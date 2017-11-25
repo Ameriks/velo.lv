@@ -184,7 +184,12 @@ class CalendarView(CacheControlMixin, TemplateView):
 
         now = timezone.now()
 
-        this_year = Competition.objects.filter(competition_date__year=now.year).order_by(
+        year = now.year
+        competition = Competition.objects.filter(competition_date__gte=now).order_by('competition_date')
+        if competition:
+            year = competition[0].competition_date.year
+
+        this_year = Competition.objects.filter(competition_date__year=year).order_by(
             'competition_date').select_related('parent')
 
         cache_key = 'banners_calendar_%s' % get_language()
