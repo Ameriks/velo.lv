@@ -293,7 +293,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
 
     def process_chip_create_participant(self, chip):
-        participant = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids(), distance=chip.nr.distance, is_participating=True)
+        participant = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_ids() if not chip.competition.is_individual else (chip.competition_id, ), distance=chip.nr.distance, is_participating=True)
         if not participant:
             participant_data = Participant.objects.filter(slug=chip.nr.participant_slug, competition_id__in=chip.competition.get_all_children_ids(), distance=chip.nr.distance, is_participating=True).order_by('-competition__id')
             if participant_data:
