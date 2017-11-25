@@ -190,7 +190,7 @@ class CalendarView(CacheControlMixin, TemplateView):
             year = competition[0].competition_date.year
 
         this_year = Competition.objects.filter(competition_date__year=year).order_by(
-            'competition_date').select_related('parent')
+            'competition_date', 'id').select_related('parent')
 
         cache_key = 'banners_calendar_%s' % get_language()
         side_banner = cache.get(cache_key, None)
