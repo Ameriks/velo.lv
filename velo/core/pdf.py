@@ -426,6 +426,38 @@ class PageNumCanvas(canvas.Canvas):
         self.drawRightString(self._pagesize[0] / 2, 10*mm, page)
 
 
+class InvoiceCanvas(canvas.Canvas):
+    def __init__(self, *args, **kwargs):
+        canvas.Canvas.__init__(self, *args, **kwargs)
+        self.pages = []
+
+    def showPage(self):
+        """
+        On a page break, add information to the list
+        """
+        self.pages.append(dict(self.__dict__))
+        self._startPage()
+
+    def save(self):
+        """
+        Add the page number to each page (page x of y)
+        """
+        for page in self.pages:
+            self.__dict__.update(page)
+            self.draw_header()
+            self.draw_footer()
+            canvas.Canvas.showPage(self)
+
+        canvas.Canvas.save(self)
+
+    def draw_header(self):
+        img = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_header.jpg")
+        self.drawImage(img, 0.5*cm, 24 * cm, width=self._pagesize[0]-cm, height=153, preserveAspectRatio=True)
+
+    def draw_footer(self):
+        img = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_footer.jpg")
+        self.drawImage(img, 0.5*cm, 0.5*cm, width=self._pagesize[0]-cm, height=73, preserveAspectRatio=True)
+
 
 def fill_page_with_image(path, canvas):
     """

@@ -1,6 +1,8 @@
+import os
+from django.conf import settings
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle, Spacer, Image
 from reportlab.lib.units import mm
 
 
@@ -12,6 +14,7 @@ from reportlab.graphics.barcode import code128
 
 from io import BytesIO
 
+from velo.core.pdf import InvoiceCanvas
 from velo.payment.pdf_utils import BreakingParagraph
 from velo.payment.skaitlis import num_to_text
 
@@ -26,6 +29,7 @@ normal = PS(name='normal', fontSize=8)
 
 class InvoiceGenerator(object):
     invoice = None
+    competition = None
     pdf = None
     doc = None
     top_widths = None
@@ -34,10 +38,11 @@ class InvoiceGenerator(object):
     months_lv = {1: "janvāris", 2: "februāris", 3: "marts", 4: "aprīlis", 5: "maijs", 6: "jūnijs", 7: "jūlijs",
                  8: "augusts", 9: "septembris", 10: "oktobris", 11: "novembris", 12: "decembris"}
 
-    def __init__(self, invoice):
-        self.invoice = invoice
+    def __init__(self, invoice_data, competition):
+        self.invoice = invoice_data
+        self.competition = competition
         self.pdf = BytesIO()
-        self.doc = SimpleDocTemplate(self.pdf, pagesize=A4, topMargin=20, bottomMargin=20, leftMargin=20, rightMargin=20, showBoundary=0)
+        self.doc = SimpleDocTemplate(self.pdf, pagesize=A4, topMargin=160, bottomMargin=80, leftMargin=15, rightMargin=15, showBoundary=0)
         self.elements = []
 
         self.styles = {
@@ -179,9 +184,17 @@ class InvoiceGenerator(object):
                 item_list.append(BreakingParagraph(str(val), self.styles.get('normal')))
             data.append(item_list)
 
+        final_amount = items_total_price
+        invoice_big = int(final_amount)
+        invoice_small = (final_amount - invoice_big) * 100
+
         column_count = len(data[0])
 
         item_list = [''] * column_count
+
+        item_list[1] = Paragraph("%s %s un %i %s." % (
+            num_to_text(invoice_big).capitalize(), self.invoice.get('currency'), invoice_small, "centi"), normal)
+
         item_list[3] = 'Kopā'
 
         final_amount_col = 5
@@ -191,15 +204,17 @@ class InvoiceGenerator(object):
         table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
         data.append(item_list)
 
+
         item_list = [''] * column_count
+
+        item_list[1] = Paragraph("Rēķins sagatavots elektroniski un derīgs bez paraksta.", normal)
+
         item_list[3] = 'Pavisam kopā'
         item_list[final_amount_col] = '{0:.2f}'.format(float(items_total_price))
         table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
         table_style.append(('FONT', (3, len(data)), (-1, len(data)), 'UbuntuB'),)
 
         data.append(item_list)
-
-        final_amount = items_total_price
 
         item_table = Table(data, colWidths=list((self.doc.width * 0.05,
                                                  self.doc.width * (0.31 + 0.08*4),
@@ -209,18 +224,14 @@ class InvoiceGenerator(object):
 
         self.elements.append(item_table)
 
-        invoice_big = int(final_amount)
-        invoice_small = (final_amount - invoice_big) * 100
-
-        self.elements.append(Paragraph("%s %s un %i %s." % (
-            num_to_text(invoice_big).capitalize(), self.invoice.get('currency'), invoice_small, "centi"), normal))
-
         self.elements.append(Spacer(2 * mm, 2 * mm))
         self.elements.append(code128.Code128("*%s*%s*" % (self.invoice.get('name'), str(final_amount)), humanReadable=1))
 
     def _build_footer(self):
-        self.elements.append(Spacer(2 * mm, 2 * mm))
-        self.elements.append(Paragraph("Rēķins sagatavots elektroniski un derīgs bez paraksta.", normal))
+        if self.competition.id in (79, 80, 81, 82, 83, 84, 85, 86, 87):
+            adv = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_adv_toyota.jpg")
+            im = Image(adv, 567, 90)
+            self.elements.append(im)
 
     def build(self):
         self._build_top()
@@ -228,10 +239,10 @@ class InvoiceGenerator(object):
         self._build_receiver_top()
         self._build_info_top()
         self._build_items()
-        self.elements.append(Spacer(10 * mm, 10 * mm))
-        self.elements.append(Paragraph("", normal))
-
+        self.elements.append(Spacer(5 * mm, 5 * mm))
+        # self.elements.append(Paragraph("", normal))
         self._build_footer()
-        self.doc.build(self.elements)
+
+        self.doc.build(self.elements, canvasmaker=InvoiceCanvas)
         self.pdf.seek(0)
         return self.pdf
