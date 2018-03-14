@@ -444,19 +444,19 @@ class InvoiceCanvas(canvas.Canvas):
         """
         for page in self.pages:
             self.__dict__.update(page)
-            self.draw_header()
+            # self.draw_header()
             self.draw_footer()
             canvas.Canvas.showPage(self)
 
         canvas.Canvas.save(self)
 
-    def draw_header(self):
-        img = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_header.jpg")
-        self.drawImage(img, 0.5*cm, 24 * cm, width=self._pagesize[0]-cm, height=153, preserveAspectRatio=True)
+    # def draw_header(self):
+    #     img = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_header.jpg")
+    #     self.drawImage(img, 0.5*cm, 24 * cm, width=self._pagesize[0]-cm, height=153, preserveAspectRatio=True)
 
     def draw_footer(self):
-        img = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_footer.jpg")
-        self.drawImage(img, 0.5*cm, 0.5*cm, width=self._pagesize[0]-cm, height=73, preserveAspectRatio=True)
+        img = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_footer2.jpg")
+        self.drawImage(img, 0.5*cm, 0.5*cm, width=self._pagesize[0]-cm, height=86, preserveAspectRatio=True)
 
 
 def fill_page_with_image(path, canvas):

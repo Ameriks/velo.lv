@@ -42,7 +42,7 @@ class InvoiceGenerator(object):
         self.invoice = invoice_data
         self.competition = competition
         self.pdf = BytesIO()
-        self.doc = SimpleDocTemplate(self.pdf, pagesize=A4, topMargin=160, bottomMargin=80, leftMargin=15, rightMargin=15, showBoundary=0)
+        self.doc = SimpleDocTemplate(self.pdf, pagesize=A4, topMargin=15, bottomMargin=80, leftMargin=15, rightMargin=15, showBoundary=0)
         self.elements = []
 
         self.styles = {
@@ -60,7 +60,11 @@ class InvoiceGenerator(object):
         invoice_date = "%d.gada %d.%s" % (invoice_timestamp.year, invoice_timestamp.day, self.months_lv.get(invoice_timestamp.month))
         title = "Rēķins"
 
-        data = [['', Paragraph(title, self.styles.get('h1')), 'Nr.', self.invoice.get('name')],
+        adv = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_header2.jpg")
+        im = Image(adv, 100, 35)
+        # self.elements.append(im)
+
+        data = [[im, Paragraph(title, self.styles.get('h1')), 'Nr.', self.invoice.get('name')],
                 ['', invoice_date, '', '']]
 
         header_table = Table(data, colWidths=list((width / 4.0, width / 2.0, width / 16.0, (width * 3) / 16.0,), ))
@@ -72,6 +76,7 @@ class InvoiceGenerator(object):
                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
                 ('BOX', (3, 0), (3, 0), 0.25, colors.darkgray),
                 ('FONT', (0, 0), (-1, -1), 'Ubuntu'),
+                ('SPAN', (0, 0), (0, 1)),
             ]))
         self.elements.append(header_table)
 
@@ -225,7 +230,20 @@ class InvoiceGenerator(object):
         self.elements.append(item_table)
 
         self.elements.append(Spacer(2 * mm, 2 * mm))
-        self.elements.append(code128.Code128("*%s*%s*" % (self.invoice.get('name'), str(final_amount)), humanReadable=1))
+
+        data = [
+            [code128.Code128("*%s*%s*" % (self.invoice.get('name'), str(final_amount)), humanReadable=1),
+             'Vēlam veiksmīgu un pozitīvu emocijām bagātu sezonu!']
+        ]
+
+        bottom_table = Table(data, colWidths=(self.doc.width*0.3, self.doc.width*0.7))
+        bottom_table.setStyle(
+            TableStyle([
+                ('FONT', (0, 0), (-1, -1), 'UbuntuB'),
+                ('SIZE', (0, 0), (-1, -1), 14),
+            ]))
+
+        self.elements.append(bottom_table)
 
     def _build_footer(self):
         if self.competition.id in (79, 80, 81, 82, 83, 84, 85, 86, 87):
@@ -239,7 +257,7 @@ class InvoiceGenerator(object):
         self._build_receiver_top()
         self._build_info_top()
         self._build_items()
-        self.elements.append(Spacer(5 * mm, 5 * mm))
+        self.elements.append(Spacer(10 * mm, 10 * mm))
         # self.elements.append(Paragraph("", normal))
         self._build_footer()
 
