@@ -233,7 +233,7 @@ class InvoiceGenerator(object):
 
         data = [
             [code128.Code128("*%s*%s*" % (self.invoice.get('name'), str(final_amount)), humanReadable=1),
-             'Vēlam veiksmīgu un pozitīvu emocijām bagātu sezonu!']
+             'Vēlam veiksmīgu un pozitīvām emocijām bagātu sezonu!']
         ]
 
         bottom_table = Table(data, colWidths=(self.doc.width*0.3, self.doc.width*0.7))
