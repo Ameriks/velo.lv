@@ -71,8 +71,8 @@ class Seb2018(SEBCompetitionBase):
         Returns defined groups for each competition type.
         """
         return {
-            self.SPORTA_DISTANCE_ID: ('M', 'M 19-34 CFA', 'W', 'M-35', 'M-40', 'M-45', 'M-50'),
-            self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-40', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', 'T W-45'),
+            self.SPORTA_DISTANCE_ID: ('M', 'U-23', 'W', 'M-35', 'M-45'),
+            self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-55', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35'),
             self.VESELIBAS_DISTANCE2_ID: ('M-14', 'W-14', ),
             self.BERNU_DISTANCE_ID: ('B 13-', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08', 'B 07-06 M', 'B 07-06 Z',)
         }
