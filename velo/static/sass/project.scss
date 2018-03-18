@@ -137,3 +137,10 @@ tbody td.selection {
   .growl .growl-message {
     font-size: 14px;
     line-height: 18px; }
+
+
+
+input.error, select.error, .error > div > select {
+  background-color: #8B0000 !important;
+  border-color: #f9e103;
+}

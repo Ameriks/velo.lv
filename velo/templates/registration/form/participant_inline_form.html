@@ -94,7 +94,7 @@
                         <div class="input-wrap w100 bottom-margin--20">
                             <div class="w100 fs13 bottom-margin--10">{% trans "Birthday" %}</div>
                             <div class="w100">
-                                <div class="row row--gutters-20">
+                                <div class="row row--gutters-20 {% if form.birthday.errors %}error{% endif %}">
                                     {{ form.birthday }}
                                 </div>
                             </div>
