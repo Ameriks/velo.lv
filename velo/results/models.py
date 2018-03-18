@@ -338,7 +338,7 @@ class SebStandings(models.Model):
         stages = [1, 2, 3, 4, 5, 6, 7, 8]
         stages_participated = 0
         for stage in stages:
-            if getattr(self, "distance_points%i" % stage, 0) > 0:
+            if getattr(self, "distance_points%i" % stage, 0) and getattr(self, "distance_points%i" % stage, 0) > 0:
                 stages_participated += 1
         return stages_participated
 
