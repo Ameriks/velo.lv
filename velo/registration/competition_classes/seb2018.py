@@ -111,40 +111,32 @@ class Seb2018(SEBCompetitionBase):
         year = birthday.year
         if distance_id == self.SPORTA_DISTANCE_ID:
             if gender == 'M':
-                if participant and (self._update_year(1995) >= year >= self._update_year(1980)) and UCICategory.objects.filter(category="CYCLING FOR ALL", slug=participant.slug):
-                    return 'M 19-34 CFA'
+                if self._update_year(1995) >= year >= self._update_year(1992):
+                    return 'U-23'
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'M'
-                elif self._update_year(1979) >= year >= self._update_year(1975):
+                elif self._update_year(1979) >= year >= self._update_year(1970):
                     return 'M-35'
-                elif self._update_year(1974) >= year >= self._update_year(1970):
-                    return 'M-40'
-                elif self._update_year(1969) >= year >= self._update_year(1965):
+                elif self._update_year(1969) >= year:
                     return 'M-45'
-                elif year <= self._update_year(1964):
-                    return 'M-50'
             else:
+                if self._update_year(1995) >= year >= self._update_year(1992):
+                    return 'U-23'
                 return 'W'  # ok
         elif distance_id == self.TAUTAS_DISTANCE_ID:
             if gender == 'M':
                 if self._update_year(1999) >= year >= self._update_year(1998):
-                    return 'M-16'
+                    return 'M-16' # ok
                 elif self._update_year(1997) >= year >= self._update_year(1996):
                     return 'T M-18'
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'T M'
-                elif self._update_year(1979) >= year >= self._update_year(1975):
+                elif self._update_year(1979) >= year >= self._update_year(1970):
                     return 'T M-35'
-                elif self._update_year(1974) >= year >= self._update_year(1970):
-                    return 'T M-40'
-                elif self._update_year(1969) >= year >= self._update_year(1965):
+                elif self._update_year(1969) >= year >= self._update_year(1960):
                     return 'T M-45'
-                elif self._update_year(1964) >= year >= self._update_year(1960):
-                    return 'T M-50'
-                elif self._update_year(1959) >= year >= self._update_year(1955):
+                elif self._update_year(1959) >= year >= self._update_year(1950):
                     return 'T M-55'
-                elif self._update_year(1954) >= year >= self._update_year(1950):
-                    return 'T M-60'
                 elif year <= self._update_year(1949):
                     return 'T M-65'
             else:
@@ -154,10 +146,8 @@ class Seb2018(SEBCompetitionBase):
                     return 'T W-18'
                 elif self._update_year(1995) >= year >= self._update_year(1980):
                     return 'T W'
-                elif self._update_year(1979) >= year >= self._update_year(1970):
+                elif self._update_year(1979) >= year:
                     return 'T W-35'
-                elif year <= self._update_year(1969):
-                    return 'T W-45'
         elif distance_id == self.BERNU_DISTANCE_ID:
             # bernu sacensibas
             if year >= 2013:
