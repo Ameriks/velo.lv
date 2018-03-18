@@ -273,7 +273,7 @@ class Seb2018(SEBCompetitionBase):
 
                     helper.calculated_total = (standing.distance_total or 0.0) / divide_by
 
-                    if standing.distance.kind == 'T' or (standing.distance.kind == 'M' and participant.distance.kind == 'T'):
+                    if standing.distance.kind == 'T' or (standing.distance.kind == 'MC' and participant.distance.kind == 'T'):
                         helper.calculated_total -= 100
 
                     # If last year participant was riding in Tautas and this year he is riding in Sport distance, then he must be after those who where riding sport distance.
