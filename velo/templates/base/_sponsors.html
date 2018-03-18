@@ -3,14 +3,17 @@
     <div class="inner flex wrap--wrap direction--row justify--center align-items--center">
 
         {% for supporter in agency_supporters %}
+
             {% if supporter.default_svg.svg_logo %}
-            <figure class="sponsor-line__sponsor img-wrapper">
-                <img
-                    data-src="{{ supporter.default_svg.svg_logo.url }}"
-                    onload="imgLoaded(this)"
-                    style="height: 100%"
-                >
-            </figure>
+              <a href="{{ supporter.url }}" target="_blank">
+                <figure class="sponsor-line__sponsor img-wrapper">
+                    <img
+                        data-src="{{ supporter.default_svg.svg_logo.url }}"
+                        onload="imgLoaded(this)"
+                        style="height: 100%"
+                    >
+                </figure>
+              </a>
             {% endif %}
         {% endfor %}
 
