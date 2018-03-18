@@ -140,7 +140,19 @@ tbody td.selection {
 
 
 
-input.error, select.error, .error > div > select {
+input.error, select.error, .error select, .error > div > select, .error > input  {
   background-color: #8B0000 !important;
   border-color: #f9e103;
+}
+
+
+div.checkbox label svg {
+  fill: #1a2937;
+}
+div.error.checkbox label svg {
+  fill: #8B0000 !important;
+}
+div.error.checkbox {
+  border: #8B0000 solid 2px;
+  padding:10px;
 }
