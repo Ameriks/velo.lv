@@ -266,9 +266,9 @@ class Seb2018(SEBCompetitionBase):
                 if standing:
 
                     # If participant have participated in all stages, but changed distances, we restore points
-                    divide_by = 5.0
+                    divide_by = 6.0
                     if standing.stages_participated < 5 and standings.count() > 1:
-                        if standing.stages_participated + standings[1].stages_participated >= 5:
+                        if standing.stages_participated + standings[1].stages_participated >= 6:
                             divide_by = float(standing.stages_participated)
 
                     helper.calculated_total = (standing.distance_total or 0.0) / divide_by
