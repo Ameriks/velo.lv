@@ -132,9 +132,7 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
     def clean_title(self):
         title = self.cleaned_data.get('title')
         try:
-            Team.objects.exclude(id=self.instance.id).get(slug=slugify(title),
-                                                          distance__competition=self.cleaned_data.get(
-                                                              'distance').competition)
+            Team.objects.exclude(id=self.instance.id).get(slug=slugify(title), distance=self.cleaned_data.get('distance'))
         except Team.DoesNotExist:
             return title
         except AttributeError:
