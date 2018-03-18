@@ -226,7 +226,7 @@ def create_team_invoice(team, active_payment_type, action="send", invoice_object
             'vat': team.company_vat,
             'office_address': team.company_address,
             'country': 'Latvia',
-            'juridical_address': team.company_juridical_address,
+            'juridical_address': team.company_juridical_address if team.company_juridical_address else team.company_address,
             'name_short': team.company_name,
             'integration_code': "team_%s" % str(team.id),
             'form': 1,  # Juridical
@@ -328,7 +328,7 @@ def create_application_invoice(application, active_payment_type, action="send", 
             'vat': application.company_vat,
             'office_address': application.company_address,
             'country': 'Latvia',
-            'juridical_address': application.company_juridical_address,
+            'juridical_address': application.company_juridical_address if application.company_juridical_address else application.company_address,
         },
         "organiser_data": {
             "name": active_payment_type.payment_channel.params.get("name"),

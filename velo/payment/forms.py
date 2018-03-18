@@ -109,8 +109,6 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                 self._errors.update({'company_regnr': [_("Company registration number required."), ]})
             if self.cleaned_data.get('company_address', '') == '':
                 self._errors.update({'company_address': [_("Company Address required."), ]})
-            if self.cleaned_data.get('company_juridical_address', '') == '':
-                self._errors.update({'company_juridical_address': [_("Company Juridical Address required."), ]})
 
         return self.cleaned_data
 
