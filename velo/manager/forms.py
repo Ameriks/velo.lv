@@ -740,6 +740,10 @@ class ParticipantForm(CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelFo
 
     def clean_ssn(self):
         value = self.cleaned_data['ssn'].replace("-", "").strip()
+
+        if value == 'hashed':
+            return value
+
         if value:
             try:
                 if not value or not len(value) == 11:
