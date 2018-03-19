@@ -359,6 +359,7 @@ class Distance(TimestampMixin, models.Model):
 class InsuranceCompany(models.Model):
     name = models.CharField(max_length=50)
     term = models.TextField(blank=True)
+    description = models.TextField(blank=True)
 
     terms_doc = models.FileField(upload_to=_get_insurance_term_upload_path, blank=True, )
 

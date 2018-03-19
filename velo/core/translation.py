@@ -11,7 +11,7 @@ class DistanceTranslationOptions(TranslationOptions):
 
 
 class InsuranceCompanyTranslationOptions(TranslationOptions):
-    fields = ('term',)
+    fields = ('term', 'description')
 
 
 translator.register(Competition, CompetitionTranslationOptions)
