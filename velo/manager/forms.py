@@ -733,7 +733,7 @@ class ParticipantForm(CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelFo
         fields = (
             'competition', 'distance', 'first_name', 'last_name', 'birthday', 'gender', 'slug', 'is_participating', 'is_paying', 'insurance',
             'team', 'team_name', 'ssn', 'phone_number', 'email', 'send_email', 'send_sms', 'country', 'city',
-            'bike_brand2', 'occupation', 'where_heard', 'group', 'registrant', 'price', 'comment', 'registration_dt', 'is_competing', )
+            'bike_brand2', 'occupation', 'where_heard', 'group', 'registrant', 'price', 'comment', 'registration_dt', 'is_competing', 'is_shown_public')
         widgets = {
             'registrant': UserChoices,
         }
@@ -929,7 +929,7 @@ class ParticipantForm(CleanEmailMixin, RequestKwargModelFormMixin, forms.ModelFo
             Fieldset(
                 'Pārējie',
                 Column('slug', 'registration_dt', css_class='col-sm-4'),
-                Column('registrant', 'is_competing', css_class='col-sm-4'),
+                Column('registrant', 'is_competing', 'is_shown_public', css_class='col-sm-4'),
                 Column('group', css_class='col-sm-4'),
             ),
             Div(

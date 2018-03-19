@@ -8,6 +8,7 @@ import django_tables2 as tables
 import itertools
 
 from velo.registration.models import Participant
+from velo.registration.tables import AnonymizeParticipantMixin
 from velo.results.models import SebStandings, TeamResultStandings
 
 __all__ = [
@@ -43,7 +44,7 @@ class ResultTeamStandingTable(tables.Table):
         template = "base/table.html"
 
 
-class ResultChildrenGroupStandingTable(tables.Table):
+class ResultChildrenGroupStandingTable(AnonymizeParticipantMixin, tables.Table):
     group_place = tables.Column(empty_values=(), verbose_name='#', accessor="group_place")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
@@ -71,7 +72,7 @@ class ResultChildrenGroupStandingTable(tables.Table):
         template = "base/table.html"
 
 
-class ResultGroupStandingTable(tables.Table):
+class ResultGroupStandingTable(AnonymizeParticipantMixin, tables.Table):
     group_place = tables.Column(empty_values=(), verbose_name='#', accessor="group_place")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
@@ -103,7 +104,7 @@ class ResultGroupStandingTable(tables.Table):
         template = "base/table.html"
 
 
-class ResultDistanceStandingTable(tables.Table):
+class ResultDistanceStandingTable(AnonymizeParticipantMixin, tables.Table):
     distance_place = tables.Column(empty_values=(), verbose_name='#', accessor="distance_place")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
@@ -135,7 +136,7 @@ class ResultDistanceStandingTable(tables.Table):
         template = "base/table.html"
 
 
-class ResultChildrenGroupTable(tables.Table):
+class ResultChildrenGroupTable(AnonymizeParticipantMixin, tables.Table):
     result_group = tables.Column(empty_values=(), verbose_name='#', accessor="result_group")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
@@ -157,7 +158,7 @@ class ResultChildrenGroupTable(tables.Table):
         template = "base/table.html"
 
 
-class ResultGroupTable(tables.Table):
+class ResultGroupTable(AnonymizeParticipantMixin, tables.Table):
     result_group = tables.Column(empty_values=(), verbose_name='#', accessor="result_group")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
@@ -168,8 +169,8 @@ class ResultGroupTable(tables.Table):
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
     points_group = tables.Column(empty_values=(), verbose_name=_('Points Group'), accessor="points_group")
 
-    def render_last_name(self, record):
-        text = strip_tags(record.participant.last_name)
+    def render_last_name(self, record, *args, **kwargs):
+        text = super().render_last_name(record, *args, **kwargs)
         if record.leader:
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
         return mark_safe(text)
@@ -200,7 +201,7 @@ class ResultGroupTable(tables.Table):
         template = "base/table.html"
 
 
-class ResultDistanceTable(tables.Table):
+class ResultDistanceTable(AnonymizeParticipantMixin, tables.Table):
     result_distance = tables.Column(empty_values=(), verbose_name='#', accessor="result_distance")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
@@ -216,8 +217,8 @@ class ResultDistanceTable(tables.Table):
             return mark_safe("<small>%s</small>" % str(value.strftime("%H:%M:%S")))
         return '-'
 
-    def render_last_name(self, record):
-        text = strip_tags(record.participant.last_name)
+    def render_last_name(self, record, *args, **kwargs):
+        text = super().render_last_name(record, *args, **kwargs)
         if record.leader:
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
 
@@ -303,7 +304,7 @@ class ResultXCODistanceCheckpointSEBTable(ResultXCODistanceCheckpointTable):
 
 
 
-class ResultRMDistanceTable(tables.Table):
+class ResultRMDistanceTable(AnonymizeParticipantMixin, tables.Table):
     result_distance = tables.Column(empty_values=(), verbose_name='#', accessor="result_distance")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
@@ -320,8 +321,8 @@ class ResultRMDistanceTable(tables.Table):
             return mark_safe("<small>%s</small>" % str(value.strftime("%H:%M:%S")))
         return '-'
 
-    def render_last_name(self, record):
-        text = strip_tags(record.participant.last_name)
+    def render_last_name(self, record, *args, **kwargs):
+        text = super().render_last_name(record, *args, **kwargs)
         if record.leader:
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
 
@@ -445,7 +446,7 @@ class ResultRM2016SportsDistanceTable(ResultRMDistanceTable):
         template = "base/table.html"
 
 
-class ResultRMGroupTable(tables.Table):
+class ResultRMGroupTable(AnonymizeParticipantMixin, tables.Table):
     result_group = tables.Column(empty_values=(), verbose_name='#', accessor="result_group")
     first_name = tables.Column(empty_values=(), verbose_name=_('First Name'), accessor="participant.first_name")
     last_name = tables.Column(empty_values=(), verbose_name=_('Last Name'), accessor="participant.last_name")
@@ -457,8 +458,8 @@ class ResultRMGroupTable(tables.Table):
     group = tables.Column(empty_values=(), verbose_name=_('Group'), accessor="participant.group")
     result_group = tables.Column(accessor='result_group', default='-')
 
-    def render_last_name(self, record):
-        text = strip_tags(record.participant.last_name)
+    def render_last_name(self, record, *args, **kwargs):
+        text = super().render_last_name(record, *args, **kwargs)
         if record.leader:
             text += LEADER_TOOLTIP % (record.leader.color, record.leader.text)
         return mark_safe(text)

@@ -101,6 +101,7 @@ class Participant(TimestampMixin, models.Model):
     is_participating = models.BooleanField(_('Is Participating'), default=False)
     is_paying = models.BooleanField(_('Is Paying'), default=True)
     is_competing = models.BooleanField(_('Is Competing'), default=True)  # in case this cyclist is participating for fun, then is_competing should be set to false.
+    is_shown_public = models.BooleanField(_('Is Shown Publicly'), default=True)  # if participant doesn't want to be seen publicly in website, this should be set to false.
 
     first_name = models.CharField(_('First Name'), max_length=60, blank=True)
     last_name = models.CharField(_('Last Name'), max_length=60, blank=True)

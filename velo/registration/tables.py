@@ -9,6 +9,35 @@ from velo.registration.models import Participant, Application, CompanyParticipan
 from velo.velo.tables import CustomSelectionCheckBoxColumn
 
 
+class AnonymizeParticipantMixin(object):
+    def get_participant(self, record):
+
+        if hasattr(record, 'participant'):
+            return record.participant
+        return record
+
+    def render_first_name(self, record, *args, **kwargs):
+        participant = self.get_participant(record)
+        if not participant.is_shown_public:
+            return mark_safe('<i>%s</i>' % _('Anonymized'))
+        else:
+            return participant.first_name
+
+    def render_last_name(self, record, *args, **kwargs):
+        participant = self.get_participant(record)
+        if not participant.is_shown_public:
+            return mark_safe('<i>%s</i>' % _('Anonymized'))
+        else:
+            return participant.last_name
+
+    def render_year(self, record, *args, **kwargs):
+        participant = self.get_participant(record)
+        if not participant.is_shown_public:
+            return mark_safe('<i>0000</i>')
+        else:
+            return participant.birthday.year
+
+
 class ApplicationTable(tables.Table):
     id = tables.LinkColumn('application', args=[A('code')])
     action = tables.TemplateColumn(verbose_name="", orderable=False, template_name="registration/table/my_application_action.html")
@@ -26,7 +55,7 @@ class ApplicationTable(tables.Table):
         template = "base/table.html"
 
 
-class ParticipantTableBase(tables.Table):
+class ParticipantTableBase(AnonymizeParticipantMixin, tables.Table):
     year = tables.Column(verbose_name=_('Year'), accessor='birthday.year', order_by='birthday')
     team = tables.Column(empty_values=(), verbose_name=_('Team'))
 

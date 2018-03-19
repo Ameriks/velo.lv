@@ -92,7 +92,7 @@ class ResultList(SetCompetitionContextMixin, SingleTableView):
             search_slug = slugify(search)
             queryset = queryset.filter(
                 Q(participant__slug__icontains=search_slug) | Q(number__number__icontains=search_slug) | Q(
-                    participant__team_name__icontains=search.upper()))
+                    participant__team_name__icontains=search.upper())).filter(participant__is_shown_public=True)
 
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
         try:
@@ -150,7 +150,7 @@ class SebStandingResultList(SetCompetitionContextMixin, SingleTableView):
             search_slug = slugify(search)
             queryset = queryset.filter(Q(participant__slug__icontains=search_slug) | Q(
                 participant__primary_number__number__icontains=search_slug) | Q(
-                participant__team_name__icontains=search.upper()))
+                participant__team_name__icontains=search.upper())).filter(participant__is_shown_public=True)
 
         queryset = queryset.filter(competition_id__in=self.competition.get_ids())
 
@@ -443,6 +443,10 @@ class ResultDiplomaPDF(DetailView):
 
     def get(self, *args, **kwargs):
         self.object = self.get_object()
+
+        if not self.object.participant.is_shown_public:
+            raise Http404("Anonymous participant cannot get diploma.")
+
         if self.object.competition.processing_class:
             _class = load_class(self.object.competition.processing_class)
         else:

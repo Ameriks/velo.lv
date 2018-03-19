@@ -66,7 +66,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
             search_slug = slugify(search)
             queryset = queryset.filter(
                 Q(slug__icontains=search_slug) | Q(primary_number__number__icontains=search_slug) | Q(
-                    team_name__icontains=search.upper()))
+                    team_name__icontains=search.upper())).filter(participant__is_shown_public=True)
 
         if self.request.GET.get('group', None):
             queryset = queryset.filter(group=self.request.GET.get('group', None))
@@ -467,7 +467,7 @@ class ParticipantSearchView(JsonRequestResponseMixin, ListView):
         elif not self.request.user.has_perm('registration.add_number'):
             id_search = id_search.filter(created_by=self.request.user)
 
-        id_search = id_search.filter(full_name__icontains=search)\
+        id_search = id_search.filter(is_shown_public=True).filter(full_name__icontains=search)\
                              .values("first_name", "last_name", "birthday")\
                              .order_by("first_name", "last_name", "birthday")\
                              .annotate(Count('first_name'), Count('last_name'), Max('id'))[:7]\
