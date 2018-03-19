@@ -20,6 +20,11 @@ msgstr ""
 "2);\n"
 "X-Translated-Using: django-rosetta 0.7.11\n"
 
+
+msgid "Insurance terms"
+msgstr "Apdrošināšanas noteikumi"
+
+
 #: velo/core/admin.py:52
 msgid "Personal info"
 msgstr "Personīgā informācija"

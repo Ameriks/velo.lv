@@ -21,6 +21,9 @@ msgstr ""
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Translated-Using: django-rosetta 0.7.11\n"
 
+msgid "Insurance terms"
+msgstr "Условия страхования"
+
 #: velo/core/admin.py:52
 msgid "Personal info"
 msgstr "Персональная информация"
