@@ -31,6 +31,8 @@ check_price = (row) ->
 update_line_participant = (row) ->
   ssn = $("input[name$='-ssn']", row)
   insurance = $("select[name$='-insurance']", row)
+  city = $("select[name$='-city']", row)
+  country = $("select[name$='-country']", row)
 
   $("input[name$='-first_name']", row).autocomplete
       serviceUrl: row.parents("form").data("autocomplete"),
@@ -71,6 +73,19 @@ update_line_participant = (row) ->
     else
       $(ssn).val("")
       el.hide()
+
+  if not country.val() == 'LV'
+    $(city).parents(".input-wrap").hide()
+
+  country.on "change", (e) ->
+    el = $(city).parents(".input-wrap")
+
+    if $(this).val() == 'LV'
+      el.show()
+    else
+      $(ssn).val("")
+      el.hide()
+
 
   if !row.hasClass("noadd")
     $("select[name$='-birthday_year'], select[name$='distance'], select[name$='insurance']", row).on "change", (e) ->

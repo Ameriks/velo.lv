@@ -216,6 +216,33 @@
                         </div>
                     {% endif %}
 
+                    {# City #}
+                        <div class="col-xl-8 col-m-12 col-s-24">
+                            <div class="input-wrap w100 bottom-margin--20">
+                            <div class="w100 fs13 bottom-margin--10">{% trans 'City' %}</div>
+                                {{ form.city|add_extra_classes:"select" }}
+                                {% if form.city.help_text or form.city.errors %}
+                                    <p id="{{ form.city.auto_id }}-error" class="error">
+                                        {% for error in form.city.errors %}{{ error }}{% empty %}
+                                            {{ form.city.help_text }}{% endfor %}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                      {# Survey #}
+                      <div class="col-xl-8 col-m-12 col-s-24">
+                          <div class="input-wrap w100 bottom-margin--20">
+                              <div class="w100 fs13 bottom-margin--10">{{ form.survey_answer1.label }}</div>
+                              {{ form.survey_answer1|add_extra_classes:"select" }}
+                              {% if form.survey_answer1.help_text or form.city.errors %}
+                                  <p id="{{ form.survey_answer1.auto_id }}-error" class="error">
+                                      {% for error in form.survey_answer1.errors %}{{ error }}{% empty %}
+                                          {{ form.survey_answer1.help_text }}{% endfor %}</p>
+                              {% endif %}
+                          </div>
+                      </div>
+
+
                     {# PRICE #}
                     <div class="col-xl-24 price">
 

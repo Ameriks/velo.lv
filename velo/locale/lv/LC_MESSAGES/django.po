@@ -24,6 +24,8 @@ msgstr ""
 msgid "Insurance terms"
 msgstr "Apdrošināšanas noteikumi"
 
+msgid "Want to participate in Roc d'Azur draw?"
+msgstr "Gribi piedalīties Roc d'Azur izlozē?"
 
 #: velo/core/admin.py:52
 msgid "Personal info"

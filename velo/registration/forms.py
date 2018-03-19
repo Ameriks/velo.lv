@@ -175,7 +175,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         fields = (
             'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
             'bike_brand2',
-            'team_name', 'email')
+            'team_name', 'email', 'city', 'survey_answer1')
         widgets = {
             'birthday': SplitDateWidget,
         }
@@ -291,6 +291,14 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         else:
             self.fields['insurance'].widget = forms.HiddenInput()
+
+        if competition.id in (79, 80):
+            self.fields['survey_answer1'].widget = forms.Select(choices=[('', '??'), ('Yes', _('Yes')), ('No', _('No'))])
+            self.fields['survey_answer1'].label = _("Want to participate in Roc d'Azur draw?")
+            self.fields['survey_answer1'].help_text = mark_safe("<a href='#modal-rock-d-azur'>%s</a>" % _('More information'))
+        else:
+            self.fields['survey_answer1'].widget = forms.HiddenInput()
+
 
         self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
                                                                           distances]
