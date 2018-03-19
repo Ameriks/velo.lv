@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 {% load staticfiles i18n sitetree crispy_forms_tags form_helper %}
 
+{% block js %}
+{{ block.super }}
+{% if insurance_company %}
+
+<section class="modal--show" id="modal-insurance-{{ insurance_company.id }}" tabindex="-1"
+        role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+
+    <div class="modal-inner">
+        <header id="modal-label">{{ insurance_company }}</header>
+        <div class="modal-content">{{ insurance_company.description|safe }}</div>
+        <footer><!-- Footer --></footer>
+    </div>
+
+    <a href="#!" class="modal-close" title="Close this modal" data-close="Close"
+        data-dismiss="modal">?</a>
+</section>
+{% endif %}
+
+{% endblock js %}
+
+
 {% block content %}
 
     <div class="w100 flex">

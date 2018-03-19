@@ -375,6 +375,11 @@ class ApplicationUpdate(NeverCacheMixin, RequestFormKwargsMixin, NamedFormsetsMi
 
     def get_context_data(self, **kwargs):
         context = super(ApplicationUpdate, self).get_context_data(**kwargs)
+
+        insurances = self.object.competition.get_insurances().filter(status=1).select_related('insurance_company')[:1]
+        if insurances:
+            context.update({'insurance_company': insurances[0].insurance_company})
+
         return context
 
     def get_success_url(self):

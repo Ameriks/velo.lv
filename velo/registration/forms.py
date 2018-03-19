@@ -1,6 +1,7 @@
 from django import forms
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.conf import settings
 
@@ -183,7 +184,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         if not self.instance.price:
             return True
         return super().has_changed()
-    
+
     def clean_ssn(self):
         if self.cleaned_data.get('country') == 'LV':
             return self.cleaned_data.get('ssn', '').replace('-', '').replace(' ', '')
@@ -285,6 +286,9 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
                 self.fields['insurance'].initial = self.instance.insurance_id
             elif not self.fields['insurance'].initial and insurances[0].price == 0.0:
                 self.fields['insurance'].initial = insurances[0].id
+
+            self.fields['insurance'].help_text = mark_safe("<a href='#modal-insurance-%i'>%s</a>" % (insurances[0].insurance_company_id, _('Insurance terms')))
+
         else:
             self.fields['insurance'].widget = forms.HiddenInput()
 
