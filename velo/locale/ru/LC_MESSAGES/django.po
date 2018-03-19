@@ -28,6 +28,9 @@ msgstr "Условия страхования"
 msgid "Personal info"
 msgstr "Персональная информация"
 
+msgid "More information"
+msgstr "Дополнительная информация"
+
 #: velo/core/admin.py:53
 msgid "Contact information"
 msgstr "Контактная информация"
