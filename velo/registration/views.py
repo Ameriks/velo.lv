@@ -66,7 +66,7 @@ class ParticipantList(SetCompetitionContextMixin, SingleTableView):
             search_slug = slugify(search)
             queryset = queryset.filter(
                 Q(slug__icontains=search_slug) | Q(primary_number__number__icontains=search_slug) | Q(
-                    team_name__icontains=search.upper())).filter(participant__is_shown_public=True)
+                    team_name__icontains=search.upper())).filter(is_shown_public=True)
 
         if self.request.GET.get('group', None):
             queryset = queryset.filter(group=self.request.GET.get('group', None))
