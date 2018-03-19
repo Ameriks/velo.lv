@@ -1403,8 +1403,8 @@ msgid "Apply"
 msgstr "Подать заявку"
 
 #: velo/team/tables.py:50
-msgid "Pay for team account"
-msgstr "Заплатить за команду"
+msgid "Pay for tent place"
+msgstr "Оплатить место для палаток"
 
 #: velo/team/tables.py:60
 msgid "You haven't created any official team."

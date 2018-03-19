@@ -44,7 +44,7 @@ class TeamMyTable(tables.Table):
         if record.distance.profile_price and not record.is_featured:
             if ret != '':
                 ret += mark_safe('<br />')
-            ret += mark_safe("<a href='%s'>%s</a>" % (reverse('account:team_pay', kwargs={'pk2': record.id}), ugettext('Pay for team account')))
+            ret += mark_safe("<a href='%s'>%s</a>" % (reverse('account:team_pay', kwargs={'pk2': record.id}), ugettext('Pay for tent place')))
 
         return ret
 

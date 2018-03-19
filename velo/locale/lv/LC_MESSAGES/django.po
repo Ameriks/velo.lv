@@ -1399,8 +1399,8 @@ msgid "Apply"
 msgstr "Pieteikties"
 
 #: velo/team/tables.py:50
-msgid "Pay for team account"
-msgstr "Maksāt par komandu"
+msgid "Pay for tent place"
+msgstr "Maksāt par telts vietu"
 
 #: velo/team/tables.py:60
 msgid "You haven't created any official team."

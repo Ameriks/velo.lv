@@ -247,7 +247,7 @@ def create_team_invoice(team, active_payment_type, action="send", invoice_object
         "payment_type": "Pārskaitījums",
         "kind": "2",
         "items": [{
-            "description": "Komandas %s profila apmaksa" % str(team),
+            "description": "Komandas %s telts vietas apmaksa" % str(team),
             "units": "gab.",
             "amount": "1",
             "price": float(team.final_price)
