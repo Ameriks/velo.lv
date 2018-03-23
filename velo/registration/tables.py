@@ -32,6 +32,10 @@ class AnonymizeParticipantMixin(object):
 
     def render_year(self, record, *args, **kwargs):
         participant = self.get_participant(record)
+
+        if not participant.birthday:
+            return None
+
         if not participant.is_shown_public:
             return mark_safe('<i>0000</i>')
         else:
