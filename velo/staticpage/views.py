@@ -1,3 +1,4 @@
+import xhtml2pdf
 from django.http import Http404
 from django.views.generic import DetailView
 from django.core.exceptions import ObjectDoesNotExist
@@ -18,7 +19,6 @@ class StaticPageView(SetCompetitionContextMixin, DetailView):
             queryset = queryset.filter(competition__in=self.competition.get_ids())
 
         return queryset
-
 
     def get_object(self, queryset=None):
         queryset = self.get_queryset()
@@ -44,3 +44,11 @@ class StaticPageView(SetCompetitionContextMixin, DetailView):
 
         context.update({'content': content})
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('kind') == "PDF":
+            a = xhtml2pdf
+            # create PDF
+            pass
+        else:
+            return super().get(request, *args, **kwargs)

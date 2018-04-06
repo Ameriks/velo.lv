@@ -67,6 +67,7 @@ django-grappelli==2.9.1
 easy-thumbnails==2.4.1
 xlwt==1.2.0
 reportlab==3.4.0
+xhtml2pdf==0.2.1
 
 pwgen==0.7
 premailer==3.0.1
