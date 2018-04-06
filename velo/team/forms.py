@@ -119,8 +119,7 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
         model = Team
         fields = (
             'distance', 'title', 'description', 'img', 'shirt_image', 'country', 'contact_person', 'email',
-            'phone_number',
-            'management_info',)
+            'phone_number', 'is_w', 'management_info',)
 
     def clean_distance(self):
         distance = self.cleaned_data.get('distance')
@@ -155,6 +154,8 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].required = True
+        self.fields['is_w'].required = False
+        self.fields['is_w'].label = "Sieviešu komanda?"
 
         self.fields['country'].initial = 'LV'
 
