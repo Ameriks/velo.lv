@@ -181,12 +181,12 @@ class Seb2018(SEBCompetitionBase):
         raise Exception('Invalid group assigning.')
 
     def payment_additional_checkboxes(self, application_id=None, application=None):
-        if not application:
-            application = Application.objects.get(id=application_id)
+        # if not application:
+        #     application = Application.objects.get(id=application_id)
 
-        if application.participant_set.filter(distance_id=self.SPORTA_DISTANCE_ID):
-            distance = Distance.objects.get(id=self.SPORTA_DISTANCE_ID)
-            return ('sport_approval', forms.BooleanField(label=_("I am informed that participation in %s requires LRF licence. More info - http://lrf.lv") % distance, required=True)),
+        # if application.participant_set.filter(distance_id=self.SPORTA_DISTANCE_ID):
+        #     distance = Distance.objects.get(id=self.SPORTA_DISTANCE_ID)
+        #     return ('sport_approval', forms.BooleanField(label=_("I am informed that participation in %s requires LRF licence. More info - http://lrf.lv") % distance, required=True)),
 
         return ()
 
