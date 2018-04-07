@@ -168,22 +168,14 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-
-
-
+                                    <div class="col-xl-12 col-s-24">
+                                        <div class="input-wrap w100 bottom-margin--20">
+                                            <div class="w100 fs13 bottom-margin--10">&nbsp;</div>
+                                            {% include "wd_forms/new/checkbox.html" with field=form.is_w %}
+                                        </div>
+                                    </div>
 
                                 {% crispy member member.form.helper %}
-
-
-
-
-
-
-
-
-
 
                                 </div>
                             </div>
@@ -220,18 +212,17 @@
                             </div>
                         </div>
                     </form>
-
-
-
-
-
-
-
-
             </div>
         </div>
     </div>
 
-
+<script>
+var select = document.getElementById('id_distance');
+var checkbox = document.querySelector('#id_is_w');
+checkbox.parentElement.style.display = (parseInt(select.value) === 80 ? "block" : "none");
+select.onchange = function (ev) {
+  document.querySelector('#id_is_w').parentElement.style.display = (parseInt(this.value) === 80 ? "block" : "none");
+  if (parseInt(this.value) !== 80) {document.querySelector('#id_is_w').checked=false;}};
+</script>
 {% endblock %}
 
