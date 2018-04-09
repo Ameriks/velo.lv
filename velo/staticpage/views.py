@@ -1,9 +1,11 @@
-import xhtml2pdf
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.views.generic import DetailView
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
+from xhtml2pdf import pisa
+from django.templatetags.static import static
 
+from config.settings.common import APPS_DIR
 from velo.staticpage.models import StaticPage
 from velo.velo.mixins.views import SetCompetitionContextMixin
 
@@ -47,8 +49,17 @@ class StaticPageView(SetCompetitionContextMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         if request.GET.get('kind') == "PDF":
-            a = xhtml2pdf
-            # create PDF
-            pass
-        else:
-            return super().get(request, *args, **kwargs)
+            if not self.competition:
+                self.set_competition(kwargs.get('pk'))
+            obj = self.get_object()
+            content = obj.get_contentmd
+            html = "<html><head><meta charset=\"UTF-8\"><title>Nolikums</title></head><body>{}</body></html>".format(content)
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(self.competition.alias or "Nolikums")
+
+            with open(str(APPS_DIR.path(static("/css/xhtml2pdf.css")[1:]))) as f:
+                css = f.read()
+                pisa.CreatePDF(html, dest=response, default_css=css, encoding="utf-8")
+                return response
+        # else:
+        return super().get(request, *args, **kwargs)
