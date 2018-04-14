@@ -298,6 +298,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['survey_answer1'].help_text = mark_safe("<a href='#modal-rock-d-azur'>%s</a>" % _('More information'))
         else:
             self.fields['survey_answer1'].widget = forms.HiddenInput()
+            self.fields['survey_answer1'].label = ""
 
 
         self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
