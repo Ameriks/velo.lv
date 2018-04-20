@@ -16,7 +16,7 @@ from velo.manager.views import ManageApplication
 from velo.manager.views.permission_view import ManagerPermissionMixin
 from velo.payment.models import Payment
 from velo.registration.models import Application
-from velo.registration.utils import import_lrf_licences
+from velo.registration.utils import import_lrf_licences_2018 as import_lrf_licences
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
 from velo.manager.tasks import *
 from velo.team.tasks import match_team_members_to_participants, copy_registered_teams

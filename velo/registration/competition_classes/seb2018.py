@@ -17,13 +17,14 @@ from slugify import slugify
 from velo.core.models import Log, Distance
 from velo.core.pdf import fill_page_with_image, _baseFontNameB, _baseFontName
 from velo.registration.competition_classes.base_seb import SEBCompetitionBase
-from velo.registration.models import Application, ChangedName, Number, Participant, UCICategory
+from velo.registration.models import Application, ChangedName, Number, Participant, UCICategory, PreNumberAssign
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from velo.registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable
 from velo.results.helper import time_to_seconds, seconds_to_time
 from velo.results.models import SebStandings, HelperResults, ChipScan, Result
 from velo.results.tables import ResultDistanceCheckpointTable, ResultXCODistanceCheckpointSEBTable
+from velo.results.tasks import update_helper_result_table
 
 
 class Seb2018(SEBCompetitionBase):
@@ -179,6 +180,45 @@ class Seb2018(SEBCompetitionBase):
 
         print('here I shouldnt be...')
         raise Exception('Invalid group assigning.')
+
+
+    def assign_passage(self, reset=False):
+        if self.competition.level != 2:
+            raise Exception('We allow assigning passages only for stages.')
+
+        if reset:
+            HelperResults.objects.filter(competition=self.competition).update(passage_assigned=None)
+
+        update_helper_result_table(self.competition_id, update=True)
+
+        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None).select_related('participant').order_by('-calculated_total', 'participant__registration_dt')
+            for passage_nr, total, passage_extra in self.passages.get(distance_id):
+                specials = [obj.participant_slug for obj in PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).filter(segment=passage_nr)]
+                # Assign passage for specials
+                HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, participant__slug__in=specials, passage_assigned=None).update(passage_assigned=passage_nr)
+
+                places = total - passage_extra
+
+                for result in helperresults[0:places]:
+                    result.passage_assigned = passage_nr
+                    result.save()
+
+                # Exceptions
+
+                # In 1.stage all licenced girls and 50 women that are not in first 3 passages will be assigned to 4.passage
+                if passage_nr == 4 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
+                    girls = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('W-16', 'T W-18')).order_by('-calculated_total', 'participant__registration_dt')
+                    for _ in girls:
+                        if UCICategory.objects.filter(first_name__icontains=girls.participant.first_name, last_name__icontains=girls.participant.last_name):
+                            _.passage_assigned = passage_nr
+                            _.save()
+
+                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('T W', 'T W-35')).order_by('-calculated_total', 'participant__registration_dt')[0:50]
+                    for _ in women:
+                        _.passage_assigned = passage_nr
+                        _.save()
+
 
     def payment_additional_checkboxes(self, application_id=None, application=None):
         # if not application:
@@ -475,107 +515,3 @@ class Seb2018(SEBCompetitionBase):
 
                         self.recalculate_standing_for_result(result)
             self.assign_standing_places()
-
-
-    def generate_diploma(self, result):
-        output = BytesIO()
-        path = 'velo/results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
-
-        if not os.path.isfile(path):
-            raise Exception
-
-        # Until most of participants have finished, we show total registered participants.
-        riga_tz = pytz.timezone("Europe/Riga")
-        now = riga_tz.normalize(timezone.now())
-        if (now.date() == self.competition.competition_date) and now.hour < 17:
-            total_participants = result.participant.distance.participant_set.filter(is_participating=True).count()
-            total_group_participants = result.participant.distance.participant_set.filter(is_participating=True, group=result.participant.group).count()
-        else:
-            total_participants = result.competition.result_set.filter(participant__distance=result.participant.distance).count()
-            total_group_participants = result.competition.result_set.filter(participant__distance=result.participant.distance, participant__group=result.participant.group).count()
-
-        if self.competition_index == 1:
-            c = canvas.Canvas(output, pagesize=(29.7*cm, 33.55*cm))
-
-            fill_page_with_image(path, c)
-
-            c.setFont(_baseFontNameB, 32)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawString(c._pagesize[0] - 3.3 * cm, 23.7 * cm, str(result.participant.primary_number))
-
-            c.setFont(_baseFontNameB, 26)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawCentredString(c._pagesize[0] - 6.5 * cm, 25.7*cm, result.participant.full_name)
-
-            c.setFont(_baseFontName, 32)
-            c.drawCentredString(c._pagesize[0] - 7 * cm, 18.3 * cm, str(result.time.replace(microsecond=0)))
-
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm, 14.5 * cm, str(result.result_distance))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm, 14.5 * cm, str(total_participants))
-
-            c.drawCentredString(c._pagesize[0] - 7 * cm, 7.3 * cm, "%s km/h" % result.avg_speed)
-
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm, 10.8*cm, str(result.result_group))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm, 10.8*cm, str(total_group_participants))
-
-        elif self.competition_index == 2:
-
-            c = canvas.Canvas(output, pagesize=(21*1.5*cm, 29.7*1.5*cm))
-
-            move_cm_w = 9*cm
-
-            fill_page_with_image(path, c)
-
-            c.setFont(_baseFontNameB, 32)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawString(c._pagesize[0] - 3.3 * cm - move_cm_w, 23.7 * cm, str(result.participant.primary_number))
-
-            c.setFont(_baseFontNameB, 26)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawCentredString(c._pagesize[0] - 6.5 * cm - move_cm_w, 26 * cm, result.participant.full_name)
-
-            c.setFont(_baseFontName, 32)
-            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 18.3 * cm, str(result.time.replace(microsecond=0)))
-
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 13.5 * cm, str(result.result_distance))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 13.5 * cm, str(total_participants))
-
-            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 4 * cm, "%s km/h" % result.avg_speed)
-
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 8.8 * cm, str(result.result_group))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 8.8 * cm, str(total_group_participants))
-
-        elif self.competition_index == 3:
-            c = canvas.Canvas(output, pagesize=(29.7 * cm, 42 * cm))
-
-            fill_page_with_image(path, c)
-
-            move_cm_w = 14*cm
-            move_cm_h = 3*cm
-
-            c.setFont(_baseFontNameB, 32)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawString(c._pagesize[0] - 3.3 * cm - move_cm_w - 2*cm, 23.7 * cm - move_cm_h - 0.2*cm, str(result.participant.primary_number))
-
-            c.setFont(_baseFontNameB, 26)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawCentredString(c._pagesize[0] - 6.5 * cm - move_cm_w, 25.7 * cm - move_cm_h, result.participant.full_name)
-
-            c.setFont(_baseFontName, 32)
-            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 18.3 * cm - move_cm_h, str(result.time.replace(microsecond=0)))
-
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 14.5 * cm - move_cm_h - 1*cm, str(result.result_distance))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 14.5 * cm - move_cm_h - 1*cm, str(total_participants))
-
-            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 7.3 * cm - move_cm_h - 2*cm, "%s km/h" % result.avg_speed)
-
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 10.8 * cm - move_cm_h - 1.5*cm, str(result.result_group))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 10.8 * cm - move_cm_h - 1.5*cm, str(total_group_participants))
-
-        # c.setFont(_baseFontName, 18)
-        # c.drawCentredString(c._pagesize[0] - 7 * cm, 10.1 * cm, str(result.participant.group))
-
-        c.showPage()
-        c.save()
-        output.seek(0)
-        return output
