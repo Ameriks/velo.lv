@@ -206,11 +206,19 @@ class Seb2018(SEBCompetitionBase):
 
                 # Exceptions
 
+                # In 1.stage all licenced juniors are put in 3rd passage
+                if passage_nr == 3 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
+                    juniors = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('M-16', 'T M-18')).order_by('-calculated_total', 'participant__registration_dt')
+                    for _ in juniors:
+                        if UCICategory.objects.filter(first_name__icontains=_.participant.first_name, last_name__icontains=_.participant.last_name):
+                            _.passage_assigned = passage_nr
+                            _.save()
+
                 # In 1.stage all licenced girls and 50 women that are not in first 3 passages will be assigned to 4.passage
                 if passage_nr == 4 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
                     girls = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('W-16', 'T W-18')).order_by('-calculated_total', 'participant__registration_dt')
                     for _ in girls:
-                        if UCICategory.objects.filter(first_name__icontains=girls.participant.first_name, last_name__icontains=girls.participant.last_name):
+                        if UCICategory.objects.filter(first_name__icontains=_.participant.first_name, last_name__icontains=_.participant.last_name):
                             _.passage_assigned = passage_nr
                             _.save()
 
