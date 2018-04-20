@@ -74,7 +74,7 @@ class Seb2018(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: ('M', 'U-23', 'W', 'M-35', 'M-45'),
             self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-55', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35'),
             self.VESELIBAS_DISTANCE2_ID: ('M-14', 'W-14', ),
-            self.BERNU_DISTANCE_ID: ('B 13-', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08', 'B 07-06 M', 'B 07-06 Z',)
+            self.BERNU_DISTANCE_ID: ('B 14-', 'B 13', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08-07 M', 'B 08-07 Z',)
         }
 
     def number_ranges(self):
@@ -150,8 +150,10 @@ class Seb2018(SEBCompetitionBase):
                     return 'T W-35'
         elif distance_id == self.BERNU_DISTANCE_ID:
             # bernu sacensibas
-            if year >= 2013:
-                return 'B 13-'
+            if year >= 2014:
+                return 'B 14-'
+            elif year == 2013:
+                return 'B 13'
             elif year == 2012:
                 return 'B 12'
             elif year == 2011:
@@ -160,13 +162,11 @@ class Seb2018(SEBCompetitionBase):
                 return 'B 10'
             elif year == 2009:
                 return 'B 09'
-            elif year == 2008:
-                return 'B 08'
-            elif year in (2007, 2006):
+            elif year in (2008, 2007):
                 if gender == 'M':
-                    return 'B 07-06 Z'
+                    return 'B 08-07 Z'
                 else:
-                    return 'B 07-06 M'
+                    return 'B 08-07 M'
 
         elif distance_id == self.VESELIBAS_DISTANCE2_ID:
             if year in (self._update_year(2000), self._update_year(2001), self._update_year(2002)):
