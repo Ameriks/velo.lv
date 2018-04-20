@@ -290,7 +290,7 @@ class Seb2018(SEBCompetitionBase):
 
             current = helper.calculated_total
 
-            if participant.distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            if participant.distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.VESELIBAS_DISTANCE2_ID):
                 continue
 
             # Calculate stage points only if last stage have finished + 2 days.
