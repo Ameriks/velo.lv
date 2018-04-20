@@ -369,4 +369,6 @@ class UCICategory(models.Model):
     def save(self, *args, **kwargs):
         if self.birthday:
             self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year), only_ascii=True)
+        else:
+            self.slug = slugify('%s-%s' % (self.first_name, self.last_name), only_ascii=True)
         return super().save(*args, **kwargs)
