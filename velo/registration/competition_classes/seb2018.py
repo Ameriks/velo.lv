@@ -558,13 +558,14 @@ class Seb2018(SEBCompetitionBase):
         c.setFont(_baseFontName, 32)
         c.drawCentredString(c._pagesize[0] - 10.2 * cm, 12.6 * cm, str(result.time.replace(microsecond=0)))
 
-        c.drawCentredString(c._pagesize[0] - 12.1 * cm, 9.5 * cm, str(result.result_distance))
-        c.drawCentredString(c._pagesize[0] - 8.4 * cm, 9.5 * cm, str(total_participants))
+        if result.participant.distance_id != self.VESELIBAS_DISTANCE_ID:
+            c.drawCentredString(c._pagesize[0] - 12.1 * cm, 9.5 * cm, str(result.result_distance))
+            c.drawCentredString(c._pagesize[0] - 8.4 * cm, 9.5 * cm, str(total_participants))
 
-        c.drawCentredString(c._pagesize[0] - 10 * cm, 3.7 * cm, "%s km/h" % result.avg_speed)
+            c.drawCentredString(c._pagesize[0] - 10 * cm, 3.7 * cm, "%s km/h" % result.avg_speed)
 
-        c.drawCentredString(c._pagesize[0] - 12.1 * cm, 6.5*cm, str(result.result_group))
-        c.drawCentredString(c._pagesize[0] - 8.4 * cm, 6.5*cm, str(total_group_participants))
+            c.drawCentredString(c._pagesize[0] - 12.1 * cm, 6.5*cm, str(result.result_group))
+            c.drawCentredString(c._pagesize[0] - 8.4 * cm, 6.5*cm, str(total_group_participants))
 
         c.showPage()
         c.save()
