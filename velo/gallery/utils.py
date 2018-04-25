@@ -1,11 +1,7 @@
 from functools import partial
 from urllib.parse import urlparse, parse_qs
 
-import os
 import hashlib
-
-from velo.gallery.models import Album, Photo
-from velo.gallery.tasks import generate_thumbnails
 
 
 def youtube_video_id(value):
@@ -38,24 +34,4 @@ def md5sum(filename):
             d.update(buf)
     return d.hexdigest()
 
-
-def sync_album(album_id):
-    album = Album.objects.get(id=album_id)
-    for root, _, files in os.walk(album.folder):
-        for f in sorted(files):
-            if f[-3:].lower() != 'jpg' and f[-4:].lower() != 'jpeg':
-                continue
-            fullpath = os.path.join(root, f)
-            md5 = md5sum(fullpath)
-            photo, created = album.photo_set.get_or_create(md5=md5, defaults={'image': fullpath[11:]})
-
-            if not album.primary_image:
-                album.primary_image = photo
-                album.save()
-
-            if not created:
-                photo.image = fullpath[6:]
-                photo.save()
-            else:
-                generate_thumbnails.delay(photo.id, 'image', model_class='velo.gallery.models.Photo')
 
