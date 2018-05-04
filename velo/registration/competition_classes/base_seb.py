@@ -389,6 +389,10 @@ class SEBCompetitionBase(CompetitionScriptBase):
         if result.number.distance_id == self.BERNU_DISTANCE_ID:
             return result.points_distance  # For children lets return the same number.
 
+        total = 900
+        if result.number.distance_id == self.SPORTA_DISTANCE_ID:
+            total = 1000
+
         if result.status:  # If result has the status then that means that result is 0
             return 0
 
@@ -396,12 +400,12 @@ class SEBCompetitionBase(CompetitionScriptBase):
             try:
                 top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, status='').exclude(time=None).order_by('time')[0]
             except IndexError:
-                return 1000
+                return total
 
         if result.time is None:
             return 0
 
-        return math.trunc((float(math.trunc(time_to_seconds(top_result.time))) / float(math.trunc(time_to_seconds(result.time)))) * 1000)
+        return math.trunc((float(math.trunc(time_to_seconds(top_result.time))) / float(math.trunc(time_to_seconds(result.time)))) * total)
 
     def calculate_points_group(self, result):
         """
@@ -410,18 +414,22 @@ class SEBCompetitionBase(CompetitionScriptBase):
         if result.number.distance_id == self.BERNU_DISTANCE_ID:
             return result.points_group  # For children lets return the same number.
 
+        total = 900
+        if result.number.distance_id == self.SPORTA_DISTANCE_ID:
+            total = 1000
+
         if result.status:
             return 0
 
         try:
             top_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, participant__group=result.participant.group, status='').exclude(time=None).order_by('time')[0]
         except IndexError:
-            return 1000
+            return total
 
         if result.time is None:
             return 0
 
-        return math.trunc((float(math.trunc(time_to_seconds(top_result.time))) / float(math.trunc(time_to_seconds(result.time)))) * 1000)
+        return math.trunc((float(math.trunc(time_to_seconds(top_result.time))) / float(math.trunc(time_to_seconds(result.time)))) * total)
 
     def get_result_table_class(self, distance, group=None):
         if distance.id == self.BERNU_DISTANCE_ID:  # children distance
