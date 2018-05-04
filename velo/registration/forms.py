@@ -172,7 +172,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
     class Meta:
         model = Participant
-        fields = (
+        fields = ('insurance',
             'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
             'bike_brand2',
             'team_name', 'email', 'city', 'survey_answer1')
@@ -186,6 +186,9 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         return super().has_changed()
 
     def clean_ssn(self):
+        insurance = self.cleaned_data.get('insurance', "")
+        if not insurance:
+            return ''
         if self.cleaned_data.get('country') == 'LV':
             return self.cleaned_data.get('ssn', '').replace('-', '').replace(' ', '')
         else:
@@ -199,11 +202,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         return None
 
     def clean_birthday(self):
-        ssn = self.cleaned_data.get('ssn')
-        if self.cleaned_data.get('country') == 'LV' and ssn:
-            return bday_from_LV_SSN(self.cleaned_data.get('ssn'))
-        else:
-            return self.cleaned_data.get('birthday')
+        return self.cleaned_data.get('birthday')
 
     def clean_team_name(self):
         return self.cleaned_data.get('team_name').strip()
