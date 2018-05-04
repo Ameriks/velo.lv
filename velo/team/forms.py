@@ -54,8 +54,9 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
         try:
             if "status" not in self.cleaned_data or self.cleaned_data.get("status") == Member.STATUS_ACTIVE:
-                member = Member.objects.exclude(id=self.instance.id).filter(status=Member.STATUS_ACTIVE).get(
-                    team__distance__competition_id=self.instance.team.distance.competition_id, slug=slug)
+                member = Member.objects.exclude(id=self.instance.id).filter(status=Member.STATUS_ACTIVE).get(team__distance__competition_id=self.instance.team.distance.competition_id,
+                                                                                                             slug=slug,
+                                                                                                             team__distance_id=self.instance.team.distance_id)
                 self._errors.update({'first_name': [
                     _("Member with this First Name and Last Name is already registered in other team - {0}.").format(
                         member.team), ]})
