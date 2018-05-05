@@ -22,14 +22,21 @@ from velo.velo.mixins.views import NeverCacheMixin
 
 
 class SMSReportView(CsrfExemptMixin, View):
-    def post(self, request, *args, **kwargs):
-        smsid = request.GET.get('smId')
-        status = request.GET.get('status')
+
+    def process(self):
+        smsid = self.request.GET.get('smId')
+        status = self.request.GET.get('status')
 
         sms = SMS.objects.filter(response=smsid).exclude(status="DELIVRD")
         if sms:
             sms.update(status=status)
 
+    def post(self, request, *args, **kwargs):
+        self.process()
+        return HttpResponse('ok')
+
+    def post(self, request, *args, **kwargs):
+        self.process()
         return HttpResponse('ok')
 
 
