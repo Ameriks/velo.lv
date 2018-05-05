@@ -121,8 +121,8 @@ class Seb2018(SEBCompetitionBase):
                 elif self._update_year(1969) >= year:
                     return 'M-45'
             else:
-                if self._update_year(1995) >= year >= self._update_year(1992):
-                    return 'U-23'
+                # if self._update_year(1995) >= year >= self._update_year(1992):
+                #     return 'U-23'
                 return 'W'  # ok
         elif distance_id == self.TAUTAS_DISTANCE_ID:
             if gender == 'M':
