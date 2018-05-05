@@ -489,11 +489,11 @@ class Seb2018(SEBCompetitionBase):
                     chip = ChipScan(competition=self.competition, nr=number, time=datetime.time(*map(int, time.split(':'))))
 
                     results = Result.objects.filter(competition=chip.competition, number=chip.nr).exclude(time=None)
-                    if results:
-                        Log.objects.create(content_object=chip, action="Chip process",
-                                           message="Chip ignored. Already have result")
-                        continue
-                    else:
+                    # if results:
+                    #     Log.objects.create(content_object=chip, action="Chip process",
+                    #                        message="Chip ignored. Already have result")
+                    #     continue
+                    if True:
                         participant = self.process_chip_create_participant(chip)
 
                         # If participant is not previously created in system, we create it using data provided in CSV
