@@ -35,7 +35,7 @@ class SMSReportView(CsrfExemptMixin, View):
         self.process()
         return HttpResponse('ok')
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         self.process()
         return HttpResponse('ok')
 
