@@ -460,7 +460,7 @@ class Seb2018(SEBCompetitionBase):
                     time = row[7]
                     place = row[8]
                     points = row[9]
-                    group = row[10]
+                    group = row[12]
 
                     if not place:
                         place = None
@@ -492,6 +492,7 @@ class Seb2018(SEBCompetitionBase):
                     if results:
                         Log.objects.create(content_object=chip, action="Chip process",
                                            message="Chip ignored. Already have result")
+                        continue
                     else:
                         participant = self.process_chip_create_participant(chip)
 
@@ -511,17 +512,17 @@ class Seb2018(SEBCompetitionBase):
                             }
                             participant = [Participant.objects.create(**data), ]
 
-                        result_time, seconds = self.calculate_time(chip)
-                        result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant[0], number=chip.nr)
-                        result.time = time  # result_time
-                        # TODO: function to calculate the place and points.
-                        result.result_group = place
-                        result.points_group = points
-                        if status:
-                            result.status = status
-                        result.save()
+                    result_time, seconds = self.calculate_time(chip)
+                    result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant[0], number=chip.nr)
+                    result.time = time  # result_time
+                    # TODO: function to calculate the place and points.
+                    result.result_group = place
+                    result.points_group = points
+                    if status:
+                        result.status = status
+                    result.save()
 
-                        self.recalculate_standing_for_result(result)
+                    self.recalculate_standing_for_result(result)
             self.assign_standing_places()
 
 
