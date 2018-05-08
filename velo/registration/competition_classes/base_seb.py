@@ -389,9 +389,9 @@ class SEBCompetitionBase(CompetitionScriptBase):
         if result.number.distance_id == self.BERNU_DISTANCE_ID:
             return result.points_distance  # For children lets return the same number.
 
-        total = 900
-        if result.number.distance_id == self.SPORTA_DISTANCE_ID:
-            total = 1000
+        total = 1000
+        if result.number.distance_id == self.TAUTAS_DISTANCE_ID:
+            total = 900
 
         if result.status:  # If result has the status then that means that result is 0
             return 0
@@ -414,9 +414,9 @@ class SEBCompetitionBase(CompetitionScriptBase):
         if result.number.distance_id == self.BERNU_DISTANCE_ID:
             return result.points_group  # For children lets return the same number.
 
-        total = 900
-        if result.number.distance_id == self.SPORTA_DISTANCE_ID:
-            total = 1000
+        total = 1000
+        if result.number.distance_id == self.TAUTAS_DISTANCE_ID:
+            total = 900
 
         if result.status:
             return 0

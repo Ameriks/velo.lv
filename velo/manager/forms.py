@@ -1,4 +1,5 @@
 from django import forms
+from django.db import transaction
 from django.db.models import Count
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
@@ -18,6 +19,7 @@ from velo.payment.models import ActivePaymentChannel, Price, Invoice
 from velo.payment.utils import create_application_invoice
 from velo.registration.models import Participant, Number, Application, PreNumberAssign, ChangedName
 from velo.results.models import DistanceAdmin, Result, LapResult, UrlSync
+from velo.results.tasks import recalculate_standing_for_result
 from velo.team.forms import MemberInlineForm, TeamForm
 from velo.team.models import Member, Team
 from velo.velo.mixins.forms import RequestKwargModelFormMixin, CleanEmailMixin, CleanSSNMixin
@@ -1037,11 +1039,10 @@ class ResultForm(RequestKwargModelFormMixin, forms.ModelForm):
     def save(self, commit=True):
 
         obj = super(ResultForm, self).save(commit)
-
-        # create result update task for participant
-        print('recalculate?')
-        # TODO: Need to optimize place and point recalculation.
-        # update_results_for_result(obj)
+        if obj.status:
+            obj.set_all()
+            obj.save()
+        transaction.on_commit(lambda: recalculate_standing_for_result.delay(obj.competition_id, obj.id))
 
         return obj
 
