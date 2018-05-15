@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 import datetime
 from django_tables2 import SingleTableView
 
-from velo.core.models import Competition
+from velo.core.models import Competition, Distance
 from velo.results.models import Result, SebStandings, TeamResultStandings
 from velo.results.tables import ResultTeamStandingTable
 from velo.team.models import MemberApplication
@@ -212,17 +212,30 @@ class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
     def get(self, *args, **kwargs):
         self.set_competition(kwargs.get('pk'))
         self.set_distances(only_w_teams=True)  # Based on self.competition
-        self.set_distance(self.request.GET.get('distance', None))
+
+        _distance = self.request.GET.get('distance', None)
+
+        distance = _distance[1:] if _distance[0] == "S" else _distance
+        self.set_distance(distance)
 
         return super(SebTeamResultStandingList, self).get(*args, **kwargs)
 
     def get_queryset(self):
         queryset = super(SebTeamResultStandingList, self).get_queryset()
+
         queryset = queryset.filter(team__distance=self.distance).order_by('-points_total', '-team__is_featured',
                                                                           'team__title')
+        if self.request.GET.get('distance', None)[0] == "S":
+            queryset.filter(team__is_w=True)
         queryset = queryset.select_related('team')
 
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.GET.get("distance", "")[0] == "S":
+            context.update({"is_w": True})
+        return context
 
 
 class TeamResultsByTeamName(SetCompetitionContextMixin, TemplateView):
