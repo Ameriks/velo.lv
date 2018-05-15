@@ -226,7 +226,7 @@ class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
         queryset = queryset.filter(team__distance=self.distance).order_by('-points_total', '-team__is_featured',
                                                                           'team__title')
         if self.request.GET.get('distance', None)[0] == "S":
-            queryset.filter(team__is_w=True)
+            queryset = queryset.filter(team__is_w=True)
         queryset = queryset.select_related('team')
 
         return queryset
