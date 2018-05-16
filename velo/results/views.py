@@ -171,7 +171,10 @@ class SebTeamResultList(SetCompetitionContextMixin, ListView):
     def get(self, *args, **kwargs):
         self.set_competition(kwargs.get('pk'))
         self.set_distances(only_w_teams=True)  # Based on self.competition
-        self.set_distance(self.request.GET.get('distance', None))
+        _distance = self.request.GET.get('distance', None)
+
+        distance = _distance[1:] if _distance[0] == "S" else _distance
+        self.set_distance(distance)
 
         return super(SebTeamResultList, self).get(*args, **kwargs)
 
@@ -194,7 +197,15 @@ class SebTeamResultList(SetCompetitionContextMixin, ListView):
                                         'team__member__memberapplication__participant__primary_number__number',
                                         'team__member__memberapplication__participant__result__points_distance',
                                         )
+        if self.request.GET.get('distance', None)[0] == "S":
+            queryset = queryset.filter(team__is_w=True)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.GET.get("distance", "")[0] == "S":
+            context.update({"is_w": True})
+        return context
 
 
 class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
