@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 import datetime
 from django_tables2 import SingleTableView
 
-from velo.core.models import Competition, Distance
+from velo.core.models import Competition
 from velo.results.models import Result, SebStandings, TeamResultStandings
 from velo.results.tables import ResultTeamStandingTable
 from velo.team.models import MemberApplication
