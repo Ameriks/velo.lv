@@ -171,9 +171,9 @@ class SebTeamResultList(SetCompetitionContextMixin, ListView):
     def get(self, *args, **kwargs):
         self.set_competition(kwargs.get('pk'))
         self.set_distances(only_w_teams=True)  # Based on self.competition
-        _distance = self.request.GET.get('distance', None)
-
-        distance = _distance[1:] if _distance[0] == "S" else _distance
+        distance = self.request.GET.get('distance', None)
+        if distance:
+            distance = distance[1:] if distance.startswith("S") else distance
         self.set_distance(distance)
 
         return super(SebTeamResultList, self).get(*args, **kwargs)
@@ -203,7 +203,7 @@ class SebTeamResultList(SetCompetitionContextMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.GET.get("distance", "")[0] == "S":
+        if self.request.GET.get("distance", "").startswith("S"):
             context.update({"is_w": True})
         return context
 
@@ -223,10 +223,9 @@ class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
     def get(self, *args, **kwargs):
         self.set_competition(kwargs.get('pk'))
         self.set_distances(only_w_teams=True)  # Based on self.competition
-
-        _distance = self.request.GET.get('distance', None)
-
-        distance = _distance[1:] if _distance[0] == "S" else _distance
+        distance = self.request.GET.get('distance', None)
+        if distance:
+            distance = distance[1:] if distance.startswith("S") else distance
         self.set_distance(distance)
 
         return super(SebTeamResultStandingList, self).get(*args, **kwargs)
@@ -236,7 +235,7 @@ class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
 
         queryset = queryset.filter(team__distance=self.distance).order_by('-points_total', '-team__is_featured',
                                                                           'team__title')
-        if self.request.GET.get('distance', None)[0] == "S":
+        if self.request.GET.get("distance", "").startswith("S"):
             queryset = queryset.filter(team__is_w=True)
         queryset = queryset.select_related('team')
 
@@ -244,7 +243,7 @@ class SebTeamResultStandingList(SetCompetitionContextMixin, SingleTableView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.GET.get("distance", "")[0] == "S":
+        if self.request.GET.get("distance", "").startswith("S"):
             context.update({"is_w": True})
         return context
 
