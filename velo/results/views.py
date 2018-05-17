@@ -484,3 +484,74 @@ class ResultDiplomaPDF(DetailView):
         response.write(file_obj.read())
         file_obj.close()
         return response
+
+
+class TeamResultsByPointsBetweenDistances(SetCompetitionContextMixin, TemplateView):
+    """
+    This class is used to view team results for one competition/stage.
+    This is fully optimized view.
+    """
+    template_name = 'results/team_top_point_results.html'
+
+    def get(self, *args, **kwargs):
+        self.set_competition(kwargs.get('pk'))
+        return super().get(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        cache_key = 'team_results_by_name_btw_distances_%i' % self.competition.id
+
+        default_timeout = 60 * 30
+        if self.competition.competition_date == datetime.date.today():
+            default_timeout = 60
+
+        object_list = cache.get()
+        if not object_list:
+            distances = self.competition.get_distances()
+            to_dist = {
+                "v": distances.filter(kind="V"),
+                "s": distances.filter(kind="S"),
+                "t": distances.filter(kind="T"),
+            }
+            distance_ids = {
+                "v": to_dist["v"][0].pk if to_dist["v"] else 0,
+                "s": to_dist["s"][0].pk if to_dist["s"] else 0,
+                "t": to_dist["t"][0].pk if to_dist["t"] else 0,
+            }
+
+            cursor = connection.cursor()
+            cursor.execute("""SELECT team.*, participant.*, distance.name, team.total FROM (
+    SELECT kopa.team_name_slug, count(*) counter, sum(kopa.points_distance) total FROM (
+        SELECT p.team_name_slug, p.points_distance FROM (
+            SELECT a.team_name_slug, r.points_distance, row_number() OVER (PARTITION BY team_name_slug ORDER BY r.points_distance) AS row
+            FROM registration_participant a
+            LEFT OUTER JOIN results_result r ON r.participant_id = a.id
+            WHERE a.team_name_slug <> '' AND a.team_name_slug <> '-' AND r.points_distance IS NOT NULL AND a.is_competing is true AND a.distance_id IN ({v}, {s}, {t}) AND r.competition_id={competition_id}
+            ORDER BY a.team_name_slug, r.points_distance
+        ) p
+        WHERE p.row <= 4
+    ) kopa group by kopa.team_name_slug ORDER BY total DESC
+) team
+LEFT OUTER JOIN (
+    SELECT p.team_name, p.team_name_slug, p.points_distance,p.first_name,p.last_name,p.birthday,p.team_name,p.number,p.distance_id FROM (
+        SELECT * FROM (
+            SELECT a.*, r.points_distance, nr.number, row_number() OVER (PARTITION BY team_name_slug ORDER BY r.points_distance) AS row
+            FROM registration_participant a
+            LEFT OUTER JOIN results_result r ON r.participant_id = a.id
+            LEFT OUTER JOIN registration_number nr ON nr.id = a.primary_number_id
+            WHERE a.team_name_slug <> '' AND a.team_name_slug <> '-' AND r.points_distance IS NOT NULL AND a.is_competing is true AND a.distance_id IN ({v}, {s}, {t}) AND r.competition_id={competition_id}
+            ORDER BY a.team_name_slug, r.points_distance
+        ) x
+    ) p
+) participant ON team.team_name_slug = participant.team_name_slug
+LEFT OUTER JOIN core_distance distance ON distance.id =  participant.distance_id
+ORDER BY total DESC, team.team_name_slug, points_distance DESC""".format(competition_id=self.competition.pk,
+                                                                         **distance_ids))
+            object_list = cursor.fetchall()
+            cache.set(cache_key, object_list, default_timeout)
+        context.update({
+            'object_list': object_list,
+        })
+        return context
