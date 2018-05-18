@@ -507,7 +507,7 @@ class TeamResultsByPointsBetweenDistances(SetCompetitionContextMixin, TemplateVi
         if self.competition.competition_date == datetime.date.today():
             default_timeout = 60
 
-        object_list = cache.get()
+        object_list = cache.get(cache_key)
         if not object_list:
             distances = self.competition.get_distances()
             to_dist = {
