@@ -72,7 +72,7 @@
                                                             {% plural %}
                                                                 {{ counter }} participants
                                                             {% endblocktrans %}</div>
-                                                        <div class="col-xs-24 fs14 fw700 uppercase bottom-margin--20">{% trans "Total" %}
+                                                        <div class="col-xs-24 fs14 fw700 uppercase bottom-margin--20" id="id_total_price">{% trans "Total" %}
                                                             -
                                                             <span class="c-yellow">{{ total_entry_fee|addfloat:total_insurance_fee|floatformat:"-2" }} EUR</span>
                                                         </div>
@@ -177,4 +177,25 @@
 
 
 
+{% endblock %}
+{% block js %}
+  <script>
+  var elDiscountCodeInput = document.getElementById("id_discount_code");
+  elDiscountCodeInput.onchange = function(ev){
+    $.ajax({
+      url: '{% url 'check_discount' view.kwargs.slug %}',
+      method: 'POST',
+      data: {discount_code: elDiscountCodeInput.value, csrfmiddlewaretoken: document.querySelector("input[name='csrfmiddlewaretoken']").value}
+    }).done(function(response){
+      if (response.fee){
+        var elPrice = $("#id_total_price");
+        elPrice.find("span").text(response.fee.new_total.toString()).append("EUR");
+        var oldPrice = document.createElement("strike");
+        oldPrice.innerText = response.fee.old_total.toString();
+        elPrice.find("span").after(oldPrice);
+        elPrice.find("strike").append("EUR");
+      }
+    });
+  };
+  </script>
 {% endblock %}
