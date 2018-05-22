@@ -113,7 +113,13 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                         valid = False
                         # check if prices are still valid
             if valid:
-                self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
+                if self.object.discount_code:
+                    min_price = min(participant.distance.price_set.all(), key=lambda p: p.price).price
+                    self.total_entry_fee += self.object.discount_code.calculate_entry_fee(float(min_price))
+                    self.object.discount_code.usage_times_left -= 1
+                    self.object.discount_code.save()
+                else:
+                    self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
                 if participant.insurance:
                     self.total_insurance_fee += get_insurance_fee_from_insurance(self.object.competition,
                                                                                  participant.insurance)
@@ -302,8 +308,8 @@ class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
             try:
                 discount = DiscountCode.objects.get(code=discount_code)
                 if discount.usage_times_left and discount.is_active:
-                    if discount.campaign.competition == application.competition and discount.campaign.pk == 6:
-                        # Should be Maxima campaign
+                    if discount.campaign.competition == application.competition and discount.campaign.competition_id == application.competition_id:
+
                         for participant in application.participant_set.all():
                             min_price = min(participant.distance.price_set.all(), key=lambda p: p.price).price
                             price_old += min_price
