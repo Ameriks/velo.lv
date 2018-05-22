@@ -197,7 +197,8 @@ class SebTeamResultList(SetCompetitionContextMixin, ListView):
                                         'team__member__memberapplication__participant__primary_number__number',
                                         'team__member__memberapplication__participant__result__points_distance',
                                         )
-        if self.request.GET.get('distance', None)[0] == "S":
+
+        if self.request.GET.get('distance', "").startswith("S"):
             queryset = queryset.filter(team__is_w=True)
         return queryset
 
