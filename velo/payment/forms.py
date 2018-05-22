@@ -99,6 +99,8 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         if not code:
             return None
         else:
+            if isinstance(code, DiscountCode):
+                return code
             try:
                 return DiscountCode.objects.get(code=code)
             except:
