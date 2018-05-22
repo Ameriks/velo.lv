@@ -23,6 +23,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
     accept_inform_participants = forms.BooleanField(label=_("I will inform all registered participants about rules."),
                                                     required=True)
     accept_insurance = forms.BooleanField(label="", required=False)
+    discount_code = forms.CharField(label=_("Discount code"), required=False)
 
     payment_type = forms.ChoiceField(choices=(), label="", widget=PaymentTypeWidget)
 
@@ -32,7 +33,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
     class Meta:
         model = Application
-        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address',
+        fields = ('discount_code', 'company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address',
                   'invoice_show_names', 'donation')
         widgets = {
             'donation': DoNotRenderWidget,  # We will add field manually
@@ -92,6 +93,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             return float(self.instance.donation)
         else:
             return donation
+
+    def clean_discount_code(self):
+        return self.cleaned_data.get('discount_code', "")
 
     def clean(self):
         if not self.cleaned_data.get('donation', ''):
@@ -161,100 +165,109 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-                *checkboxes,
+            *checkboxes,
+            Div(
                 Div(
                     Div(
-                      css_class="w100 bottom-margin--30",
+                        Field(
+                            "discount_code",
+                            css_class="input-field if--50 if--dark js-placeholder-up"
+                        ),
+                    ),
+                    css_class="input-wrap w100 bottom-margin--15 col-s-24 col-m-12 col-l-12 col-xl-12"
+                ),
+                css_class="input-wrap w100 bottom-margin--15",
+            ),
+            Div(
+                Div(
+                  css_class="w100 bottom-margin--30",
+                ),
+                Div(
+                    Div(
+                        HTML(_("Payment method")) if self.instance.final_price > 0 else HTML(""),
+                        css_class="fs14 fw700 uppercase w100 bottom-margin--30"
                     ),
                     Div(
                         Div(
-                            HTML(_("Payment method")) if self.instance.final_price > 0 else HTML(""),
-                          css_class="fs14 fw700 uppercase w100 bottom-margin--30"
-                        ),
-                        Div(
-                            Div(
-                                Field('payment_type', wrapper_class="row row--gutters-20"),
+                            Field('payment_type', wrapper_class="row row--gutters-20"),
 
-                                css_class="w100"
-                            ),
-                            css_class="input-wrap w100"
+                            css_class="w100"
                         ),
-
-                      css_class="inner no-padding--560"
+                        css_class="input-wrap w100"
                     ),
-                    css_class="w100 border-top"
+                  css_class="inner no-padding--560"
+                ),
+                css_class="w100 border-top"
+            ),
+
+            Div(
+            Div(
+
+                # company_name
+                Div(
+                    Div(
+                        Field(
+                            "company_name",
+                            css_class="input-field if--50 if--dark js-placeholder-up",
+                        ),
+                        css_class="input-wrap w100 bottom-margin--15"
+                    ),
+                    css_class="col-xl-8 col-m-12 col-s-24"
                 ),
 
-
-
+                # company_vat
                 Div(
-                Div(
-
-                    # company_name
                     Div(
-                        Div(
-                            Field(
-                                "company_name",
-                                css_class="input-field if--50 if--dark js-placeholder-up",
-                            ),
-                            css_class="input-wrap w100 bottom-margin--15"
+                        Field(
+                            "company_vat",
+                            css_class="input-field if--50 if--dark js-placeholder-up"
                         ),
-                        css_class="col-xl-8 col-m-12 col-s-24"
+                        css_class="input-wrap w100 bottom-margin--15"
                     ),
-
-                    # company_vat
-                    Div(
-                        Div(
-                            Field(
-                                "company_vat",
-                                css_class="input-field if--50 if--dark js-placeholder-up"
-                            ),
-                            css_class="input-wrap w100 bottom-margin--15"
-                        ),
-                        css_class="col-xl-8 col-m-12 col-s-24"
-                    ),
-
-                    # company_regnr
-                    Div(
-                        Div(
-                            Field(
-                                "company_regnr",
-                                css_class="input-field if--50 if--dark js-placeholder-up"
-                            ),
-                            css_class="input-wrap w100 bottom-margin--15"
-                        ),
-                        css_class="col-xl-8 col-m-12 col-s-24"
-                    ),
-
-                    # company_address
-                    Div(
-                        Div(
-                            Field(
-                                "company_address",
-                                css_class="input-field if--50 if--dark js-placeholder-up"
-                            ),
-                            css_class="input-wrap w100 bottom-margin--15"
-                        ),
-                        css_class="col-xl-8 col-m-12 col-s-24"
-                    ),
-
-                    # company_juridical_address
-                    Div(
-                        Div(
-                            Field(
-                                "company_juridical_address",
-                                css_class="input-field if--50 if--dark js-placeholder-up"
-                            ),
-                            css_class="input-wrap w100 bottom-margin--15"
-                        ),
-                        css_class="col-xl-8 col-m-12 col-s-24"
-                    ),
-
-                    'invoice_show_names',
-                    css_class=""
+                    css_class="col-xl-8 col-m-12 col-s-24"
                 ),
-                    css_class="invoice_fields"
-                )
+
+                # company_regnr
+                Div(
+                    Div(
+                        Field(
+                            "company_regnr",
+                            css_class="input-field if--50 if--dark js-placeholder-up"
+                        ),
+                        css_class="input-wrap w100 bottom-margin--15"
+                    ),
+                    css_class="col-xl-8 col-m-12 col-s-24"
+                ),
+
+                # company_address
+                Div(
+                    Div(
+                        Field(
+                            "company_address",
+                            css_class="input-field if--50 if--dark js-placeholder-up"
+                        ),
+                        css_class="input-wrap w100 bottom-margin--15"
+                    ),
+                    css_class="col-xl-8 col-m-12 col-s-24"
+                ),
+
+                # company_juridical_address
+                Div(
+                    Div(
+                        Field(
+                            "company_juridical_address",
+                            css_class="input-field if--50 if--dark js-placeholder-up"
+                        ),
+                        css_class="input-wrap w100 bottom-margin--15"
+                    ),
+                    css_class="col-xl-8 col-m-12 col-s-24"
+                ),
+
+                'invoice_show_names',
+                css_class=""
+            ),
+                css_class="invoice_fields"
+            )
         )
 
 

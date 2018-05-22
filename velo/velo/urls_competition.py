@@ -6,7 +6,7 @@ from velo.staticpage.views import StaticPageView
 from velo.registration.views import ParticipantList, TeamJsonList, ParticipantSearchView, DataForExternalTotal, \
     DataForExternalAll, BikeBrandJsonList
 from velo.results.views import ResultList, SebStandingResultList, SebTeamResultList, SebTeamResultStandingList, \
-    TeamResultsByTeamName, ResultDiplomaPDF, TeamResultsByTeamNameBetweenDistances
+    TeamResultsByTeamName, ResultDiplomaPDF, TeamResultsByTeamNameBetweenDistances, TeamResultsByPointsBetweenDistances
 from velo.team.views import TeamAppliedView, TeamListView, TeamView, TeamMemberProfileView
 
 urlpatterns = [
@@ -35,6 +35,8 @@ urlpatterns = [
                            name='result_team_by_name'),
                        url(_(r'^(?P<pk>\d+)/results/team_name/between_distances/$'), TeamResultsByTeamNameBetweenDistances.as_view(),
                            name='result_team_by_name_btw_distances'),
+                       url(_(r'^(?P<pk>\d+)/results/team_name/between_distances2/$'), TeamResultsByPointsBetweenDistances.as_view(),
+                           name='result_team_by_name_btw_distances2'),
 
 
 

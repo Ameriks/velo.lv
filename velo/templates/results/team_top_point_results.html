@@ -1,0 +1,81 @@
+{% extends "base/competition.html" %}
+{% load i18n cache staticfiles thumbnail counter %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block content_left %}
+    {# Header part #}
+    <div class="w100 bgc-dgray border-right border-bottom border-left">
+        <div class="w100 bottom-margin--20"></div>
+        <div class="inner">
+            <form method="get" action="" class="w100 filter-form">
+                <div class="row row--gutters-20">
+                    <div class="col-xl-12 col-m-24">
+                        <a href="{% url "competition:result_distance_list" competition.id %}" class="btn btn--50 btn--dgray-transparent btn--blue-hover btn--blue-active  bottom-margin--20">
+                            {% trans "PARTICIPANTS" %}
+                        </a>
+                    </div>
+                    <div class="col-xl-12 col-m-24">
+                        <a href="{% url "competition:result_team_list" competition.id %}" class="btn btn--50 btn--dgray-transparent btn--blue-hover btn--blue-active active bottom-margin--20">
+                            {% trans "TEAMS" %}
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="w100 bottom-margin--20"></div>
+
+    {# Body part #}
+    <div class="w100">
+        <div class="inner no-padding--480">
+            <div class="row row--gutters-20">
+                {% for object in object_list %}
+                {% ifchanged object.0 %}
+                    {% counter start=2 silent=True assign="team_counter" %}
+                    {% if forloop.counter0 %}
+                        </tbody></table></div></div></div>
+                    {% endif %}
+                    <div class="col-xl-24 col-l-24 col-m-24 col-s-24 flex direction--column justify--start align-items--stretch">
+                        <div class="card border-top border-right border-bottom border-left flex direction--column justify--start align-items--stretch bottom-margin--20">
+                            <div class="flex--1">
+                                <div class="card__info">
+                                    <h2 class="card__heading bottom-margin--20">{{ object.3 }}</h2>
+                                    <div class="card__heading2">
+                                        <div style="float:left;">{% trans "Result" %}: {{ team_counter|add:"-1" }}</div>
+                                        <div style="float:right;">{% trans "Points" %}: {% firstof object.2 '-' %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                            <table class="table-block">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>{% trans 'First Name' %}</th>
+                                        <th>{% trans 'Last Name' %}</th>
+                                        <th>{% trans 'Year' %}</th>
+                                        <th>{% trans 'Points' %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                {% endifchanged %}
+                                    <tr>
+                                        <td>{% firstof object.10 '-' %}</td>
+                                        <td>{{ object.6 }}</td>
+                                        <td>{{ object.7 }}</td>
+                                        <td>{{ object.8.year }}</td>
+                                        <td>{% firstof object.5 '' %}</td>
+                                    </tr>
+                {% endfor %}
+                {% if object_list %}
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="w100 flex--1"></div>
+{% endblock content_left %}

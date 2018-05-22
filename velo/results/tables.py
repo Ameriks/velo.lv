@@ -23,6 +23,7 @@ LEADER_TOOLTIP = ' <span class="label rounded label-%s"><span class="tooltips" d
 class ResultTeamStandingTable(tables.Table):
     place = tables.Column(empty_values=(), verbose_name='#', orderable=False)
     team_name = tables.Column(empty_values=(), verbose_name=_('Team Name'), accessor="team.title")
+    women_team = tables.Column(accessor="team.is_w")
 
     def __init__(self, *args, **kwargs):
         super(ResultTeamStandingTable, self).__init__(*args, **kwargs)
@@ -36,7 +37,7 @@ class ResultTeamStandingTable(tables.Table):
         attrs = {"class": "table-block"}
         fields = ("points_total", "points1", 'points2', 'points3', 'points4', 'points5', 'points6', 'points7', 'points8')
         sequence = (
-        "place", "team_name", "points_total", "points1", "points2", "points3", "points4", "points5", "points6",
+        "place", "team_name", "women_team", "points_total", "points1", "points2", "points3", "points4", "points5", "points6",
         'points7',  'points8')
         empty_text = _("There are no results")
         order_by = ("-points_total",)

@@ -18,7 +18,8 @@ from sitetree import sitetreeapp
 from velo.core.sitetrees import sitetrees_build
 from velo.core.views import CalendarView, IndexView
 from velo.marketing.views import ToyotaFrameView
-from velo.payment.views import ApplicationPayView, ApplicationOKView, TransactionReturnView, InvoiceDownloadView
+from velo.payment.views import ApplicationPayView, ApplicationOKView, TransactionReturnView, InvoiceDownloadView, \
+    DiscountCheckView
 from velo.registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
     CompanyApplicationUpdate, ParticipantPDF
@@ -55,6 +56,7 @@ urlpatterns = i18n_patterns(
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$'), ApplicationUpdate.as_view(), name='application'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pay/$'), ApplicationPayView.as_view(), name='application_pay'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$'), ApplicationOKView.as_view(), name='application_ok'),
+    url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/discount/$'), DiscountCheckView.as_view(), name='check_discount'),
 
 
 
