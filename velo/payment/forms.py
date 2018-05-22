@@ -80,6 +80,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
         instance.params = dict(self.cleaned_data)
         instance.params.pop("donation", None)
+        discount_code = instance.params.pop("discount_code", None)
+        if discount_code:
+            instance.params.update({'discount_code': discount_code.code})
 
         if commit:
             instance.save()
