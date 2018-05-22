@@ -98,6 +98,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             return donation
 
     def clean_discount_code(self):
+
         code = self.cleaned_data.get('discount_code', "")
         if not code:
             return None
@@ -116,6 +117,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         super(ApplicationPayUpdateForm, self).clean()
         try:
             active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
+            if self.data.get("discount_code", None) and active_payment_type.payment_channel.is_bill:
+                active_payment_type = None
+                self._errors.update({'payment_type': [_("Invoice is not available with discount code."), ]})
         except:
             active_payment_type = None
         if active_payment_type and active_payment_type.payment_channel.is_bill:  # Hard coded bill ids.
@@ -171,6 +175,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             self.fields['payment_type'].widget = forms.HiddenInput()
         else:
             self.fields['payment_type'].choices = [(obj.id, obj) for obj in payments]
+
+        if self.instance.discount_code:
+            self.initial['discount_code'] = self.instance.discount_code.code
 
         self.fields['donation'].required = False
 
