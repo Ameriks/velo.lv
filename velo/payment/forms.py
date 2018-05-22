@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from crispy_forms.layout import Layout, Div, HTML, Field
 from crispy_forms.helper import FormHelper
 
-from velo.payment.models import ActivePaymentChannel, Payment
+from velo.payment.models import ActivePaymentChannel, Payment, DiscountCode
 from velo.payment.utils import create_application_invoice, create_bank_transaction, create_team_invoice, \
      approve_payment
 from velo.payment.widgets import PaymentTypeWidget, DoNotRenderWidget
@@ -95,9 +95,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             return donation
 
     def clean_discount_code(self):
-        code = self.cleaned_data.get('discount_code', "")
-        if not code:
-            return None
+        try:
+            code = DiscountCode.objects.get(pk=self.cleaned_data.get('discount_code', ""))
+        except:
+            code = None
         return code
 
     def clean(self):
@@ -107,6 +108,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         super(ApplicationPayUpdateForm, self).clean()
         try:
             active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
+            if self.data.get("discount_code", None) and active_payment_type.payment_channel.is_bill:
+                active_payment_type = None
+                self._errors.update({'payment_type': [_("Invoice is not available with discount code."), ]})
         except:
             active_payment_type = None
         if active_payment_type and active_payment_type.payment_channel.is_bill:  # Hard coded bill ids.
@@ -162,6 +166,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             self.fields['payment_type'].widget = forms.HiddenInput()
         else:
             self.fields['payment_type'].choices = [(obj.id, obj) for obj in payments]
+
+        if self.instance.discount_code:
+            self.initial['discount_code'] = self.instance.discount_code.code
 
         self.fields['donation'].required = False
 
