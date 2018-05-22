@@ -189,11 +189,9 @@
     }).done(function(response){
       if (response.fee){
         var elPrice = $("#id_total_price");
+        var originalPrice = $("<strike></strike>").text(elPrice.find("span").text());
         elPrice.find("span").text(response.fee.new_total.toString()).append("EUR");
-        var oldPrice = document.createElement("strike");
-        oldPrice.innerText = response.fee.old_total.toString();
-        elPrice.find("span").after(oldPrice);
-        elPrice.find("strike").append("EUR");
+        elPrice.find("span").after(originalPrice);
       }
     });
   };
