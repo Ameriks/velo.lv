@@ -114,8 +114,9 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                         # check if prices are still valid
             if valid:
                 if self.object.discount_code:
-                    min_price = min(participant.distance.price_set.all(), key=lambda p: p.price).price
-                    self.total_entry_fee += self.object.discount_code.calculate_entry_fee(float(min_price))
+                    prices = self.object.competition.price_set.filter(till_year__gte=participant.birthday.year, from_year__lte=participant.birthday.year, distance_id=participant.distance_id).order_by('price')
+
+                    self.total_entry_fee += self.object.discount_code.calculate_entry_fee(float(prices[0].price))
                     self.object.discount_code.usage_times_left -= 1
                     self.object.discount_code.save()
                 else:
@@ -302,7 +303,6 @@ class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
 
         discount_code = request.POST.get("discount_code", "")
         price = Decimal()
-        price_old = Decimal()
         ret = {"fee": None, "insurance": None}
         if discount_code:
             try:
@@ -311,10 +311,13 @@ class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
                     if discount.campaign.competition == application.competition and discount.campaign.competition_id == application.competition_id:
 
                         for participant in application.participant_set.all():
-                            min_price = min(participant.distance.price_set.all(), key=lambda p: p.price).price
-                            price_old += min_price
-                            price += Decimal(discount.calculate_entry_fee(float(min_price)))
-                        ret['fee'] = {"old_total": price_old, "new_total": price}
+                            prices = application.competition.price_set.filter(till_year__gte=participant.birthday.year,
+                                                                              from_year__lte=participant.birthday.year,
+                                                                              distance_id=participant.distance_id).order_by(
+                                'price')
+
+                            price += Decimal(discount.calculate_entry_fee(float(prices[0].price)))
+                        ret['fee'] = {"new_total": price}
                         application.discount_code = discount
                         application.save()
             except:
