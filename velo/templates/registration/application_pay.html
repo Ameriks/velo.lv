@@ -192,6 +192,7 @@
         var originalPrice = $("<strike></strike>").text(elPrice.find("span").text());
         elPrice.find("span").text(response.fee.new_total.toString()).append("EUR");
         elPrice.find("span").after(originalPrice);
+
       }
     });
   };
