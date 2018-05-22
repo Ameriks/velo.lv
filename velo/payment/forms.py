@@ -108,6 +108,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         super(ApplicationPayUpdateForm, self).clean()
         try:
             active_payment_type = ActivePaymentChannel.objects.get(id=self.cleaned_data.get('payment_type'))
+            if self.data.get("discount_code", None) and active_payment_type.payment_channel.is_bill:
+                active_payment_type = None
+                self._errors.update({'payment_type': [_("Invoice is not available with discount code."), ]})
         except:
             active_payment_type = None
         if active_payment_type and active_payment_type.payment_channel.is_bill:  # Hard coded bill ids.
