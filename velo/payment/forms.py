@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from crispy_forms.layout import Layout, Div, HTML, Field
 from crispy_forms.helper import FormHelper
 
-from velo.payment.models import ActivePaymentChannel, Payment
+from velo.payment.models import ActivePaymentChannel, Payment, DiscountCode
 from velo.payment.utils import create_application_invoice, create_bank_transaction, create_team_invoice, \
      approve_payment
 from velo.payment.widgets import PaymentTypeWidget, DoNotRenderWidget
@@ -95,7 +95,11 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             return donation
 
     def clean_discount_code(self):
-        return self.cleaned_data.get('discount_code', "")
+        try:
+            code = DiscountCode.objects.get(pk=self.cleaned_data.get('discount_code', ""))
+        except:
+            code = None
+        return code
 
     def clean(self):
         if not self.cleaned_data.get('donation', ''):
