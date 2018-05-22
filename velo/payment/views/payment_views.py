@@ -1,10 +1,12 @@
 import datetime
+from decimal import Decimal
 
 from braces.views import CsrfExemptMixin
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.utils import timezone
+from django.views import View
 from django.views.generic import DetailView, UpdateView
 from django.views.generic.edit import BaseUpdateView
 from django.core.urlresolvers import reverse
@@ -17,7 +19,7 @@ from pathlib import Path
 from velo.core.models import Competition
 from velo.core.utils import get_client_ip
 from velo.payment.forms import ApplicationPayUpdateForm, TeamPayForm
-from velo.payment.models import Invoice, Transaction, ActivePaymentChannel, PaymentChannel
+from velo.payment.models import Invoice, Transaction, ActivePaymentChannel, PaymentChannel, DiscountCode
 from velo.payment.utils import get_form_message, \
     get_participant_fee_from_price, get_insurance_fee_from_insurance, create_team_invoice, create_application_invoice
 from velo.registration.models import Application
@@ -111,7 +113,13 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                         valid = False
                         # check if prices are still valid
             if valid:
-                self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
+                if self.object.discount_code:
+                    min_price = min(participant.distance.price_set.all(), key=lambda p: p.price).price
+                    self.total_entry_fee += self.object.discount_code.calculate_entry_fee(float(min_price))
+                    self.object.discount_code.usage_times_left -= 1
+                    self.object.discount_code.save()
+                else:
+                    self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
                 if participant.insurance:
                     self.total_insurance_fee += get_insurance_fee_from_insurance(self.object.competition,
                                                                                  participant.insurance)
@@ -283,3 +291,32 @@ class TransactionRedirectView(NeverCacheMixin, CsrfExemptMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context.update({'form': self.integration_object.generate_form(), 'form_action': self.object.channel.url})
         return context
+
+
+class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
+    def get(self, request, *args, **kwargs):
+        raise Http404("GET not allowed for Discount check view")
+
+    def post(self, request, *args, **kwargs):
+        application = Application.objects.get(code=kwargs.get('slug'))
+
+        discount_code = request.POST.get("discount_code", "")
+        price = Decimal()
+        price_old = Decimal()
+        ret = {"fee": None, "insurance": None}
+        if discount_code:
+            try:
+                discount = DiscountCode.objects.get(code=discount_code)
+                if discount.usage_times_left and discount.is_active:
+                    if discount.campaign.competition == application.competition and discount.campaign.competition_id == application.competition_id:
+
+                        for participant in application.participant_set.all():
+                            min_price = min(participant.distance.price_set.all(), key=lambda p: p.price).price
+                            price_old += min_price
+                            price += Decimal(discount.calculate_entry_fee(float(min_price)))
+                        ret['fee'] = {"old_total": price_old, "new_total": price}
+                        application.discount_code = discount
+                        application.save()
+            except:
+                pass
+        return JsonResponse(ret)
