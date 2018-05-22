@@ -160,6 +160,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         else:
             self.fields['payment_type'].choices = [(obj.id, obj) for obj in payments]
 
+        if self.instance.discount_code:
+            self.initial['discount_code'] = self.instance.discount_code.code
+
         self.fields['donation'].required = False
 
         self.helper = FormHelper()
