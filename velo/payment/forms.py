@@ -95,7 +95,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             return donation
 
     def clean_discount_code(self):
-        return self.cleaned_data.get('discount_code', "")
+        code = self.cleaned_data.get('discount_code', "")
+        if not code:
+            return None
+        return code
 
     def clean(self):
         if not self.cleaned_data.get('donation', ''):
