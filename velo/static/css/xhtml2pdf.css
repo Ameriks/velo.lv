@@ -1,11 +1,11 @@
 /*@import url('https://fonts.googleapis.com/css?family=Ubuntu:400,700');*/
 @font-face {
   font-family: "Ubuntu";
-  src: url("../assets/Ubuntu-R.ttf");
+  src: url("/app/velo/static/assets/Ubuntu-R.ttf");
 }
 @font-face {
   font-family: "UbuntuBold";
-  src: url('../assets/Ubuntu-B.ttf');
+  src: url('/app/velo/static/assets/Ubuntu-B.ttf');
 }
 html {
   /*font-family: 'Ubuntu', sans-serif;*/
