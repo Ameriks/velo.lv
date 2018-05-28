@@ -57,7 +57,7 @@ class StaticPageView(SetCompetitionContextMixin, DetailView):
             response = HttpResponse(content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(self.competition.alias or "Nolikums")
 
-            with open(str(APPS_DIR.path(static("css/xhtml2pdf.css")[1:]))) as f:
+            with open(str(APPS_DIR.path("static/css/xhtml2pdf.css"))) as f:
                 css = f.read()
                 pisa.CreatePDF(html, dest=response, default_css=css, encoding="utf-8")
                 return response
