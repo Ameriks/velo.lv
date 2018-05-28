@@ -3,9 +3,21 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block content_left %}
+    <div class="row">
+        <div class="col-s-4">
+            {% if object.content_md %}
+            <form>
+                <button type="submit" name="kind" value="PDF" class="btn btn--50 w100 js-form-results-btn btn--blue btn--blue-hover btn--blue-active">
+                    <svg class="icon">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/static/template/velo-2016/html/img/icons.svg#pdf"></use>
+                    </svg>
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
     <article class="article">
     <div class="article__text editor-text">
-
     {% cache 86400 staticpage_staticpage_detail LANGUAGE_CODE object.id %}
     {% spaceless %}
         {% if object.content_md %}
