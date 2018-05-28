@@ -24,6 +24,7 @@ from velo.registration.views import ApplicationUpdate, ApplicationCreate, Compan
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
     CompanyApplicationUpdate, ParticipantPDF
 from velo.results.views import ResultAllView
+from velo.staticpage.views import StaticPageView, SimpleStaticPageView
 from velo.velo.views import CustomAutoResponseView, cached_javascript_catalog
 
 admin.autodiscover()
@@ -82,6 +83,7 @@ urlpatterns = i18n_patterns(
     url(r'^jsi18n/$', cached_javascript_catalog, js_info_dict),
 
     url(r'^toyota/$', ToyotaFrameView.as_view(), name='marketing_toyota'),
+    url(r'(?P<slug>.*)/$', SimpleStaticPageView.as_view(), name='simple_staticpage'),
 )
 
 
