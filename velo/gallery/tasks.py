@@ -10,8 +10,11 @@ from subprocess import call
 import httplib2
 import vimeo
 import datetime
+import os
 
 from velo.core.tasks import LogErrorsTask
+
+from velo.gallery.utils import md5sum
 from velo.velo.utils import load_class
 
 
@@ -160,3 +163,27 @@ def refresh_view_count(_id=None):
             elif video_response.status_code == 404:
                 video.status = 0
         video.save()
+
+
+@task(base=LogErrorsTask)
+def sync_album(album_id):
+    from velo.gallery.models import Album
+    album = Album.objects.get(id=album_id)
+    for root, _, files in os.walk(album.folder):
+        for f in sorted(files):
+            if f[-3:].lower() != 'jpg' and f[-4:].lower() != 'jpeg':
+                continue
+            fullpath = os.path.join(root, f)
+            md5 = md5sum(fullpath)
+            photo, created = album.photo_set.get_or_create(md5=md5, defaults={'image': fullpath[11:]})
+
+            if not album.primary_image:
+                album.primary_image = photo
+                album.save()
+
+            if not created:
+                photo.image = fullpath[6:]
+                photo.save()
+            else:
+                generate_thumbnails.delay(photo.id, 'image', model_class='velo.gallery.models.Photo')
+

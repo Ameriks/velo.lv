@@ -17,13 +17,14 @@ from slugify import slugify
 from velo.core.models import Log, Distance
 from velo.core.pdf import fill_page_with_image, _baseFontNameB, _baseFontName
 from velo.registration.competition_classes.base_seb import SEBCompetitionBase
-from velo.registration.models import Application, ChangedName, Number, Participant, UCICategory
+from velo.registration.models import Application, ChangedName, Number, Participant, UCICategory, PreNumberAssign
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from velo.registration.tables import ParticipantTableWithPoints, ParticipantTableWithPassage, ParticipantTable
 from velo.results.helper import time_to_seconds, seconds_to_time
 from velo.results.models import SebStandings, HelperResults, ChipScan, Result
 from velo.results.tables import ResultDistanceCheckpointTable, ResultXCODistanceCheckpointSEBTable
+from velo.results.tasks import update_helper_result_table
 
 
 class Seb2018(SEBCompetitionBase):
@@ -74,7 +75,7 @@ class Seb2018(SEBCompetitionBase):
             self.SPORTA_DISTANCE_ID: ('M', 'U-23', 'W', 'M-35', 'M-45'),
             self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-55', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35'),
             self.VESELIBAS_DISTANCE2_ID: ('M-14', 'W-14', ),
-            self.BERNU_DISTANCE_ID: ('B 13-', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08', 'B 07-06 M', 'B 07-06 Z',)
+            self.BERNU_DISTANCE_ID: ('B 14-', 'B 13', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08-07 M', 'B 08-07 Z',)
         }
 
     def number_ranges(self):
@@ -120,8 +121,8 @@ class Seb2018(SEBCompetitionBase):
                 elif self._update_year(1969) >= year:
                     return 'M-45'
             else:
-                if self._update_year(1995) >= year >= self._update_year(1992):
-                    return 'U-23'
+                # if self._update_year(1995) >= year >= self._update_year(1992):
+                #     return 'U-23'
                 return 'W'  # ok
         elif distance_id == self.TAUTAS_DISTANCE_ID:
             if gender == 'M':
@@ -150,8 +151,10 @@ class Seb2018(SEBCompetitionBase):
                     return 'T W-35'
         elif distance_id == self.BERNU_DISTANCE_ID:
             # bernu sacensibas
-            if year >= 2013:
-                return 'B 13-'
+            if year >= 2014:
+                return 'B 14-'
+            elif year == 2013:
+                return 'B 13'
             elif year == 2012:
                 return 'B 12'
             elif year == 2011:
@@ -160,13 +163,11 @@ class Seb2018(SEBCompetitionBase):
                 return 'B 10'
             elif year == 2009:
                 return 'B 09'
-            elif year == 2008:
-                return 'B 08'
-            elif year in (2007, 2006):
+            elif year in (2008, 2007):
                 if gender == 'M':
-                    return 'B 07-06 Z'
+                    return 'B 08-07 Z'
                 else:
-                    return 'B 07-06 M'
+                    return 'B 08-07 M'
 
         elif distance_id == self.VESELIBAS_DISTANCE2_ID:
             if year in (self._update_year(2000), self._update_year(2001), self._update_year(2002)):
@@ -179,6 +180,53 @@ class Seb2018(SEBCompetitionBase):
 
         print('here I shouldnt be...')
         raise Exception('Invalid group assigning.')
+
+
+    def assign_passage(self, reset=False):
+        if self.competition.level != 2:
+            raise Exception('We allow assigning passages only for stages.')
+
+        if reset:
+            HelperResults.objects.filter(competition=self.competition).update(passage_assigned=None)
+
+        update_helper_result_table(self.competition_id, update=True)
+
+        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            helperresults = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None).select_related('participant').order_by('-calculated_total', 'participant__registration_dt')
+            for passage_nr, total, passage_extra in self.passages.get(distance_id):
+                specials = [obj.participant_slug for obj in PreNumberAssign.objects.filter(competition=self.competition, distance_id=distance_id).filter(segment=passage_nr)]
+                # Assign passage for specials
+                HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, participant__slug__in=specials, passage_assigned=None).update(passage_assigned=passage_nr)
+
+                places = total - passage_extra
+
+                for result in helperresults[0:places]:
+                    result.passage_assigned = passage_nr
+                    result.save()
+
+                # Exceptions
+
+                # In 1.stage all licenced juniors are put in 3rd passage
+                if passage_nr == 3 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
+                    juniors = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('M-16', 'T M-18')).order_by('-calculated_total', 'participant__registration_dt')
+                    for _ in juniors:
+                        if UCICategory.objects.filter(first_name__icontains=_.participant.first_name, last_name__icontains=_.participant.last_name):
+                            _.passage_assigned = passage_nr
+                            _.save()
+
+                # In 1.stage all licenced girls and 50 women that are not in first 3 passages will be assigned to 4.passage
+                if passage_nr == 4 and self.competition_index == 1 and distance_id == self.TAUTAS_DISTANCE_ID:
+                    girls = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('W-16', 'T W-18')).order_by('-calculated_total', 'participant__registration_dt')
+                    for _ in girls:
+                        if UCICategory.objects.filter(first_name__icontains=_.participant.first_name, last_name__icontains=_.participant.last_name):
+                            _.passage_assigned = passage_nr
+                            _.save()
+
+                    women = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('T W', 'T W-35')).order_by('-calculated_total', 'participant__registration_dt')[0:50]
+                    for _ in women:
+                        _.passage_assigned = passage_nr
+                        _.save()
+
 
     def payment_additional_checkboxes(self, application_id=None, application=None):
         # if not application:
@@ -242,7 +290,7 @@ class Seb2018(SEBCompetitionBase):
 
             current = helper.calculated_total
 
-            if participant.distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+            if participant.distance_id not in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.VESELIBAS_DISTANCE2_ID):
                 continue
 
             # Calculate stage points only if last stage have finished + 2 days.
@@ -412,7 +460,7 @@ class Seb2018(SEBCompetitionBase):
                     time = row[7]
                     place = row[8]
                     points = row[9]
-                    group = row[10]
+                    group = row[12]
 
                     if not place:
                         place = None
@@ -441,10 +489,11 @@ class Seb2018(SEBCompetitionBase):
                     chip = ChipScan(competition=self.competition, nr=number, time=datetime.time(*map(int, time.split(':'))))
 
                     results = Result.objects.filter(competition=chip.competition, number=chip.nr).exclude(time=None)
-                    if results:
-                        Log.objects.create(content_object=chip, action="Chip process",
-                                           message="Chip ignored. Already have result")
-                    else:
+                    # if results:
+                    #     Log.objects.create(content_object=chip, action="Chip process",
+                    #                        message="Chip ignored. Already have result")
+                    #     continue
+                    if True:
                         participant = self.process_chip_create_participant(chip)
 
                         # If participant is not previously created in system, we create it using data provided in CSV
@@ -463,18 +512,19 @@ class Seb2018(SEBCompetitionBase):
                             }
                             participant = [Participant.objects.create(**data), ]
 
-                        result_time, seconds = self.calculate_time(chip)
-                        result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant[0], number=chip.nr)
-                        result.time = time  # result_time
-                        # TODO: function to calculate the place and points.
-                        result.result_group = place
-                        result.points_group = points
-                        if status:
-                            result.status = status
-                        result.save()
+                    result_time, seconds = self.calculate_time(chip)
+                    result, created = Result.objects.get_or_create(competition=chip.competition, participant=participant[0], number=chip.nr)
+                    result.time = time  # result_time
+                    # TODO: function to calculate the place and points.
+                    result.result_group = place
+                    result.points_group = points
+                    if status:
+                        result.status = status
+                    result.save()
 
-                        self.recalculate_standing_for_result(result)
+                    self.recalculate_standing_for_result(result)
             self.assign_standing_places()
+
 
 
     def generate_diploma(self, result):
@@ -494,86 +544,57 @@ class Seb2018(SEBCompetitionBase):
             total_participants = result.competition.result_set.filter(participant__distance=result.participant.distance).count()
             total_group_participants = result.competition.result_set.filter(participant__distance=result.participant.distance, participant__group=result.participant.group).count()
 
-        if self.competition_index == 1:
-            c = canvas.Canvas(output, pagesize=(29.7*cm, 33.55*cm))
+
+        if self.competition_id in (80, ):
+            c = canvas.Canvas(output, pagesize=(21*cm, 29.7*cm))
 
             fill_page_with_image(path, c)
 
             c.setFont(_baseFontNameB, 32)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawString(c._pagesize[0] - 3.3 * cm, 23.7 * cm, str(result.participant.primary_number))
+            c.setFillColor(HexColor(0x47455b))
+            c.drawString(c._pagesize[0] - 9.3 * cm, 16.1 * cm, str(result.participant.primary_number))
 
             c.setFont(_baseFontNameB, 26)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawCentredString(c._pagesize[0] - 6.5 * cm, 25.7*cm, result.participant.full_name)
+            c.setFillColor(HexColor(0x47455b))
+            c.drawCentredString(c._pagesize[0] - 9.8 * cm, 17.7*cm, result.participant.full_name)
 
             c.setFont(_baseFontName, 32)
-            c.drawCentredString(c._pagesize[0] - 7 * cm, 18.3 * cm, str(result.time.replace(microsecond=0)))
+            c.drawCentredString(c._pagesize[0] - 10.2 * cm, 12.6 * cm, str(result.time.replace(microsecond=0)))
 
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm, 14.5 * cm, str(result.result_distance))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm, 14.5 * cm, str(total_participants))
+            if result.participant.distance_id != self.VESELIBAS_DISTANCE_ID:
+                c.drawCentredString(c._pagesize[0] - 12.1 * cm, 9.5 * cm, str(result.result_distance))
+                c.drawCentredString(c._pagesize[0] - 8.4 * cm, 9.5 * cm, str(total_participants))
 
-            c.drawCentredString(c._pagesize[0] - 7 * cm, 7.3 * cm, "%s km/h" % result.avg_speed)
+                c.drawCentredString(c._pagesize[0] - 10 * cm, 3.7 * cm, "%s km/h" % result.avg_speed)
 
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm, 10.8*cm, str(result.result_group))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm, 10.8*cm, str(total_group_participants))
-
-        elif self.competition_index == 2:
-
-            c = canvas.Canvas(output, pagesize=(21*1.5*cm, 29.7*1.5*cm))
-
-            move_cm_w = 9*cm
+                c.drawCentredString(c._pagesize[0] - 12.1 * cm, 6.5*cm, str(result.result_group))
+                c.drawCentredString(c._pagesize[0] - 8.4 * cm, 6.5*cm, str(total_group_participants))
+        else:
+            c = canvas.Canvas(output, pagesize=(21 * cm, 29.7 * cm))
 
             fill_page_with_image(path, c)
 
             c.setFont(_baseFontNameB, 32)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawString(c._pagesize[0] - 3.3 * cm - move_cm_w, 23.7 * cm, str(result.participant.primary_number))
+            c.setFillColor(HexColor(0x47455b))
+            c.drawString(c._pagesize[0] - 14.5 * cm, 10.5 * cm, str(result.participant.primary_number))
 
             c.setFont(_baseFontNameB, 26)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawCentredString(c._pagesize[0] - 6.5 * cm - move_cm_w, 26 * cm, result.participant.full_name)
+            c.setFillColor(HexColor(0x47455b))
+            c.drawCentredString(c._pagesize[0] - 12.0 * cm, 12.1 * cm, result.participant.full_name)
 
             c.setFont(_baseFontName, 32)
-            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 18.3 * cm, str(result.time.replace(microsecond=0)))
+            c.drawCentredString(c._pagesize[0] - 16.5 * cm, 7.7 * cm, str(result.time.replace(microsecond=0)))
 
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 13.5 * cm, str(result.result_distance))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 13.5 * cm, str(total_participants))
+            if result.participant.distance_id != self.VESELIBAS_DISTANCE_ID:
+                c.drawCentredString(c._pagesize[0] - 10.1 * cm, 7.7 * cm, str(result.result_distance))
+                c.drawCentredString(c._pagesize[0] - 6.4 * cm, 7.7 * cm, str(total_participants))
 
-            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 4 * cm, "%s km/h" % result.avg_speed)
+                c.drawCentredString(c._pagesize[0] - 8 * cm, 4.5 * cm, "%s km/h" % result.avg_speed)
 
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 8.8 * cm, str(result.result_group))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 8.8 * cm, str(total_group_participants))
+                c.drawCentredString(c._pagesize[0] - 18.2 * cm, 4.5 * cm, str(result.result_group))
+                c.drawCentredString(c._pagesize[0] - 14.5 * cm, 4.5 * cm, str(total_group_participants))
 
-        elif self.competition_index == 3:
-            c = canvas.Canvas(output, pagesize=(29.7 * cm, 42 * cm))
 
-            fill_page_with_image(path, c)
-
-            move_cm_w = 14*cm
-            move_cm_h = 3*cm
-
-            c.setFont(_baseFontNameB, 32)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawString(c._pagesize[0] - 3.3 * cm - move_cm_w - 2*cm, 23.7 * cm - move_cm_h - 0.2*cm, str(result.participant.primary_number))
-
-            c.setFont(_baseFontNameB, 26)
-            c.setFillColor(HexColor(0x43455a))
-            c.drawCentredString(c._pagesize[0] - 6.5 * cm - move_cm_w, 25.7 * cm - move_cm_h, result.participant.full_name)
-
-            c.setFont(_baseFontName, 32)
-            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 18.3 * cm - move_cm_h, str(result.time.replace(microsecond=0)))
-
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 14.5 * cm - move_cm_h - 1*cm, str(result.result_distance))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 14.5 * cm - move_cm_h - 1*cm, str(total_participants))
-
-            c.drawCentredString(c._pagesize[0] - 7 * cm - move_cm_w, 7.3 * cm - move_cm_h - 2*cm, "%s km/h" % result.avg_speed)
-
-            c.drawCentredString(c._pagesize[0] - 9.3 * cm - move_cm_w, 10.8 * cm - move_cm_h - 1.5*cm, str(result.result_group))
-            c.drawCentredString(c._pagesize[0] - 4.7 * cm - move_cm_w, 10.8 * cm - move_cm_h - 1.5*cm, str(total_group_participants))
-
-        # c.setFont(_baseFontName, 18)
-        # c.drawCentredString(c._pagesize[0] - 7 * cm, 10.1 * cm, str(result.participant.group))
 
         c.showPage()
         c.save()

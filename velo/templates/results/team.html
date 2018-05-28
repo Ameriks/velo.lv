@@ -58,6 +58,9 @@
                                 {% for distance in distances %}
                                     <option value="{{ distance.id }}"
                                             {% if distance.id == distance_active.id %}selected{% endif %}>{{ distance }}</option>
+                                    {% if distance.id == 80 %}
+                                      <option value="S{{ distance.id }}" {% if is_w %}selected{% endif %}>{{ distance }} (Sieviešu komandas)</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>

@@ -51,7 +51,7 @@ class Team(StatusMixin, TimestampMixin, models.Model):
     external_invoice_code = models.CharField(_('Invoice code'), max_length=100, blank=True)  # invoice code from e-rekins used to allow downloading invoice from velo.lv
     external_invoice_nr = models.CharField(_('Invoice Number'), max_length=20, blank=True)  # invoice number from e-rekins used in card payment
     invoice = models.ForeignKey('payment.Invoice', null=True, blank=True)
-    is_w = models.BooleanField(default=False, )
+    is_w = models.BooleanField(_('Women team'), default=False, )
 
     class Meta:
         ordering = ('distance', '-is_featured', 'title')

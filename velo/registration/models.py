@@ -263,6 +263,12 @@ class Participant(TimestampMixin, models.Model):
         return number_queryset
 
 
+# class Survey(TimestampMixin, models.Model):
+#     participant = models.ForeignKey(Participant)
+#     is_filled = models.BooleanField(default=False)
+#     data = JSONField(default={})
+
+
 class Number(StatusMixin, TimestampMixin, models.Model):
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance')
@@ -361,5 +367,8 @@ class UCICategory(models.Model):
     valid_until = models.DateField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year), only_ascii=True)
+        if self.birthday:
+            self.slug = slugify('%s-%s-%i' % (self.first_name, self.last_name, self.birthday.year), only_ascii=True)
+        else:
+            self.slug = slugify('%s-%s' % (self.first_name, self.last_name), only_ascii=True)
         return super().save(*args, **kwargs)

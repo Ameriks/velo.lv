@@ -23,7 +23,7 @@ class TeamTable(tables.Table):
     class Meta:
         model = Team
         attrs = {"class": "table-block"}
-        fields = ("is_featured", "title", "country", "contact_person")
+        fields = ("is_featured", "title", "country", "contact_person", "is_w")
         empty_text = _("There are no teams")
         per_page = 200
         template = "base/table.html"
@@ -55,6 +55,6 @@ class TeamMyTable(tables.Table):
         fields = ("title", "is_featured", "distance")
         sequence = ("is_featured", "title", "competition", "distance", "apply")
         empty_text = _("You haven't created any official team.")
-        order_by = ("-id")
+        order_by = ("-id", )
         per_page = 20
         template = "base/table.html"

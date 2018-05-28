@@ -66,7 +66,7 @@ def update_uci_category(filename):
                                                   issued=issued)
 
 
-def import_lrf_licences():
+def import_lrf_licences_2017():
     from velo.registration.models import UCICategory
     lrf_licence_html = requests.get('http://lrf.lv/index.php/licences/2017-gada-licencu-saraksts?limit=false&start=0')
     beautiful_lrf_licence = BeautifulSoup(lrf_licence_html.text, 'html.parser')
@@ -110,4 +110,46 @@ def import_lrf_licences():
             else:
                 continue
         UCICategory.objects.update_or_create(**row_dict)
+
+
+def import_lrf_licences_2018():
+    from velo.registration.models import UCICategory
+    get_params = {'limit': 100}
+
+    for index in [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]:
+        get_params.update({'startat': index})
+        lrf_licence_html = requests.get('http://lrf.lv/index.php/licences/2018-gada-licencu-saraksts', params=get_params)
+        beautiful_lrf_licence = BeautifulSoup(lrf_licence_html.text, 'html.parser')
+        table = beautiful_lrf_licence.find('table', {'class': 'ui selectable table'})
+        columns = table.find('thead').find_all('th')
+        col = []
+        for column in columns:
+            col.append(column.get_text().strip())
+        rows = table.find('tbody').find_all('tr')
+        for row in rows:
+            row_dict = {}
+            for idx, cell in enumerate(row.find_all('td')):
+                value = "" if cell.string is None else cell.string.strip()
+                if col[idx] == "UCI kods":
+                    if value.isnumeric():
+                        row_dict.update({"code": "LAT" + value})
+                    else:
+                        # UCI ID column contains not only numeric values!
+                        print(value)
+                        row_dict.update({"code": "LAT" + ''.join(re.findall(r'\b\d+\b', value))})
+                elif col[idx] == 'Uzvārds':
+                    row_dict.update({"last_name": value})
+                elif col[idx] == 'Vārds':
+                    row_dict.update({"first_name": value})
+                elif col[idx] == 'UCI kategorija':
+                    row_dict.update({"category": value})
+                elif col[idx] == 'Nac. kategorija':
+                    row_dict.update({"group": value})
+                elif col[idx] == 'Lic.derīga':
+                    if not value:
+                        value = '31.12.2018'
+                    row_dict.update({"valid_until": datetime.datetime.strptime(value, '%d.%m.%Y')})
+                else:
+                    continue
+            UCICategory.objects.update_or_create(**row_dict)
 

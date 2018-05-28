@@ -167,6 +167,11 @@ class MemberInline(GetClassNameMixin, InlineFormSet):
         kwargs.update({'required': 1})
         kwargs.update({'can_add_new': True})
         kwargs.update({'max_num': self.competition.params_dict.get('team_member_count', 1000) if self.competition else 1000})
+
+        # Quick fix for women teams - there can only be 2 members in women teams.
+        if self.object and self.object.is_w:
+            kwargs.update({'max_num': 2})
+
         kwargs.update({'queryset': Member.objects.filter(status=Member.STATUS_ACTIVE) })
         return kwargs
 

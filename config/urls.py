@@ -18,11 +18,13 @@ from sitetree import sitetreeapp
 from velo.core.sitetrees import sitetrees_build
 from velo.core.views import CalendarView, IndexView
 from velo.marketing.views import ToyotaFrameView
-from velo.payment.views import ApplicationPayView, ApplicationOKView, TransactionReturnView, InvoiceDownloadView
+from velo.payment.views import ApplicationPayView, ApplicationOKView, TransactionReturnView, InvoiceDownloadView, \
+    DiscountCheckView
 from velo.registration.views import ApplicationUpdate, ApplicationCreate, CompanyApplicationCreate, CompanyApplicationDetail, \
     CompanyApplicationParticipantAdd, MyCompanyApplicationList, CompanyApplicationParticipantAddOK, \
     CompanyApplicationUpdate, ParticipantPDF
 from velo.results.views import ResultAllView
+from velo.staticpage.views import StaticPageView, SimpleStaticPageView
 from velo.velo.views import CustomAutoResponseView, cached_javascript_catalog
 
 admin.autodiscover()
@@ -55,6 +57,7 @@ urlpatterns = i18n_patterns(
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$'), ApplicationUpdate.as_view(), name='application'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/pay/$'), ApplicationPayView.as_view(), name='application_pay'),
     url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$'), ApplicationOKView.as_view(), name='application_ok'),
+    url(_(r'^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/discount/$'), DiscountCheckView.as_view(), name='check_discount'),
 
 
 
@@ -80,6 +83,7 @@ urlpatterns = i18n_patterns(
     url(r'^jsi18n/$', cached_javascript_catalog, js_info_dict),
 
     url(r'^toyota/$', ToyotaFrameView.as_view(), name='marketing_toyota'),
+    url(r'(?P<slug>.*)/$', SimpleStaticPageView.as_view(), name='simple_staticpage'),
 )
 
 

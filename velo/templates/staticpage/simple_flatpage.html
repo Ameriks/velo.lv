@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block content %}
+
+    <main>
+    <div class="primary-heading c-white border-bottom">
+        <div class="inner">
+            <div class="row border-right border-left">
+                <div class="col-xl-17 col-l-15 col-m-24">
+                    <div class="primary-heading__spacing w100">
+                        <h1 class="primary-heading__text primary-heading__text--smaller bottom-margin--10">{{ object.title }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w100">
+        <div class="inner">
+            <div class="flex wrap--nowrap direction--row justify--start align-items--stretch border-right no-border--480">
+                <div class="banner-area-context flex--1 border-left no-border--480 bgc-dblue">
+                    <article class="article">
+                        <div class="article__text editor-text">
+                            {{ object.content|safe }}
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock %}

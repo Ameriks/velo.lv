@@ -6,8 +6,8 @@ postgres:
     - /var/backups/postgresql:/var/backups/postgresql
   restart: always
   env_file: .env
-  links:
-    - redis  # For log management
+#  links:
+#    - redis  # For log management
 
 mariadb:
   build: ./compose/mariadb

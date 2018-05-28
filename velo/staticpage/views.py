@@ -63,3 +63,13 @@ class StaticPageView(SetCompetitionContextMixin, DetailView):
                 return response
         # else:
         return super().get(request, *args, **kwargs)
+
+
+class SimpleStaticPageView(DetailView):
+    slug_field = 'url'
+    model = StaticPage
+    template_name = 'staticpage/simple_flatpage.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(is_published=True, competition=None)
+        return queryset

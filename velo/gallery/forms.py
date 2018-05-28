@@ -17,7 +17,8 @@ import os
 from velo.core.models import Competition
 from velo.core.widgets import SplitDateWidget
 from velo.gallery.models import Video, Photo, Album
-from velo.gallery.utils import youtube_video_id, sync_album
+from velo.gallery.utils import youtube_video_id
+from velo.gallery.tasks import sync_album
 from velo.velo.mixins.forms import RequestKwargModelFormMixin
 import environ
 from django.utils import timezone
@@ -204,7 +205,7 @@ class AddPhotoAlbumForm(RequestKwargModelFormMixin, forms.ModelForm):
         with zipfile.ZipFile(zip_file.temporary_file_path(), "r") as z:
             z.extractall(gallery_path, self.get_members(z))
 
-        sync_album(obj.id)
+        sync_album.delay(obj.id)
 
         return obj
 
