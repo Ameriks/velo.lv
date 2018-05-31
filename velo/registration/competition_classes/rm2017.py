@@ -140,7 +140,7 @@ class RM2017(RM2016):
 
     def assign_numbers(self, reassign=False, assign_special=False):
         # TODO: Need to find all participants that have started in sport distance and now are in other distances.
-        prev_participants = [p.slug for p in Participant.objects.filter(is_participating=True, competition_id=61, distance_id=53)]
+        prev_participants = [p.slug for p in Participant.objects.filter(is_participating=True, competition=self.competition, distance_id=53)]
         now_participants = Participant.objects.filter(distance_id=self.TAUTAS_DISTANCE_ID, is_participating=True, slug__in=prev_participants)
         for now in now_participants:
             try:

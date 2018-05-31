@@ -130,7 +130,7 @@ class RM2018(RM2017):
 
     def assign_numbers(self, reassign=False, assign_special=False):
         # TODO: Need to find all participants that have started in sport distance and now are in other distances.
-        prev_participants = [p.slug for p in Participant.objects.filter(is_participating=True, competition_id=76, distance_id=65)]
+        prev_participants = [p.slug for p in Participant.objects.filter(is_participating=True, competition=self.competition, distance_id=65)]
         now_participants = Participant.objects.filter(distance_id=self.TAUTAS_DISTANCE_ID, is_participating=True, slug__in=prev_participants)
         for now in now_participants:
             try:
@@ -140,7 +140,7 @@ class RM2018(RM2017):
 
         # All juniors in 2nd segment
         juniors = Participant.objects.filter(competition=self.competition, distance_id=self.TAUTAS_DISTANCE_ID,
-                                             is_participating=True, participant__group__in=('T M-16', )).order_by('id')
+                                             is_participating=True, group__in=('T M-16', )).order_by('id')
         for _ in juniors:
             if UCICategory.objects.filter(first_name__icontains=_.first_name, last_name__icontains=_.last_name):
                 try:
@@ -150,7 +150,7 @@ class RM2018(RM2017):
 
         # All juniors in 3rd segment
         juniors = Participant.objects.filter(competition=self.competition, distance_id=self.TAUTAS_DISTANCE_ID,
-                                             is_participating=True, participant__group__in=('T W-18', 'T W-16', 'T M-14')).order_by('id')
+                                             is_participating=True, group__in=('T W-18', 'T W-16', 'T M-14')).order_by('id')
         for _ in juniors:
             if UCICategory.objects.filter(first_name__icontains=_.first_name, last_name__icontains=_.last_name):
                 try:
@@ -160,7 +160,7 @@ class RM2018(RM2017):
 
         # All juniors in 4th segment
         juniors = Participant.objects.filter(competition=self.competition, distance_id=self.TAUTAS_DISTANCE_ID,
-                                             is_participating=True, participant__group__in=('T W-14', )).order_by('id')
+                                             is_participating=True, group__in=('T W-14', )).order_by('id')
         for _ in juniors:
             if UCICategory.objects.filter(first_name__icontains=_.first_name, last_name__icontains=_.last_name):
                 try:
@@ -168,4 +168,4 @@ class RM2018(RM2017):
                 except:
                     PreNumberAssign.objects.create(competition=self.competition, distance=_.distance, participant_slug=_.slug, segment=4)
 
-        super().assign_numbers(reassign, assign_special)
+        super(RM2017, self).assign_numbers(reassign, assign_special)

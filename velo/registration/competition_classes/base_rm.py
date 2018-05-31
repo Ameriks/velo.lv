@@ -279,7 +279,7 @@ AND r.id = res2.id
                     participant.primary_number = number
                     participant.save()
 
-        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.TAUTAS1_DISTANCE_ID):
+        for distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.GIMENU_DISTANCE_ID):
 
 
             for passage_nr, passage_start, passage_end, passage_extra in self.passages().get(distance_id):
