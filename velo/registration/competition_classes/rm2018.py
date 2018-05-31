@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from django.utils.timezone import activate
+from django.utils.translation import activate
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
@@ -102,7 +102,7 @@ class RM2018(RM2017):
         }
 
     def number_pdf(self, participant_id):
-        # activate('lv')
+        activate('lv')
         participant = Participant.objects.get(id=participant_id)
         output = BytesIO()
 
