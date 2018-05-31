@@ -102,7 +102,7 @@ class RM2018(RM2017):
         }
 
     def number_pdf(self, participant_id):
-        # activate('lv')
+        activate('lv')
         participant = Participant.objects.get(id=participant_id)
         output = BytesIO()
 
