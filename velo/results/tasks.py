@@ -55,14 +55,16 @@ def send_test_sms():
 
 
 @task(base=LogErrorsTask)
-def create_result_sms(result_id):
+def create_result_sms(result_id, sms_text=None):
     send_out = timezone.now()
     result = Result.objects.select_related('competition', 'participant').get(id=result_id)
 
+    if not sms_text:
+        sms_text = result.competition.sms_text
     #distance_result = Result.objects.filter(competition=result.competition, number__distance=result.number.distance, time__lte=result.time).exclude(time=None).exclude(participant__is_competing=False).count()
     #group_result = Result.objects.filter(competition=result.competition, participant__group=result.participant.group, time__lte=result.time).exclude(time=None).exclude(participant__is_competing=False).count()
 
-    sms_text = result.competition.sms_text % {
+    sms_text = sms_text % {
         'number': result.number.number,
         'time': str(result.time.replace(microsecond=0)),
         'group_result': result.result_group,
