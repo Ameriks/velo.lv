@@ -14,6 +14,8 @@ from velo.core.pdf import fill_page_with_image, _baseFontNameB, _baseFontName
 from velo.registration.competition_classes import RM2017
 from velo.registration.models import Participant, PreNumberAssign, UCICategory
 from velo.results.models import ChipScan, DistanceAdmin, Result, LapResult
+from velo.results.tables import ResultRMGroupTable, ResultRMDistanceTable, ResultRMTautaDistanceTable, \
+    ResultRM2016SportsDistanceTable, ResultRMGimeneDistanceTable
 from velo.results.tasks import create_result_sms
 
 
@@ -294,3 +296,23 @@ class RM2018(RM2017):
         c.save()
         output.seek(0)
         return output
+
+
+    def result_select_extra(self, distance_id):
+        return {
+            'l1': 'SELECT time FROM results_lapresult l1 WHERE l1.result_id = results_result.id and l1.index=1',
+            'l2': 'SELECT time FROM results_lapresult l2 WHERE l2.result_id = results_result.id and l2.index=2',
+            'l3': 'SELECT time FROM results_lapresult l3 WHERE l3.result_id = results_result.id and l3.index=3',
+            'l4': 'SELECT time FROM results_lapresult l4 WHERE l4.result_id = results_result.id and l4.index=4',
+        }
+
+    def get_result_table_class(self, distance, group=None):
+        if group:
+            return ResultRMGroupTable
+        else:
+            if distance.id == self.SPORTA_DISTANCE_ID:
+                return ResultRM2016SportsDistanceTable
+            elif distance.id == self.GIMENU_DISTANCE_ID:
+                return ResultRMGimeneDistanceTable
+            else:
+                return ResultRMTautaDistanceTable

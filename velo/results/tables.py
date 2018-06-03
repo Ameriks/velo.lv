@@ -377,6 +377,21 @@ class ResultRMTautaDistanceTable(ResultRMDistanceTable):
         template = "base/table.html"
 
 
+class ResultRMGimeneDistanceTable(ResultRMDistanceTable):
+    result_distance = None
+    class Meta:
+        model = Participant
+        attrs = {"class": "table-block"}
+        fields = ("number", "status")  # all_numbers
+        sequence = (
+        "number", 'first_name', 'last_name', 'year', 'team', 'bike_brand2', 'time', 'status')
+        empty_text = _("There are no results")
+        order_by = ("time", )
+        # ordering = ('created')
+        per_page = 200
+        template = "base/table.html"
+
+
 class ResultRMSportsDistanceTable(ResultRMDistanceTable):
     l1 = tables.Column(empty_values=(), verbose_name=_('L1'), accessor="l1")
     l2 = tables.Column(empty_values=(), verbose_name=_('L2'), accessor="l2")
