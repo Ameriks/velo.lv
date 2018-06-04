@@ -277,20 +277,27 @@ class RM2018(RM2017):
         fill_page_with_image(path, c)
 
         c.setFont(_baseFontNameB, 30)
-        c.drawCentredString(c._pagesize[0] / 2, 12.5*cm, result.participant.full_name)
-        c.drawString(5.75*cm, 11.1 * cm, str(result.participant.primary_number))
 
-        if result.participant.distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
-            c.setFont(_baseFontName, 25)
-            c.drawCentredString(14*cm, 7.7*cm, str(result.result_distance) if result.result_distance else '-')
-            c.drawCentredString(17.5 * cm, 7.7 * cm, str(total_participants))
-            c.drawCentredString(5.25*cm, 7.7*cm, str(result.time.replace(microsecond=0)))
+        if result.participant.distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.GIMENU_DISTANCE_ID):
 
-            c.drawCentredString(15.75*cm, 4.7*cm, "%s km/h" % result.avg_speed)
-            c.drawCentredString(3.4*cm, 4.7*cm, str(result.result_group) if result.result_group else '-')
-            c.drawCentredString(7.0 * cm, 4.7 * cm, str(total_group_participants))
-        elif result.participant.distance_id in (self.GIMENU_DISTANCE_ID, ):
-            c.drawCentredString(5.25 * cm, 7.7 * cm, str(result.time.replace(microsecond=0)))
+            c.drawCentredString(c._pagesize[0] / 2, 12.5*cm, result.participant.full_name)
+            c.drawString(5.75*cm, 11.1 * cm, str(result.participant.primary_number))
+
+            if result.participant.distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+                c.setFont(_baseFontName, 25)
+                c.drawCentredString(14*cm, 7.7*cm, str(result.result_distance) if result.result_distance else '-')
+                c.drawCentredString(17.5 * cm, 7.7 * cm, str(total_participants))
+                c.drawCentredString(5.25*cm, 7.7*cm, str(result.time.replace(microsecond=0)))
+
+                c.drawCentredString(15.75*cm, 4.7*cm, "%s km/h" % result.avg_speed)
+                c.drawCentredString(3.4*cm, 4.7*cm, str(result.result_group) if result.result_group else '-')
+                c.drawCentredString(7.0 * cm, 4.7 * cm, str(total_group_participants))
+            elif result.participant.distance_id in (self.GIMENU_DISTANCE_ID, ):
+                c.drawCentredString(5.25 * cm, 7.7 * cm, str(result.time.replace(microsecond=0)))
+
+        else:
+            c.drawCentredString(c._pagesize[0] / 2, 10.5 * cm, result.participant.full_name)
+
 
         c.showPage()
         c.save()
@@ -312,7 +319,7 @@ class RM2018(RM2017):
         else:
             if distance.id == self.SPORTA_DISTANCE_ID:
                 return ResultRM2016SportsDistanceTable
-            elif distance.id == self.GIMENU_DISTANCE_ID:
+            elif distance.id in (self.GIMENU_DISTANCE_ID, self.BERNU_DISTANCE_ID):
                 return ResultRMGimeneDistanceTable
             else:
                 return ResultRMTautaDistanceTable
