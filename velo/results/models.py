@@ -128,12 +128,14 @@ class UrlSync(PeriodicTask):
         return "#%s %s" % (self.id, self.kind)
 
     def save(self, *args, **kwargs):
+        prev_urlsync = UrlSync.objects.get(id=self.id)
         self.name = "Sync_%f" % time.time()
         self.task = "velo.results.tasks.fetch_results"
         self.crontab, created = CrontabSchedule.objects.get_or_create(minute='*', hour='*', day_of_week="*", day_of_month="*", month_of_year="*")
         super(UrlSync, self).save(*args, **kwargs)
         self.args = "[%i]" % self.id
-        transaction.on_commit(lambda: restart_celerybeat())
+        if prev_urlsync.enabled != self.enabled:
+            transaction.on_commit(lambda: restart_celerybeat())
         return super(UrlSync, self).save(*args, **kwargs)
 
 # signals.pre_delete.connect(PeriodicTasks.changed, sender=UrlSync)

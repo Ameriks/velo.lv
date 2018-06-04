@@ -289,7 +289,7 @@ class RM2018(RM2017):
             c.drawCentredString(15.75*cm, 4.7*cm, "%s km/h" % result.avg_speed)
             c.drawCentredString(3.4*cm, 4.7*cm, str(result.result_group) if result.result_group else '-')
             c.drawCentredString(7.0 * cm, 4.7 * cm, str(total_group_participants))
-        elif result.participant.distance_id in (self.GIMENU_DISTANCE_ID):
+        elif result.participant.distance_id in (self.GIMENU_DISTANCE_ID, ):
             c.drawCentredString(5.25 * cm, 7.7 * cm, str(result.time.replace(microsecond=0)))
 
         c.showPage()
