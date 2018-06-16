@@ -211,14 +211,14 @@ class Seb2018(SEBCompetitionBase):
                 if passage_nr == 1 and self.competition_index == 4 and distance_id == self.TAUTAS_DISTANCE_ID:
                     juniors = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('T M-18', )).order_by('-calculated_total', 'participant__registration_dt')
                     for _ in juniors:
-                        slug = slugify('%s-%s' % (_.first_name, _.last_name), only_ascii=True)
+                        slug = slugify('%s-%s' % (_.participant.first_name, _.participant.last_name), only_ascii=True)
                         if UCICategory.objects.filter(slug__icontains=slug):
                             _.passage_assigned = passage_nr
                             _.save()
                 if passage_nr == 3 and self.competition_index == 4 and distance_id == self.TAUTAS_DISTANCE_ID:
                     juniors = HelperResults.objects.filter(competition=self.competition, participant__distance_id=distance_id, participant__is_participating=True, passage_assigned=None, participant__group__in=('T W-18', )).order_by('-calculated_total', 'participant__registration_dt')
                     for _ in juniors:
-                        slug = slugify('%s-%s' % (_.first_name, _.last_name), only_ascii=True)
+                        slug = slugify('%s-%s' % (_.participant.first_name, _.participant.last_name), only_ascii=True)
                         if UCICategory.objects.filter(slug__icontains=slug):
                             _.passage_assigned = passage_nr
                             _.save()
