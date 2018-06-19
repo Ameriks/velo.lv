@@ -304,6 +304,8 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['t_shirt_size'].label = ""
         else:
             self.fields['t_shirt_size'].label += " (+25€)"
+            self.fields['t_shirt_size'].help_text = mark_safe(
+                "<a href='#modal-tshirt-size'>{}</a>".format(_('T-shirt design')))
         self.fields['t_shirt_size'].required = False
 
         self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
