@@ -234,10 +234,23 @@
                           <div class="input-wrap w100 bottom-margin--20">
                               <div class="w100 fs13 bottom-margin--10">{{ form.survey_answer1.label }}</div>
                               {{ form.survey_answer1|add_extra_classes:"select" }}
-                              {% if form.survey_answer1.help_text or form.city.errors %}
+                              {% if form.survey_answer1.help_text or form.survey_answer1.errors %}
                                   <p id="{{ form.survey_answer1.auto_id }}-error" class="error">
                                       {% for error in form.survey_answer1.errors %}{{ error }}{% empty %}
                                           {{ form.survey_answer1.help_text }}{% endfor %}</p>
+                              {% endif %}
+                          </div>
+                      </div>
+
+                      {# T-Shirt #}
+                      <div class="col-xl-8 col-m-12 col-s-24">
+                          <div class="input-wrap w100 bottom-margin--20">
+                              <div class="w100 fs13 bottom-margin--10">{{ form.t_shirt_size.label }}</div>
+                              {{ form.t_shirt_size|add_extra_classes:"select" }}
+                              {% if form.t_shirt_size.help_text or form.t_shirt_size.errors %}
+                                  <p id="{{ form.t_shirt_size.auto_id }}-error" class="error">
+                                      {% for error in form.t_shirt_size.errors %}{{ error }}{% empty %}
+                                          {{ form.t_shirt_size.help_text }}{% endfor %}</p>
                               {% endif %}
                           </div>
                       </div>

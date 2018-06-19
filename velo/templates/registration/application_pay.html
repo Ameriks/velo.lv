@@ -39,6 +39,7 @@
                                                     <th>{% trans "Team" %}</th>
                                                     <th>{% trans "Price" %}</th>
                                                     <th>{% trans "Insurance" %}</th>
+                                                    {% if t_shirt_count %}<th>{% trans "T-Shirt" %}</th>{% endif %}
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -53,6 +54,7 @@
                                                             <td>{{ price|floatformat:"-2" }} €</td>
                                                             <td>{% if insurance %}{{ insurance|floatformat:"-2" }}
                                                                 €{% else %}-{% endif %}</td>
+                                                            {% if t_shirt_count %}<td>{% if participant.t_shirt_size %}25 € ({{ participant.t_shirt_size }}){% else %}-{% endif %}</td>{% endif %}
                                                         {% endwith %}
                                                     </tr>
                                                 {% endfor %}

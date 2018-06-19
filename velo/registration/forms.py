@@ -172,7 +172,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
 
     class Meta:
         model = Participant
-        fields = ('insurance',
+        fields = ('insurance', 't_shirt_size',
             'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
             'bike_brand2',
             'team_name', 'email', 'city', 'survey_answer1')
@@ -299,6 +299,12 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['survey_answer1'].widget = forms.HiddenInput()
             self.fields['survey_answer1'].label = ""
 
+        if not competition.pk == 84:
+            self.fields['t_shirt_size'].widget = forms.HiddenInput()
+            self.fields['t_shirt_size'].label = ""
+        else:
+            self.fields['t_shirt_size'].label += " (+25€)"
+        self.fields['t_shirt_size'].required = False
 
         self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
                                                                           distances]
