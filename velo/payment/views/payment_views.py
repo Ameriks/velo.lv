@@ -124,6 +124,8 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                 if participant.insurance:
                     self.total_insurance_fee += get_insurance_fee_from_insurance(self.object.competition,
                                                                                  participant.insurance)
+                if participant.t_shirt_size:
+                    self.total_entry_fee += 25.
 
         if valid:
             if self.object.total_entry_fee != self.total_entry_fee or self.object.total_insurance_fee != self.total_insurance_fee:
@@ -141,6 +143,9 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
         context.update({'participants': self.participants})
         context.update({'total_entry_fee': self.total_entry_fee})
         context.update({'total_insurance_fee': self.total_insurance_fee})
+
+        if self.participants.exclude(t_shirt_size=None):
+            context.update({'t_shirt_count': self.participants.exclude(t_shirt_size=None).count()})
 
         if self.object.competition.params:
             donation = self.object.competition.params_dict.get('donation', {})

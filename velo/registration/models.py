@@ -81,6 +81,10 @@ class Participant(TimestampMixin, models.Model):
         ('M', _('Male')),
         ('F', _('Female')),
     )
+    TSHIRT_SIZE_CHOICES = (
+        ('XS', _('UNISEX XS')), ('S', _('UNISEX S')), ('M', _('UNISEX M')),
+        ('L', _('UNISEX L')), ('XL', _('UNISEX XL')), ('XXL', _('UNISEX XXL')),
+    )
     application = models.ForeignKey(Application, blank=True, null=True)
     competition = models.ForeignKey('core.Competition')
     distance = models.ForeignKey('core.Distance', blank=True, null=True)
@@ -151,6 +155,8 @@ class Participant(TimestampMixin, models.Model):
     final_price = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
 
     survey_answer1 = models.CharField(max_length=20, blank=True)
+
+    t_shirt_size = models.CharField(_('T-Shirt size'), max_length=3, choices=TSHIRT_SIZE_CHOICES, blank=False, null=True)
 
     _competition_class = None
 

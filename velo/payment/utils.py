@@ -289,13 +289,19 @@ def create_application_invoice(application, active_payment_type, action="send", 
         })
         if participant.insurance:
             items.append({
-                "description": "Apdrošināšana %(insurance)s" % {
-                    "insurance": participant.insurance,
-                },
+                "description": "Apdrošināšana %(insurance)s" % {"insurance": participant.insurance,},
                 "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
                 "units": "gab.",
                 "amount": "1",
                 "price": get_insurance_fee_from_insurance(participant.competition, participant.insurance)
+            })
+        if participant.t_shirt_size:
+            items.append({
+                "description": "T-krekls %(size)s" % {"size": participant.t_shirt_size,},
+                "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
+                "units": "gab.",
+                "amount": "1",
+                "price": 25.00
             })
     if application.donation > 0:
         information = application.competition.params_dict.get('donation', {}).get('bank_code',
