@@ -563,7 +563,7 @@ class Seb2018(SEBCompetitionBase):
             total_group_participants = result.competition.result_set.filter(participant__distance=result.participant.distance, participant__group=result.participant.group).count()
 
 
-        if self.competition_id in (80, 82):
+        if self.competition_id in (80, 83):
             c = canvas.Canvas(output, pagesize=(21*cm, 29.7*cm))
 
             fill_page_with_image(path, c)
