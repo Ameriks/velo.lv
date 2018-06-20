@@ -299,13 +299,13 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['survey_answer1'].widget = forms.HiddenInput()
             self.fields['survey_answer1'].label = ""
 
-        if not competition.pk == 84:
-            self.fields['t_shirt_size'].widget = forms.HiddenInput()
-            self.fields['t_shirt_size'].label = ""
-        else:
+        if competition.pk == 88:
             self.fields['t_shirt_size'].label += " (+25€)"
             self.fields['t_shirt_size'].help_text = mark_safe(
                 "<a href='#modal-tshirt-size'>{}</a>".format(_('T-shirt design')))
+        else:
+            self.fields['t_shirt_size'].widget = forms.HiddenInput()
+            self.fields['t_shirt_size'].label = ""
         self.fields['t_shirt_size'].required = False
 
         self.fields['distance'].choices = [('', _("Select Distance"))] + [(distance.id, str(distance)) for distance in
