@@ -34,7 +34,7 @@ class Seb2018(SEBCompetitionBase):
     BERNU_DISTANCE_ID = 82
     VESELIBAS_DISTANCE2_ID = 83
     STAGES_COUNT = 7
-    CALCULATE_STANDING_FROM_STAGES = 6
+    CALCULATE_STANDING_FROM_STAGES = 5
 
     @property
     def passages(self):
