@@ -299,7 +299,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['survey_answer1'].widget = forms.HiddenInput()
             self.fields['survey_answer1'].label = ""
 
-        if competition.pk == 88:
+        if competition.pk == -88:  # disabled
             self.fields['t_shirt_size'].label += " (+25€)"
             self.fields['t_shirt_size'].help_text = mark_safe(
                 "<a href='#modal-tshirt-size'>{}</a>".format(_('T-shirt design')))
