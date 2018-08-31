@@ -66,12 +66,12 @@ class VBCompetitionBase(CompetitionScriptBase):
 
     def passages(self):
         return {
-            self.SOSEJAS_DISTANCE_ID: [(1, 1, 250, 0), ],
+            self.SOSEJAS_DISTANCE_ID: [(1, 1, 200, 0), ],
             self.MTB_DISTANCE_ID: [
                                     (1, 401, 600, 20),
                                     (2, 601, 800, 20),
                                     (3, 801, 1000, 10),
-                                    (4, 1001, 1200, 0)
+                                    (4, 1001, 1240, 0)
                                     ],
             self.TAUTAS_DISTANCE_ID: [
                                     (1, 2001, 2200, 20),
@@ -94,9 +94,8 @@ class VBCompetitionBase(CompetitionScriptBase):
                                     (18, 5401, 5600, 0),
                                     (19, 5601, 5800, 0),
                                     (20, 5801, 6000, 0),
-                                    (21, 6001, 6200, 0),
                                     ],
-            self.RETRO_DISTANCE_ID: [(1, 9001, 9450, 0), ],
+            self.RETRO_DISTANCE_ID: [(1, 9001, 9500, 0), ],
         }
 
 
