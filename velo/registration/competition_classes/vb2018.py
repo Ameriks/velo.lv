@@ -8,8 +8,9 @@ from reportlab.pdfgen import canvas
 
 from velo.core.pdf import fill_page_with_image, _baseFontNameB
 from velo.registration.competition_classes import VB2017
-from velo.registration.models import Participant, ChangedName
+from velo.registration.models import Participant, ChangedName, UCICategory, PreNumberAssign
 from velo.results.models import Result, HelperResults
+from velo.team.models import Team, Member
 
 
 class VB2018(VB2017):
@@ -108,3 +109,23 @@ class VB2018(VB2017):
                     helper.matches_slug = matches[0]
 
             helper.save()
+
+    def pre_competition_run(self):
+        t = Team.objects.filter(distance__competition=self.competition)
+        members = Member.objects.filter(team__in=t)
+        for member in members:
+            try:
+                p = Participant.objects.get(slug=member.slug, is_participating=True, distance=member.team.distance)
+                if p.team_name != member.team.title:
+                    print("%i %s %s %s" % (p.id, p.slug, p.team_name, member.team.title))
+                    p.team_name = member.team.title
+                    p.save()
+            except:
+                print('Not %s' % member.slug)
+
+        uci = UCICategory.objects.filter(group='Juniori')
+        for u in uci:
+            x = Participant.objects.filter(is_participating=True, competition_id=self.competition_id, slug__icontains=u.slug, group__in=('MTB W-18', 'MTB M-18'))
+            if x:
+                PreNumberAssign.objects.get_or_create(competition=self.competition, distance=x[0].distance, participant_slug=x[0].slug, description="UCI Juniors", segment=1 if x[0].gender == 'M' else 2)
+
