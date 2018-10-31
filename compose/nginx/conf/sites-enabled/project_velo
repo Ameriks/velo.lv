@@ -4,7 +4,7 @@ proxy_cache_path  /var/lib/nginx/cache/velo_memory  levels=1:2  inactive=30m key
 server {
     listen 443;
     server_name mans.velo.lv;
-    client_max_body_size 1000M;
+    client_max_body_size 2000M;
 
     ssl on;
     ssl_certificate /etc/letsencrypt/live/www.velo.lv/fullchain.pem;
@@ -19,7 +19,7 @@ server {
 server {
     listen 443;
     server_name www.velo.lv velo.lv;
-    client_max_body_size 1000M;
+    client_max_body_size 2000M;
 
     ssl on;
     ssl_certificate /etc/letsencrypt/live/www.velo.lv/fullchain.pem;

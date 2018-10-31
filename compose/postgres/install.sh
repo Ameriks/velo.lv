@@ -8,15 +8,9 @@ apt-get install -y --no-install-recommends lzop pv libhiredis0.10 python3
 
 # Install build packages
 # ===================================================================
-PACKAGES="make g++ python3-dev curl postgresql-server-dev-9.6 unzip libhiredis-dev libssl-dev libkrb5-dev"
+PACKAGES="make g++ python3-dev curl postgresql-server-dev-9.6"
 apt-get install -y --no-install-recommends  ${PACKAGES}
 
-curl -L https://github.com/2ndquadrant-it/redislog/archive/master.zip --insecure -o /tmp/master.zip
-cd /tmp/
-unzip master.zip
-cd /tmp/redislog-master
-make
-make install
 
 # Install Wal-E
 # ===================================================================

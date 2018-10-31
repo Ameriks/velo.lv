@@ -1,4 +1,4 @@
-FROM mdillon/postgis:9.6
+FROM mdillon/postgis:10
 
 RUN localedef -i lv_LV -c -f UTF-8 -A /usr/share/locale/locale.alias lv_LV.UTF-8
 ENV LANG lv_LV.utf8
