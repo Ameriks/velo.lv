@@ -177,7 +177,11 @@ class SEBCompetitionBase(CompetitionScriptBase):
         point_list = filter(None, point_list)  # remove None from list
 
         # Get 7 best results.
-        point_list = sorted(point_list, reverse=True)[:7]
+        if Team.objects.get(id=team_id).is_w:
+            point_list = sorted(point_list, reverse=True)[:5]
+        else:
+            point_list = sorted(point_list, reverse=True)[:7]
+
 
         setattr(standing, 'points_total', sum(point_list))
 
