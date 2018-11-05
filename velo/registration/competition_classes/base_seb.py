@@ -176,7 +176,7 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
         point_list = filter(None, point_list)  # remove None from list
 
-        # Get 7 best results.
+        # Get 7 best results for men teams and 5 best results for women teams.
         if Team.objects.get(id=team_id).is_w:
             point_list = sorted(point_list, reverse=True)[:5]
         else:
@@ -210,6 +210,14 @@ class SEBCompetitionBase(CompetitionScriptBase):
 
         return sum(points[0:self.CALCULATE_STANDING_FROM_STAGES])
 
+    def _participant_event_place_sum(self, standing):
+        """
+        This is private function that calculates sum from best 5 places in singles events
+        """
+        stages = range(1, self.STAGES_COUNT+1)
+        places = sorted(filter(None, (getattr(standing, "distance_place%i" % stage) for stage in stages)))
+
+        return sum(places[0:self.CALCULATE_STANDING_FROM_STAGES])
 
     def recalculate_standing_points(self, standing):
         """
@@ -218,6 +226,8 @@ class SEBCompetitionBase(CompetitionScriptBase):
         """
         if standing.distance_id != self.BERNU_DISTANCE_ID:  # Children competition doesn't have distance_total
             standing.distance_total = self._participant_standings_points(standing, distance=True)
+            standing.distance_place_sum = self._participant_event_place_sum(standing)
+
         standing.group_total = self._participant_standings_points(standing)
 
     def recalculate_standing_for_result(self, result):
@@ -269,11 +279,11 @@ class SEBCompetitionBase(CompetitionScriptBase):
         (
         Select res.id, res.competition_id, res.distance_id, res.group_total, res.distance_total,
         row_number() OVER (PARTITION BY res.competition_id, res.distance_id ORDER BY
-        res.distance_id, res.distance_total desc,
+        res.distance_id, res.distance_total desc, res.distance_place_sum ASC,
         res.distance_points7 desc, res.distance_points6 desc, res.distance_points5 desc, res.distance_points4 desc,
         res.distance_points3 desc, res.distance_points2 desc, res.distance_points1 desc, r.time ASC) as distance_row_nr,
         row_number() OVER (PARTITION BY res.competition_id, res.distance_id, p.group ORDER BY
-        res.distance_id, p.group, res.group_total desc, res.group_points7 desc, res.group_points6 desc, res.group_points5 desc,
+        res.distance_id, p.group, res.group_total desc, res.distance_place_sum ASC, res.group_points7 desc, res.group_points6 desc, res.group_points5 desc,
         res.group_points4 desc, res.group_points3 desc, res.group_points2 desc, res.group_points1 desc, r.time ASC
         ) as group_row_nr
         FROM results_sebstandings As res

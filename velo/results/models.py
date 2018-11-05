@@ -330,6 +330,8 @@ class SebStandings(models.Model):
     distance_total_seconds = models.FloatField(blank=True, null=True)
     distance_place = models.IntegerField(blank=True, null=True)
 
+    distance_place_sum = models.IntegerField(blank=True, null=True)
+
     @property
     def results(self):
         ctype = ContentType.objects.get_for_model(self.__class__)
