@@ -3,6 +3,7 @@ from .seb2015 import Seb2015
 from .seb2016 import Seb2016
 from .seb2017 import Seb2017
 from .seb2018 import Seb2018
+from .seb2019 import Seb2019
 from .rm2016 import RM2016
 from .vb2016 import VB2016
 from .ec2016 import EC2016
