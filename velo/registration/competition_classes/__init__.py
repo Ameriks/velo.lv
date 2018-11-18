@@ -9,3 +9,5 @@ from .vb2016 import VB2016
 from .ec2016 import EC2016
 from .rm2017 import RM2017
 from .vb2017 import VB2017
+from .rm2018 import RM2018
+from .vb2018 import VB2018
