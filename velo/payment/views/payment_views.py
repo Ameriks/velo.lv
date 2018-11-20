@@ -23,6 +23,7 @@ from velo.payment.models import Invoice, Transaction, ActivePaymentChannel, Paym
 from velo.payment.utils import get_form_message, \
     get_participant_fee_from_price, get_insurance_fee_from_insurance, create_team_invoice, create_application_invoice
 from velo.registration.models import Application
+from velo.results.models import HelperResults
 from velo.team.models import Team
 from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin
 
@@ -125,6 +126,22 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                     self.total_entry_fee += self.object.discount_code.calculate_entry_fee(float(prices[0].price))
                     self.object.discount_code.usage_times_left -= 1
                     self.object.discount_code.save()
+                elif participant.competition_id == 89:
+                    if participant.distance_id == 93 or participant.distance_id == 94:
+                        participating_in_2018 = HelperResults.objects.all().filter(competition__parent_id=79).filter(participant__is_participating=True, participant__slug=participant.slug).count()
+                        participating_in_2017 = HelperResults.objects.all().filter(competition__parent_id=67).filter(participant__is_participating=True, participant__slug=participant.slug).count()
+                        discount_until = datetime.datetime.strptime("01012019", "%d%m%Y").date()
+                        if datetime.datetime.now().date() < discount_until and (participating_in_2018 == 7 or participating_in_2018 + participating_in_2017 == 0):
+                            self.total_entry_fee += 100     # Sporta and Tautas distance before 01.01.2019 and participated in all last year stages or have not participated in last two years
+                        elif participant.distance_id == 93:
+                            self.total_entry_fee += 119     # Sporta distance after 01.01.2019
+                        else:
+                            self.total_entry_fee += 112     # Tautas distance after 01.01.2019
+
+                    if participant.distance_id == 95:       # Mammadaba Veselibas distance
+                        self.total_entry_fee += 60
+                    if participant.distance_id == 97:       # Mammadaba Zeni un Meitenes distance
+                        self.total_entry_fee += 42
                 else:
                     self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
                 if participant.insurance:
