@@ -134,7 +134,7 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                         last_two_years = participating_in_2018 + participating_in_2017
 
                         if not last_two_years:
-                            started_ever = HelperResults.objects.all().filter(competition__parent_id__in=(51, 38, 25, 17, 2)).filter(participant__is_participating=True, participant__slug=participant.slug).exists()
+                            started_ever = HelperResults.objects.all().filter(competition__parent__parent_id=1).filter(participant__is_participating=True, participant__slug=participant.slug).exists()
                         else:
                             started_ever = False
 
