@@ -129,9 +129,16 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                 elif participant.competition_id == 89:
                     if participant.distance_id == 93 or participant.distance_id == 94:
                         participating_in_2018 = HelperResults.objects.all().filter(competition__parent_id=79).filter(participant__is_participating=True, participant__slug=participant.slug).count()
-                        participating_in_2017 = HelperResults.objects.all().filter(competition__parent_id=67).filter(participant__is_participating=True, participant__slug=participant.slug).count()
+                        participating_in_2017 = HelperResults.objects.all().filter(competition__parent_id=67).filter(participant__is_participating=True, participant__slug=participant.slug).exists()
                         discount_until = datetime.datetime.strptime("01012019", "%d%m%Y").date()
-                        if datetime.datetime.now().date() < discount_until and (participating_in_2018 == 7 or participating_in_2018 + participating_in_2017 == 0):
+                        last_two_years = participating_in_2018 + participating_in_2017
+
+                        if not last_two_years:
+                            started_ever = HelperResults.objects.all().filter(competition__parent_id__in=(51, 38, 25, 17, 2)).filter(participant__is_participating=True, participant__slug=participant.slug).exists()
+                        else:
+                            started_ever = False
+
+                        if datetime.datetime.now().date() < discount_until and (participating_in_2018 == 7 or (not last_two_years and started_ever)):
                             self.total_entry_fee += 100     # Sporta and Tautas distance before 01.01.2019 and participated in all last year stages or have not participated in last two years
                         elif participant.distance_id == 93:
                             self.total_entry_fee += 119     # Sporta distance after 01.01.2019
