@@ -170,7 +170,7 @@ class Seb2019(SEBCompetitionBase):
                     return 'B 08-07 M'
 
         elif distance_id == self.VESELIBAS_DISTANCE2_ID:
-            if year in (self._update_year(2000), self._update_year(2001), self._update_year(2002)):
+            if year in (self._update_year(2000), self._update_year(2001), self._update_year(2002), self._update_year(2003)):
                 if gender == 'M':
                     return 'M-14'
                 else:
