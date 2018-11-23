@@ -139,12 +139,16 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                         else:
                             started_ever = False
 
-                        if datetime.datetime.now().date() <= discount_until and (participating_in_2018 == 7 or (not last_two_years and started_ever)):
-                            self.total_entry_fee += 100     # Sporta and Tautas distance before 01.01.2019 and participated in all last year stages or have not participated in last two years
-                        elif participant.distance_id == 93:
-                            self.total_entry_fee += 119     # Sporta distance after 05.01.2019
+                        if datetime.datetime.now().date() <= discount_until:
+                            if (participating_in_2018 == 7 or (not last_two_years and started_ever)):
+                                self.total_entry_fee += 100     # Sporta and Tautas distance before 01.01.2019 and participated in all last year stages or have not participated in last two years
+                            else:
+                                self.total_entry_fee += 112
+
+                        # elif participant.distance_id == 93:
+                        #     self.total_entry_fee += 119     # Sporta distance after 05.01.2019
                         else:
-                            self.total_entry_fee += 112     # Tautas distance after 05.01.2019
+                            self.total_entry_fee += 119     # Tautas distance after 05.01.2019
 
                     if participant.distance_id == 95:       # Mammadaba Veselibas distance
                         self.total_entry_fee += 60
