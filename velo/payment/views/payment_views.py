@@ -150,6 +150,8 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                         self.total_entry_fee += 60
                     if participant.distance_id == 97:       # Mammadaba Zeni un Meitenes distance
                         self.total_entry_fee += 42
+                    if participant.distance_id == 96:  # Bernu distance
+                        self.total_entry_fee += 6
                 else:
                     self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
                 if participant.insurance:
