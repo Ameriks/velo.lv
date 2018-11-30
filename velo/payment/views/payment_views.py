@@ -139,8 +139,10 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                         else:
                             started_ever = False
 
-                        if datetime.datetime.now().date() <= discount_until:
-                            if (participating_in_2018 == 7 or (not last_two_years and started_ever)):
+                        if 2001 <= participant.birthday.year <= 2004:   #Tautas distances 2001-2004 gadiem pilnas sezonas cena tāda pati, kā Mamma daba veselības distancei (10eur/posms)
+                            self.total_entry_fee += 60
+                        elif datetime.datetime.now().date() <= discount_until:
+                            if participating_in_2018 == 7 or (not last_two_years and started_ever):
                                 self.total_entry_fee += 100     # Sporta and Tautas distance before 01.01.2019 and participated in all last year stages or have not participated in last two years
                             else:
                                 self.total_entry_fee += 112
