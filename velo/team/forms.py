@@ -120,7 +120,7 @@ class TeamForm(GetClassNameMixin, CleanEmailMixin, RequestKwargModelFormMixin, f
         model = Team
         fields = (
             'distance', 'title', 'description', 'img', 'shirt_image', 'country', 'contact_person', 'email',
-            'phone_number', 'is_w', 'management_info',)
+            'phone_number', 'is_w', 'management_info', 'show_contact_info')
 
     def clean_distance(self):
         distance = self.cleaned_data.get('distance')

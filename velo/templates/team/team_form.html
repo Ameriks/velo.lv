@@ -72,6 +72,7 @@
                                                         {{ form.email.help_text }}{% endfor %}</p>
                                             {% endif %}
                                         </div>
+
                                     </div>
                                     <div class="col-xl-12 col-s-24">
                                         <div class="input-wrap w100 bottom-margin--20">
@@ -96,6 +97,10 @@
                                                     {% for error in form.phone_number.errors %}{{ error }}{% empty %}
                                                         {{ form.phone_number.help_text }}{% endfor %}</p>
                                             {% endif %}
+                                        </div>
+
+                                        <div>
+                                            {% include "wd_forms/new/checkbox.html" with field=form.show_contact_info %}
                                         </div>
                                     </div>
                                     <div class="col-xl-12 col-s-24">

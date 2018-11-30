@@ -2412,6 +2412,11 @@ msgstr "^participant/search.json$"
 msgid "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 msgstr "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 
+
+msgid "Show contact information in public team profile"
+msgstr "Показать контактную информацию в профиле"
+
+
 #~ msgid "^application/$"
 #~ msgstr "^zayavka/$"
 

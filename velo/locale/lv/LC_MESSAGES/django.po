@@ -2406,6 +2406,9 @@ msgstr "^dalibnieks/meklet.json$"
 msgid "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 msgstr "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 
+msgid "Show contact information in public team profile"
+msgstr "Rādīt kontaktinformāciju komandas profilā"
+
 #~ msgid "^application/$"
 #~ msgstr "^pieteikums/$"
 

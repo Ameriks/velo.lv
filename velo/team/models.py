@@ -32,6 +32,7 @@ class Team(StatusMixin, TimestampMixin, models.Model):
     contact_person = models.CharField(_('Contact Person'), max_length=100, blank=True)
     email = models.EmailField(_('Email'), blank=True)
     phone_number = models.CharField(_('Phone Number'), max_length=50, blank=True)
+    show_contact_info = models.BooleanField(_("Show contact information in public team profile"), default=True)
 
     management_info = models.TextField(_('Management Info'), blank=True)
 

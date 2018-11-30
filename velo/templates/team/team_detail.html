@@ -106,8 +106,10 @@
         <div class="editor-text w100 bottom-margin--20">
             <p class="uppercase">
                 {% trans "Manager" %}: <span class="c-yellow">{{ object.contact_person }}</span><br>
+                {% if object.show_contact_info %}
                 {% trans "E-mail" %}: <span class="c-yellow">{{ object.email|obfuscate }}</span><br>
                 {% trans "Phone" %}: <span class="c-yellow"><a href="callto:{{ object.phone_number }}">{{ object.phone_number }}</a></span><br>
+                {% endif %}
                 {% trans "Management" %}: <span class="c-yellow">{{ object.management_info }}</span><br>
             </p>
         </div>
