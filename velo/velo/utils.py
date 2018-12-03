@@ -100,7 +100,11 @@ def get_participants_not_raced_in_last_two_years():
                 full_name = "-"
             email = participant.email
             if email == "":
-                continue
+                if participant.application:
+                    email = participant.application.email
+                else:
+                    continue
+
 
             participants_not_raced.append([
                 full_name, email, last_competition_date,
