@@ -3,6 +3,8 @@ import os
 import requests
 import datetime
 import stat
+import csv
+
 
 
 def listdir(path):
@@ -66,3 +68,47 @@ class SessionWHeaders(requests.Session):
 
     def put(self, url, data=None, **kwargs):
         return self.request('PUT', self.update_url(url), data=data, **kwargs)
+
+
+def get_participants_not_raced_in_last_two_years():
+    from velo.core.models import Competition
+    from velo.registration.models import Participant, ChangedName
+    from velo.results.models import HelperResults
+    participants_not_raced = []
+    all_participants = Participant.objects.order_by("slug").distinct("slug")
+    index = 0
+    for participant in all_participants:
+        index += 1
+        if index % 100 == 0:
+            print(index)
+        if HelperResults.objects.filter(competition__parent_id__in=(79, 67)).filter(participant__is_participating=True, participant__slug=participant.slug).exists():
+            continue
+        slugs = list(ChangedName.objects.filter(new_slug=participant.slug).values_list('slug')) + [participant.slug, ]
+        if HelperResults.objects.filter(competition__parent__parent_id=1).filter(participant__is_participating=True, participant__slug__in=slugs).exists():
+            # last_competition = Participant.objects.filter(slug__in=slugs).order_by("-competition_id")[0]
+            last_competition = HelperResults.objects.filter(competition__parent__parent_id=1).filter(participant__is_participating=True, participant__slug__in=slugs).order_by("-competition_id")[0]
+            if not last_competition:
+                continue
+            last_competition_date = Competition.objects.get(id=last_competition.competition_id).competition_date
+
+            if not last_competition_date:
+                continue
+            if last_competition_date.year == 2018 or last_competition_date.year == 2017:
+                continue
+            full_name = participant.first_name + " " + participant.last_name
+            if full_name == " ":
+                full_name = "-"
+            email = participant.email
+            if email == "":
+                email = "-"
+
+            participants_not_raced.append([
+                full_name, email, last_competition_date,
+            ])
+
+    toCSV = participants_not_raced
+    with open("participants_not_reced_last_two_years", "w") as output_file:
+        writer = csv.writer(output_file)
+        writer.writerow(["Full name", "e-mail", "last competition date"])
+        writer.writerows(toCSV)
+
