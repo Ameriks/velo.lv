@@ -285,7 +285,7 @@ def create_application_invoice(application, active_payment_type, action="send", 
             "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
             "units": "gab.",
             "amount": "1",
-            "price": get_participant_fee_from_price(participant.competition, participant.price)
+            "price": participant.total_entry_fee
         })
         if participant.insurance:
             items.append({
@@ -293,7 +293,7 @@ def create_application_invoice(application, active_payment_type, action="send", 
                 "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
                 "units": "gab.",
                 "amount": "1",
-                "price": get_insurance_fee_from_insurance(participant.competition, participant.insurance)
+                "price": participant.total_insurance_fee,
             })
         if participant.t_shirt_size:
             items.append({

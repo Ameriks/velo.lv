@@ -120,51 +120,12 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                         valid = False
                         # check if prices are still valid
             if valid:
-                if self.object.discount_code:
-                    prices = self.object.competition.price_set.filter(till_year__gte=participant.birthday.year, from_year__lte=participant.birthday.year, distance_id=participant.distance_id).order_by('price')
+                from velo.registration.utils import recalculate_participant
+                recalculate_participant(participant)
+                self.total_entry_fee += participant.total_entry_fee + participant.total_insurance_fee
 
-                    self.total_entry_fee += self.object.discount_code.calculate_entry_fee(float(prices[0].price))
-                    self.object.discount_code.usage_times_left -= 1
-                    self.object.discount_code.save()
-                elif participant.competition_id == 89:
-                    if participant.distance_id in (93, 94):
-                        participating_in_2018 = HelperResults.objects.all().filter(competition__parent_id=79).filter(participant__is_participating=True, participant__slug=participant.slug).count()
-                        participating_in_2017 = HelperResults.objects.all().filter(competition__parent_id=67).filter(participant__is_participating=True, participant__slug=participant.slug).exists()
-                        discount_until = datetime.date(2019, 1, 6)
-                        last_two_years = participating_in_2018 + participating_in_2017
-
-                        if not last_two_years:
-                            slugs = list(ChangedName.objects.filter(new_slug=participant.slug).values_list('slug')) + [participant.slug, ]
-                            started_ever = HelperResults.objects.all().filter(competition__parent__parent_id=1).filter(participant__is_participating=True, participant__slug__in=slugs).exists()
-                        else:
-                            started_ever = False
-
-                        if 2001 <= participant.birthday.year <= 2004:   #Tautas distances 2001-2004 gadiem pilnas sezonas cena tāda pati, kā Mamma daba veselības distancei (10eur/posms)
-                            self.total_entry_fee += 60
-                        elif datetime.datetime.now().date() <= discount_until:
-                            if participating_in_2018 == 7 or (not last_two_years and started_ever):
-                                self.total_entry_fee += 100     # Sporta and Tautas distance before 01.01.2019 and participated in all last year stages or have not participated in last two years
-                            else:
-                                self.total_entry_fee += 112
-
-                        # elif participant.distance_id == 93:
-                        #     self.total_entry_fee += 119     # Sporta distance after 05.01.2019
-                        else:
-                            self.total_entry_fee += 119     # Tautas distance after 05.01.2019
-
-                    if participant.distance_id == 95:       # Mammadaba Veselibas distance
-                        self.total_entry_fee += 60
-                    if participant.distance_id == 97:       # Mammadaba Zeni un Meitenes distance
-                        self.total_entry_fee += 42
-                    if participant.distance_id == 96:  # Bernu distance
-                        self.total_entry_fee += 6
-                else:
-                    self.total_entry_fee += get_participant_fee_from_price(self.object.competition, participant.price)
-                if participant.insurance:
-                    self.total_insurance_fee += get_insurance_fee_from_insurance(self.object.competition,
-                                                                                 participant.insurance)
                 if participant.t_shirt_size:
-                    self.total_entry_fee += 25.
+                    self.total_entry_fee += 25
 
         if valid:
             if self.object.total_entry_fee != self.total_entry_fee or self.object.total_insurance_fee != self.total_insurance_fee:
