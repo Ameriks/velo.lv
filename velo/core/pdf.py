@@ -455,7 +455,8 @@ class InvoiceCanvas(canvas.Canvas):
     #     self.drawImage(img, 0.5*cm, 24 * cm, width=self._pagesize[0]-cm, height=153, preserveAspectRatio=True)
 
     def draw_footer(self):
-        img = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_footer2.jpg")
+        img = os.path.join(settings.MEDIA_ROOT, "adverts", "2019_invoice_footer.jpg")
+        # img = "velo/test_media/2019_invoice_footer.jpg"
         self.drawImage(img, 0.5*cm, 0.5*cm, width=self._pagesize[0]-cm, height=86, preserveAspectRatio=True)
 
 
