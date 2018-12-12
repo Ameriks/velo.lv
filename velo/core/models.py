@@ -105,6 +105,9 @@ class Choices(models.Model):  # TODO: Rename model
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ("title", )
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_STATUS = XChoices((10, 'not_validated', _('Not yet validated')),
