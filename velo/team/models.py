@@ -76,6 +76,8 @@ class Member(StatusMixin, models.Model):
     birthday = models.DateField(_('Birthday'))
     slug = models.SlugField()
     ssn = models.CharField(_('SSN'), max_length=12, blank=True)
+    phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True,
+                                    help_text=_("Result will be sent to this phone number"))
 
     gender = models.CharField(_('Gender'), max_length=1, choices=GENDER_CHOICES, blank=True)
 

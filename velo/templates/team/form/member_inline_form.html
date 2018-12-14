@@ -105,15 +105,24 @@
                                 </div>
                             </div>
 
-
+                            {# Phone Number #}
+                            <div class="col-xl-10 col-m-10 col-s-24">
+                                <div class="input-wrap w100 bottom-margin--15">
+                                    <label
+                                            for="{{ form.phone_number.auto_id }}"
+                                            class="input-field-label  js-placeholder"
+                                    >{% trans "Phone Number" %}</label>
+                                    {{ form.phone_number|add_extra_classes:"input-field if--50 if--dark  js-placeholder-up" }}
+                                    {% if form.phone_number.help_text or form.phone_number.errors %}
+                                        <p id="{{ form.phone_number.auto_id }}-error" class="error">
+                                            {% for error in form.phone_number.errors %}{{ error }}{% empty %}
+                                                {{ form.phone_number.help_text }}{% endfor %}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
-
-
-
             <div class="col-xl-8 col-m-12 col-s-24">
 
 

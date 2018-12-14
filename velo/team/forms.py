@@ -19,7 +19,7 @@ from velo.velo.utils import bday_from_LV_SSN
 class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     class Meta:
         model = Member
-        fields = ('country', 'first_name', 'last_name', 'id', 'birthday', 'gender', 'image')
+        fields = ('country', 'first_name', 'last_name', 'id', 'birthday', 'gender', 'image', "phone_number")
         widgets = {
             'birthday': SplitDateWidget,
             'image': ProfileImage,
@@ -89,6 +89,12 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         else:
             return self.cleaned_data.get('country')
 
+    def clean_phone_number(self):
+        if self.instance.id and not self.request.user.has_perm("team.change_member"):
+            return self.instance.phone_number
+        else:
+            return self.cleaned_data.get("phone_number")
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -107,6 +113,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['country'].widget.attrs['readonly'] = True
             self.fields['birthday'].widget.attrs['readonly'] = True
             self.fields['gender'].widget.attrs['readonly'] = True
+            self.fields["phone_number"].widget.atrs["readonly"] = True
 
         self.helper = FormHelper()
         self.helper.form_tag = False

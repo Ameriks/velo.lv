@@ -328,6 +328,7 @@ class TeamApplyList(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin,
                                                    distance=self.object.distance,
                                                    team_name=self.object.title,
                                                    price=price,
+                                                   phone_number=member.phone_number,
                                                    )
 
             return HttpResponseRedirect(reverse('application', kwargs={'slug': application.code}))
