@@ -125,7 +125,9 @@ class Seb2019(SEBCompetitionBase):
                 #     return 'U-23'
                 return 'W'  # ok
         elif distance_id == self.TAUTAS_DISTANCE_ID:
-            if gender == 'M':
+            if participant.bike_brand2.upper() == "FATBIKE":
+                return "FATBIKE"
+            elif gender == 'M':
                 if self._update_year(1999) >= year >= self._update_year(1998):
                     return 'M-16' # ok
                 elif self._update_year(1997) >= year >= self._update_year(1996):

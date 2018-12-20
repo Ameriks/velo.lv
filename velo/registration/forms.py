@@ -174,7 +174,7 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         model = Participant
         fields = ('insurance', 't_shirt_size',
             'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
-            'bike_brand2',
+            "bike_brand", "bike_brand2",
             'team_name', 'email', 'city', 'survey_answer1')
         widgets = {
             'birthday': SplitDateWidget,
@@ -207,14 +207,23 @@ class ParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     def clean_team_name(self):
         return self.cleaned_data.get('team_name').strip()
 
-    def clean_bike_brand2(self):
-        return self.cleaned_data.get('bike_brand2').strip()[:20]
+    # def clean_bike_brand(self):
+    #     return self.cleaned_data.get('bike_brand')
 
     def clean_first_name(self):
         return self.cleaned_data.get('first_name').title()
 
     def clean_last_name(self):
         return self.cleaned_data.get('last_name').title()
+
+    def clean_bike_brand2(self):
+        if self.cleaned_data.get('bike_brand').title == 'Cits':
+            return self.cleaned_data.get('bike_brand2')
+        else:
+            if self.cleaned_data.get('bike_brand') is not None:
+                return self.cleaned_data.get('bike_brand')
+            else:
+                return ''
 
     def clean(self):
 
@@ -373,7 +382,7 @@ class ParticipantInlineRestrictedForm(ParticipantInlineForm):
 class ParticipantInlineFullyRestrictedForm(ParticipantInlineRestrictedForm):
     def __init__(self, *args, **kwargs):
         super(ParticipantInlineFullyRestrictedForm, self).__init__(*args, **kwargs)
-        ro_fields = ('gender', 'team_name', 'phone_number', 'email', 'bike_brand2')
+        ro_fields = ('gender', 'team_name', 'phone_number', 'email')
 
         for field in ro_fields:
             if field in self.fields:
@@ -391,9 +400,6 @@ class ParticipantInlineFullyRestrictedForm(ParticipantInlineRestrictedForm):
     def clean_email(self):
         return self.instance.email
 
-    def clean_bike_brand2(self):
-        return self.instance.bike_brand2
-
 
 class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     application = None
@@ -402,7 +408,7 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
         model = CompanyParticipant
         fields = (
             'distance', 'first_name', 'last_name', 'country', 'ssn', 'birthday', 'gender', 'phone_number',
-            'bike_brand2',
+            'bike_brand', "bike_brand2",
             'email')
         widgets = {
             'birthday': SplitDateWidget,
@@ -417,8 +423,17 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     def clean_birthday(self):
         return self.cleaned_data.get('birthday')
 
+    # def clean_bike_brand(self):
+    #     return self.cleaned_data.get('bike_brand')
+
     def clean_bike_brand2(self):
-        return self.cleaned_data.get('bike_brand2').strip()[:20]
+        if self.cleaned_data.get('bike_brand').title == 'Cits':
+            return self.cleaned_data.get('bike_brand2')
+        else:
+            if self.cleaned_data.get('bike_brand') is not None:
+                return self.cleaned_data.get('bike_brand')
+            else:
+                return ''
 
     def clean_first_name(self):
         return self.cleaned_data.get('first_name').title()

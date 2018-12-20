@@ -1,3 +1,4 @@
+const sass = require('node-sass');
 var tsConfig = require('./tsconfig.json').compilerOptions;
 tsConfig.references = ['node_modules/**/*.d.ts', 'typings/**/*.d.ts'];
 
@@ -47,7 +48,8 @@ module.exports = function (grunt) {
         files: ['<%= paths.sass %>/**/*.{scss,sass}', '<%= paths.sass_template %>/**/*.{scss,sass}'],
         tasks: ['sass:dev'],
         options: {
-          atBegin: true
+          atBegin: true,
+          implementation: sass,
         }
       },
       concat: {
@@ -100,7 +102,8 @@ module.exports = function (grunt) {
           options: {
               outputStyle: 'nested',
               sourceMap: false,
-              precision: 10
+              precision: 10,
+              implementation: sass
           },
           files: {
               '<%= paths.css %>/main/project.css': '<%= paths.sass %>/project.scss'
@@ -110,7 +113,8 @@ module.exports = function (grunt) {
           options: {
               outputStyle: 'compressed',
               sourceMap: false,
-              precision: 10
+              precision: 10,
+              implementation: sass
           },
           files: {
               '<%= paths.css %>/main/project.min.css': '<%= paths.sass %>/project.scss'

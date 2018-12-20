@@ -1,6 +1,9 @@
 @Participant_inline_class_added = (row) ->
   update_line_participant row
 
+@CompanyParticipant_inline_class_added = (row) ->
+  update_line_participant row
+
 
 
 
@@ -33,6 +36,8 @@ update_line_participant = (row) ->
   insurance = $("select[name$='-insurance']", row)
   city = $("select[name$='-city']", row)
   country = $("select[name$='-country']", row)
+  bike_brand = $("select[name$='-bike_brand']", row)
+  bike_brand2 = $("input[name$='-bike_brand2']", row)
 
   $("input[name$='-first_name']", row).autocomplete
       serviceUrl: row.parents("form").data("autocomplete"),
@@ -61,6 +66,18 @@ update_line_participant = (row) ->
     $('.price', row).remove()
 
   $(".participant__number", row).html(row.index())
+
+
+  if not bike_brand.val() or bike_brand.val() != "216"
+    $(bike_brand2).parents(".input-wrap").hide()
+
+  bike_brand.on "change", (e) ->
+    el = $(bike_brand2).parents(".input-wrap")
+
+    if $(this).val() == '216'
+      el.show()
+    else
+      el.hide()
 
   if not insurance.val()
     $(ssn).parents(".input-wrap").hide()
@@ -100,6 +117,12 @@ update_line_participant = (row) ->
 
 $ ->
   if $(".Participant_inline_class")[0]
+
+    for container in $('.item:not(.template)')
+      update_line_participant($(container))
+
+$ ->
+  if $(".CompanyParticipant_inline_class")[0]
 
     for container in $('.item:not(.template)')
       update_line_participant($(container))
