@@ -23,7 +23,7 @@ def recalculate_participant(participant, children=None, commit=True):
             if participant.distance_id in (93, 94):
                 participating_in_2018 = HelperResults.objects.all().filter(competition__parent_id=79).filter(participant__is_participating=True, participant__slug=participant.slug).count()
                 participating_in_2017 = HelperResults.objects.all().filter(competition__parent_id=67).filter(participant__is_participating=True, participant__slug=participant.slug).exists()
-                discount_until = datetime.date(2019, 1, 6)
+                discount_until = datetime.date(2019, 1, 14)
                 last_two_years = participating_in_2018 + participating_in_2017
 
                 if not last_two_years:
