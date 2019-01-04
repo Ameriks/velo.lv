@@ -1,7 +1,9 @@
 {
   "name": "velo",
   "version": "0.1.0",
-  "dependencies": {},
+  "dependencies": {
+    "node-sass": "^4.11.0"
+  },
   "devDependencies": {
     "autoprefixer-core": "~5.2.1",
     "connect-livereload": "~0.3.2",
