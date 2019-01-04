@@ -167,6 +167,7 @@ class CompanyApplicationDetail(NeverCacheMixin, LoginRequiredMixin, SingleTableV
                                                        ssn=participant.ssn,
                                                        country=participant.country,
                                                        gender=participant.gender,
+                                                       bike_brand=participant.bike_brand,
                                                        bike_brand2=participant.bike_brand2,
                                                        email=participant.email,
                                                        phone_number=participant.phone_number,

@@ -169,7 +169,34 @@
                     </div>
                     {% endif  %}
 
+                    {% if form.city %}
+                      {# City #}
+                      <div class="col-xl-8 col-m-12 col-s-24">
+                          <div class="input-wrap w100 bottom-margin--20">
+                          <div class="w100 fs13 bottom-margin--10">{% trans 'City' %}</div>
+                              {{ form.city|add_extra_classes:"select" }}
+                              {% if form.city.help_text or form.city.errors %}
+                                  <p id="{{ form.city.auto_id }}-error" class="error">
+                                      {% for error in form.city.errors %}{{ error }}{% empty %}
+                                          {{ form.city.help_text }}{% endfor %}</p>
+                              {% endif %}
+                          </div>
+                      </div>
+                    {% endif %}
+
                     {# Bike Brand #}
+                    <div class="col-xl-8 col-m-12 col-s-24">
+                        <div class="input-wrap w100 bottom-margin--15" id="bike-brand">
+                            <div class="w100 fs13 bottom-margin--10">{% trans "Bike Brand" %}</div>
+                            {{ form.bike_brand|add_extra_classes:"select" }}
+                            {% if form.bike_brand.title or form.bike_brand.errors %}
+                                <p id="{{ form.bike_brand.auto_id }}-error" class="error">
+                                    {% for error in form.bike_brand.errors %}{{ error }}{% empty %}
+                                        {{ form.bike_brand.help_text }}{% endfor %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
                     <div class="col-xl-8 col-m-12 col-s-24">
                         <div class="input-wrap w100 bottom-margin--15">
                             <label
@@ -184,6 +211,8 @@
                             {% endif %}
                         </div>
                     </div>
+
+
 
                     {% if form.insurance %}
                         {# Insurance #}
@@ -216,18 +245,7 @@
                         </div>
                     {% endif %}
 
-                    {# City #}
-                        <div class="col-xl-8 col-m-12 col-s-24">
-                            <div class="input-wrap w100 bottom-margin--20">
-                            <div class="w100 fs13 bottom-margin--10">{% trans 'City' %}</div>
-                                {{ form.city|add_extra_classes:"select" }}
-                                {% if form.city.help_text or form.city.errors %}
-                                    <p id="{{ form.city.auto_id }}-error" class="error">
-                                        {% for error in form.city.errors %}{{ error }}{% empty %}
-                                            {{ form.city.help_text }}{% endfor %}</p>
-                                {% endif %}
-                            </div>
-                        </div>
+
 
                       {# Survey #}
                       <div class="col-xl-8 col-m-12 col-s-24">

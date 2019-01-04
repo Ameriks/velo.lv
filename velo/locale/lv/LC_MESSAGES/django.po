@@ -132,6 +132,9 @@ msgstr "Pilsēta"
 msgid "Bike Brand"
 msgstr "Velo Zīmols"
 
+msgid "Other bike brand"
+msgstr "Cits velo zīmols"
+
 #: velo/core/forms.py:31
 msgid "Phone number"
 msgstr "Telefona numurs"

@@ -73,7 +73,7 @@ class Seb2019(SEBCompetitionBase):
         """
         return {
             self.SPORTA_DISTANCE_ID: ('M', 'U-23', 'W', 'M-35', 'M-45'),
-            self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-55', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35'),
+            self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-55', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', "FATBIKE"),
             self.VESELIBAS_DISTANCE2_ID: ('M-14', 'W-14', ),
             self.BERNU_DISTANCE_ID: ('B 14-', 'B 13', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08-07 M', 'B 08-07 Z',)
         }
@@ -125,7 +125,9 @@ class Seb2019(SEBCompetitionBase):
                 #     return 'U-23'
                 return 'W'  # ok
         elif distance_id == self.TAUTAS_DISTANCE_ID:
-            if gender == 'M':
+            if participant.bike_brand2.upper() == "FATBIKE":
+                return "FATBIKE"
+            elif gender == 'M':
                 if self._update_year(1999) >= year >= self._update_year(1998):
                     return 'M-16' # ok
                 elif self._update_year(1997) >= year >= self._update_year(1996):

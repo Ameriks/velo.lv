@@ -128,7 +128,7 @@ class Participant(TimestampMixin, models.Model):
     city = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.city}, verbose_name=_('City'), blank=True, null=True)
 
     bike_brand = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.bike_brand}, verbose_name=_('Bike Brand'), blank=True, null=True)
-    bike_brand2 = models.CharField(_('Bike Brand'), max_length=20, blank=True)
+    bike_brand2 = models.CharField(_('Bike Brand'), max_length=20, blank=True, help_text=_("Other bike brand"))
 
     occupation = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.occupation}, verbose_name=_('Occupation'), blank=True, null=True)
     where_heard = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.heard}, verbose_name=_('Where Heard'), blank=True, null=True)
@@ -335,7 +335,9 @@ class CompanyParticipant(TimestampMixin, models.Model):
     phone_number = models.CharField(_('Phone Number'), max_length=60, blank=True, help_text=_("Result will be sent to this phone number"))
     email = models.EmailField(_('Email'), blank=True)
     country = CountryField(_('Country'), blank=True, null=True)
-    bike_brand2 = models.CharField(_('Bike Brand'), max_length=20, blank=True)
+    bike_brand2 = models.CharField(_('Bike Brand'), max_length=20, blank=True, help_text=_("Other bike brand"))
+    bike_brand = models.ForeignKey('core.Choices', related_name='+', limit_choices_to={'kind': Choices.KINDS.bike_brand}, verbose_name=_('Bike Brand'), blank=True, null=True)
+
 
     slug = models.SlugField(blank=True)
 
