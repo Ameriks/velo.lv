@@ -429,9 +429,7 @@ class CompanyParticipantInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
     #     return self.cleaned_data.get('bike_brand')
 
     def clean_bike_brand2(self):
-        if not hasattr(self.cleaned_data.get('bike_brand'), "title"):
-            return ""
-        elif self.cleaned_data.get('bike_brand').title == 'Cits':
+        if self.cleaned_data.get('bike_brand').title == 'Cits':
             return self.cleaned_data.get('bike_brand2')
         else:
             if self.cleaned_data.get('bike_brand') is not None:
