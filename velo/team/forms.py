@@ -113,7 +113,7 @@ class MemberInlineForm(RequestKwargModelFormMixin, forms.ModelForm):
             self.fields['country'].widget.attrs['readonly'] = True
             self.fields['birthday'].widget.attrs['readonly'] = True
             self.fields['gender'].widget.attrs['readonly'] = True
-            self.fields["phone_number"].widget.atrs["readonly"] = True
+            self.fields["phone_number"].widget.attrs["readonly"] = True
 
         self.helper = FormHelper()
         self.helper.form_tag = False
