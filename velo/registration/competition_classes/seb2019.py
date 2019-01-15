@@ -334,21 +334,21 @@ class Seb2019(SEBCompetitionBase):
                 if standing:
 
                     # If participant have participated in all stages, but changed distances, we restore points
-                    divide_by = 6.0
+                    divide_by = 5.0
                     if standing.stages_participated < 5 and standings.count() > 1:
-                        if standing.stages_participated + standings[1].stages_participated >= 6:
+                        if standing.stages_participated + standings[1].stages_participated >= 5:
                             divide_by = float(standing.stages_participated)
 
                     helper.calculated_total = (standing.distance_total or 0.0) / divide_by
 
-                    if standing.distance.kind == 'T' or (standing.distance.kind == 'MC' and participant.distance.kind == 'T'):
-                        helper.calculated_total -= 100
+                    # if standing.distance.kind == 'T' or (standing.distance.kind == 'MC' and participant.distance.kind == 'T'):
+                    #     helper.calculated_total -= 100
 
                     # If last year participant was riding in Tautas and this year he is riding in Sport distance, then he must be after those who where riding sport distance.
                     # To sort participants correctly we have to give less points to them but still keep order based on last years results.
                     # If we divide by 10, then we will get them at the end of list.
                     # If participant from Mammadaba now participates in tauta distance, then their points are reduced.
-                    if (standing.distance.kind == 'T' and participant.distance.kind == 'S') or (standing.distance.kind == 'M' and participant.distance.kind == 'T'):
+                    if standing.distance.kind == 'M' and participant.distance.kind == 'T':  # (standing.distance.kind == 'T' and participant.distance.kind == 'S') or
                         helper.calculated_total /= 10.0
 
                     if self.competition_index == 2:
