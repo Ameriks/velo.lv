@@ -5315,7 +5315,11 @@ html {
     width: 650px;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch; }
-    .modal--fade .modal-inner > img, .modal--show .modal-inner > img, .modal--fade .modal-inner > video, .modal--show .modal-inner > video, .modal--fade .modal-inner > iframe, .modal--show .modal-inner > iframe {
+    .modal--fade .modal-inner > img, .modal--show .modal-inner > img,
+    .modal--fade .modal-inner > video,
+    .modal--show .modal-inner > video,
+    .modal--fade .modal-inner > iframe,
+    .modal--show .modal-inner > iframe {
       width: 100%;
       height: auto;
       min-height: 300px; }
