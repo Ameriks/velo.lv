@@ -56,8 +56,20 @@
             <div class="w100 bottom-margin--20"></div>
             <div class="inner no-padding--480">
                 <div class="editor-text">
-                    <p class="uppercase">{% trans "Country" %}: <span class="c-yellow">{{ object.country }}</span><br>
-                    {% trans "Birth Year" %}: <span class="c-yellow">{{ object.birthday.year }}</span></p>
+                    <p class="uppercase">{% trans "Country" %}: <span class="c-yellow">
+                      {% if not object.not_public %} }
+                      {{ object.country }}
+                    {% else %}
+                          -
+                        {% endif %}
+                    </span><br>
+                    {% trans "Birth Year" %}: <span class="c-yellow">
+                        {% if not object.not_public %} }
+                          {{ object.birthday.year }}
+                        {% else %}
+                          0000
+                        {% endif %}
+                      </span></p>
                 </div>
             </div>
             <div class="w100 bottom-margin--20"></div>
@@ -113,7 +125,13 @@
                 <div class="inner no-padding--480">
                     <div class="row">
                         <div class="col-xs-24 flex--1 fs12 c-yellow uppercase bottom-margin--20">{{ member.first_name }} {{ member.last_name }}</div>
-                        <div class="col-xs-24 fs12 c-white uppercase bottom-margin--20">{{ member.birthday.year }}</div>
+                        <div class="col-xs-24 fs12 c-white uppercase bottom-margin--20">
+                          {% if not member.not_public %}
+                            {{ member.birthday.year }}
+                          {% else %}
+                            0000
+                          {% endif %}
+                          </div>
                     </div>
                 </div>
             </a>
