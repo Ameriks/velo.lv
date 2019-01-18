@@ -89,6 +89,7 @@ class TeamListView(SingleTableViewWithRequest):
 
         return queryset
 
+
 class TeamView(DetailView):
     model = Team
     pk_url_kwarg = 'pk2'
@@ -98,7 +99,12 @@ class TeamView(DetailView):
         context.update({'competition': Competition.objects.get(id=self.kwargs.get('pk'))})
         context.update({'members': self.object.member_set.filter(status=Member.STATUS_ACTIVE).order_by('last_name')})
 
+        for member in context["members"]:
+            if Participant.objects.filter(slug=member.slug, is_shown_public=False).count():
+                member.first_name = member.last_name = _("Anonymized")
+                setattr(member, "not_public", True)
         return context
+
 
 class TeamMemberProfileView(DetailView):
     model = Member

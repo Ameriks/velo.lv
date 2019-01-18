@@ -129,9 +129,15 @@
 
                     <tr>
                         <td>{% firstof object.7 '-' %}</td>
-                        <td>{{ object.4 }}</td>
-                        <td>{{ object.5 }}</td>
-                        <td>{{ object.6.year }}</td>
+                        {% if object.9 %}
+                          <td>{{ object.4 }}</td>
+                          <td>{{ object.5 }}</td>
+                          <td>{{ object.6.year }}</td>
+                        {% else %}
+                          <td><i>{% trans "Anonymized" %}</i></td>
+                          <td><i>{% trans "Anonymized" %}</i></td>
+                          <td><i>0000</i></td>
+                        {% endif %}
                         <td>{% firstof object.8 '' %}</td>
 
                     </tr>

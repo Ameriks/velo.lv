@@ -43,7 +43,13 @@
                                                         <div class="top-padding--13 right-padding--5 bottom-padding--13 left-padding--13">{{ member.first_name }} {{ member.last_name }}</div>
                                                     </div>
                                                     <div class="brief__secondary-text">
-                                                        <div class="top-padding--13 right-padding--13 bottom-padding--13 left-padding--5">{{ member.birthday.year }}</div>
+                                                        <div class="top-padding--13 right-padding--13 bottom-padding--13 left-padding--5">
+                                                          {% if not member.not_public %}
+                                                            {{ member.birthday.year }}
+                                                          {% else %}
+                                                            0000
+                                                          {% endif %}
+                                                          </div>
                                                     </div>
                                                 </div>
                                             </div>

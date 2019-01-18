@@ -196,6 +196,7 @@ class SebTeamResultList(SetCompetitionContextMixin, ListView):
                                         'team__member__first_name', 'team__member__last_name', 'team__member__birthday',
                                         'team__member__memberapplication__participant__primary_number__number',
                                         'team__member__memberapplication__participant__result__points_distance',
+                                        'team__member__memberapplication__participant__is_shown_public'
                                         )
 
         if self.request.GET.get('distance', "").startswith("S"):
