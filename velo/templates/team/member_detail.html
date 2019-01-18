@@ -57,14 +57,14 @@
             <div class="inner no-padding--480">
                 <div class="editor-text">
                     <p class="uppercase">{% trans "Country" %}: <span class="c-yellow">
-                      {% if not object.not_public %} }
+                      {% if not object.not_public %}
                       {{ object.country }}
                     {% else %}
                           -
                         {% endif %}
                     </span><br>
                     {% trans "Birth Year" %}: <span class="c-yellow">
-                        {% if not object.not_public %} }
+                        {% if not object.not_public %}
                           {{ object.birthday.year }}
                         {% else %}
                           0000

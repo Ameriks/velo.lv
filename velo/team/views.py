@@ -115,11 +115,15 @@ class TeamMemberProfileView(DetailView):
         context.update({'competition': Competition.objects.get(id=self.kwargs.get('pk'))})
         context.update({'members': self.object.team.member_set.filter(status=Member.STATUS_ACTIVE).order_by('last_name')})
 
+        if Participant.objects.filter(slug=context["member"].slug, is_shown_public=False).count():
+            context["member"].first_name = context["member"].last_name = _("Anonymized")
+            setattr(context["member"], "not_public", True)
+
         for member in context["members"]:
             if Participant.objects.filter(slug=member.slug, is_shown_public=False).count():
-                member.first_name = member.last_name = context["member"].first_name = context["member"].last_name = _("Anonymized")
+                member.first_name = member.last_name = _("Anonymized")
                 setattr(member, "not_public", True)
-                setattr(context["member"], "not_public", True)
+
 
         return context
 
