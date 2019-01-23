@@ -2412,6 +2412,9 @@ msgstr "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 msgid "Show contact information in public team profile"
 msgstr "Rādīt kontaktinformāciju komandas profilā"
 
+msgid "Discount code or 3+ family card number"
+msgstr "Atlaides kods vai 3+ ģimenes kartes numurs"
+
 #~ msgid "^application/$"
 #~ msgstr "^pieteikums/$"
 

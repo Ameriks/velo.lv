@@ -4,7 +4,8 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from velo.core.models import Competition
-
+from velo.payment.models import DiscountCode
+from velo.velo.utils import load_class
 
 
 def recalculate_participant(participant, children=None, commit=True):
@@ -61,9 +62,14 @@ def recalculate_participant(participant, children=None, commit=True):
 
         if participant.application:
             dc = participant.application.discount_code
-            if dc:
+            if dc and dc.usage_times_left:
+                discount_code = DiscountCode.objects.get(code=dc.code)
+                _class = load_class(discount_code.campaign.discount_kind)
+                discount = _class(application=participant.application)
+                entry_fee = discount.get_entry_fee_for_participant(participant=participant)
+
                 insurance = dc.calculate_insurance(insurance)
-                entry_fee = dc.calculate_entry_fee(entry_fee)
+                # entry_fee = dc.calculate_entry_fee(entry_fee)
 
         participant.total_entry_fee = entry_fee
         participant.total_insurance_fee = insurance

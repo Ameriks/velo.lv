@@ -26,6 +26,7 @@ from velo.registration.models import Application, ChangedName
 from velo.results.models import HelperResults
 from velo.team.models import Team
 from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin
+from velo.velo.utils import load_class
 
 
 class CheckPriceView(JsonRequestResponseMixin, DetailView):
@@ -307,24 +308,22 @@ class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
         application = Application.objects.get(code=kwargs.get('slug'))
 
         discount_code = request.POST.get("discount_code", "")
-        price = Decimal()
         ret = {"fee": None, "insurance": None}
         if discount_code:
             try:
-                discount = DiscountCode.objects.get(code=discount_code)
-                if discount.usage_times_left and discount.is_active:
-                    if discount.campaign.competition == application.competition and discount.campaign.competition_id == application.competition_id:
+                discount_code = DiscountCode.objects.get(code=discount_code)
 
-                        for participant in application.participant_set.all():
-                            prices = application.competition.price_set.filter(till_year__gte=participant.birthday.year,
-                                                                              from_year__lte=participant.birthday.year,
-                                                                              distance_id=participant.distance_id).order_by(
-                                'price')
+                if discount_code.usage_times_left and discount_code.is_active:
+                    _class = load_class(discount_code.campaign.discount_kind)
+                    discount = _class(application=application)
+                    price = discount.get_final_price_for_application()
 
-                            price += Decimal(discount.calculate_entry_fee(float(prices[0].price)))
+                    if isinstance(price, float):
                         ret['fee'] = {"new_total": price}
-                        application.discount_code = discount
+                        application.discount_code = discount_code
                         application.save()
+
+                    # else:
             except:
                 pass
         return JsonResponse(ret)

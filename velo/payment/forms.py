@@ -23,7 +23,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
     accept_inform_participants = forms.BooleanField(label=_("I will inform all registered participants about rules."),
                                                     required=True)
     accept_insurance = forms.BooleanField(label="", required=False)
-    discount_code = forms.CharField(label=_("Discount code"), required=False)
+    discount_code = forms.CharField(label=_("Discount code or 3+ family card number"), required=False)
 
     payment_type = forms.ChoiceField(choices=(), label="", widget=PaymentTypeWidget)
 
@@ -83,6 +83,9 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         discount_code = instance.params.pop("discount_code", None)
         if discount_code:
             instance.params.update({'discount_code': discount_code.code})
+            if discount_code.usage_times_left:
+                discount_code.usage_times_left -= 1
+                discount_code.save()
 
         if commit:
             instance.save()

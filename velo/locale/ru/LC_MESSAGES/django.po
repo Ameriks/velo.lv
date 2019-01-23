@@ -2419,6 +2419,8 @@ msgstr "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 msgid "Show contact information in public team profile"
 msgstr "Показать контактную информацию в профиле"
 
+msgid "Discount code or 3+ family card number"
+msgstr "Код скидки или номер семейной карты 3+"
 
 #~ msgid "^application/$"
 #~ msgstr "^zayavka/$"
