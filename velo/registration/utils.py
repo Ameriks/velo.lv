@@ -67,9 +67,8 @@ def recalculate_participant(participant, children=None, commit=True):
                 _class = load_class(discount_code.campaign.discount_kind)
                 discount = _class(application=participant.application)
                 entry_fee = discount.get_entry_fee_for_participant(participant=participant)
-
-                insurance = dc.calculate_insurance(insurance)
-                # entry_fee = dc.calculate_entry_fee(entry_fee)
+                if participant.insurance:
+                    insurance = discount.get_insurance_fee_for_participant(participant=participant)
 
         participant.total_entry_fee = entry_fee
         participant.total_insurance_fee = insurance

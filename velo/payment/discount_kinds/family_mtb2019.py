@@ -18,13 +18,14 @@ class FamilyMtb2019(object):    # object is application
         97: 0.2,  # mammadaba zēni un meitenes
     }
     IS_DISCOUNT_DECIMAL = True
-    IS_DISCOUNT_FOR_INSURANCE = False
+    IS_INSURANCE_DISCOUNT_DECIMAL = True
+    DISCOUNT_FOR_INSURANCE = 0
 
     def __init__(self, application=None):
         if not application:
             raise Exception('At least one variable is required.')
 
-        self.application = Application.objects.get(code=application.code)
+        self.application = application
 
     def is_valid_for_competition(self):
         return self.application.competition_id in self.COMPETITIONS
@@ -46,22 +47,34 @@ class FamilyMtb2019(object):    # object is application
 
     def get_final_price_for_application(self):
         if not self.is_valid_for_competition():
-            return _("Card not valid for this competition")
+            return _("Code not valid for this competition")
         if not self.is_correct_application():
             return _("Only two adults can be in application")
-        entry_fee = 0
+        final_price = 0
         for participant in self.application.participant_set.all():
-            self.get_entry_fee_for_participant(participant)
-            entry_fee += self.get_entry_fee_for_participant(participant)
-        return entry_fee
+            final_price += self.get_entry_fee_for_participant(participant)
+            if participant.insurance:
+                final_price += self.get_insurance_fee_for_participant(participant)
+        return final_price
 
     def get_entry_fee_for_participant(self, participant):
         if self.is_valid_for_competition() and self.is_correct_application():
             if self.IS_DISCOUNT_DECIMAL:
-                return float(participant.price.price) * (1 - self.DISCOUNTS_FOR_DISTANCE[participant.distance_id])
+                entry_fee = float(participant.price.price) * (1 - self.DISCOUNTS_FOR_DISTANCE[participant.distance_id])
             else:
-                return float(participant.price.price) - self.DISCOUNTS_FOR_DISTANCE[participant.distance_id]
+                entry_fee = float(participant.price.price) - self.DISCOUNTS_FOR_DISTANCE[participant.distance_id]
         else:
-            return float(participant.price.price)
+            entry_fee = float(participant.price.price) + float(participant.insurance.price)
 
+        entry_fee = round(entry_fee, 2)
+        return entry_fee
 
+    def get_insurance_fee_for_participant(self, participant):
+        if self.is_valid_for_competition() and self.is_correct_application():
+            if self.IS_INSURANCE_DISCOUNT_DECIMAL:
+                insurance_fee = float(participant.insurance.price) * (1 - self.DISCOUNT_FOR_INSURANCE)
+            else:
+                insurance_fee = float(participant.insurance.price) - self.DISCOUNT_FOR_INSURANCE
+
+        insurance_fee = round(insurance_fee, 2)
+        return insurance_fee

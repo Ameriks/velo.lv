@@ -13,6 +13,7 @@ from velo.payment.utils import create_application_invoice, create_bank_transacti
      approve_payment
 from velo.payment.widgets import PaymentTypeWidget, DoNotRenderWidget
 from velo.registration.models import Application
+from velo.registration.utils import recalculate_participant_final_payment
 from velo.velo.mixins.forms import RequestKwargModelFormMixin, GetClassNameMixin
 from velo.velo.utils import load_class
 
@@ -33,7 +34,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
     class Meta:
         model = Application
-        fields = ('discount_code', 'company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address',
+        fields = ('company_name', 'company_vat', 'company_regnr', 'company_address', 'company_juridical_address',
                   'invoice_show_names', 'donation')
         widgets = {
             'donation': DoNotRenderWidget,  # We will add field manually
@@ -71,6 +72,11 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
                 # TODO We need to catch exception and log it to sentry
                 self._errors['payment_type'] = self.error_class([_("Error in connection with bank. Try again later.")])
 
+        else:
+            if self.instance.discount_code:
+                self.instance.discount_code = None
+                self.instance.save()
+
     def save(self, commit=True):
         instance = super(ApplicationPayUpdateForm, self).save(commit=False)
         if self.request:
@@ -80,12 +86,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
         instance.params = dict(self.cleaned_data)
         instance.params.pop("donation", None)
-        discount_code = instance.params.pop("discount_code", None)
-        if discount_code:
-            instance.params.update({'discount_code': discount_code.code})
-            if discount_code.usage_times_left:
-                discount_code.usage_times_left -= 1
-                discount_code.save()
+        if self.instance.discount_code:
+            if self.instance.discount_code.usage_times_left:
+                self.instance.discount_code.usage_times_left -= 1
+                self.instance.discount_code.save()
 
         if commit:
             instance.save()
@@ -101,17 +105,7 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
             return donation
 
     def clean_discount_code(self):
-
-        code = self.cleaned_data.get('discount_code', "")
-        if not code:
-            return None
-        else:
-            if isinstance(code, DiscountCode):
-                return code
-            try:
-                return DiscountCode.objects.get(code=code)
-            except:
-                return None
+        return ""
 
     def clean(self):
         if not self.cleaned_data.get('donation', ''):
@@ -135,10 +129,14 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
 
         return self.cleaned_data
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, data=None, *args, **kwargs):
         self.participants = kwargs.pop('participants', None)
 
-        super(ApplicationPayUpdateForm, self).__init__(*args, **kwargs)
+        if data:
+            data = data.copy()
+            data.pop('discount_code', None)
+
+        super(ApplicationPayUpdateForm, self).__init__(data=data, *args, **kwargs)
 
         insured_participants = self.participants.exclude(insurance=None)
         if insured_participants:
@@ -340,7 +338,7 @@ class TeamPayForm(GetClassNameMixin, RequestKwargModelFormMixin, forms.ModelForm
 
         return self.cleaned_data
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, data=None, *args, **kwargs):
 
         super(TeamPayForm, self).__init__(*args, **kwargs)
 
