@@ -190,11 +190,15 @@
       data: {discount_code: elDiscountCodeInput.value, csrfmiddlewaretoken: document.querySelector("input[name='csrfmiddlewaretoken']").value}
     }).done(function(response){
       if (response.fee){
-        var elPrice = $("#id_total_price");
-        var originalPrice = $("<strike></strike>").text(elPrice.find("span").text());
-        elPrice.find("span").text(response.fee.new_total.toString()).append("EUR");
-        elPrice.find("span").after(originalPrice);
-
+        if (!document.getElementsByTagName("strike").length) {
+          var elPrice = $("#id_total_price");
+          var originalPrice = $("<strike></strike>").text(elPrice.find("span").text());
+          elPrice.find("span").text(response.fee.new_total.toString()).append(" EUR");
+          elPrice.find("span").after(originalPrice);
+        }
+      }
+      if (response.error) {
+        alert(response.error)
       }
     });
   };

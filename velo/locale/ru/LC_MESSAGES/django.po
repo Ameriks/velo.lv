@@ -2419,6 +2419,17 @@ msgstr "^(?P<pk>\\d+)/(?P<slug>.*)/$"
 msgid "Show contact information in public team profile"
 msgstr "Показать контактную информацию в профиле"
 
+msgid "Discount code or 3+ family card number"
+msgstr "Код скидки или номер семейной карты 3+"
+
+msgid "Code already used for this competition"
+msgstr "Введенный код уже используется на этих соревнованиях"
+
+msgid "Code not valid for this competition"
+msgstr "Код недопустим для этих соревнований"
+
+msgid "Only two adults can be in application"
+msgstr "Для использования карты в заявке могут быть только 2 взрослых"
 
 #~ msgid "^application/$"
 #~ msgstr "^zayavka/$"

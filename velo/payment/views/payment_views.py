@@ -26,6 +26,7 @@ from velo.registration.models import Application, ChangedName
 from velo.results.models import HelperResults
 from velo.team.models import Team
 from velo.velo.mixins.views import RequestFormKwargsMixin, NeverCacheMixin
+from velo.velo.utils import load_class
 
 
 class CheckPriceView(JsonRequestResponseMixin, DetailView):
@@ -122,7 +123,8 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
             if valid:
                 from velo.registration.utils import recalculate_participant
                 recalculate_participant(participant)
-                self.total_entry_fee += participant.total_entry_fee + participant.total_insurance_fee
+                self.total_entry_fee += participant.total_entry_fee
+                self.total_insurance_fee += participant.total_insurance_fee
 
                 if participant.t_shirt_size:
                     self.total_entry_fee += 25
@@ -136,6 +138,8 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                 self.object.save()
             return None
         else:
+            self.object.discount_code = None
+            self.object.save()
             return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
 
     def get_context_data(self, **kwargs):
@@ -161,6 +165,10 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
         if self.object.competition.is_past_due:
             return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
 
+        if self.object.discount_code:
+            self.object.discount_code = None
+            self.object.save()
+
         redirect = self.validate()
         if redirect:
             return redirect
@@ -169,16 +177,25 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        self.participants = self.object.participant_set.all()
 
         # We are not letting to update anything if competition is in past
         if self.object.competition.is_past_due:
             return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
+        form = self.get_form()
+
+        if not form.is_valid():
+            self.object.discount_code = None
+            self.object.save()
 
         redirect = self.validate()
         if redirect:
             return redirect
 
-        return super(BaseUpdateView, self).post(request, *args, **kwargs)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class TeamPayView(NeverCacheMixin, LoginRequiredMixin, RequestFormKwargsMixin, UpdateView):
@@ -255,12 +272,15 @@ class InvoiceDownloadView(ObjectDownloadView):
                 active_channel = self.object.payment.channel
             else:
                 payment_channel = PaymentChannel.objects.values_list('id', flat=True).filter(is_bill=True)
-                active_channel = ActivePaymentChannel.objects.filter(competition_id=self.object.competition.id, payment_channel_id__in=payment_channel).get()
+                active_channel = ActivePaymentChannel.objects.filter(competition_id=self.object.competition.id,
+                                                                     payment_channel_id__in=payment_channel).get()
 
             if self.object.payment.content_type.name == 'team':
-                create_team_invoice(self.object.payment.content_object, active_channel, action="", invoice_object=self.object)
+                create_team_invoice(self.object.payment.content_object, active_channel, action="",
+                                    invoice_object=self.object)
             elif self.object.payment.content_type.name == 'application':
-                create_application_invoice(self.object.payment.content_object, active_channel, action="", invoice_object=self.object)
+                create_application_invoice(self.object.payment.content_object, active_channel, action="",
+                                           invoice_object=self.object)
             else:
                 raise Exception("Unknown invoice.payment.content_type.name %s" % self.object.payment.content_type.name)
 
@@ -307,24 +327,25 @@ class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
         application = Application.objects.get(code=kwargs.get('slug'))
 
         discount_code = request.POST.get("discount_code", "")
-        price = Decimal()
         ret = {"fee": None, "insurance": None}
         if discount_code:
             try:
-                discount = DiscountCode.objects.get(code=discount_code)
-                if discount.usage_times_left and discount.is_active:
-                    if discount.campaign.competition == application.competition and discount.campaign.competition_id == application.competition_id:
+                discount_code = DiscountCode.objects.get(code=discount_code)
 
-                        for participant in application.participant_set.all():
-                            prices = application.competition.price_set.filter(till_year__gte=participant.birthday.year,
-                                                                              from_year__lte=participant.birthday.year,
-                                                                              distance_id=participant.distance_id).order_by(
-                                'price')
+                if discount_code.usage_times_left and discount_code.is_active:
+                    _class = load_class(discount_code.campaign.discount_kind)
+                    discount = _class(application=application)
+                    price = discount.get_final_price_for_application()
 
-                            price += Decimal(discount.calculate_entry_fee(float(prices[0].price)))
+                    if isinstance(price, float):
                         ret['fee'] = {"new_total": price}
-                        application.discount_code = discount
+                        application.discount_code = discount_code
                         application.save()
+                    else:
+                        ret["error"] = price
+
+                if not discount_code.usage_times_left:
+                    ret["error"] = _("Code already used for this competition")
             except:
-                pass
+                ret["error"] = _("Entered code is invalid")
         return JsonResponse(ret)

@@ -81,6 +81,7 @@ class DiscountCampaign(models.Model):
     discount_entry_fee = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     discount_insurance_percent = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     discount_insurance = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    discount_kind = models.CharField(max_length=100, blank=True, null=True, default=None)
 
     def __str__(self):
         name = ''
