@@ -2428,8 +2428,8 @@ msgstr "Введенный код уже используется на этих 
 msgid "Code not valid for this competition"
 msgstr "Код недопустим для этих соревнований"
 
-msgid "Only two adults can be in application"
-msgstr "Для использования карты в заявке могут быть только 2 взрослых"
+msgid "2 adults and at least 1 child must be in application to use family card"
+msgstr "Для использования семейной карты на соревнованиях должны быть заявлены 2 взрослых и по меньшей мере 1 ребенок до 18 лет"
 
 #~ msgid "^application/$"
 #~ msgstr "^zayavka/$"

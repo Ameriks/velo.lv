@@ -2421,8 +2421,8 @@ msgstr "Ievadītais kods jau ir izmantots uz šīm sacensībām"
 msgid "Code not valid for this competition"
 msgstr "Kods nav derīgs šīm sacensībām"
 
-msgid "Only two adults can be in application"
-msgstr "Lai izmantotu karti, pieteikumā drīkst būt tikai 2 pieaugušie"
+msgid "2 adults and at least 1 child must be in application to use family card"
+msgstr "Lai izmantotu ģimenes karti, uz sacensībām jāpiesaka 2 pieaugušie un vismaz 1 bērns līdz 18 gadiem"
 
 
 
