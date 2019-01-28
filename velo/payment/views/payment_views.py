@@ -166,8 +166,9 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
             return HttpResponseRedirect(reverse('application', kwargs={'slug': self.object.code}))
 
         if self.object.discount_code:
-            self.object.discount_code = None
-            self.object.save()
+            if self.object.payment_status != self.object.PAY_STATUS.waiting:
+                self.object.discount_code = None
+                self.object.save()
 
         redirect = self.validate()
         if redirect:
