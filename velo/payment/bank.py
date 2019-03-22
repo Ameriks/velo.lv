@@ -282,7 +282,7 @@ class SwedbankPaymentRequestForm(PaymentRequestForm):
         initial.update({
             'VK_SERVICE': '1002',
             'VK_VERSION': '008',
-            'VK_SND_ID': "VELOV",
+            'VK_SND_ID': self.transaction.channel.params.get('SND'),
             'VK_STAMP': self.transaction.id,
             'VK_AMOUNT': float(self.transaction.amount),
             'VK_CURR': 'EUR',
@@ -411,8 +411,8 @@ class SEBPaymentRequestForm(PaymentRequestForm):
         initial.update({
             'IB_SERVICE': '0002',
             'IB_VERSION': '001',
-            'IB_NAME': "LATVIJAS KALNU DIVRITEŅU",
-            'IB_SND_ID': "MTBASOC",
+            'IB_NAME': self.transaction.channel.params.get('NAME'),
+            'IB_SND_ID': self.transaction.channel.params.get('SND'),
             'IB_PAYMENT_ID': self.transaction.id,
             'IB_AMOUNT': float(self.transaction.amount),
             'IB_CURR': 'EUR',
