@@ -79,6 +79,8 @@ class NewsDetailView(NewsMixin, DetailView):
                 else:
                     shuffle(b)
                     picked_banners.append(b[0])
+        else:
+            picked_banners = side_banner
 
         if picked_banners:
             Banner.objects.filter(id__in=[obj.get('id') for obj in picked_banners]).update(view_count=F('view_count') + 1)
