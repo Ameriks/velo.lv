@@ -217,6 +217,8 @@ class Invoice(TimestampMixin, models.Model):
     access_time = models.TimeField(null=True, blank=True)
     access_ip = models.CharField(max_length=100, null=True, blank=True)
 
+    invoice_data = JSONField(default=dict)
+
     @property
     def invoice_nr(self):
         return "%s-%03d" % (self.series, self.number)

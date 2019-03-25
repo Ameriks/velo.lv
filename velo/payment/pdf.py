@@ -30,6 +30,7 @@ normal = PS(name='normal', fontSize=8)
 class InvoiceGenerator(object):
     invoice = None
     competition = None
+    payment = None
     pdf = None
     doc = None
     top_widths = None
@@ -38,9 +39,10 @@ class InvoiceGenerator(object):
     months_lv = {1: "janvāris", 2: "februāris", 3: "marts", 4: "aprīlis", 5: "maijs", 6: "jūnijs", 7: "jūlijs",
                  8: "augusts", 9: "septembris", 10: "oktobris", 11: "novembris", 12: "decembris"}
 
-    def __init__(self, invoice_data, competition):
+    def __init__(self, invoice_data, competition, payment=None):
         self.invoice = invoice_data
         self.competition = competition
+        self.payment = payment
         self.pdf = BytesIO()
         self.doc = SimpleDocTemplate(self.pdf, pagesize=A4, topMargin=15, bottomMargin=80, leftMargin=15, rightMargin=15, showBoundary=0)
         self.elements = []
@@ -55,10 +57,12 @@ class InvoiceGenerator(object):
 
     def _build_top(self):
         width = self.doc.width
-        invoice_timestamp = self.invoice.get('invoice_date')
+        invoice_date = self.invoice.get('invoice_date')
 
-        invoice_date = "%d.gada %d.%s" % (invoice_timestamp.year, invoice_timestamp.day, self.months_lv.get(invoice_timestamp.month))
-        title = "Rēķins"
+        if self.payment and self.payment.status != 30:
+            title = "Avansa rēķins"
+        else:
+            title = "Rēķins"
 
         adv = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_header2.jpg")
         im = Image(adv, 100, 35)
@@ -126,7 +130,7 @@ class InvoiceGenerator(object):
         data = [
             ['Saimn. darījums', self.invoice.get('activity'), '', 'Speciālās atzīmes', '', '', ''],
             ['Samaksas veids', self.invoice.get('payment_type'), '', Paragraph(self.invoice.get('comments'), self.styles.get('normal')), '', '', ''],
-            ['Samaksāt līdz', self.invoice.get('due_date').strftime('%Y-%m-%d'), '', '', '', '', ''],
+            ['Samaksāt līdz', self.invoice.get('due_date'), '', '', '', '', ''],
         ]
 
         self.elements.append(Table(data, colWidths=self.top_widths, style=TableStyle([
@@ -209,6 +213,13 @@ class InvoiceGenerator(object):
         table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
         data.append(item_list)
 
+        if self.invoice.get('organiser_data', {}).get('vat'):
+            item_list = [''] * column_count
+            item_list[3] = 'PVN 21%'
+            final_amount_col = 5
+            item_list[final_amount_col] = '{0:.2f}'.format(float(round(items_total_price*0.21, 2)))
+            table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
+            data.append(item_list)
 
         item_list = [''] * column_count
 

@@ -1,3 +1,5 @@
+import decimal
+import json
 import logging
 
 from decimal import Decimal
@@ -168,10 +170,13 @@ def generate_pdf_invoice(instance, invoice_data, active_payment_type, invoice_ob
         )
         invoice_object.set_number()
 
-    invoice_data.update({'name': invoice_object.invoice_nr})
+    invoice_data.update({'name': invoice_object.invoice_nr, })
 
-    invoice = InvoiceGenerator(invoice_data, instance.competition)
+    invoice = InvoiceGenerator(invoice_data, instance.competition, payment)
     invoice_pdf = invoice.build()
+
+    invoice_object.invoice_data = invoice_data
+
     invoice_object.file.save(str("%s-%03d.pdf" % (invoice_object.series, invoice_object.number)), ContentFile(invoice_pdf.read()))
 
     instance.invoice = invoice_object
@@ -285,7 +290,7 @@ def create_application_invoice(application, active_payment_type, action="send", 
             "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
             "units": "gab.",
             "amount": "1",
-            "price": participant.total_entry_fee
+            "price": float(participant.total_entry_fee)
         })
         if participant.insurance:
             items.append({
@@ -293,7 +298,7 @@ def create_application_invoice(application, active_payment_type, action="send", 
                 "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
                 "units": "gab.",
                 "amount": "1",
-                "price": participant.total_insurance_fee,
+                "price": float(participant.total_insurance_fee),
             })
         if participant.t_shirt_size:
             items.append({
@@ -345,8 +350,8 @@ def create_application_invoice(application, active_payment_type, action="send", 
             "account_code": active_payment_type.payment_channel.params.get("account_code"),
             "account_number": active_payment_type.payment_channel.params.get("account_number")
         },
-        "invoice_date": now,
-        "due_date": due_date,
+        "invoice_date": "%d.gada %d.%s" % (now.year, now.day, InvoiceGenerator.months_lv.get(now.month)),
+        "due_date": due_date.strftime('%Y-%m-%d'),
         "currency": "EUR",
         "language": "LV",
         "payment_channel": active_payment_type.payment_channel.payment_channel,
