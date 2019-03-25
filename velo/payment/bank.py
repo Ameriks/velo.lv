@@ -180,6 +180,38 @@ class FirstDataIntegration(BankIntegrationBase):
             self.transaction.save()
             return super().final_redirect(status_dict.get('RESULT') == 'OK', request)
 
+    def reverse_transaction(self, amount=None):
+        if not amount:
+            amount = self.transaction.amount
+        params = {
+            'command': 'r',
+            'trans_id': self.transaction.external_code,
+            'amount': int(float(amount)*100),
+        }
+        resp = requests.post(
+            self.transaction.channel.server_url,
+            cert=(self.transaction.channel.cert_file.path, self.transaction.channel.key_file.path),
+            data=params,
+            verify=False,
+        )
+        if resp.status_code != 200:
+            log_message('FAILED VERIFY Transaction', "%i -- %s" % (resp.status_code, resp.text), object=self.transaction)
+            return False
+        else:
+            if 'error: ' in resp.text:
+                log_message('ERROR Transaction', resp.text, object=self.transaction)
+                return False
+
+            self.transaction.status = self.transaction.STATUSES.reversed
+            self.transaction.save()
+
+            dict_obj = {}
+            for _ in resp.text.split('\n'):
+                key, value = _.split(': ')
+                dict_obj.update({key: value})
+            log_message('REVERSED Transaction', resp.text, params=dict_obj, object=self.transaction)
+            return dict_obj
+
     def check_transaction(self, request=None):
         params = {
             'command': 'c',
@@ -417,7 +449,7 @@ class SEBPaymentRequestForm(PaymentRequestForm):
             'IB_AMOUNT': float(self.transaction.amount),
             'IB_CURR': 'EUR',
             'IB_PAYMENT_DESC': self.transaction.information,
-            'IB_FEEDBACK': "%s%s" % ("https://www.velo.lv", reverse('payment_bank_return')),  # settings.MY_DEFAULT_DOMAIN
+            'IB_FEEDBACK': "%s%s" % (settings.MY_DEFAULT_DOMAIN, reverse('payment_bank_return')),  # settings.MY_DEFAULT_DOMAIN
             'IB_LANG': self.transaction.language_bank,
         })
 
