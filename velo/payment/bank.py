@@ -582,7 +582,7 @@ def close_business_day(processing_date=None):
 
         if automated and channel_totals.get('channel__title') == "FirstData":
             try:
-                payment_channel_object = PaymentChannel.objects.filter(pk=4).get()
+                payment_channel_object = PaymentChannel.objects.filter(pk=channel_totals.get('channel_id')).get()
                 resp = requests.post(
                     payment_channel_object.server_url,
                     cert=(payment_channel_object.cert_file.path, payment_channel_object.key_file.path),
