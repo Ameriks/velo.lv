@@ -214,12 +214,25 @@ class InvoiceGenerator(object):
         data.append(item_list)
 
         if self.invoice.get('organiser_data', {}).get('vat'):
+
+            pvn = round(items_total_price / 1.21, 2)
+            bez_pvn = round(float(items_total_price) - pvn, 2)
+
+            item_list = [''] * column_count
+            item_list[3] = 'Cena bez PVN'
+            final_amount_col = 5
+            item_list[final_amount_col] = '{0:.2f}'.format(bez_pvn)
+            table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
+            data.append(item_list)
+
             item_list = [''] * column_count
             item_list[3] = 'PVN 21%'
             final_amount_col = 5
-            item_list[final_amount_col] = '{0:.2f}'.format(float(round(items_total_price*0.21, 2)))
+            item_list[final_amount_col] = '{0:.2f}'.format(pvn)
             table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
             data.append(item_list)
+
+
 
         item_list = [''] * column_count
 
