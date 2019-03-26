@@ -215,8 +215,8 @@ class InvoiceGenerator(object):
 
         if self.invoice.get('organiser_data', {}).get('vat'):
 
-            pvn = round(items_total_price / 1.21, 2)
-            bez_pvn = round(float(items_total_price) - pvn, 2)
+            bez_pvn = round(items_total_price / 1.21, 2)
+            pvn = round(float(items_total_price) - bez_pvn, 2)
 
             item_list = [''] * column_count
             item_list[3] = 'Cena bez PVN'
