@@ -439,6 +439,12 @@ class SEBPaymentRequestForm(PaymentRequestForm):
     def __init__(self, transaction=None, integrator=None, *args, **kwargs):
         self.transaction = transaction
         self.integrator = integrator
+
+        # Payment channel 3 has registered domain name different than other payment channels.
+        domain = settings.MY_DEFAULT_DOMAIN
+        if self.transaction.channel_id == 3:
+            domain = "https://www.velo.lv"
+
         initial = {}
         initial.update({
             'IB_SERVICE': '0002',
@@ -449,7 +455,7 @@ class SEBPaymentRequestForm(PaymentRequestForm):
             'IB_AMOUNT': float(self.transaction.amount),
             'IB_CURR': 'EUR',
             'IB_PAYMENT_DESC': self.transaction.information,
-            'IB_FEEDBACK': "%s%s" % ("https://www.velo.lv", reverse('payment_bank_return')),  # settings.MY_DEFAULT_DOMAIN
+            'IB_FEEDBACK': "%s%s" % (domain, reverse('payment_bank_return')),  # settings.MY_DEFAULT_DOMAIN
             'IB_LANG': self.transaction.language_bank,
         })
 
