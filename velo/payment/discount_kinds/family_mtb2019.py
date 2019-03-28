@@ -6,7 +6,7 @@ from velo.registration.models import Application
 
 class FamilyMtb2019(object):    # object is application
 
-    COMPETITIONS = [90, 91, 92, 93, 94, 95]
+    COMPETITIONS = [90, 91, 92, 93, 94, 95, 96, 97, 98]
 
     IS_RULE_FOR_PARTICIPANTS = True
     MIN_ADULTS_IN_APPLICATION = 1
@@ -17,11 +17,22 @@ class FamilyMtb2019(object):    # object is application
     IS_LIMITED_USAGE = True
 
     DISCOUNTS_FOR_DISTANCE = {  # discount in percents for every distance
+        # MTB
         93: 0.2,  # sporta distance
         94: 0.2,  # tautas distance
         95: 0.2,  # mammadaba veselības distance
         96: 0,    # bērnu distance
         97: 0.2,  # mammadaba zēni un meitenes
+        # Rīgas maratons
+        98: 0.2,  # sporta brauciens
+        99: 0.2,  # tautas brauciens 2 apļi
+        100: 0.2,    # ģimeņu brauciens
+        101: 0.2,   # bērnu brauciens
+        # Vienības brauciens
+        102: 0.2,   # Sporta šosejas brauciens
+        103: 0.2,   # Kalnu divriteņu brauciens
+        104: 0.2,   # Tautas brauciens
+        105: 0.2,   # Retro Velo Tūrisma distance
     }
     IS_DISCOUNT_DECIMAL = True
     IS_INSURANCE_DISCOUNT_DECIMAL = True
