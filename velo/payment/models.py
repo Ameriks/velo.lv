@@ -98,7 +98,7 @@ class DiscountCampaign(models.Model):
 
 class DiscountCode(TimestampMixin, models.Model):
     campaign = models.ForeignKey('payment.DiscountCampaign', on_delete=models.PROTECT)
-    code = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=20, )
     usage_times = models.IntegerField(default=1)
     usage_times_left = models.IntegerField(default=1)
     is_active = models.BooleanField(default=True)

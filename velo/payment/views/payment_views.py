@@ -331,7 +331,8 @@ class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
         ret = {"fee": None, "insurance": None}
         if discount_code:
             try:
-                discount_code = DiscountCode.objects.get(code=discount_code)
+                discount_code = DiscountCode.objects.get(code=discount_code,
+                                                         campaign_id__competition_id=application.competition_id)
 
                 if discount_code.usage_times_left and discount_code.is_active:
                     _class = load_class(discount_code.campaign.discount_kind)
