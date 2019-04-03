@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q, Value as V, CharField
 from django.db.models.functions import Concat
@@ -13,7 +15,9 @@ from velo.manager.tables import ManageParticipantTable, ManageApplicationTable
 from velo.manager.tables.tables import PreNumberAssignTable, ChangedNameTable
 from velo.manager.views.permission_view import ManagerPermissionMixin
 from velo.payment.models import Payment
+from velo.payment.pdf import InvoiceGenerator
 from velo.registration.models import Participant, Application, PreNumberAssign, ChangedName
+from velo.registration.tasks import send_success_email
 from velo.results.tasks import master_update_helper_result_table
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin, \
     CreateViewWithCompetition, UpdateViewWithCompetition
@@ -67,6 +71,13 @@ class ManageApplication(ManagerPermissionMixin, SetCompetitionContextMixin, Deta
                 participant.is_participating = True
                 participant.save()
             self.object.save()
+
+            if self.object.invoice_id and self.object.invoice.invoice_data:
+                invoice = InvoiceGenerator(self.object.invoice.invoice_data, self.object.competition, payment_object)
+                invoice_pdf = invoice.build()
+                self.object.invoice.file.save(str("%s-%03d.pdf" % (self.object.invoice.series, self.object.invoice.number)), ContentFile(invoice_pdf.read()))
+                send_success_email(self.object.id, invoice=True)
+
         elif action == 'create_invoice':
             self.create_invoice_form()
             if self.invoice_form.is_valid():

@@ -433,8 +433,13 @@ def approve_payment(payment, user=False, request=None):
                 participant.company_participant.is_participating = True
                 participant.company_participant.save()
 
+        if application.invoice_id and application.invoice.invoice_data:
+            invoice = InvoiceGenerator(application.invoice.invoice_data, application.competition, payment)
+            invoice_pdf = invoice.build()
+            application.invoice.file.save(str("%s-%03d.pdf" % (application.invoice.series, application.invoice.number)), ContentFile(invoice_pdf.read()))
+
         if send_email:
-            send_success_email.delay(application.id)
+            send_success_email.delay(application.id, invoice=True)
 
         if user:
             return HttpResponseRedirect(reverse('application_ok', kwargs={'slug': payment.content_object.code}))

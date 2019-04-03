@@ -64,11 +64,13 @@ class InvoiceGenerator(object):
         else:
             title = "Rēķins"
 
-        adv = os.path.join(settings.MEDIA_ROOT, "adverts", self.invoice.get('organiser_data').get('logo'))
-        im = Image(adv, 100, 35)
+        im = None
+        if self.invoice.get('organiser_data').get('logo'):
+            adv = os.path.join(settings.MEDIA_ROOT, "adverts", self.invoice.get('organiser_data').get('logo'))
+            im = Image(adv, 100, 35)
         # self.elements.append(im)
 
-        data = [[im, Paragraph(title, self.styles.get('h1')), 'Nr.', self.invoice.get('name')],
+        data = [[im if im else '', Paragraph(title, self.styles.get('h1')), 'Nr.', self.invoice.get('name')],
                 ['', invoice_date, '', '']]
 
         header_table = Table(data, colWidths=list((width / 4.0, width / 2.0, width / 16.0, (width * 3) / 16.0,), ))
