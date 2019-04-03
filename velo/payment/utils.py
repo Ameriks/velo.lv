@@ -243,7 +243,8 @@ def create_team_invoice(team, active_payment_type, action="send", invoice_object
             "vat": active_payment_type.payment_channel.params.get("vat"),
             "account_name": active_payment_type.payment_channel.params.get("account_name"),
             "account_code": active_payment_type.payment_channel.params.get("account_code"),
-            "account_number": active_payment_type.payment_channel.params.get("account_number")
+            "account_number": active_payment_type.payment_channel.params.get("account_number"),
+            "logo": active_payment_type.payment_channel.params.get("logo"),
         },
         "invoice_date": datetime.datetime.now(),
         "due_date": due_date,

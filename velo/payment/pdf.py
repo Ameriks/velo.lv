@@ -64,7 +64,7 @@ class InvoiceGenerator(object):
         else:
             title = "Rēķins"
 
-        adv = os.path.join(settings.MEDIA_ROOT, "adverts", "2018_invoice_header2.jpg")
+        adv = os.path.join(settings.MEDIA_ROOT, "adverts", self.invoice.get('organiser_data').get('logo'))
         im = Image(adv, 100, 35)
         # self.elements.append(im)
 
