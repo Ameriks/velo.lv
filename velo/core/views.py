@@ -40,7 +40,12 @@ class IndexView(TemplateView):
         except:
             first_id = 1
 
-        calendar = Competition.objects.filter(id__gte=first_id).select_related('parent').extra(select={'is_past': "core_competition.competition_date < now()::date  - interval '3 days'"}).order_by('is_past', 'competition_date', '-name_lv')
+        # calendar = Competition.objects.filter(id__gte=first_id).select_related('parent').extra(select={'is_past': "core_competition.competition_date < now()::date  - interval '3 days'"}).order_by('is_past', 'competition_date', '-name_lv')
+        calendar = Competition.objects.filter(id__gte=first_id).select_related('parent').extra(select={
+            'is_past': "core_competition.competition_date < now()::date  - interval '3 days'",
+            'active': 'Select EXISTS(Select * from payment_price p where p.competition_id = core_competition.id and p.start_registering < %s and p.end_registering > %s)'
+        }, select_params=[timezone.now(), timezone.now()]).order_by('-active', 'is_past', 'competition_date', '-name_lv')
+        
         context.update({'calendar': calendar})
 
         parent_ids = []
