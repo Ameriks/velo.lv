@@ -1,12 +1,10 @@
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from velo.registration.models import Application
 
+class FamilyMtb2019(object):  # object is application
 
-class FamilyMtb2019(object):    # object is application
-
-    COMPETITIONS = [90, 91, 92, 93, 94, 95, 96, 97, 98]
+    COMPETITIONS = [90, 91, 92, 93, 94, 95, 96]
 
     IS_RULE_FOR_PARTICIPANTS = True
     MIN_ADULTS_IN_APPLICATION = 1
@@ -23,17 +21,8 @@ class FamilyMtb2019(object):    # object is application
         95: 0.2,  # mammadaba veselības distance
         96: 0,    # bērnu distance
         97: 0.2,  # mammadaba zēni un meitenes
-        # Rīgas maratons
-        98: 0.2,  # sporta brauciens
-        99: 0.2,  # tautas brauciens 2 apļi
-        100: 0.2,    # ģimeņu brauciens
-        101: 0.2,   # bērnu brauciens
-        # Vienības brauciens
-        102: 0.2,   # Sporta šosejas brauciens
-        103: 0.2,   # Kalnu divriteņu brauciens
-        104: 0.2,   # Tautas brauciens
-        105: 0.2,   # Retro Velo Tūrisma distance
     }
+
     IS_DISCOUNT_DECIMAL = True
     IS_INSURANCE_DISCOUNT_DECIMAL = True
     DISCOUNT_FOR_INSURANCE = 0
@@ -48,23 +37,21 @@ class FamilyMtb2019(object):    # object is application
         return self.application.competition_id in self.COMPETITIONS
 
     def is_correct_application(self):
-        if not self.IS_RULE_FOR_PARTICIPANTS:
-            return True
-        else:
+        if self.IS_RULE_FOR_PARTICIPANTS:
             adults = 0
             kids = 0
             now = timezone.now().date()
             for participant in self.application.participant_set.all():
                 birth_date = participant.birthday
-                if now.year - birth_date.year > 18 or (now.year-birth_date.year == 18 and now.month - birth_date.month
+                if now.year - birth_date.year > 18 or (now.year - birth_date.year == 18 and now.month - birth_date.month
                                                        >= 0 and now.day - birth_date.day >= 0):
                     adults += 1
                 else:
                     kids += 1
 
-            if self.MAX_ADULTS_IN_APPLICATION < adults < self.MIN_ADULTS_IN_APPLICATION or self.MAX_KIDS_IN_APPLICATION < kids < self.MIN_KIDS_IN_APPLICATION:
-                return False
-
+            return not any([self.MAX_ADULTS_IN_APPLICATION < adults, self.MIN_ADULTS_IN_APPLICATION > adults,
+                            self.MAX_KIDS_IN_APPLICATION < kids, self.MIN_KIDS_IN_APPLICATION > kids])
+        else:
             return True
 
     def get_final_price_for_application(self):
@@ -82,7 +69,8 @@ class FamilyMtb2019(object):    # object is application
     def get_entry_fee_for_participant(self, participant):
         if self.is_valid_for_competition() and self.is_correct_application():
             if self.IS_DISCOUNT_DECIMAL:
-                entry_fee = float(participant.price.price) * (1 - self.DISCOUNTS_FOR_DISTANCE[participant.distance_id])
+                entry_fee = float(participant.price.price) * (
+                        1 - self.DISCOUNTS_FOR_DISTANCE[participant.distance_id])
             else:
                 entry_fee = float(participant.price.price) - self.DISCOUNTS_FOR_DISTANCE[participant.distance_id]
         else:
