@@ -215,10 +215,32 @@ class InvoiceGenerator(object):
         table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
         data.append(item_list)
 
+
+        if float(self.invoice.get('total')) != items_total_price:
+
+            item_list = [''] * column_count
+
+            item_list[1] = Paragraph("%s %s un %i %s." % (
+                num_to_text(invoice_big).capitalize(), self.invoice.get('currency'), invoice_small, "centi"), normal)
+
+            item_list[3] = 'Atlaide'
+
+            final_amount_col = 5
+
+            item_list[final_amount_col] = '{0:.2f}'.format(float(items_total_price) - float(self.invoice.get('total')))
+
+            table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
+            data.append(item_list)
+
+
+
+
+
+
         if self.invoice.get('organiser_data', {}).get('vat'):
 
-            bez_pvn = round(items_total_price / 1.21, 2)
-            pvn = round(float(items_total_price) - bez_pvn, 2)
+            bez_pvn = round(self.invoice.get('total') / 1.21, 2)
+            pvn = round(float(self.invoice.get('total')) - bez_pvn, 2)
 
             item_list = [''] * column_count
             item_list[3] = 'Cena bez PVN'
@@ -236,12 +258,14 @@ class InvoiceGenerator(object):
 
 
 
+        # items_total_price
+
         item_list = [''] * column_count
 
         item_list[1] = Paragraph("Rēķins sagatavots elektroniski un derīgs bez paraksta.", normal)
 
         item_list[3] = 'Pavisam kopā'
-        item_list[final_amount_col] = '{0:.2f}'.format(float(items_total_price))
+        item_list[final_amount_col] = '{0:.2f}'.format(float(self.invoice.get('total')))
         table_style.append(('SPAN', (3, len(data)), (final_amount_col-1, len(data)),),)
         table_style.append(('FONT', (3, len(data)), (-1, len(data)), 'UbuntuB'),)
 

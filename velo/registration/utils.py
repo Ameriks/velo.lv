@@ -63,7 +63,7 @@ def recalculate_participant(participant, children=None, commit=True):
         if participant.application:
             dc = participant.application.discount_code
             if dc and dc.usage_times_left:
-                discount_code = DiscountCode.objects.get(code=dc.code)
+                discount_code = DiscountCode.objects.get(code=dc.code, campaign__competition_id=participant.competition_id)
                 _class = load_class(discount_code.campaign.discount_kind)
                 discount = _class(application=participant.application)
                 entry_fee = discount.get_entry_fee_for_participant(participant=participant)

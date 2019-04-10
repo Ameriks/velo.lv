@@ -263,7 +263,8 @@ def create_team_invoice(team, active_payment_type, action="send", invoice_object
         "ad_integration_code": "team_%i" % team.id,
         'email': team.email,
         "comments": "Nesaņemot apmaksu līdz norādītajam termiņam, rēķins zaudē spēku un dalībnieki starta sarakstā neparādās, kā arī netiek pielaisti pie starta.",
-        "action": action
+        "action": action,
+        "total": team.final_price,
     }
     invoice_pdf = generate_pdf_invoice(team, invoice_data, active_payment_type, invoice_object)
 
@@ -364,7 +365,8 @@ def create_application_invoice(application, active_payment_type, action="send", 
         "ad_integration_code": application.id,
         'email': application.email,
         "comments": "Nesaņemot apmaksu līdz norādītajam termiņam, rēķins zaudē spēku un dalībnieki starta sarakstā neparādās, kā arī netiek pielaisti pie starta.",
-        "action": action
+        "action": action,
+        "total": application.final_price,
     }
     invoice_object = generate_pdf_invoice(application, invoice_data, active_payment_type, invoice_object)
 
