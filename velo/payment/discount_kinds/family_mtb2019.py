@@ -7,9 +7,9 @@ class FamilyMtb2019(object):  # object is application
     COMPETITIONS = [90, 91, 92, 93, 94, 95, 96]
 
     IS_RULE_FOR_PARTICIPANTS = True
-    MIN_ADULTS_IN_APPLICATION = 1
+    MIN_ADULTS_IN_APPLICATION = 0
     MAX_ADULTS_IN_APPLICATION = 2
-    MIN_KIDS_IN_APPLICATION = 1
+    MIN_KIDS_IN_APPLICATION = 0
     MAX_KIDS_IN_APPLICATION = 5
 
     IS_LIMITED_USAGE = True
@@ -58,7 +58,7 @@ class FamilyMtb2019(object):  # object is application
         if not self.is_valid_for_competition():
             return _("Code not valid for this competition")
         if not self.is_correct_application():
-            return _("From 1 to 2 adults and from 1 to 5 kids must be in application")
+            return _("Maximum 2 adults and 5 kids must be in application")
         final_price = 0
         for participant in self.application.participant_set.all():
             final_price += self.get_entry_fee_for_participant(participant)
