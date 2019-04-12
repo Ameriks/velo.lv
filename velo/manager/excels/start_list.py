@@ -22,9 +22,9 @@ def create_standing_list(competition=None, competition_id=None):
 
     wbk = xlwt.Workbook()
 
-
     for distance in distances:
-        sheet = wbk.add_sheet(str(distance))
+        sheet = wbk.add_sheet(slugify(str(distance), only_ascii=True).replace(" ", "_")[:25])
+                
         slugs = []
 
         items = SebStandings.objects.filter(competition_id__in=competition.get_ids(),distance=distance).select_related('participant', 'participant__competition', 'participant__distance', 'participant__price', 'participant__primary_number').order_by('participant__distance', 'participant__primary_number__group', 'participant__primary_number__number', 'participant__registration_dt')
