@@ -72,10 +72,11 @@ class Seb2019(SEBCompetitionBase):
         Returns defined groups for each competition type.
         """
         return {
-            self.SPORTA_DISTANCE_ID: ('M', 'U-23', 'W', 'M-35', 'M-45'),
-            self.TAUTAS_DISTANCE_ID: ('M-16', 'T M-18', 'T M', 'T M-35', 'T M-45', 'T M-55', 'T M-65', 'W-16', 'T W-18', 'T W', 'T W-35', "FATBIKE"),
-            self.VESELIBAS_DISTANCE2_ID: ('M-14', 'W-14', ),
-            self.BERNU_DISTANCE_ID: ('B 14-', 'B 13', 'B 12', 'B 11', 'B 10', 'B 09', 'B 08-07 M', 'B 08-07 Z',)
+            self.SPORTA_DISTANCE_ID: ('M', 'W', 'M-35', 'M-40', 'M-45', 'M-50+'),
+            self.TAUTAS_DISTANCE_ID: ('T M', 'T W', 'M-16', 'W-16', 'T M-18', 'T W-18', 'T W-35', 'T W-45+' 'T M-35',
+                                      'T M-40', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65+', "FAT"),
+            self.VESELIBAS_DISTANCE2_ID: ('M-12', 'W-12', 'M-14', 'W-14',),
+            self.BERNU_DISTANCE_ID: ('B 15-', 'B 14', 'B 13', 'B 12', 'B 11', 'B 10', 'B 09-08 Z', 'B 09-08 M',)
         }
 
     def number_ranges(self):
@@ -106,55 +107,67 @@ class Seb2019(SEBCompetitionBase):
             return ParticipantTable
 
     def _update_year(self, year):
-        return year + 5
+        return year + 0
 
     def assign_group(self, distance_id, gender, birthday, participant=None):
         year = birthday.year
         if distance_id == self.SPORTA_DISTANCE_ID:
             if gender == 'M':
-                if self._update_year(1995) >= year >= self._update_year(1992):
-                    return 'U-23'
-                elif self._update_year(1995) >= year >= self._update_year(1980):
-                    return 'M'
-                elif self._update_year(1979) >= year >= self._update_year(1970):
+                if self._update_year(1984) >= year >= self._update_year(1980):
                     return 'M-35'
-                elif self._update_year(1969) >= year:
+                elif self._update_year(1979) >= year >= self._update_year(1975):
+                    return 'M-40'
+                elif self._update_year(1974) >= year >= self._update_year(1970):
                     return 'M-45'
+                elif self._update_year(1969) >= year:
+                    return 'M-50+'
+                else:
+                    return 'M'
             else:
-                # if self._update_year(1995) >= year >= self._update_year(1992):
-                #     return 'U-23'
                 return 'W'  # ok
+
         elif distance_id == self.TAUTAS_DISTANCE_ID:
             if participant.bike_brand2.upper() == "FATBIKE":
-                return "FATBIKE"
+                return "FAT"
             elif gender == 'M':
-                if self._update_year(1999) >= year >= self._update_year(1998):
+                if self._update_year(2004) >= year >= self._update_year(2003):
                     return 'M-16' # ok
-                elif self._update_year(1997) >= year >= self._update_year(1996):
+                elif self._update_year(2002) >= year >= self._update_year(2001):
                     return 'T M-18'
-                elif self._update_year(1995) >= year >= self._update_year(1980):
+                elif self._update_year(2000) >= year >= self._update_year(1985):
                     return 'T M'
-                elif self._update_year(1979) >= year >= self._update_year(1970):
+                elif self._update_year(1984) >= year >= self._update_year(1980):
                     return 'T M-35'
-                elif self._update_year(1969) >= year >= self._update_year(1960):
+                elif self._update_year(1979) >= year >= self._update_year(1975):
+                    return 'T M-40'
+                elif self._update_year(1974) >= year >= self._update_year(1970):
                     return 'T M-45'
-                elif self._update_year(1959) >= year >= self._update_year(1950):
+                elif self._update_year(1969) >= year >= self._update_year(1965):
+                    return 'T M-50'
+                elif self._update_year(1964) >= year >= self._update_year(1960):
                     return 'T M-55'
-                elif year <= self._update_year(1949):
-                    return 'T M-65'
+                elif self._update_year(1959) >= year >= self._update_year(1955):
+                    return 'T M-60'
+                elif year <= self._update_year(1954):
+                    return 'T M-65+'
             else:
-                if self._update_year(1999) >= year >= self._update_year(1998):
+                if self._update_year(2004) >= year >= self._update_year(2003):
                     return 'W-16'
-                elif self._update_year(1997) >= year >= self._update_year(1996):
+                elif self._update_year(2002) >= year >= self._update_year(2001):
                     return 'T W-18'
-                elif self._update_year(1995) >= year >= self._update_year(1980):
+                elif self._update_year(2000) >= year >= self._update_year(1985):
                     return 'T W'
-                elif self._update_year(1979) >= year:
+                elif self._update_year(1984) >= year >= self._update_year(1975):
                     return 'T W-35'
+                elif self._update_year(1974) >= year:
+                    return 'T W-45+'
+
         elif distance_id == self.BERNU_DISTANCE_ID:
             # bernu sacensibas
-            if year >= 2014:
-                return 'B 14-'
+            if year >= 2015:
+                return 'B 15-'
+            elif year == 2014:
+                return 'B 14'
             elif year == 2013:
                 return 'B 13'
             elif year == 2012:
@@ -163,20 +176,24 @@ class Seb2019(SEBCompetitionBase):
                 return 'B 11'
             elif year == 2010:
                 return 'B 10'
-            elif year == 2009:
-                return 'B 09'
-            elif year in (2008, 2007):
+            elif year in (2008, 2009):
                 if gender == 'M':
-                    return 'B 08-07 Z'
+                    return 'B 09-08 Z'
                 else:
-                    return 'B 08-07 M'
+                    return 'B 09-08 M'
 
         elif distance_id == self.VESELIBAS_DISTANCE2_ID:
-            if year in (self._update_year(2000), self._update_year(2001), self._update_year(2002), self._update_year(2003)):
-                if gender == 'M':
+            if gender == 'M':
+                if self._update_year(2008) >= year >= self._update_year(2007):
+                    return 'M-12'
+                elif self._update_year(2006) >= year >= self._update_year(2005):
                     return 'M-14'
-                else:
+            else:
+                if self._update_year(2008) >= year >= self._update_year(2007):
+                    return 'W-12'
+                elif self._update_year(2006) >= year >= self._update_year(2005):
                     return 'W-14'
+
         elif distance_id == self.VESELIBAS_DISTANCE_ID:
             return ''
 
