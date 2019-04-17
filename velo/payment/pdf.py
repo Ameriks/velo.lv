@@ -195,7 +195,7 @@ class InvoiceGenerator(object):
                 item_list.append(BreakingParagraph(str(val), self.styles.get('normal')))
             data.append(item_list)
 
-        final_amount = items_total_price
+        final_amount = self.invoice.get("total")
         invoice_big = int(final_amount)
         invoice_small = (final_amount - invoice_big) * 100
 
@@ -220,8 +220,8 @@ class InvoiceGenerator(object):
 
             item_list = [''] * column_count
 
-            item_list[1] = Paragraph("%s %s un %i %s." % (
-                num_to_text(invoice_big).capitalize(), self.invoice.get('currency'), invoice_small, "centi"), normal)
+            # item_list[1] = Paragraph("%s %s un %i %s." % (
+            #     num_to_text(invoice_big).capitalize(), self.invoice.get('currency'), invoice_small, "centi"), normal)
 
             item_list[3] = 'Atlaide'
 
