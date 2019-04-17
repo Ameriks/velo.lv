@@ -73,7 +73,7 @@ class Seb2019(SEBCompetitionBase):
         """
         return {
             self.SPORTA_DISTANCE_ID: ('M', 'W', 'M-35', 'M-40', 'M-45', 'M-50+'),
-            self.TAUTAS_DISTANCE_ID: ('T M', 'T W', 'M-16', 'W-16', 'T M-18', 'T W-18', 'T W-35', 'T W-45+' 'T M-35',
+            self.TAUTAS_DISTANCE_ID: ('T M', 'T W', 'M-16', 'W-16', 'T M-18', 'T W-18', 'T W-35', 'T W-45+', 'T M-35',
                                       'T M-40', 'T M-45', 'T M-50', 'T M-55', 'T M-60', 'T M-65+', "FAT"),
             self.VESELIBAS_DISTANCE2_ID: ('M-12', 'W-12', 'M-14', 'W-14',),
             self.BERNU_DISTANCE_ID: ('B 15-', 'B 14', 'B 13', 'B 12', 'B 11', 'B 10', 'B 09-08 Z', 'B 09-08 M',)
