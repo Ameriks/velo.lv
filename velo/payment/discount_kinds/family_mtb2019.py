@@ -13,6 +13,7 @@ class FamilyMtb2019(object):  # object is application
     MAX_KIDS_IN_APPLICATION = 5
 
     IS_LIMITED_USAGE = True
+    IS_USAGE_TIMES_FOR_PARTICIPANTS = False
 
     DISCOUNTS_FOR_DISTANCE = {  # discount in percents for every distance
         # MTB
@@ -88,3 +89,13 @@ class FamilyMtb2019(object):  # object is application
 
         insurance_fee = round(insurance_fee, 2)
         return insurance_fee
+
+    def get_usage_count(self):
+        count = 0
+        if self.IS_USAGE_TIMES_FOR_PARTICIPANTS:
+            for participant in self.application.participant_set.all():
+                if self.DISCOUNTS_FOR_DISTANCE.get(participant.distance_id) != 0:
+                    count += 1
+            return count
+        else:
+            return 1

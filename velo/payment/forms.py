@@ -88,7 +88,10 @@ class ApplicationPayUpdateForm(GetClassNameMixin, RequestKwargModelFormMixin, fo
         instance.params.pop("donation", None)
         if self.instance.discount_code:
             if self.instance.discount_code.usage_times_left:
-                self.instance.discount_code.usage_times_left -= 1
+                _class = load_class(self.instance.discount_code.campaign.discount_kind)
+                discount = _class(application=self.instance)
+                usage_times = discount.get_usage_count()
+                self.instance.discount_code.usage_times_left -= usage_times
                 self.instance.discount_code.save()
 
         if commit:

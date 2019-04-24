@@ -334,9 +334,12 @@ class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
                 discount_code = DiscountCode.objects.get(code=discount_code,
                                                          campaign_id__competition_id=application.competition_id)
 
-                if discount_code.usage_times_left and discount_code.is_active:
-                    _class = load_class(discount_code.campaign.discount_kind)
-                    discount = _class(application=application)
+                _class = load_class(discount_code.campaign.discount_kind)
+                discount = _class(application=application)
+                usage_times = discount.get_usage_count()
+
+                if discount_code.usage_times_left and discount_code.usage_times_left - usage_times >= 0 and discount_code.is_active:
+
                     price = discount.get_final_price_for_application()
 
                     if isinstance(price, float):
@@ -346,8 +349,9 @@ class DiscountCheckView(NeverCacheMixin, RequestFormKwargsMixin, View):
                     else:
                         ret["error"] = price
 
-                if not discount_code.usage_times_left:
+                if not discount_code.usage_times_left or discount_code.usage_times_left-usage_times < 0:
                     ret["error"] = _("Code already used for this competition")
+
             except:
                 ret["error"] = _("Entered code is invalid")
         return JsonResponse(ret)
