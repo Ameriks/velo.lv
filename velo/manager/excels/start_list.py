@@ -2,6 +2,7 @@ import pytz
 import xlwt
 from io import BytesIO
 
+from django.db.models import Q
 from slugify import slugify
 
 from velo.core.models import Competition
@@ -135,7 +136,7 @@ def create_start_list(competition=None, competition_id=None, ever_started=True):
 
             has_participated = None
             if not ever_started:
-                has_participated = Participant.objects.filter(slug=item.slug, competition__parent__parent_id=1).exists()
+                has_participated = Participant.objects.filter(slug=item.slug, is_participating=True).filter(Q(competition__parent__parent_id=1)|Q(competition__parent_id=1)).exclude(id=item.id).exists()
 
             row_values = (
                 index, item.id, str(item.primary_number), item.slug, str(item.competition), str(item.distance), item.last_name,
