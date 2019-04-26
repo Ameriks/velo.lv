@@ -90,7 +90,7 @@ def payment_list(competition=None, competition_id=None):
     return output
 
 
-def create_start_list(competition=None, competition_id=None):
+def create_start_list(competition=None, competition_id=None, ever_started=True):
     if not competition and not competition_id:
         raise Exception('Expected at least one variable')
     if not competition:
@@ -133,11 +133,16 @@ def create_start_list(competition=None, competition_id=None):
             if item.application:
                 donation = item.application.donation
 
+            has_participated = None
+            if not ever_started:
+                has_participated = Participant.objects.filter(slug=item.slug, competition__parent__parent_id=1).exists()
+
             row_values = (
                 index, item.id, str(item.primary_number), item.slug, str(item.competition), str(item.distance), item.last_name,
                 item.first_name, item.birthday.strftime("%Y-%m-%d"), item.gender, str(item.city) if item.city else "", str(item.is_competing), item.group, donation, total_entry_fee, total_insurance_fee, final_price,
                 str(item.application.discount_code or '') if item.application else '', item.email, item.phone_number, str(item.country), item.team_name, str(item.bike_brand2) if item.bike_brand2 else '',
-                item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res.calculated_total, res.passage_assigned if res.passage_assigned else "", item.t_shirt_size if item.t_shirt_size else '')
+                item.registration_dt.astimezone(riga_tz).strftime("%Y-%m-%d %H:%M"), res.calculated_total, res.passage_assigned if res.passage_assigned else "", item.t_shirt_size if item.t_shirt_size else '', str(has_participated))
+
 
             for col, value in enumerate(row_values):
                 sheet.write(row, col, value)

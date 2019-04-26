@@ -93,6 +93,13 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             response.write(file_obj.getvalue())
             file_obj.close()
             return response
+        elif request.POST.get('action') == 'ever_started':
+            file_obj = create_start_list(competition=self.competition, ever_started=False)
+            response = HttpResponse(content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename=ever_started.xls'
+            response.write(file_obj.getvalue())
+            file_obj.close()
+            return response
         elif request.POST.get('action') == 'create_temporary_participant_list':
             file_obj = create_temporary_participant_list(competition=self.competition)
             response = HttpResponse(content_type='application/vnd.ms-excel')
