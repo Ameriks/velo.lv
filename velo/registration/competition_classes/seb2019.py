@@ -367,7 +367,7 @@ class Seb2019(SEBCompetitionBase):
                     # To sort participants correctly we have to give less points to them but still keep order based on last years results.
                     # If we divide by 10, then we will get them at the end of list.
                     # If participant from Mammadaba now participates in tauta distance, then their points are reduced.
-                    if standing.distance.kind == 'M' and participant.distance.kind == 'T':  # (standing.distance.kind == 'T' and participant.distance.kind == 'S') or
+                    if standing.distance.kind in ('M', 'MC') and participant.distance.kind == 'T':  # (standing.distance.kind == 'T' and participant.distance.kind == 'S') or
                         helper.calculated_total /= 10.0
 
                     if self.competition_index == 2:
