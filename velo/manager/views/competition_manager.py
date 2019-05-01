@@ -212,7 +212,7 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         team_content_type = ContentType.objects.get(app_label="team", model="team")
         incomes = []
         if self.competition.level == 2:
-
+            count = self.competition.parent.children.all().count()
             parent_total = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
                         Sum('total')).get('total__sum')
             parent_donations = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition.parent).aggregate(
@@ -223,14 +223,13 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             team_payments = Payment.objects.filter(competition=self.competition.parent, content_type=team_content_type, status=Payment.STATUSES.ok).aggregate(
                         Sum('total')).get('total__sum')
             try:
-                incomes.append((self.competition.parent, parent_total-parent_donations-parent_insurance-team_payments))
+                incomes.append((self.competition.parent, round((float(parent_total)-float(parent_donations or 0.0)-float(parent_insurance or 0.0)-float(team_payments or 0.0))/ count, 2) ))
             except:
                 incomes.append((self.competition.parent, 0.0))
 
-            incomes.append(('Ziedojumi', parent_donations))
-            incomes.append(('Apdrošināšana', parent_insurance))
-            incomes.append(('Komandas maksājumi', team_payments))
-
+            incomes.append(('Ziedojumi', float(parent_donations or 0.0) / count))
+            incomes.append(('Apdrošināšana', float(parent_insurance or 0.0) / count))
+            incomes.append(('Komandas maksājumi', float(team_payments or 0.0) / count))
 
         distance_donations = Payment.objects.filter(status=Payment.STATUSES.ok, competition=self.competition).aggregate(
             Sum('donation')).get('donation__sum')
@@ -245,7 +244,7 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
             incomes.append((self.competition, 0.0))
         incomes.append(('Ziedojumi', distance_donations))
         incomes.append(('Apdrošināšana', distance_insurance))
-        incomes.append(('Komandas maksājumi', team_payments))
+        incomes.append(('Komandas maksājumi', team_payments or 0.0))
 
         context.update({'participant_count': Participant.objects.filter(competition_id__in=self.competition.get_ids() if not self.competition.is_individual else [self.competition.id, ],
                                                                         is_participating=True).count()})

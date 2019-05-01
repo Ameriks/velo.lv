@@ -1,141 +1,55 @@
 import datetime
+from fabric import task, Connection
+from invoke import Responder
+try:
+    from fabfile_secret import sudo_passwords
+except ImportError:
+    def sudo_passwords():
+        return {}
 
-from fabric.api import run, env, hosts, sudo, cd, task, local, get
-from fabric.tasks import Task
 
-from fabfile_secret import sudo_password
+def get_path():
+    filename = "velolv_%s" % int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    return "/var/backups/postgresql/%s" % filename, filename
 
-env.hosts = ['velo', ]
-env.use_ssh_config = True
-env.sudo_password = sudo_password
 
 @task
-def dump_db():
-    name = "velo_%s.backup" % int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
-    path = "/var/backups/postgresql/%s" % name
-    postgres_id = run('docker ps | grep "velo_postgres_1" | cut -c1-12')
-    run("docker exec %(postgres_id)s sh -c \"su - postgres -c 'pg_dump -F c -b -v -f %(path)s velolv'\"" % locals())
+def rebuild_docker(c):
+    c.run("docker build -t ameriks/project_velo:latest .")
+    c.run("docker-compose -f dev.yml build django")
+    c.run("docker push ameriks/project_velo:latest")
 
-    get(path, "~/dumps/")
 
-    local_postgres_id = local('docker ps | grep "source_postgres_1" | cut -c1-12', capture=True)
+def dump_db(c, restore_to="/Users/agris/dumps/", path=None, filename=None):
+    if not path or not filename:
+        path, filename = get_path()
 
+    c.run(
+        "docker exec velo_postgres_1 sh -c \"su - postgres -c 'pg_dump -F c -b -v -f %(path)s.backup velolv'\"" % locals())
+
+    c.get("%s.backup" % path, "%s%s.backup" % (restore_to, filename))
+    return path
+
+
+def restore_helper_function(c, postgres_id, db, path):
     # TERMINATE existing sessions
-    local("docker exec %(local_postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid();\\\"'\"" % locals())
+    c.run(
+        "docker exec %(postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid();\\\"'\"" % locals())
 
     # DROP and CREATE database
-    local("docker exec %(local_postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"DROP DATABASE IF EXISTS velolv;\\\"'\"" % locals())
-    local("docker exec %(local_postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"CREATE DATABASE velolv WITH OWNER = velolv;\\\"'\"" % locals())
-
+    c.run("docker exec %(postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"DROP DATABASE IF EXISTS %(db)s;\\\"'\"" % locals())
+    c.run("docker exec %(postgres_id)s sh -c \"su - postgres -c 'psql -c \\\"CREATE DATABASE %(db)s WITH OWNER = %(db)s;\\\"'\"" % locals())
+    c.run("docker exec %(postgres_id)s sh -c \"su - postgres -c 'psql -d %(db)s -c \\\"CREATE EXTENSION postgis;\\\"'\"" % locals())
     # RESTORE
-    local("docker exec %(local_postgres_id)s sh -c \"su - postgres -c 'pg_restore -d velolv -v %(path)s'\"" % locals())
+    c.run("docker exec %(postgres_id)s sh -c \"su - postgres -c 'pg_restore -d %(db)s --no-owner --role=%(db)s --disable-triggers --superuser=postgres -v %(path)s.backup'\"" % locals(), warn=True)
 
 
 @task
-def rebuild_docker():
-    local("docker build -t ameriks/project_velo:latest .")
-    local("docker-compose -f dev.yml build django")
-    local("docker push ameriks/project_velo:latest")
-
-
-@task
-def update_all_dockers():
-    with cd('/var/lib/app/project_velo'):
-        # Pull all base images
-        run("docker pull redis:alpine")
-        run("docker pull ameriks/project_velo:latest")
-
-        # Build all images
-        run("docker-compose -p velo build --pull elk")
-        run("docker-compose -p velo build --pull postgres")
-        run("docker-compose -p velo build --pull mariadb")
-        run("docker-compose -p velo build --pull sendy")
-        run("docker-compose -p velo build --pull mainrouter")
-        run("docker-compose -p velo build --pull letsencrypt")
-        run("docker-compose -p velo build --pull duplicity")
-
-        # UP
-        run("docker-compose -p velo up -d -t 30")
-
-        # Removed all unused images
-        run('docker rmi -f $(docker images | grep "<none>" | awk "{print \$3}")')
-
-
-class Deploy(Task):
-    name = "deploy"
-    image_name = "ameriks/project_velo:latest"
-    project_dir = "/var/lib/app/project_velo"
-    container_name = "velo_projectvelo_1"
-    docker_id = None
-    need_static_regenerate = False
-    requirements_updated = False
-    need_migrate = False
-    need_service_restart = False
-    need_full_restart = False
-
-    def get_project_id(self):
-        self.docker_id = run('docker ps | grep "%s" | cut -c1-12' % self.container_name)
-
-    def collect_static(self):
-        run("docker exec %s /app/manage.py collectstatic --no-input" % self.docker_id)
-        self.need_static_regenerate = False
-
-    def restart_services(self):
-        # Restart all services
-        run("docker exec %s s6-svc -h /var/run/s6/services/gunicorn" % self.docker_id)
-        run("docker exec %s s6-svc -h /var/run/s6/services/celeryworker" % self.docker_id)
-        run("docker exec %s s6-svc -h /var/run/s6/services/celerybeat" % self.docker_id)
-
-    def migrate(self):
-        self.get_project_id()
-        run("docker exec %s /app/manage.py migrate" % self.docker_id)
-        self.need_migrate = False
-
-    def git_pull(self):
-
-        git_output = sudo("su - root -c 'cd %s && git pull'" % self.project_dir)
-
-        if "static/" in git_output:
-            self.need_static_regenerate = True
-
-        if 'requirements/' in git_output:
-            self.requirements_updated = True
-
-        if "migrations/" in git_output:
-            self.need_migrate = True
-
-        if ".py" in git_output or ".html" in git_output:
-            self.need_service_restart = True
-
-    def pull_docker(self):
-        pull_result = run("docker pull %s" % self.image_name)
-        if 'Image is up to date' not in pull_result:
-            self.need_full_restart = True
-
-    def restart_docker_compose(self):
-        with cd(self.project_dir):
-            run("docker-compose -p velo up -d -t 30 projectvelo")
-
-    def run(self):
-        self.get_project_id()
-        self.git_pull()
-
-        if self.need_static_regenerate:
-            self.collect_static()
-
-        if self.requirements_updated:
-            self.pull_docker()
-
-        if not self.need_full_restart and self.need_service_restart:
-            self.restart_services()
-        elif self.need_full_restart:
-            self.restart_docker_compose()
-            self.get_project_id()
-
-        if self.need_static_regenerate:
-            self.collect_static()
-
-        if self.need_migrate:
-            self.migrate()
-
-instance = Deploy()
+def restore_local_db(c):
+    path, filename = get_path()
+    print(path)
+    print(filename)
+    with Connection('velo') as cc:
+        cc.run('whoami')
+        dump_db(cc, path=path, filename=filename)
+    restore_helper_function(c, 'source_postgres_1', 'velolv', path)
