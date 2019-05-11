@@ -420,6 +420,10 @@ class Seb2019(SEBCompetitionBase):
                     standings = standings[0]
                     if standings.distance.kind == 'T' and participant.distance.kind == 'S' and helper.calculated_total > 0:
                         helper.calculated_total /= 10.0
+                    #     If participants comming from Mammadaba, then points = 0
+                    #  TODO: Need to check if there are more than 1 standing.
+                    if standings.distance.kind in ('M', 'MC') and participant.distance.kind in ('S', 'T') and helper.calculated_total > 0:
+                        helper.calculated_total = 0.0
 
             elif not participant.primary_number:
                 matches = get_close_matches(participant.slug, prev_slugs)
