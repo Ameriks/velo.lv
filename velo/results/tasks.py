@@ -15,7 +15,7 @@ from velo.core.models import Log, Competition
 from velo.core.tasks import LogErrorsTask
 from velo.core.utils import restart_gunicorn
 from velo.marketing.models import SMS
-from velo.marketing.utils import send_smses
+from velo.marketing.utils import send_smses, send_sms_text2reach
 
 from velo.registration.models import Number, Participant
 from velo.results.models import Result, UrlSync, ChipScan, HelperResults
@@ -41,15 +41,7 @@ def temp_url_sync_task(urlsync_id):
 
 @task(base=LogErrorsTask)
 def send_test_sms():
-    sms = {
-        'page': 'message/send',
-        'username': settings.SMS_USERNAME,
-        'password': settings.SMS_PASSWORD,
-        'destinationAddress': '37126461101',
-        'text': 'tests %s' % str(uuid.uuid4()),
-    }
-
-    requests.get('%s/?%s' % (settings.SMS_GATEWAY, urlencode(sms)))
+    send_sms_text2reach(settings.TEXT2REACH_DEV_NUMBER, 'tests %s' % str(uuid.uuid4()))
     return True
 
 

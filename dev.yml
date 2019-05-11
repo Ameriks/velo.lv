@@ -13,8 +13,6 @@ services:
     environment:
       - C_FORCE_ROOT=true
       - SECRET_KEY=CHANGEME
-      - SMS_PASSWORD=CHANGEME
-      - SMS_USERNAME=CHANGEME
       - AWS_ACCESS_KEY_ID=CHANGEME
       - AWS_SECRET_ACCESS_KEY=CHANGEME
       - DJANGO_ADMIN_URL=admin/

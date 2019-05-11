@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 import uuid
 
 from django.utils.translation import activate
+from requests import RequestException
 
 from velo.core.models import Competition
 from velo.marketing.models import SMS
@@ -150,32 +151,59 @@ def send_numbers_to_all_participants_sms():
     #     send_sms_to_family_participant(participant)
 
 
-def send_test():
-    sms_obj = {
-        'page': 'message/send',
-        'username': settings.SMS_USERNAME,
-        'password': settings.SMS_PASSWORD,
-        'destinationAddress': '37126461101',
-        'text': str(uuid.uuid4()),
+def send_sms_text2reach(number, msg):
+    text2reach_api_key = getattr(settings, 'TEXT2REACH_BULK_API_KEY')
+
+    msg = unicodedata.normalize('NFKD', msg).encode('ascii', 'ignore').decode('ascii')
+
+    # Remove + from number as Text2Reach phone number can not start with +
+    if str(number).startswith('+'):
+        number = number[1:]
+
+    if len(str(number)) == 8:
+        number = "371%s" % number
+
+    if settings.ENVIRONMENT_NAME in ('INT', 'DEV'):
+        msg = number + ': ' + msg
+        number = settings.TEXT2REACH_DEV_NUMBER
+
+    url_params = {
+        "api_key": text2reach_api_key,
+        "phone": number,
+        "from": "velo.lv",
+        "message": msg,
+        "unicode": 'false',
+
     }
-    resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urlencode(sms_obj)))
+    sms_url = 'https://api.text2reach.com/sms/send?%s' % urlencode(url_params)
+
+    if settings.DEBUG:
+        logger.info('Sent SMS %s to %s' % (msg, number))
+        return '0001'
+
+    try:
+        r = requests.get(sms_url)
+    except RequestException as e:
+        # Log error
+        logger.error('Error sending SMS to {0} using Text2Reach with error msg {1}'.format(
+            number, str(e)
+        ))
+        return None
+
+    # If the message cannot be sent, the return value for msg_id
+    # will contain a negative integer. Response code is also 200 in case of error
+    if r.status_code != 200 or not r.text.isnumeric() or int(r.text) < 0:
+        # Log error
+        logger.error('Error sending SMS to {0} using Text2Reach with error code {1}'.format(
+            number, r.text
+        ))
+        return None
+    return r.content
+
 
 def send_smses():
     smses = SMS.objects.filter(is_processed=False)[:100]
     for sms in smses:
-        # text = unicodedata.normalize('NFKD', sms.text).encode('ascii', 'ignore').decode('ascii')
-        # print(text)
-        sms_obj = {
-            'page': 'message/send',
-            'username': settings.SMS_USERNAME,
-            'password': settings.SMS_PASSWORD,
-            'destinationAddress': sms.phone_number,
-            'text': sms.text,
-        }
-        if settings.DEBUG:
-            logger.info('Sent SMS %s to %s' % (sms.text, sms.phone_number))
-        else:
-            resp = requests.get('%s/?%s' % (settings.SMS_GATEWAY, urlencode(sms_obj)))
-            sms.response = resp.content
+        sms.response = send_sms_text2reach(sms.phone_number, sms.text)
         sms.is_processed = True
         sms.save()

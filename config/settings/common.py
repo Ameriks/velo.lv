@@ -339,9 +339,6 @@ TIME_FORMAT = 'H:i:s'
 
 AUTO_RENDER_SELECT2_STATICS = False
 
-SMS_USERNAME = env('SMS_USERNAME')
-SMS_PASSWORD = env('SMS_PASSWORD')
-SMS_GATEWAY = 'https://smsmarketing.bpo.lv'
 
 # CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
@@ -426,3 +423,7 @@ MC_APIKEY = env('MC_APIKEY', default=None)
 TESTING = len(sys.argv) > 1 and sys.argv[1] == False
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
+
+ENVIRONMENT_NAME = 'DEV'
+TEXT2REACH_BULK_API_KEY = env('TEXT2REACH_BULK_API_KEY', default=None)
+TEXT2REACH_DEV_NUMBER = env('TEXT2REACH_DEV_NUMBER', default=None)
