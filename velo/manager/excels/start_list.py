@@ -136,7 +136,10 @@ def create_start_list(competition=None, competition_id=None, ever_started=True):
 
             has_participated = None
             if not ever_started:
-                has_participated = Participant.objects.filter(slug=item.slug, is_participating=True).filter(Q(competition__parent__parent_id=1)|Q(competition__parent_id=1)).exclude(id=item.id).exists()
+                if res.calculated_total > 0.0:
+                    has_participated = True
+                else:
+                    has_participated = Participant.objects.filter(slug=item.slug, is_participating=True).filter(Q(competition__parent__parent_id=1)|Q(competition__parent_id=1)).exclude(id=item.id).exists()
 
             row_values = (
                 index, item.id, str(item.primary_number), item.slug, str(item.competition), str(item.distance), item.last_name,
