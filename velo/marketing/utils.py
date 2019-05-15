@@ -188,7 +188,7 @@ def send_sms_text2reach(number, msg):
         logger.error('Error sending SMS to {0} using Text2Reach with error msg {1}'.format(
             number, str(e)
         ))
-        return None
+        return ''
 
     # If the message cannot be sent, the return value for msg_id
     # will contain a negative integer. Response code is also 200 in case of error
@@ -197,7 +197,7 @@ def send_sms_text2reach(number, msg):
         logger.error('Error sending SMS to {0} using Text2Reach with error code {1}'.format(
             number, r.text
         ))
-        return None
+        return ''
     return r.content
 
 
