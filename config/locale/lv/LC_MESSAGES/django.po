@@ -48,6 +48,14 @@ msgid ""
 msgstr ""
 "^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/ok/$"
 
+#: config/urls.py:57
+#, python-brace-format
+msgid ""
+"^application/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/discount/$"
+msgstr ""
+"^pieteikums/(?P<slug>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/atlaide/$"
+
+
 #: config/urls.py:61
 msgid "^company_application/$"
 msgstr "^uznemuma_pieteikums/$"
