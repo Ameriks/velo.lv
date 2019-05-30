@@ -133,7 +133,7 @@ class RM2019(RM2018):
                 try:
                     PreNumberAssign.objects.get(competition=self.competition, participant_slug=_.slug)
                 except:
-                    PreNumberAssign.objects.create(competition=self.competition, distance=_.distance, participant_slug=_.slug, segment=2)
+                    PreNumberAssign.objects.create(competition=self.competition, distance=_.distance, participant_slug=_.slug, segment=1)
 
         # All juniors in 3rd segment
         juniors = Participant.objects.filter(competition=self.competition, distance_id=self.TAUTAS_DISTANCE_ID,
@@ -144,6 +144,6 @@ class RM2019(RM2018):
                 try:
                     PreNumberAssign.objects.get(competition=self.competition, participant_slug=_.slug)
                 except:
-                    PreNumberAssign.objects.create(competition=self.competition, distance=_.distance, participant_slug=_.slug, segment=3)
+                    PreNumberAssign.objects.create(competition=self.competition, distance=_.distance, participant_slug=_.slug, segment=2)
 
         super(RM2017, self).assign_numbers(reassign, assign_special)
