@@ -161,9 +161,9 @@ def import_lrf_licences_2018():
 
     for index in [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]:
         get_params.update({'startat': index})
-        lrf_licence_html = requests.get('http://lrf.lv/index.php/licences/2018-gada-licencu-saraksts', params=get_params)
+        lrf_licence_html = requests.get('http://lrf.lv/index.php/licences/2019-gada-licencu-saraksts', params=get_params)
         beautiful_lrf_licence = BeautifulSoup(lrf_licence_html.text, 'html.parser')
-        table = beautiful_lrf_licence.find('table', {'class': 'ui selectable table'})
+        table = beautiful_lrf_licence.find('table', {'class': 'ui table'})
         columns = table.find('thead').find_all('th')
         col = []
         for column in columns:
@@ -186,7 +186,7 @@ def import_lrf_licences_2018():
                     row_dict.update({"first_name": value})
                 elif col[idx] == 'UCI kategorija':
                     row_dict.update({"category": value})
-                elif col[idx] == 'Nac. kategorija':
+                elif col[idx] == 'Kategorija':
                     row_dict.update({"group": value})
                 elif col[idx] == 'Lic.derīga':
                     if not value:
