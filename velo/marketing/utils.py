@@ -81,7 +81,8 @@ def send_sms_to_participant(participant):
 
     full_name = unicodedata.normalize('NFKD', participant.full_name).encode('ascii', 'ignore').decode('ascii')
 
-    sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=u"{0}, Jusu starta numurs ir {1} Vienibas brauciena. Iznemiet to EXPO centra 31.08.-1.09. Domina Shopping, Ieriku 3, uzradot so SMS".format(full_name, str(participant.primary_number)))
+#    sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=u"{0}, Jusu starta numurs ir {1} Vienibas brauciena. Iznemiet to EXPO centra 31.08.-1.09. Domina Shopping, Ieriku 3, uzradot so SMS".format(full_name, str(participant.primary_number)))
+    sms = SMS.objects.create(send_out_at=send_out, phone_number=number, text=u"{0}, Jusu starta numurs ir {1} Toyota Rigas velomaratona. Iznemiet to EXPO centra 31.05.-1.06. Riga Plaza 10.00–20.00, uzradot so SMS ".format(full_name, str(participant.primary_number)))
 
     Participant.objects.filter(id=participant.id).update(is_sent_number_sms=True)
 
