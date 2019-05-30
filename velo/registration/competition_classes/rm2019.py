@@ -147,3 +147,30 @@ class RM2019(RM2018):
                     PreNumberAssign.objects.create(competition=self.competition, distance=_.distance, participant_slug=_.slug, segment=2)
 
         super(RM2017, self).assign_numbers(reassign, assign_special)
+
+    def number_pdf(self, participant_id):
+        activate('lv')
+        participant = Participant.objects.get(id=participant_id)
+        output = BytesIO()
+
+        c = canvas.Canvas(output, pagesize=A4)
+        fill_page_with_image("velo/media/competition/vestule/RVm_2019_vestule_ar_tekstu.jpg", c)
+
+        c.setFont(_baseFontNameB, 18)
+        c.drawString(5*cm, 20.4*cm, "%s %s" % (participant.full_name.upper(), participant.birthday.year))
+        c.drawString(4*cm, 18.4*cm, str(participant.distance))
+
+        if participant.primary_number:
+            c.setFont(_baseFontNameB, 35)
+            c.drawString(15*cm, 19.4*cm, str(participant.primary_number))
+        # elif participant.distance_id == self.GIMENU_DISTANCE_ID:
+        #     c.setFont(_baseFontNameB, 25)
+        #     c.drawString(14*cm, 19.4*cm, "Ģimeņu br.")
+        else:
+            c.setFont(_baseFontNameB, 25)
+            c.drawString(15.5*cm, 19.4*cm, "-")
+
+        c.showPage()
+        c.save()
+        output.seek(0)
+        return output
