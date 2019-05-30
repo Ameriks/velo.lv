@@ -1,0 +1,32 @@
+Apsveicam ar reģistrēšanos Toyota Rīgas Velomaratonam!
+
+{% if application %}
+Dalībnieki Jūsu pieteikumā:
+{% endif %}
+
+{% for participant in participants %}
+
+Vārds, uzvārds: {{participant.first_name}} {{participant.last_name}}
+Distance: {{participant.distance}}
+{% if participant.primary_number %}Starta numurs: {{participant.primary_number}}{% endif %}
+Vēstule numura izņemšanai: http://velo.lv{% url 'participant_number_pdf' participant.code_short %}
+
+
+{% endfor %}
+
+
+Šo vēstuli lūdzu saglabājiet, izdrukājiet un ņemiet līdzi uz Toyota Rīgas velomaratona EXPO, kas notiks 2019. gada 31.maijā un 1.jūnijā Modes un izklaides centra Rīga Plaza 1.stāvā, Centrālajā laukumā pie Info centra.
+Uzrādot šo vēstuli un personu apliecinošu dokumentu, Jūs EXPO centrā varēsiet saņemt savu starta numuru, kā arī citu nepieciešamo informāciju.
+
+EXPO norises vieta:
+Modes un izklaides centra Rīga Plaza 1.stāvā, Centrālajā laukumā pie Info Centra.
+Darba laiki 31.maijā un 1.jūnijā no plkst. 10.00 – 20.00.
+
+Papildus informāciju meklējiet www.velo.lv. Neskaidrību gadījumā sazinieties ar mums: pieteikumi@velo.lv.
+
+Vēlreiz apsveicam ar reģistrāciju Toyota Rīgas velomaratonam!
+
+Ar cieņu,
+Toyota Rīgas velomaratona organizatoru komanda
+
+
