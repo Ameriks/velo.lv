@@ -249,3 +249,52 @@ class RM2019(RM2018):
         chip.save()
 
         print(chip)
+
+    def generate_diploma(self, result):
+        output = BytesIO()
+        path = 'velo/results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
+
+        if not os.path.isfile(path):
+            raise Exception
+
+
+        riga_tz = pytz.timezone("Europe/Riga")
+        now = riga_tz.normalize(timezone.now())
+        if (now.date() == self.competition.competition_date) and now.hour < 17:
+            total_participants = result.participant.distance.participant_set.filter(is_participating=True).count()
+            total_group_participants = result.participant.distance.participant_set.filter(is_participating=True, group=result.participant.group).count()
+        else:
+            total_participants = result.competition.result_set.filter(participant__distance=result.participant.distance).count()
+            total_group_participants = result.competition.result_set.filter(participant__distance=result.participant.distance, participant__group=result.participant.group).count()
+
+        c = canvas.Canvas(output, pagesize=A4)
+
+        fill_page_with_image(path, c)
+
+        c.setFont(_baseFontNameB, 30)
+
+        if result.participant.distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID, self.GIMENU_DISTANCE_ID):
+
+            c.drawCentredString(c._pagesize[0] / 2, 12.5*cm, result.participant.full_name)
+            c.drawString(5.75*cm, 10.9 * cm, str(result.participant.primary_number))
+
+            if result.participant.distance_id in (self.SPORTA_DISTANCE_ID, self.TAUTAS_DISTANCE_ID):
+                c.setFont(_baseFontName, 25)
+                c.drawCentredString(14*cm, 7.0*cm, str(result.result_distance) if result.result_distance else '-')
+                c.drawCentredString(17.5 * cm, 7.0 * cm, str(total_participants))
+                c.drawCentredString(5.25*cm, 7.0*cm, str(result.time.replace(microsecond=0)))
+
+                c.drawCentredString(15.75*cm, 4.0*cm, "%s km/h" % result.avg_speed)
+                c.drawCentredString(3.4*cm, 4.0*cm, str(result.result_group) if result.result_group else '-')
+                c.drawCentredString(7.0 * cm, 4.0 * cm, str(total_group_participants))
+            elif result.participant.distance_id in (self.GIMENU_DISTANCE_ID, ):
+                c.drawCentredString(5.25 * cm, 7.0 * cm, str(result.time.replace(microsecond=0)))
+
+        else:
+            c.drawCentredString(c._pagesize[0] / 2, 10.5 * cm, result.participant.full_name)
+
+
+        c.showPage()
+        c.save()
+        output.seek(0)
+        return output
