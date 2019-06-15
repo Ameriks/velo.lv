@@ -310,7 +310,7 @@ class Seb2019(SEBCompetitionBase):
             return standings
 
         def get_current_standing(participant):
-            standings = SebStandings.objects.filter(competition=current_competition, participant_slug=participant.slug).order_by('-distance_total')
+            standings = SebStandings.objects.filter(competition=current_competition, participant_slug=participant.slug).order_by('-distance_total').exclude(distance__kind__in=('M', 'MC'))
 
             if not standings:
                 return None
