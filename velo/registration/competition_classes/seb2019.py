@@ -591,25 +591,49 @@ class Seb2019(SEBCompetitionBase):
 
         fill_page_with_image(path, c)
 
-        c.setFont(_baseFontNameB, 32)
-        c.setFillColor(HexColor(0x47455b))
-        c.drawString(c._pagesize[0] - 9.3 * cm, 16.1 * cm, str(result.participant.primary_number))
+        if self.competition_id in (90, 91, 92):
 
-        c.setFont(_baseFontNameB, 26)
-        c.setFillColor(HexColor(0x47455b))
-        c.drawCentredString(c._pagesize[0] - 9.8 * cm, 17.7*cm, result.participant.full_name)
+            c.setFont(_baseFontNameB, 32)
+            c.setFillColor(HexColor(0x47455b))
+            c.drawString(c._pagesize[0] - 9.3 * cm, 16.1 * cm, str(result.participant.primary_number))
 
-        c.setFont(_baseFontName, 28)
-        c.drawCentredString(c._pagesize[0] - 10.2 * cm, 12.6 * cm, str(result.time.replace(microsecond=0)))
+            c.setFont(_baseFontNameB, 26)
+            c.setFillColor(HexColor(0x47455b))
+            c.drawCentredString(c._pagesize[0] - 9.8 * cm, 17.7*cm, result.participant.full_name)
 
-        if result.participant.distance_id != self.VESELIBAS_DISTANCE_ID:
-            c.drawCentredString(c._pagesize[0] - 12.1 * cm, 9.5 * cm, str(result.result_distance))
-            c.drawCentredString(c._pagesize[0] - 8.4 * cm, 9.5 * cm, str(total_participants))
+            c.setFont(_baseFontName, 28)
+            c.drawCentredString(c._pagesize[0] - 10.2 * cm, 12.6 * cm, str(result.time.replace(microsecond=0)))
 
-            c.drawCentredString(c._pagesize[0] - 10 * cm, 3.7 * cm, "%s km/h" % result.avg_speed)
+            if result.participant.distance_id != self.VESELIBAS_DISTANCE_ID:
+                c.drawCentredString(c._pagesize[0] - 12.1 * cm, 9.5 * cm, str(result.result_distance))
+                c.drawCentredString(c._pagesize[0] - 8.4 * cm, 9.5 * cm, str(total_participants))
 
-            c.drawCentredString(c._pagesize[0] - 12.1 * cm, 6.5*cm, str(result.result_group))
-            c.drawCentredString(c._pagesize[0] - 8.4 * cm, 6.5*cm, str(total_group_participants))
+                c.drawCentredString(c._pagesize[0] - 10 * cm, 3.7 * cm, "%s km/h" % result.avg_speed)
+
+                c.drawCentredString(c._pagesize[0] - 12.1 * cm, 6.5*cm, str(result.result_group))
+                c.drawCentredString(c._pagesize[0] - 8.4 * cm, 6.5*cm, str(total_group_participants))
+
+        else:
+            c.setFont(_baseFontNameB, 32)
+            c.setFillColor(HexColor(0x47455b))
+            c.drawString(c._pagesize[0] - 13 * cm, 11.0 * cm, str(result.participant.primary_number))
+
+            c.setFont(_baseFontNameB, 26)
+            c.setFillColor(HexColor(0x47455b))
+            c.drawCentredString(c._pagesize[0] - 10.2 * cm, 12.6 * cm, result.participant.full_name)
+
+            c.setFont(_baseFontName, 28)
+            c.drawCentredString(c._pagesize[0] - 15.9 * cm, 7.2 * cm, str(result.time.replace(microsecond=0)))
+
+            if result.participant.distance_id != self.VESELIBAS_DISTANCE_ID:
+                c.drawCentredString(c._pagesize[0] - 17.8 * cm, 4.0 * cm, str(result.result_distance))
+                c.drawCentredString(c._pagesize[0] - 14 * cm, 4.0 * cm, str(total_participants))
+
+                c.drawCentredString(c._pagesize[0] - 5.5 * cm, 4.0 * cm, "%s km/h" % result.avg_speed)
+
+                c.drawCentredString(c._pagesize[0] - 7.3 * cm, 7.0*cm, str(result.result_group))
+                c.drawCentredString(c._pagesize[0] - 3.5 * cm, 7.0*cm, str(total_group_participants))
+
 
 
         c.showPage()
