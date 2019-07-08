@@ -97,9 +97,9 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
         for participant in self.participants:
 
             # Todo: This is temporary workaround. Make permanent possibility to add products and disable them.
-            if participant.t_shirt_size:
-                participant.t_shirt_size = None
-                participant.save(update_fields=['t_shirt_size', ])
+            # if participant.t_shirt_size:
+                # participant.t_shirt_size = None
+                # participant.save(update_fields=['t_shirt_size', ])
 
             if not participant.last_name or not participant.first_name:
                 messages.error(self.request, _('Please specify first name and last name for all participants'))
