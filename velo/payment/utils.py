@@ -308,7 +308,7 @@ def create_application_invoice(application, active_payment_type, action="send", 
                 "vat": getattr(settings, "EREKINS_%s_DEFAULT_VAT" % active_payment_type.payment_channel.payment_channel),
                 "units": "gab.",
                 "amount": "1",
-                "price": 25.00
+                "price": 30.00
             })
     if application.donation > 0:
         information = application.competition.params_dict.get('donation', {}).get('bank_code',

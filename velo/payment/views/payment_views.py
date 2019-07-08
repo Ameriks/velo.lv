@@ -127,7 +127,7 @@ class ApplicationPayView(NeverCacheMixin, RequestFormKwargsMixin, UpdateView):
                 self.total_insurance_fee += participant.total_insurance_fee
 
                 if participant.t_shirt_size:
-                    self.total_entry_fee += 25
+                    self.total_entry_fee += 30
 
         if valid:
             if self.object.total_entry_fee != self.total_entry_fee or self.object.total_insurance_fee != self.total_insurance_fee:
