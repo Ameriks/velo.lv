@@ -88,8 +88,8 @@ class Participant(TimestampMixin, models.Model):
         ('F', _('Female')),
     )
     TSHIRT_SIZE_CHOICES = (
-        ('XS', _('UNISEX XS')), ('S', _('UNISEX S')), ('M', _('UNISEX M')),
-        ('L', _('UNISEX L')), ('XL', _('UNISEX XL')), ('XXL', _('UNISEX XXL')),
+        ('XXS', _('UNISEX XXS')), ('XS', _('UNISEX XS')), ('S', _('UNISEX S')), ('M', _('UNISEX M')),
+        ('L', _('UNISEX L')), ('XL', _('UNISEX XL')), ('XXL', _('UNISEX XXL')), ('XXL', _('UNISEX XXL'))
     )
     application = models.ForeignKey(Application, blank=True, null=True)
     competition = models.ForeignKey('core.Competition')
