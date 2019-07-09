@@ -70,9 +70,13 @@ class Application(TimestampMixin, models.Model):
             _class = load_class(self.discount_code.campaign.discount_kind)
             discount = _class(application=self)
             price = discount.get_final_price_for_application()
-            self.final_price = price + float(self.donation)
-        else:
-            self.final_price = float(self.total_entry_fee) + float(self.total_insurance_fee) + float(self.donation)
+            if isinstance(price, float):
+                self.final_price = price + float(self.donation)
+                return
+            else:
+                self.discount_code = None
+
+        self.final_price = float(self.total_entry_fee) + float(self.total_insurance_fee) + float(self.donation)
 
     @property
     def competition_name(self):
