@@ -34,6 +34,14 @@ class Logo(models.Model):
     width = models.FloatField(blank=True, null=True)
     height = models.FloatField(blank=True, null=True)
 
+    def name(self):
+        if self.svg_logo:
+            return os.path.splitext(os.path.basename(self.svg_logo.path))[0]
+        elif self.image:
+            return os.path.splitext(os.path.basename(self.svg_logo.path))[0]
+        else:
+            return 'default'
+
     def __str__(self):
         if self.image:
             return self.image.url
