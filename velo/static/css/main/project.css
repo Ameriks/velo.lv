@@ -5315,11 +5315,7 @@ html {
     width: 650px;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch; }
-    .modal--fade .modal-inner > img, .modal--show .modal-inner > img,
-    .modal--fade .modal-inner > video,
-    .modal--show .modal-inner > video,
-    .modal--fade .modal-inner > iframe,
-    .modal--show .modal-inner > iframe {
+    .modal--fade .modal-inner > img, .modal--show .modal-inner > img, .modal--fade .modal-inner > video, .modal--show .modal-inner > video, .modal--fade .modal-inner > iframe, .modal--show .modal-inner > iframe {
       width: 100%;
       height: auto;
       min-height: 300px; }
@@ -5715,3 +5711,7 @@ div.error.checkbox {
 
 .modal-inner p {
   padding-top: 10px; }
+
+.c49_cc950443-4557-4c84-a403-3bbd352cadf2 {
+  height: 35px;
+  opacity: 0.5; }

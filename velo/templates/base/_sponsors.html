@@ -6,7 +6,7 @@
 
             {% if supporter.default_svg.svg_logo %}
               <a href="{{ supporter.url }}" target="_blank">
-                <figure class="sponsor-line__sponsor img-wrapper {{ supporter.default_svg.name }}">
+                <figure class="sponsor-line__sponsor img-wrapper c{{ supporter.default_svg.name }}">
                     <img
                         data-src="{{ supporter.default_svg.svg_logo.url }}"
                         onload="imgLoaded(this)"
