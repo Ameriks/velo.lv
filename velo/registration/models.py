@@ -250,7 +250,8 @@ class Participant(TimestampMixin, models.Model):
             self.registration_dt = timezone.now()
 
         # Recalculate totals. # TODO: This should be done when creating payment, not on any save.
-        recalculate_participant(self, commit=False)
+        if self.application.payment_status == Application.PAY_STATUS.not_payed or not self.application.discount_code:
+            recalculate_participant(self, commit=False)
 
         obj = super(Participant, self).save(*args, **kwargs)
 
