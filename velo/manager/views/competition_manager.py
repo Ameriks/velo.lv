@@ -1,5 +1,8 @@
+import uuid
+
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.storage import default_storage
 from django.db.models import Sum, Count
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
@@ -15,13 +18,14 @@ from velo.manager.tables import ManageCompetitionTable
 from velo.manager.views import ManageApplication
 from velo.manager.views.permission_view import ManagerPermissionMixin
 from velo.payment.models import Payment
+from velo.payment.tasks import update_family_codes
+from velo.payment.utils import reset_family_codes
 from velo.registration.models import Application
 from velo.registration.utils import import_lrf_licences_2018 as import_lrf_licences
 from velo.velo.mixins.views import SingleTableViewWithRequest, SetCompetitionContextMixin
 from velo.manager.tasks import *
 from velo.team.tasks import match_team_members_to_participants, copy_registered_teams
 from velo.results.tasks import update_helper_result_table
-
 
 __all__ = [
     'ManageCompetitionList', 'ManageCompetitionDetail', 'ManageApplicationExternalPay'
@@ -189,6 +193,25 @@ class ManageCompetitionDetail(ManagerPermissionMixin, SetCompetitionContextMixin
         elif request.POST.get('action') == 'copy_registered_teams':
             copy_registered_teams(self.competition.id)
             messages.info(request, 'Komandas reģistrētas')
+
+        elif request.POST.get('action') == 'restart_family':
+            competition_id = int(kwargs.get('pk'))
+            competition = Competition.objects.get(pk=competition_id)
+            if Competition.objects.get(pk=competition.parent_id).parent_id == 1:
+                reset_family_codes(campaign_id=6)
+
+                messages.info(request, 'Ģimenes karšu kodi lietošanas reizes veiksmīgi atjaunotas')
+
+        elif request.POST.get('action') == 'upload_family':
+            xls_file = request.FILES.get('xls_file')
+            file_name = str(uuid.uuid4()) + '.xlsx'
+
+            with default_storage.open(file_name, 'wb+') as destination:
+                for chunk in xls_file.chunks():
+                    destination.write(chunk)
+
+            update_family_codes.delay(file_name)
+            messages.info(request, 'Ģimenes kartes kodu aktualizēšanas process veiksmīgi palaists.')
 
         return super(ManageCompetitionDetail, self).get(request, *args, **kwargs)
 
