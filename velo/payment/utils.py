@@ -458,3 +458,14 @@ def approve_payment(payment, user=False, request=None):
             return HttpResponseRedirect(reverse('account:team', kwargs={'pk2': payment.content_object.id}))
         else:
             return True
+
+
+# reseting usage times after competition
+def reset_family_codes(campaign_id: int = None):
+    from velo.payment.models import DiscountCode
+    discount_codes = DiscountCode.objects.filter(campaign_id=campaign_id, usage_times_left=0, is_active=True)
+
+    for code in discount_codes:
+        code.usage_times_left = 1
+        code.usage_times = 0
+        code.save()
