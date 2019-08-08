@@ -591,7 +591,7 @@ class Seb2019(SEBCompetitionBase):
 
         fill_page_with_image(path, c)
 
-        if self.competition_id in (90, 91, 92, 94):
+        if self.competition_id in (90, 91, 94):
 
             c.setFont(_baseFontNameB, 32)
             c.setFillColor(HexColor(0x47455b))
