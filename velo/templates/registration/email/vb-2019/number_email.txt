@@ -1,0 +1,31 @@
+Apsveicam ar reģistrēšanos 29. Latvijas Riteņbraucēju Vienības braucienam!
+
+{% if application %}
+Dalībnieki Jūsu pieteikumā:
+{% endif %}
+
+{% for participant in participants %}
+
+Vārds, uzvārds: {{participant.first_name}} {{participant.last_name}}
+Distance: {{participant.distance}}
+{% if participant.primary_number %}Starta numurs: {{participant.primary_number}}{% endif %}
+Vēstule numura izņemšanai: http://velo.lv{% url 'participant_number_pdf' participant.code_short %}
+
+
+{% endfor %}
+
+
+Katram dalībniekam nepieciešams izdrukāt viņa vēstuli un ņemt līdzi uz 29. Latvijas Riteņbraucēju Vienības brauciena EXPO, kas notiks 2019. gada 30. un 31.augustā tirdzniecības centrā Domina Shopping. Uzrādot šo vēstuli un personu apliecinošu dokumentu, Jūs EXPO centrā varēsiet saņemt savu starta numuru, kā arī citu nepieciešamo informāciju.
+
+EXPO norises vieta:
+tirdzniecības centrā Domina Shopping laukumā pie restorāna „Vairākas Saules”.
+Darba laiki 30.08. un 31.09. no plkst. 10:00 – 20:00.
+
+EXPO būs iespējams reģistrēties tiem, kuri nav paspējuši pieteikties.
+
+Papildus informāciju meklējiet www.velo.lv. Neskaidrību gadījumā sazinieties ar mums: info@velo.lv.
+
+Vēlreiz apsveicam ar reģistrāciju 29. Latvijas Riteņbraucēju Vienības braucienam un novēlam veiksmīgu startu!
+
+Ar cieņu,
+Vienības brauciena organizatoru komanda
