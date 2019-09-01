@@ -72,3 +72,45 @@ class VB2019(VB2018):
                     p.save()
             except:
                 print('Not %s' % member.slug)
+
+    def generate_diploma(self, result):
+        output = BytesIO()
+        path = 'velo/results/files/diplomas/%i/%i.jpg' % (self.competition_id, result.participant.distance_id)
+
+        if not os.path.isfile(path):
+            raise Exception
+
+        total_participants = result.competition.result_set.filter(participant__distance=result.participant.distance).count()
+        total_group_participants = result.competition.result_set.filter(participant__distance=result.participant.distance, participant__group=result.participant.group).count()
+
+        c = canvas.Canvas(output, pagesize=A4)
+
+        fill_page_with_image(path, c)
+
+        c.setFont(_baseFontNameB, 28)
+        c.setFillColor(HexColor(0x9F2B36))
+        c.drawString(8 * cm, 12.2 * cm, str(result.participant.primary_number))
+
+        c.setFont(_baseFontNameB, 25)
+        c.setFillColor(HexColor(0x46445c))
+        c.drawCentredString(c._pagesize[0]/2, 14.1*cm, result.participant.full_name)
+        print(c._pagesize[0])
+        c.setFont(_baseFontName, 25)
+        c.drawCentredString(176, 9.2 * cm, str(result.time.replace(microsecond=0)))
+
+        c.drawCentredString(128, 5.8*cm, str(result.result_group))
+        c.drawCentredString(230, 5.8*cm, str(total_group_participants))
+
+        c.drawCentredString(430, 5.8*cm, "%s km/h" % result.avg_speed)
+
+        c.drawCentredString(380, 9.2*cm, str(result.result_distance))
+        c.drawCentredString(482, 9.2*cm, str(total_participants))
+
+        c.setFont(_baseFontName, 16)
+        c.setFillColor(HexColor(0x9F2B36))
+        c.drawRightString(523, 10.7 * cm, str(result.participant.group))
+
+        c.showPage()
+        c.save()
+        output.seek(0)
+        return output
