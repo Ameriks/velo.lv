@@ -1,9 +1,13 @@
+from allauth import app_settings
+from allauth.account.utils import perform_login
+from allauth.socialaccount.signals import pre_social_login
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, AbstractBaseUser, UserManager
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
@@ -435,3 +439,11 @@ class Map(models.Model):
     @property
     def parent_competition(self):
         return self.competition.parent
+
+
+@receiver(pre_social_login)
+def link_to_local_user(sender, request, sociallogin, **kwargs):
+    email_address = sociallogin.account.extra_data['email']
+    users = User.objects.filter(email=email_address)
+    if users:
+        perform_login(request, users[0], email_verification=False)
