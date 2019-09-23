@@ -616,11 +616,20 @@ class Seb2019(SEBCompetitionBase):
         else:
             c.setFont(_baseFontNameB, 32)
             c.setFillColor(HexColor(0x47455b))
-            c.drawString(c._pagesize[0] - 13 * cm, 11.0 * cm, str(result.participant.primary_number))
+
+            if self.competition_id == 96:
+                c.drawString(c._pagesize[0] - 13 * cm, 10.7 * cm, str(result.participant.primary_number))
+            else:
+                c.drawString(c._pagesize[0] - 13 * cm, 11.0 * cm, str(result.participant.primary_number))
 
             c.setFont(_baseFontNameB, 26)
             c.setFillColor(HexColor(0x47455b))
-            c.drawCentredString(c._pagesize[0] - 10.2 * cm, 12.6 * cm, result.participant.full_name)
+
+            if self.competition_id == 96:
+                c.drawCentredString(c._pagesize[0] - 10.2 * cm, 12.3 * cm, result.participant.full_name)
+            else:
+                c.drawCentredString(c._pagesize[0] - 10.2 * cm, 12.6 * cm, result.participant.full_name)
+
 
             c.setFont(_baseFontName, 28)
             c.drawCentredString(c._pagesize[0] - 15.9 * cm, 7.2 * cm, str(result.time.replace(microsecond=0)))
