@@ -323,7 +323,7 @@ class Competition(MPTTModel):
 
     def get_random_image(self):
         from velo.gallery.models import Photo
-        photo = Photo.objects.filter(album__competition__tree_id=self.tree_id, is_featured=False, album__gallery_date__year=[timezone.now().year, timezone.now().year - 1]).order_by('?').first()
+        photo = Photo.objects.filter(album__competition__tree_id=self.tree_id, is_featured=False, album__gallery_date__year__in=[timezone.now().year, timezone.now().year - 1]).order_by('?').first()
         if photo:
             return photo
         else:
