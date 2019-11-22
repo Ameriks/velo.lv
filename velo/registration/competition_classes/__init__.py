@@ -4,6 +4,7 @@ from .seb2016 import Seb2016
 from .seb2017 import Seb2017
 from .seb2018 import Seb2018
 from .seb2019 import Seb2019
+from .seb2020 import Seb2020
 from .rm2016 import RM2016
 from .vb2016 import VB2016
 from .ec2016 import EC2016
@@ -11,3 +12,8 @@ from .rm2017 import RM2017
 from .vb2017 import VB2017
 from .rm2018 import RM2018
 from .vb2018 import VB2018
+from .vb2019 import VB2019
+from .rm2019 import RM2019
+from .vb2020 import VB2020
+from .rm2020 import RM2020
+
