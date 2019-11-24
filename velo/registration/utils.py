@@ -10,6 +10,7 @@ from velo.velo.utils import load_class
 
 def recalculate_participant(participant, children=None, commit=True):
     from velo.registration.models import ChangedName
+    from velo.registration.models import Participant
     from velo.results.models import HelperResults
     if not children:
         children = participant.competition.get_children().filter(is_individual=False)
@@ -20,44 +21,40 @@ def recalculate_participant(participant, children=None, commit=True):
     else:
         insurance = float(participant.insurance.price) if participant.insurance else 0.0
         entry_fee = float(participant.price.price) if participant.price else 0.0
-        if participant.competition_id == 89:
-            if participant.distance_id in (93, 94):
-                participating_in_2018 = HelperResults.objects.all().filter(competition__parent_id=79).filter(participant__is_participating=True, participant__slug=participant.slug).count()
-                participating_in_2017 = HelperResults.objects.all().filter(competition__parent_id=67).filter(participant__is_participating=True, participant__slug=participant.slug).exists()
-                discount_until = datetime.date(2019, 1, 16)
-                last_two_years = participating_in_2018 + participating_in_2017
+        if participant.competition_id == 99:
+            if participant.distance_id in (106, 107):
+                slugs = list(ChangedName.objects.filter(new_slug=participant.slug).values_list('slug')) + [participant.slug, ]
+                was_paticipant = Participant.objects.filter(competition_id=89, distance_id__in=(93, 94), is_participating=True, slug__in=slugs).exists()
+                discount_until = datetime.date(2020, 1, 1)
 
-                if not last_two_years:
-                    slugs = list(ChangedName.objects.filter(new_slug=participant.slug).values_list('slug')) + [participant.slug, ]
-                    started_ever = HelperResults.objects.all().filter(competition__parent__parent_id=1).filter(participant__is_participating=True, participant__slug__in=slugs).exists()
-                else:
-                    started_ever = False
+                if was_paticipant:
+                    entry_fee = 100
 
-                if 2001 <= participant.birthday.year <= 2004:   #Tautas distances 2001-2004 gadiem pilnas sezonas cena tāda pati, kā Mamma daba veselības distancei (10eur/posms)
-                    entry_fee = 60
+                if 2002 <= participant.birthday.year <= 2005:
+                    entry_fee = 70
                 elif datetime.datetime.now().date() <= discount_until:
-                    if participating_in_2018 == 7 or (not last_two_years and started_ever):
-                        entry_fee = 100     # Sporta and Tautas distance before 01.01.2019 and participated in all last year stages or have not participated in last two years
+                    if was_paticipant:
+                        entry_fee = 100     # Sporta and Tautas distance pirms 01.01 un bija iepriekšējā gada abonements
                     else:
-                        entry_fee = 112
-
-                # elif participant.distance_id == 93:
-                #     self.total_entry_fee += 119     # Sporta distance after 05.01.2019
+                        entry_fee = 115
                 else:
-                    entry_fee = 119     # Tautas distance after 05.01.2019
+                    entry_fee = 125     # Tautas distance after 05.01.2019
 
-            if participant.distance_id == 95:       # Mammadaba Veselibas distance
-                entry_fee = 60
-            if participant.distance_id == 97:       # Mammadaba Zeni un Meitenes distance
-                entry_fee = 42
-            if participant.distance_id == 96:  # Bernu distance
-                entry_fee = 6
+            if participant.distance_id == 108:       # Mammadaba Veselibas distance
+                entry_fee = 70
+            if participant.distance_id == 110:       # Mammadaba Zeni un Meitenes distance
+                entry_fee = 50
+            if participant.distance_id == 109:  # Bernu distance
+                if participant.birthday.year in (2009, 2010, 2011, 2012, 2013):
+                    entry_fee = 15
+                else:
+                    entry_fee = 10
         else:
             entry_fee = float(participant.price.price) if participant.price else 0.0
 
         if children:
             insurance = insurance * len(children) * (100 - participant.competition.complex_discount) / 100
-            if not participant.competition_id == 89:
+            if not participant.competition_id == 99:
                 entry_fee = entry_fee * len(children) * (100 - participant.competition.complex_discount) / 100
 
         if participant.application:
