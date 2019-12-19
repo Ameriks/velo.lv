@@ -17,7 +17,28 @@
         </svg>
     </script>
 
+<style>
+  .competition_item_99 .calendar-tile__btn {
+    background-color: #098dce;
+  }
 
+  .competition_item_99 .calendar-tile__btn svg {
+    margin-left: 5px;
+    animation: margin-l 1s infinite;
+    -webkit-animation: margin-l 1s infinite;
+  }
+  @-webkit-keyframes margin-l {
+    0% { margin-left: 5px; }
+    50% { margin-left: 25px; }
+    100% { margin-left: 5px; }
+  }
+
+  @keyframes margin-l {
+    0% { margin-left: 5px; }
+    50% { margin-left: 25px; }
+    100% { margin-left: 5px; }
+  }
+</style>
     <main>
         <div class="w100">
             <div class="inner">
@@ -33,7 +54,7 @@
                                 <div class="calendar-slider__slide border-right">
                             {% endif %}
 
-                            <div class="calendar-slider__head accordeon-head h100  js-accordeon-head js-open-accordeon {% if forloop.counter0 in calendar_active_indexes.0 %}active{% endif %}">
+                            <div class="competition_item_{{ item.id }} calendar-slider__head accordeon-head h100  js-accordeon-head js-open-accordeon {% if forloop.counter0 in calendar_active_indexes.0 %}active{% endif %}">
                                 <div class="calendar-tile h100 c-white flex wrap--nowrap direction--column justify--start align-items--start border-left">
                                     <a data-href="{% url "competition:competition" item.id %}"
                                        class="calendar-tile__info flex--1 js-calendar-slider-link">
@@ -161,6 +182,8 @@
             {% endif %}
         {% endcache %}
 
+    <div style="margin:0 auto;padding-top:20px;padding-bottom:20px;" onclick="this.style.display='none';"><div style=""><img src="{% static "img/laimigu_2020_velo.gif" %}" alt="Laimīgu Jauno!"></div></div>
+
         {#    {% include "base/_newest_results.html" %}#}
 
         {% cache 300 index_news LANGUAGE_CODE %}
@@ -207,7 +230,8 @@
         {#    {% include "base/_front_shop.html" %}#}
     </main>
 
-  <div style="position:absolute;top:50px;margin: 0 auto; left: 50%;z-index:100000000000;cursor:pointer;" onclick="this.style.display='none';"><div style="position: relative; left: -50%; border: dotted red 1px;"><img src="{% static "img/laimigu_2020_velo.gif" %}" alt="Laimīgu Jauno!"></div></div>
+
+
 
 {% endblock %}
 
