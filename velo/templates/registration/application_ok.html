@@ -35,8 +35,16 @@
                                             <div class="fs14 fw700 lh15 uppercase c-white w100 text-align--center bottom-margin--20">{% trans "You will receive email with confirmation that you have successfuly applied." %}</div>
 
 
+
                                             <div class="w100 bottom-margin--20">
                                                 <div class="row row--gutters-50">
+                                                    <div style="border:1px solid; margin:10px;padding:10px;line-height:20px;background-color:#000;font-size:1.2em;">
+                                                      <h3>Lūgums atbalstīt!</h3>
+                                                      <p>Ziedojums traģiski zaudētā “elpo team” komandas dalībnieka Zigmunda Paegļa ģimenes atbalstam.</p>
+                                                      <br />
+                                                      <p>Konts: LV64HABA0551047355623 Ilze Leonoviča (Zigmunda Paegļa sieva)</p>
+                                                    </div>
+
                                                     {% if object.invoice %}
                                                         <a href="/payment/invoice/{{ object.invoice.slug }}/" class="col-xl-24" download>
                                                             <div class="btn btn--50 btn--blue btn--blue-hover btn--blue-active btn--no-borders w100 bottom-margin--20">
@@ -68,6 +76,8 @@
                                                             </div>
                                                         </a>
 {#                                                    {% endif %}#}
+
+
 
                                                 </div>
                                             </div>
