@@ -296,11 +296,11 @@ class InvoiceGenerator(object):
         self.elements.append(bottom_table)
 
     def _build_footer(self):
-        pass
+        # pass
         # if self.competition.id in (89, 90, 91, 92, 93, 94, 95, 96, 97):
-        #     adv = os.path.join(settings.MEDIA_ROOT, "adverts", "2019_invoice_adv_toyota.jpg")
-        #     im = Image(adv, 567, 90)
-        #     self.elements.append(im)
+        adv = os.path.join(settings.MEDIA_ROOT, "adverts", "2020_lvm.jpg")
+        im = Image(adv, 567, 91)
+        self.elements.append(im)
 
     def build(self):
         self._build_top()
